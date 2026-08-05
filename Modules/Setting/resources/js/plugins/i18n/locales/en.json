@@ -20,7 +20,9 @@
     "branches": "Branches",
     "behaviorCategories": "Behavior Categories",
     "assignments": "Assignments",
-    "studyMaterials": "Study Materials"
+    "studyMaterials": "Study Materials",
+    "attendance": "Attendance",
+    "attendanceRecords": "Attendance Records"
   },
   "navbar": {
     "search": "Search",
@@ -693,6 +695,42 @@
     "quickAction": {
       "edit": "Edit Assignment"
     }
+  },
+  "attendanceRecords": {
+    "title": "Attendance Records",
+    "subtitle": "Take and review class attendance sessions.",
+    "addNew": "Take Attendance",
+    "edit": "Edit Attendance",
+    "class": "Class",
+    "subject": "Subject",
+    "academicYear": "Academic Year",
+    "semester": "Semester",
+    "date": "Date",
+    "dateFrom": "From Date",
+    "dateTo": "To Date",
+    "session": "Session",
+    "sessionLabel": "Session {session}",
+    "present": "Present",
+    "absent": "Absent",
+    "late": "Late",
+    "excused": "Excused",
+    "statuses": {
+      "present": "Present",
+      "absent": "Absent",
+      "late": "Late",
+      "excused": "Excused"
+    },
+    "student": "Student",
+    "admissionNumber": "Admission Number",
+    "status": "Status",
+    "checkInTime": "Check-in Time",
+    "checkOutTime": "Check-out Time",
+    "roster": "Student Roster",
+    "selectClassHint": "Select a class to load its student roster.",
+    "noStudentsInClass": "No active students found in this class.",
+    "search": "Search",
+    "empty": "No attendance records yet. Take attendance to get started.",
+    "confirmDelete": "Delete this attendance record? This cannot be undone."
   },
   "studyMaterials": {
     "title": "Study Materials",

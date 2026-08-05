@@ -20,7 +20,9 @@
     "branches": "الفروع",
     "behaviorCategories": "فئات السلوك",
     "assignments": "الواجبات",
-    "studyMaterials": "المواد التعليمية"
+    "studyMaterials": "المواد التعليمية",
+    "attendance": "الحضور والغياب",
+    "attendanceRecords": "سجلات الحضور"
   },
   "navbar": {
     "search": "بحث",
@@ -689,6 +691,42 @@
     "quickAction": {
       "edit": "تعديل الواجب"
     }
+  },
+  "attendanceRecords": {
+    "title": "سجلات الحضور",
+    "subtitle": "تسجيل ومراجعة جلسات حضور الفصول.",
+    "addNew": "تسجيل الحضور",
+    "edit": "تعديل الحضور",
+    "class": "الفصل",
+    "subject": "المادة",
+    "academicYear": "العام الدراسي",
+    "semester": "الفصل الدراسي",
+    "date": "التاريخ",
+    "dateFrom": "من تاريخ",
+    "dateTo": "إلى تاريخ",
+    "session": "الحصة",
+    "sessionLabel": "الحصة {session}",
+    "present": "حاضر",
+    "absent": "غائب",
+    "late": "متأخر",
+    "excused": "معذور",
+    "statuses": {
+      "present": "حاضر",
+      "absent": "غائب",
+      "late": "متأخر",
+      "excused": "معذور"
+    },
+    "student": "الطالب",
+    "admissionNumber": "رقم القيد",
+    "status": "الحالة",
+    "checkInTime": "وقت الحضور",
+    "checkOutTime": "وقت الانصراف",
+    "roster": "قائمة الطلاب",
+    "selectClassHint": "اختر فصلاً لتحميل قائمة طلابه.",
+    "noStudentsInClass": "لا يوجد طلاب نشطون في هذا الفصل.",
+    "search": "بحث",
+    "empty": "لا توجد سجلات حضور بعد. سجّل الحضور للبدء.",
+    "confirmDelete": "حذف سجل الحضور هذا؟ لا يمكن التراجع عن هذا الإجراء."
   },
   "studyMaterials": {
     "title": "المواد التعليمية",
