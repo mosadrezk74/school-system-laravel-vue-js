@@ -1,0 +1,106 @@
+{
+  "language": "Sprache",
+  "nav": {
+    "dashboards": "Übersicht",
+    "accountSettings": "Kontoeinstellungen",
+    "academic": "Akademisch",
+    "academicYears": "Schuljahre",
+    "account": "Konto",
+    "languages": "Sprachen",
+    "settings": "Einstellungen"
+  },
+  "navbar": {
+    "search": "Suchen",
+    "notifications": "Benachrichtigungen",
+    "toggleTheme": "Design wechseln"
+  },
+  "userMenu": {
+    "profile": "Profil",
+    "settings": "Einstellungen",
+    "pricing": "Preise",
+    "faq": "FAQ",
+    "logout": "Abmelden"
+  },
+  "theme": {
+    "light": "Hell",
+    "dark": "Dunkel"
+  },
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen"
+  },
+  "academicYears": {
+    "title": "Schuljahre",
+    "create": "Neues Jahr",
+    "edit": "Jahr bearbeiten",
+    "search": "Nach Name oder Code suchen",
+    "name": "Name",
+    "code": "Code",
+    "startDate": "Startdatum",
+    "endDate": "Enddatum",
+    "status": "Status",
+    "current": "Aktuell",
+    "inactive": "Inaktiv",
+    "active": "Aktiv",
+    "setCurrent": "Als aktuell festlegen",
+    "empty": "Noch keine Schuljahre. Erstellen Sie das erste, um zu beginnen.",
+    "confirmDelete": "„{name}“ löschen? Ein Administrator kann dies rückgängig machen."
+  },
+  "auth": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "registerTitle": "Konto erstellen",
+    "welcome": "Willkommen bei {app}",
+    "loginSubtitle": "Melden Sie sich an, um zum Dashboard zu gelangen",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "name": "Vollständiger Name",
+    "rememberMe": "Angemeldet bleiben",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccount": "Neu hier?",
+    "haveAccount": "Bereits ein Konto?",
+    "logout": "Abmelden",
+    "createAccount": "Konto erstellen"
+  },
+  "palette": {
+    "title": "Farbthema",
+    "indigo": "Indigo",
+    "emerald": "Smaragd",
+    "ocean": "Ozean",
+    "amber": "Bernstein",
+    "plum": "Pflaume"
+  },
+  "dashboard": {
+    "title": "Übersicht",
+    "greeting": "Guten Morgen",
+    "students": "Schüler",
+    "studentsHint": "in diesem Jahr angemeldet",
+    "teachers": "Lehrkräfte",
+    "staff": "Personal",
+    "attendanceToday": "Anwesenheit heute",
+    "presentOf": "{present} von {total} anwesend",
+    "outstandingFees": "Offene Gebühren",
+    "acrossInvoices": "auf {count} Rechnungen",
+    "currentYear": "Aktuelles Schuljahr",
+    "noCurrentYear": "Kein Schuljahr festgelegt",
+    "openIncidents": "Offene Vorfälle",
+    "awaitingReview": "zur Prüfung",
+    "needsAttention": "Benötigt Aufmerksamkeit",
+    "quickActions": "Schnellaktionen",
+    "noData": "Noch keine Daten. Sie erscheinen, sobald das Schuljahr läuft."
+  },
+  "languages": {
+    "title": "Sprachen",
+    "subtitle": "Wählen Sie die Sprachen Ihrer Schule.",
+    "hint": "{count} aktiviert. Deaktivierte Sprachen verschwinden aus der Auswahl und den Formularen.",
+    "name": "Sprache",
+    "locale": "Code",
+    "direction": "Richtung",
+    "status": "Status",
+    "default": "Standard",
+    "enabled": "Aktiviert",
+    "disabled": "Deaktiviert",
+    "makeDefault": "Als Standard"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "language": "Langue",
+  "nav": {
+    "dashboards": "Vue d'ensemble",
+    "accountSettings": "Paramètres du compte",
+    "academic": "Académique",
+    "academicYears": "Années scolaires",
+    "account": "Compte",
+    "languages": "Langues",
+    "settings": "Paramètres"
+  },
+  "navbar": {
+    "search": "Rechercher",
+    "notifications": "Notifications",
+    "toggleTheme": "Changer de thème"
+  },
+  "userMenu": {
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "pricing": "Tarifs",
+    "faq": "FAQ",
+    "logout": "Déconnexion"
+  },
+  "theme": {
+    "light": "Clair",
+    "dark": "Sombre"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler"
+  },
+  "academicYears": {
+    "title": "Années scolaires",
+    "create": "Nouvelle année",
+    "edit": "Modifier l'année",
+    "search": "Rechercher par nom ou code",
+    "name": "Nom",
+    "code": "Code",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "status": "Statut",
+    "current": "Actuelle",
+    "inactive": "Inactive",
+    "active": "Active",
+    "setCurrent": "Définir comme actuelle",
+    "empty": "Aucune année scolaire. Créez la première pour commencer.",
+    "confirmDelete": "Supprimer « {name} » ? Un administrateur peut annuler cette action."
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "Inscription",
+    "registerTitle": "Créez votre compte",
+    "welcome": "Bienvenue sur {app}",
+    "loginSubtitle": "Connectez-vous pour accéder à votre tableau de bord",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "name": "Nom complet",
+    "rememberMe": "Se souvenir de moi",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Nouveau ici ?",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "logout": "Déconnexion",
+    "createAccount": "Créer un compte"
+  },
+  "palette": {
+    "title": "Thème de couleur",
+    "indigo": "Indigo",
+    "emerald": "Émeraude",
+    "ocean": "Océan",
+    "amber": "Ambre",
+    "plum": "Prune"
+  },
+  "dashboard": {
+    "title": "Vue d'ensemble",
+    "greeting": "Bonjour",
+    "students": "Élèves",
+    "studentsHint": "inscrits cette année",
+    "teachers": "Enseignants",
+    "staff": "Personnel",
+    "attendanceToday": "Présence du jour",
+    "presentOf": "{present} sur {total} présents",
+    "outstandingFees": "Frais impayés",
+    "acrossInvoices": "sur {count} factures",
+    "currentYear": "Année scolaire en cours",
+    "noCurrentYear": "Aucune année scolaire définie",
+    "openIncidents": "Incidents ouverts",
+    "awaitingReview": "en attente d'examen",
+    "needsAttention": "Nécessite votre attention",
+    "quickActions": "Actions rapides",
+    "noData": "Aucune donnée pour l'instant. Elle apparaîtra dès le début de l'année."
+  },
+  "languages": {
+    "title": "Langues",
+    "subtitle": "Choisissez les langues de votre école.",
+    "hint": "{count} activées. Les langues désactivées disparaissent du sélecteur et des formulaires.",
+    "name": "Langue",
+    "locale": "Code",
+    "direction": "Sens",
+    "status": "Statut",
+    "default": "Par défaut",
+    "enabled": "Activée",
+    "disabled": "Désactivée",
+    "makeDefault": "Définir par défaut"
+  }
+}

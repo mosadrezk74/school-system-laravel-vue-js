@@ -1,0 +1,11 @@
+{
+    "name": "GuardianProfile",
+    "alias": "guardianprofile",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\GuardianProfile\\Providers\\GuardianProfileServiceProvider"
+    ],
+    "files": []
+}

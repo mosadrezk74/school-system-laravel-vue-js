@@ -1,0 +1,106 @@
+{
+  "language": "اللغة",
+  "nav": {
+    "dashboards": "نظرة عامة",
+    "accountSettings": "إعدادات الحساب",
+    "academic": "الشؤون الأكاديمية",
+    "academicYears": "السنوات الدراسية",
+    "account": "الحساب",
+    "languages": "اللغات",
+    "settings": "الإعدادات"
+  },
+  "navbar": {
+    "search": "بحث",
+    "notifications": "الإشعارات",
+    "toggleTheme": "تبديل المظهر"
+  },
+  "userMenu": {
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "pricing": "الأسعار",
+    "faq": "الأسئلة الشائعة",
+    "logout": "تسجيل الخروج"
+  },
+  "theme": {
+    "light": "فاتح",
+    "dark": "داكن"
+  },
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء"
+  },
+  "academicYears": {
+    "title": "السنوات الدراسية",
+    "create": "سنة جديدة",
+    "edit": "تعديل السنة",
+    "search": "ابحث بالاسم أو الكود",
+    "name": "الاسم",
+    "code": "الكود",
+    "startDate": "تاريخ البداية",
+    "endDate": "تاريخ النهاية",
+    "status": "الحالة",
+    "current": "الحالية",
+    "inactive": "غير نشطة",
+    "active": "نشطة",
+    "setCurrent": "تعيين كسنة حالية",
+    "empty": "لا توجد سنوات دراسية بعد. أنشئ أول سنة للبدء.",
+    "confirmDelete": "حذف «{name}»؟ يمكن للمسؤول التراجع عن ذلك."
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "registerTitle": "أنشئ حسابك",
+    "welcome": "مرحبًا بك في {app}",
+    "loginSubtitle": "سجّل الدخول للمتابعة إلى لوحة التحكم",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "name": "الاسم الكامل",
+    "rememberMe": "تذكّرني",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "noAccount": "مستخدم جديد؟",
+    "haveAccount": "لديك حساب بالفعل؟",
+    "logout": "تسجيل الخروج",
+    "createAccount": "أنشئ حسابًا"
+  },
+  "palette": {
+    "title": "لون الواجهة",
+    "indigo": "نيلي",
+    "emerald": "زمردي",
+    "ocean": "أزرق محيطي",
+    "amber": "كهرماني",
+    "plum": "برقوقي"
+  },
+  "dashboard": {
+    "title": "نظرة عامة",
+    "greeting": "صباح الخير",
+    "students": "الطلاب",
+    "studentsHint": "مقيّدون هذا العام",
+    "teachers": "المعلمون",
+    "staff": "الموظفون",
+    "attendanceToday": "حضور اليوم",
+    "presentOf": "{present} من {total} حاضرون",
+    "outstandingFees": "مصروفات مستحقّة",
+    "acrossInvoices": "على {count} فاتورة",
+    "currentYear": "السنة الدراسية الحالية",
+    "noCurrentYear": "لم تُحدَّد سنة دراسية",
+    "openIncidents": "بلاغات مفتوحة",
+    "awaitingReview": "في انتظار المراجعة",
+    "needsAttention": "يحتاج انتباهك",
+    "quickActions": "إجراءات سريعة",
+    "noData": "لا توجد بيانات بعد. ستظهر هنا فور بدء العام الدراسي."
+  },
+  "languages": {
+    "title": "اللغات",
+    "subtitle": "اختر اللغات التي تعمل بها مدرستك.",
+    "hint": "{count} مفعّلة. اللغات المعطّلة تختفي من مبدّل اللغة ومن نماذج الترجمة.",
+    "name": "اللغة",
+    "locale": "الرمز",
+    "direction": "الاتجاه",
+    "status": "الحالة",
+    "default": "الافتراضية",
+    "enabled": "مفعّلة",
+    "disabled": "معطّلة",
+    "makeDefault": "اجعلها الافتراضية"
+  }
+}

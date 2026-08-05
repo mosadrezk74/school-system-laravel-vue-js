@@ -1,0 +1,106 @@
+{
+  "language": "Language",
+  "nav": {
+    "dashboards": "Overview",
+    "accountSettings": "Account Settings",
+    "academic": "Academic",
+    "academicYears": "Academic Years",
+    "account": "Account",
+    "languages": "Languages",
+    "settings": "Settings"
+  },
+  "navbar": {
+    "search": "Search",
+    "notifications": "Notifications",
+    "toggleTheme": "Toggle theme"
+  },
+  "userMenu": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "logout": "Logout"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "academicYears": {
+    "title": "Academic Years",
+    "create": "New year",
+    "edit": "Edit year",
+    "search": "Search by name or code",
+    "name": "Name",
+    "code": "Code",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "status": "Status",
+    "current": "Current",
+    "inactive": "Inactive",
+    "active": "Active",
+    "setCurrent": "Set as current",
+    "empty": "No academic years yet. Create the first one to get started.",
+    "confirmDelete": "Delete \"{name}\"? This can be undone by an administrator."
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "registerTitle": "Create your account",
+    "welcome": "Welcome to {app}",
+    "loginSubtitle": "Sign in to continue to your dashboard",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "name": "Full name",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "New here?",
+    "haveAccount": "Already have an account?",
+    "logout": "Logout",
+    "createAccount": "Create an account"
+  },
+  "palette": {
+    "title": "Colour theme",
+    "indigo": "Indigo",
+    "emerald": "Emerald",
+    "ocean": "Ocean",
+    "amber": "Amber",
+    "plum": "Plum"
+  },
+  "dashboard": {
+    "title": "Overview",
+    "greeting": "Good morning",
+    "students": "Students",
+    "studentsHint": "enrolled this year",
+    "teachers": "Teachers",
+    "staff": "Staff",
+    "attendanceToday": "Attendance today",
+    "presentOf": "{present} of {total} present",
+    "outstandingFees": "Outstanding fees",
+    "acrossInvoices": "across {count} invoices",
+    "currentYear": "Current academic year",
+    "noCurrentYear": "No academic year set",
+    "openIncidents": "Open incidents",
+    "awaitingReview": "awaiting review",
+    "needsAttention": "Needs attention",
+    "quickActions": "Quick actions",
+    "noData": "No data yet. It appears here once the school year is running."
+  },
+  "languages": {
+    "title": "Languages",
+    "subtitle": "Choose which languages your school runs in.",
+    "hint": "{count} enabled. Disabled languages disappear from the switcher and from translation forms.",
+    "name": "Language",
+    "locale": "Locale",
+    "direction": "Direction",
+    "status": "Status",
+    "default": "Default",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "makeDefault": "Make default"
+  }
+}

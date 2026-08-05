@@ -1,0 +1,1851 @@
+Table users {
+  id bigint [primary key, increment]
+  ulid char(26) [unique, not null]
+
+  username varchar(100) [unique, not null]
+  email varchar(200) [unique]
+  email_verified_at timestamp
+  phone varchar(20) [unique]
+  phone_verified_at timestamp
+  password varchar(255) [not null]
+  remember_token varchar(100)
+
+  name varchar(255) [not null]
+  gender varchar(10)
+  birth_date date
+  national_id varchar(20)
+
+  role varchar(30) [not null, default: 'student']
+  is_active tinyint(1) [default: 1, not null]
+
+  language varchar(10) [default: 'ar']
+  theme varchar(20) [default: 'light']
+  timezone varchar(50) [default: 'Asia/Riyadh']
+
+  two_factor_secret text
+  two_factor_recovery_codes text
+  two_factor_confirmed_at timestamp
+  fcm_token text
+
+  created_by bigint
+  updated_by bigint
+  deleted_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    ulid [unique]
+    email [unique]
+    phone [unique]
+    username [unique]
+    (role, is_active)
+  }
+}
+
+Table personal_access_tokens {
+  id bigint [primary key, increment]
+  tokenable_type varchar(100) [not null]
+  tokenable_id bigint [not null]
+  name varchar(255) [not null]
+  token varchar(64) [unique, not null]
+  abilities text
+  last_used_at timestamp
+  expires_at timestamp
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (tokenable_type, tokenable_id)
+    token [unique]
+  }
+}
+
+Table sessions {
+  id varchar(255) [primary key]
+  user_id bigint
+  ip_address varchar(45)
+  user_agent text
+  payload longtext [not null]
+  last_activity int [not null]
+
+  indexes {
+    user_id
+    last_activity
+  }
+}
+
+// ------------------------------------------------------------
+// RBAC -> spatie/laravel-permission
+// ------------------------------------------------------------
+
+Table roles {
+  id bigint [primary key, increment]
+  name varchar(100) [not null]
+  guard_name varchar(50) [not null, default: 'api']
+  is_system tinyint(1) [default: 0]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (name, guard_name) [unique]
+  }
+}
+
+Table permissions {
+  id bigint [primary key, increment]
+  name varchar(150) [not null]
+  guard_name varchar(50) [not null, default: 'api']
+  module varchar(50)
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (name, guard_name) [unique]
+    module
+  }
+}
+
+Table model_has_permissions {
+  permission_id bigint [not null]
+  model_type varchar(100) [not null]
+  model_id bigint [not null]
+
+  indexes {
+    (permission_id, model_id, model_type) [pk]
+    (model_id, model_type)
+  }
+}
+
+Table model_has_roles {
+  role_id bigint [not null]
+  model_type varchar(100) [not null]
+  model_id bigint [not null]
+
+  indexes {
+    (role_id, model_id, model_type) [pk]
+    (model_id, model_type)
+  }
+}
+
+Table role_has_permissions {
+  permission_id bigint [not null]
+  role_id bigint [not null]
+
+  indexes {
+    (permission_id, role_id) [pk]
+  }
+}
+
+// ------------------------------------------------------------
+// AUDIT -> spatie/laravel-activitylog
+// ------------------------------------------------------------
+
+Table activity_log {
+  id bigint [primary key, increment]
+  log_name varchar(100)
+  description text [not null]
+  subject_type varchar(100)
+  subject_id bigint
+  event varchar(50)
+  causer_type varchar(100)
+  causer_id bigint
+  properties json
+  batch_uuid char(36)
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (subject_type, subject_id)
+    (causer_type, causer_id)
+    log_name
+  }
+}
+
+Table password_reset_tokens {
+  email varchar(200) [primary key]
+  token varchar(255) [not null]
+  created_at timestamp
+}
+
+// ================================================================
+// SCHOOL / BRANCH
+// ================================================================
+
+Table school_settings {
+  id bigint [primary key, increment]
+  school_name varchar(255) [not null]
+  school_code varchar(50) [unique, not null]
+  school_email varchar(200)
+  school_phone varchar(20)
+  school_address text
+  school_city varchar(100)
+  school_country varchar(100)
+
+  primary_color varchar(7) [default: '#2563eb']
+  secondary_color varchar(7) [default: '#10b981']
+
+  timezone varchar(50) [default: 'Asia/Riyadh']
+  currency varchar(10) [default: 'SAR']
+  currency_symbol varchar(10) [default: '﷼']
+  default_locale varchar(10) [default: 'ar']
+
+  is_active tinyint(1) [default: 1]
+  settings json
+
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    school_code [unique]
+  }
+}
+
+Table branches {
+  id bigint [primary key, increment]
+  name varchar(255) [not null]
+  code varchar(50) [unique]
+  address text
+  city varchar(100)
+  phone varchar(20)
+  manager_id bigint
+  is_main tinyint(1) [default: 0]
+  is_active tinyint(1) [default: 1]
+  latitude decimal(10,8)
+  longitude decimal(11,8)
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+    (is_main)
+  }
+}
+
+// ================================================================
+// ACADEMIC STRUCTURE
+// ================================================================
+
+Table academic_years {
+  id bigint [primary key, increment]
+  name varchar(100) [not null]
+  code varchar(50) [unique]
+  start_date date [not null]
+  end_date date [not null]
+  is_current tinyint(1) [default: 0]
+  is_active tinyint(1) [default: 1]
+  created_by bigint
+  updated_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    (is_current)
+    (start_date, end_date)
+  }
+}
+
+Table semesters {
+  id bigint [primary key, increment]
+  academic_year_id bigint [not null]
+  name varchar(100) [not null]
+  sequence tinyint [not null]
+  start_date date [not null]
+  end_date date [not null]
+  exam_start_date date
+  exam_end_date date
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    (academic_year_id, sequence) [unique]
+  }
+}
+
+Table grade_levels {
+  id bigint [primary key, increment]
+  code varchar(50) [not null]
+  name json [not null]
+  description json
+  display_order smallint [default: 0]
+  min_age tinyint
+  max_age tinyint
+  passing_grade decimal(5,2) [default: 60]
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+    (display_order)
+  }
+}
+
+Table classrooms {
+  id bigint [primary key, increment]
+  branch_id bigint [not null]
+  name varchar(100) [not null]
+  code varchar(50) [unique]
+  capacity smallint [default: 30]
+  floor tinyint
+  building varchar(50)
+  room_type varchar(20) [default: 'classroom']
+  has_projector tinyint(1) [default: 0]
+  has_smartboard tinyint(1) [default: 0]
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+    (branch_id, is_active)
+  }
+}
+
+Table classes {
+  id bigint [primary key, increment]
+  branch_id bigint [not null]
+  grade_level_id bigint [not null]
+  academic_year_id bigint [not null]
+  classroom_id bigint
+  name varchar(100) [not null]
+  section_code varchar(10) [not null]
+  capacity smallint [default: 30]
+  current_enrollment smallint [default: 0]
+  class_teacher_id bigint
+  assistant_teacher_id bigint
+  is_active tinyint(1) [default: 1]
+  created_by bigint
+  updated_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    (academic_year_id, grade_level_id, section_code) [unique]
+    branch_id
+    class_teacher_id
+  }
+}
+
+Table subjects {
+  id bigint [primary key, increment]
+  branch_id bigint
+  code varchar(50) [unique]
+  name json [not null]
+  description json
+  short_name varchar(50)
+  subject_type varchar(20) [default: 'core']
+  pass_grade decimal(5,2) [default: 60]
+  credit_hours tinyint [default: 1]
+  max_marks decimal(6,2) [default: 100]
+  color varchar(7) [default: '#2563eb']
+  icon varchar(100)
+  is_active tinyint(1) [default: 1]
+  created_by bigint
+  updated_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+    (is_active)
+  }
+}
+
+Table class_subjects {
+  id bigint [primary key, increment]
+  class_id bigint [not null]
+  subject_id bigint [not null]
+  teacher_id bigint
+  academic_year_id bigint [not null]
+  semester_id bigint
+  weekly_hours tinyint [default: 2]
+  is_mandatory tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (class_id, subject_id, academic_year_id) [unique]
+    teacher_id
+  }
+}
+
+// ================================================================
+// PROFILES
+// ================================================================
+
+Table student_profiles {
+  id bigint [primary key, increment]
+  user_id bigint [not null, unique]
+  academic_year_id bigint [not null]
+  current_class_id bigint
+
+  admission_number varchar(50) [unique]
+  roll_number varchar(50)
+  admission_date date [not null]
+
+  emergency_contact_name varchar(255)
+  emergency_contact_phone varchar(20)
+  emergency_contact_relation varchar(50)
+  address text
+  city varchar(100)
+
+  father_name varchar(255)
+  father_phone varchar(20)
+  mother_name varchar(255)
+  mother_phone varchar(20)
+  guardian_name varchar(255)
+  guardian_phone varchar(20)
+  guardian_relation varchar(50)
+
+  blood_group varchar(5)
+  allergies text
+  medical_conditions text
+
+  previous_school varchar(255)
+  scholarship_percentage decimal(5,2) [default: 0]
+
+  is_graduated tinyint(1) [default: 0]
+  is_active tinyint(1) [default: 1]
+
+  extra_fields json
+
+  created_by bigint
+  updated_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    user_id [unique]
+    admission_number [unique]
+    current_class_id
+  }
+}
+
+Table teacher_profiles {
+  id bigint [primary key, increment]
+  user_id bigint [not null, unique]
+
+  employee_id varchar(50) [unique]
+  qualification varchar(255)
+  specialization varchar(255)
+  experience_years tinyint [default: 0]
+  joining_date date
+
+  department_id bigint
+  position varchar(100)
+  salary_type varchar(20)
+  salary_base decimal(10,2)
+
+  primary_subjects json
+
+  is_active tinyint(1) [default: 1]
+
+  created_by bigint
+  updated_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    user_id [unique]
+    employee_id [unique]
+    department_id
+  }
+}
+
+Table parent_profiles {
+  id bigint [primary key, increment]
+  user_id bigint [not null, unique]
+  occupation varchar(255)
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    user_id [unique]
+  }
+}
+
+Table parent_student {
+  id bigint [primary key, increment]
+  parent_id bigint [not null]
+  student_id bigint [not null]
+  relationship varchar(50) [not null]
+  is_primary_contact tinyint(1) [default: 1]
+  can_pickup tinyint(1) [default: 1]
+  receives_notifications tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (parent_id, student_id) [unique]
+    student_id
+  }
+}
+
+Table staff_profiles {
+  id bigint [primary key, increment]
+  user_id bigint [not null, unique]
+  employee_id varchar(50) [unique]
+  department_id bigint
+  job_title varchar(255)
+  employment_type varchar(20)
+  joining_date date
+  salary_type varchar(20)
+  salary_base decimal(10,2)
+  bank_name varchar(100)
+  bank_account varchar(50)
+  is_active tinyint(1) [default: 1]
+  extra_fields json
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    user_id [unique]
+    employee_id [unique]
+    department_id
+  }
+}
+
+Table departments {
+  id bigint [primary key, increment]
+  branch_id bigint
+  name varchar(100) [not null]
+  code varchar(50) [unique]
+  head_of_department_id bigint
+  parent_department_id bigint
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+    parent_department_id
+  }
+}
+
+Table employee_attendance {
+  id bigint [primary key, increment]
+  employee_id bigint [not null]
+  date date [not null]
+  check_in_time time
+  check_out_time time
+  worked_minutes int
+  status varchar(20) [not null]
+  overtime_hours decimal(5,2) [default: 0]
+  approved_by bigint
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (employee_id, date) [unique]
+    status
+  }
+}
+
+Table leave_requests {
+  id bigint [primary key, increment]
+  employee_id bigint [not null]
+  leave_type varchar(20) [not null]
+  start_date date [not null]
+  end_date date [not null]
+  duration_days smallint [not null]
+  reason text
+  status varchar(20) [default: 'pending']
+  approved_by bigint
+  approved_at timestamp
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    employee_id
+    status
+    (start_date, end_date)
+  }
+}
+
+// ================================================================
+// TIMETABLE
+// ================================================================
+
+Table timetables {
+  id bigint [primary key, increment]
+  class_id bigint [not null]
+  academic_year_id bigint [not null]
+  semester_id bigint
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    (class_id, academic_year_id) [unique]
+  }
+}
+
+Table timetable_entries {
+  id bigint [primary key, increment]
+  timetable_id bigint [not null]
+  day_of_week tinyint [not null]
+  period_number tinyint [not null]
+  start_time time [not null]
+  end_time time [not null]
+  subject_id bigint [not null]
+  teacher_id bigint [not null]
+  classroom_id bigint
+  is_break tinyint(1) [default: 0]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (timetable_id, day_of_week, period_number) [unique]
+    teacher_id
+    classroom_id
+  }
+}
+
+// ================================================================
+// ATTENDANCE
+// ================================================================
+
+Table attendance_records {
+  id bigint [primary key, increment]
+  class_id bigint [not null]
+  subject_id bigint
+  academic_year_id bigint [not null]
+  semester_id bigint
+  date date [not null]
+  session tinyint [default: 1]
+  present_count smallint [default: 0]
+  absent_count smallint [default: 0]
+  late_count smallint [default: 0]
+  excused_count smallint [default: 0]
+  created_by bigint
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (class_id, date, session) [unique]
+    (academic_year_id, semester_id)
+  }
+}
+
+Table attendance_details {
+  id bigint [primary key, increment]
+  attendance_record_id bigint [not null]
+  student_id bigint [not null]
+  status varchar(15) [not null]
+  check_in_time time
+  check_out_time time
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (attendance_record_id, student_id) [unique]
+    student_id
+    status
+  }
+}
+
+Table attendance_summary {
+  id bigint [primary key, increment]
+  student_id bigint [not null]
+  academic_year_id bigint [not null]
+  semester_id bigint
+  class_id bigint [not null]
+  total_days smallint [default: 0]
+  present_days smallint [default: 0]
+  absent_days smallint [default: 0]
+  late_days smallint [default: 0]
+  attendance_percentage decimal(5,2) [default: 0]
+  updated_at timestamp
+
+  indexes {
+    (student_id, academic_year_id, class_id) [unique]
+  }
+}
+
+// ================================================================
+// EXAMS & GRADES
+// ================================================================
+
+Table exams {
+  id bigint [primary key, increment]
+  academic_year_id bigint [not null]
+  semester_id bigint
+  name varchar(100) [not null]
+  code varchar(50) [unique]
+  exam_type varchar(20) [not null]
+  start_date date [not null]
+  end_date date [not null]
+  passing_grade decimal(5,2) [default: 60]
+  total_marks decimal(6,2) [default: 100]
+  weightage decimal(4,2) [default: 1]
+  is_published tinyint(1) [default: 0]
+  class_id bigint
+  created_by bigint
+  updated_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+    (academic_year_id, semester_id)
+  }
+}
+
+Table exam_subjects {
+  id bigint [primary key, increment]
+  exam_id bigint [not null]
+  subject_id bigint [not null]
+  class_id bigint [not null]
+  total_marks decimal(6,2) [not null]
+  passing_marks decimal(6,2) [not null]
+  exam_date date
+  exam_time time
+  room varchar(100)
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (exam_id, subject_id, class_id) [unique]
+  }
+}
+
+Table exam_results {
+  id bigint [primary key, increment]
+  exam_id bigint [not null]
+  student_id bigint [not null]
+  class_id bigint [not null]
+  subject_id bigint [not null]
+  obtained_marks decimal(6,2)
+  grade varchar(10)
+  is_passed tinyint(1)
+  percentage decimal(5,2)
+  rank smallint
+  remarks text
+  created_by bigint
+  updated_by bigint
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (exam_id, student_id, subject_id) [unique]
+    student_id
+  }
+}
+
+Table exam_grades {
+  id bigint [primary key, increment]
+  grade_level_id bigint [not null]
+  subject_id bigint
+  grade_name varchar(10) [not null]
+  grade_point decimal(3,2) [not null]
+  min_percentage decimal(5,2) [not null]
+  max_percentage decimal(5,2) [not null]
+  is_passing tinyint(1) [not null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (grade_level_id, subject_id, grade_name) [unique]
+  }
+}
+
+// ================================================================
+// ASSIGNMENTS
+// ================================================================
+
+Table assignments {
+  id bigint [primary key, increment]
+  class_id bigint [not null]
+  subject_id bigint [not null]
+  teacher_id bigint [not null]
+  academic_year_id bigint [not null]
+  semester_id bigint
+
+  title varchar(255) [not null]
+  description text
+  max_score decimal(6,2) [not null]
+  deadline timestamp [not null]
+  published_at timestamp
+  assignment_type varchar(20)
+  is_group_work tinyint(1) [default: 0]
+
+  is_published tinyint(1) [default: 0]
+
+  created_by bigint
+  updated_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    (class_id, subject_id)
+    teacher_id
+    (academic_year_id, semester_id)
+  }
+}
+
+Table assignment_submissions {
+  id bigint [primary key, increment]
+  assignment_id bigint [not null]
+  student_id bigint [not null]
+  submitted_at timestamp [not null]
+  score decimal(6,2)
+  grade varchar(10)
+  feedback text
+  is_late tinyint(1) [default: 0]
+  is_graded tinyint(1) [default: 0]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (assignment_id, student_id) [unique]
+    student_id
+  }
+}
+
+Table study_materials {
+  id bigint [primary key, increment]
+  class_id bigint
+  subject_id bigint [not null]
+  teacher_id bigint [not null]
+  academic_year_id bigint [not null]
+  semester_id bigint
+
+  title varchar(255) [not null]
+  description text
+  material_type varchar(20)
+  is_published tinyint(1) [default: 1]
+  view_count int [default: 0]
+  download_count int [default: 0]
+
+  created_by bigint
+  updated_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    (subject_id, academic_year_id)
+    teacher_id
+  }
+}
+
+// ================================================================
+// FEE MANAGEMENT
+// ================================================================
+
+Table fee_categories {
+  id bigint [primary key, increment]
+  code varchar(50) [unique]
+  name json [not null]
+  description json
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+  }
+}
+
+Table fee_structures {
+  id bigint [primary key, increment]
+  academic_year_id bigint [not null]
+  fee_category_id bigint [not null]
+  class_id bigint
+  grade_level_id bigint
+  name varchar(100) [not null]
+  amount decimal(10,2) [not null]
+  fee_type varchar(20)
+  frequency varchar(15) [not null]
+  is_optional tinyint(1) [default: 0]
+  due_day tinyint
+  late_fee_amount decimal(10,2)
+  late_fee_days tinyint
+  created_by bigint
+  updated_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    (academic_year_id, class_id, fee_category_id) [unique]
+  }
+}
+
+Table fee_discounts {
+  id bigint [primary key, increment]
+  name varchar(100) [not null]
+  code varchar(50) [unique]
+  discount_type varchar(10) [not null]
+  discount_value decimal(10,2) [not null]
+  max_amount decimal(10,2)
+  class_id bigint
+  start_date date
+  end_date date
+  is_active tinyint(1) [default: 1]
+  usage_limit int
+  used_count int [default: 0]
+  created_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+    (start_date, end_date)
+  }
+}
+
+Table invoices {
+  id bigint [primary key, increment]
+  student_id bigint [not null]
+  invoice_number varchar(50) [unique]
+  academic_year_id bigint [not null]
+  issue_date date [not null]
+  due_date date [not null]
+  subtotal decimal(10,2) [not null]
+  discount_amount decimal(10,2) [default: 0]
+  total_amount decimal(10,2) [not null]
+  paid_amount decimal(10,2) [default: 0]
+  balance_due decimal(10,2)
+  status varchar(15) [default: 'pending']
+  currency varchar(3) [default: 'SAR']
+  notes text
+  created_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    invoice_number [unique]
+    student_id
+    (academic_year_id, status)
+    due_date
+  }
+}
+
+Table invoice_items {
+  id bigint [primary key, increment]
+  invoice_id bigint [not null]
+  fee_structure_id bigint [not null]
+  description varchar(255)
+  quantity smallint [default: 1]
+  unit_price decimal(10,2) [not null]
+  discount_amount decimal(10,2) [default: 0]
+  total decimal(10,2) [not null]
+  created_at timestamp
+
+  indexes {
+    (invoice_id, fee_structure_id) [unique]
+  }
+}
+
+Table payments {
+  id bigint [primary key, increment]
+  invoice_id bigint [not null]
+  student_id bigint [not null]
+  payment_number varchar(50) [unique]
+  amount decimal(10,2) [not null]
+  payment_date date [not null]
+  payment_method varchar(20) [not null]
+  reference_number varchar(100)
+  transaction_id varchar(255)
+  gateway_response json
+  status varchar(15) [default: 'pending']
+  collected_by bigint
+  created_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    payment_number [unique]
+    invoice_id
+    student_id
+    (payment_date, status)
+  }
+}
+
+Table receipts {
+  id bigint [primary key, increment]
+  receipt_number varchar(50) [unique]
+  payment_id bigint [not null]
+  student_id bigint [not null]
+  amount decimal(10,2) [not null]
+  receipt_date date [not null]
+  created_by bigint
+  created_at timestamp
+
+  indexes {
+    receipt_number [unique]
+    payment_id
+  }
+}
+
+// ================================================================
+// LIBRARY
+// ================================================================
+
+Table library_categories {
+  id bigint [primary key, increment]
+  code varchar(50) [unique]
+  name json [not null]
+  parent_category_id bigint
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+    parent_category_id
+  }
+}
+
+Table library_items {
+  id bigint [primary key, increment]
+  branch_id bigint
+  isbn varchar(20) [unique]
+  title varchar(255) [not null]
+  authors json [not null]
+  publisher varchar(100)
+  publication_year year
+  language varchar(20)
+  category_id bigint
+  shelf_location varchar(50)
+  item_type varchar(15)
+  quantity smallint [default: 1]
+  available_quantity smallint [default: 1]
+  price decimal(10,2)
+  fine_per_day decimal(6,2)
+  max_borrow_days tinyint [default: 14]
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    isbn [unique]
+    category_id
+  }
+}
+
+Table library_borrowings {
+  id bigint [primary key, increment]
+  library_item_id bigint [not null]
+  borrower_id bigint [not null]
+  borrower_type varchar(10)
+  borrowing_date date [not null]
+  due_date date [not null]
+  actual_return_date date
+  quantity smallint [default: 1]
+  status varchar(15)
+  fine_amount decimal(8,2) [default: 0]
+  fine_paid tinyint(1) [default: 0]
+  created_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    (library_item_id, borrower_id, status)
+    due_date
+  }
+}
+
+// ================================================================
+// INVENTORY
+// ================================================================
+
+Table inventory_categories {
+  id bigint [primary key, increment]
+  code varchar(50) [unique]
+  name json [not null]
+  parent_category_id bigint
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+  }
+}
+
+Table inventory_items {
+  id bigint [primary key, increment]
+  branch_id bigint
+  category_id bigint [not null]
+  name varchar(255) [not null]
+  code varchar(50) [unique]
+  sku varchar(100)
+  barcode varchar(100)
+  unit varchar(15)
+  unit_price decimal(10,2)
+  reorder_level int [default: 0]
+  current_stock int [default: 0]
+  stock_status varchar(15)
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+    sku [unique]
+    category_id
+  }
+}
+
+Table inventory_stock_movements {
+  id bigint [primary key, increment]
+  item_id bigint [not null]
+  movement_type varchar(15) [not null]
+  quantity int [not null]
+  previous_stock int [not null]
+  new_stock int [not null]
+  unit_price decimal(10,2)
+  reference_type varchar(50)
+  reference_id bigint
+  created_by bigint
+  created_at timestamp
+
+  indexes {
+    item_id
+    (reference_type, reference_id)
+  }
+}
+
+Table inventory_suppliers {
+  id bigint [primary key, increment]
+  name varchar(255) [not null]
+  code varchar(50) [unique]
+  email varchar(200)
+  phone varchar(20)
+  contact_person varchar(255)
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+  }
+}
+
+Table inventory_purchases {
+  id bigint [primary key, increment]
+  supplier_id bigint [not null]
+  purchase_number varchar(50) [unique]
+  purchase_date date [not null]
+  total_amount decimal(10,2) [not null]
+  paid_amount decimal(10,2) [default: 0]
+  status varchar(15)
+  created_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    purchase_number [unique]
+    supplier_id
+  }
+}
+
+Table inventory_purchase_items {
+  id bigint [primary key, increment]
+  purchase_id bigint [not null]
+  item_id bigint [not null]
+  quantity int [not null]
+  unit_price decimal(10,2) [not null]
+  received_quantity int [default: 0]
+  created_at timestamp
+
+  indexes {
+    (purchase_id, item_id) [unique]
+  }
+}
+
+// ================================================================
+// TRANSPORT
+// ================================================================
+
+Table transport_routes {
+  id bigint [primary key, increment]
+  branch_id bigint
+  name varchar(100) [not null]
+  code varchar(50) [unique]
+  distance_km decimal(6,2)
+  estimated_time smallint
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+  }
+}
+
+Table transport_stops {
+  id bigint [primary key, increment]
+  route_id bigint [not null]
+  name varchar(255) [not null]
+  sequence tinyint [not null]
+  latitude decimal(10,8)
+  longitude decimal(11,8)
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (route_id, sequence) [unique]
+  }
+}
+
+Table transport_vehicles {
+  id bigint [primary key, increment]
+  vehicle_number varchar(50) [unique]
+  capacity smallint [not null]
+  plate_number varchar(50) [unique]
+  insurance_expiry date
+  driver_id bigint
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    vehicle_number [unique]
+    plate_number [unique]
+  }
+}
+
+Table transport_assignments {
+  id bigint [primary key, increment]
+  student_id bigint [not null]
+  route_id bigint [not null]
+  vehicle_id bigint [not null]
+  stop_id bigint [not null]
+  academic_year_id bigint [not null]
+  pickup_time time
+  dropoff_time time
+  fee decimal(8,2)
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (student_id, academic_year_id) [unique]
+  }
+}
+
+// ================================================================
+// HOSTEL
+// ================================================================
+
+Table hostels {
+  id bigint [primary key, increment]
+  branch_id bigint
+  name varchar(100) [not null]
+  code varchar(50) [unique]
+  type varchar(10) [not null]
+  warden_id bigint
+  total_capacity smallint [default: 0]
+  current_occupancy smallint [default: 0]
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+  }
+}
+
+Table hostel_rooms {
+  id bigint [primary key, increment]
+  hostel_id bigint [not null]
+  room_number varchar(50) [not null]
+  capacity tinyint [not null]
+  current_occupancy tinyint [default: 0]
+  room_type varchar(15) [default: 'double']
+  monthly_fee decimal(8,2)
+  is_available tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (hostel_id, room_number) [unique]
+  }
+}
+
+Table hostel_assignments {
+  id bigint [primary key, increment]
+  student_id bigint [not null]
+  hostel_id bigint [not null]
+  room_id bigint [not null]
+  academic_year_id bigint [not null]
+  check_in_date date [not null]
+  check_out_date date
+  is_current tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    (student_id, academic_year_id) [unique]
+  }
+}
+
+// ================================================================
+// DISCIPLINE
+// ================================================================
+
+Table behavior_categories {
+  id bigint [primary key, increment]
+  code varchar(50) [unique]
+  name json [not null]
+  type varchar(10) [not null]
+  points smallint [default: 0]
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+  }
+}
+
+Table behavior_records {
+  id bigint [primary key, increment]
+  student_id bigint [not null]
+  behavior_category_id bigint [not null]
+  date date [not null]
+  points smallint [not null]
+  description text
+  reported_by bigint [not null]
+  reviewed_by bigint
+  status varchar(15) [default: 'reported']
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    student_id
+    date
+  }
+}
+
+// ================================================================
+// MEDIA -> spatie/laravel-medialibrary
+// ================================================================
+
+Table media {
+  id bigint [primary key, increment]
+  model_type varchar(100) [not null]
+  model_id bigint [not null]
+  uuid char(36) [unique]
+  collection_name varchar(100) [not null]
+  name varchar(255) [not null]
+  file_name varchar(255) [not null]
+  mime_type varchar(100)
+  disk varchar(50) [not null]
+  conversions_disk varchar(50)
+  size bigint [not null]
+  manipulations json
+  custom_properties json
+  generated_conversions json
+  responsive_images json
+  order_column int
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (model_type, model_id)
+    uuid [unique]
+    order_column
+  }
+}
+
+// ================================================================
+// NOTIFICATIONS
+// ================================================================
+
+Table notifications {
+  id char(36) [primary key]
+  type varchar(150) [not null]
+  notifiable_type varchar(100) [not null]
+  notifiable_id bigint [not null]
+  data json [not null]
+  read_at timestamp
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (notifiable_type, notifiable_id)
+    created_at
+  }
+}
+
+Table broadcast_messages {
+  id bigint [primary key, increment]
+  title varchar(255) [not null]
+  body text [not null]
+  channel varchar(10) [not null]
+  target_type varchar(15) [not null]
+  target_ids json
+  scheduled_at timestamp
+  sent_at timestamp
+  sent_count int [default: 0]
+  failed_count int [default: 0]
+  status varchar(15) [default: 'pending']
+  created_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    scheduled_at
+    status
+  }
+}
+
+Table message_templates {
+  id bigint [primary key, increment]
+  code varchar(50) [unique]
+  subject json
+  body json [not null]
+  channel varchar(10) [not null]
+  variables json
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+  }
+}
+
+// ================================================================
+// CHAT
+// ================================================================
+
+Table conversations {
+  id bigint [primary key, increment]
+  type varchar(15) [not null]
+  name varchar(255)
+  last_message_at timestamp
+  created_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    (type, updated_at)
+  }
+}
+
+Table conversation_participants {
+  id bigint [primary key, increment]
+  conversation_id bigint [not null]
+  user_id bigint [not null]
+  last_read_at timestamp
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (conversation_id, user_id) [unique]
+    user_id
+  }
+}
+
+Table messages {
+  id bigint [primary key, increment]
+  conversation_id bigint [not null]
+  sender_id bigint [not null]
+  message text
+  message_type varchar(10) [default: 'text']
+  is_read tinyint(1) [default: 0]
+  sent_at timestamp [not null]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    conversation_id
+    sent_at
+  }
+}
+
+// ================================================================
+// REPORTS
+// ================================================================
+
+Table report_templates {
+  id bigint [primary key, increment]
+  name varchar(100) [not null]
+  code varchar(50) [unique]
+  category varchar(15)
+  query_data json
+  columns json
+  filters json
+  is_active tinyint(1) [default: 1]
+  created_by bigint
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
+  indexes {
+    code [unique]
+  }
+}
+
+Table report_generations {
+  id bigint [primary key, increment]
+  report_template_id bigint [not null]
+  filters_used json
+  generated_by bigint
+  format varchar(10)
+  status varchar(15) [default: 'pending']
+  file_url text
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    report_template_id
+    created_at
+  }
+}
+
+// ================================================================
+// SETTINGS
+// ================================================================
+
+Table system_settings {
+  id bigint [primary key, increment]
+  group varchar(50) [not null]
+  key varchar(100) [not null]
+  value text [not null]
+  type varchar(10) [default: 'string']
+  is_encrypted tinyint(1) [default: 0]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (group, key) [unique]
+  }
+}
+
+Table languages {
+  id bigint [primary key, increment]
+  name varchar(100) [not null]
+  code varchar(10) [unique]
+  locale varchar(10) [unique]
+  direction varchar(3) [default: 'ltr']
+  is_default tinyint(1) [default: 0]
+  is_active tinyint(1) [default: 1]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    code [unique]
+    locale [unique]
+  }
+}
+
+// ================================================================
+// JOBS / QUEUE
+// ================================================================
+
+Table jobs {
+  id bigint [primary key, increment]
+  queue varchar(255) [not null]
+  payload longtext [not null]
+  attempts tinyint [not null]
+  reserved_at int
+  available_at int [not null]
+  created_at int [not null]
+
+  indexes {
+    queue
+  }
+}
+
+Table failed_jobs {
+  id bigint [primary key, increment]
+  uuid varchar(255) [unique, not null]
+  connection text [not null]
+  queue text [not null]
+  payload longtext [not null]
+  exception longtext [not null]
+  failed_at timestamp
+}
+
+Table schedule_logs {
+  id bigint [primary key, increment]
+  job_name varchar(100)
+  started_at timestamp
+  completed_at timestamp
+  status varchar(10)
+  error_message text
+  created_at timestamp
+
+  indexes {
+    started_at
+  }
+}
+
+// ================================================================
+// RELATIONSHIPS
+// ================================================================
+
+// Users & Auth
+Ref: users.created_by > users.id
+Ref: users.updated_by > users.id
+Ref: users.deleted_by > users.id
+
+Ref: sessions.user_id > users.id
+
+// RBAC
+Ref: model_has_permissions.permission_id > permissions.id
+Ref: model_has_roles.role_id > roles.id
+Ref: role_has_permissions.permission_id > permissions.id
+Ref: role_has_permissions.role_id > roles.id
+
+// Branches
+Ref: branches.manager_id > users.id
+
+// Academic Structure
+Ref: semesters.academic_year_id > academic_years.id
+Ref: classes.grade_level_id > grade_levels.id
+Ref: classes.academic_year_id > academic_years.id
+Ref: classes.classroom_id > classrooms.id
+Ref: classes.class_teacher_id > users.id
+Ref: classes.branch_id > branches.id
+
+Ref: classrooms.branch_id > branches.id
+
+Ref: subjects.branch_id > branches.id
+Ref: class_subjects.class_id > classes.id
+Ref: class_subjects.subject_id > subjects.id
+Ref: class_subjects.teacher_id > users.id
+Ref: class_subjects.academic_year_id > academic_years.id
+Ref: class_subjects.semester_id > semesters.id
+
+// Profiles
+Ref: student_profiles.user_id > users.id
+Ref: student_profiles.academic_year_id > academic_years.id
+Ref: student_profiles.current_class_id > classes.id
+Ref: student_profiles.created_by > users.id
+Ref: student_profiles.updated_by > users.id
+
+Ref: teacher_profiles.user_id > users.id
+Ref: teacher_profiles.department_id > departments.id
+Ref: teacher_profiles.created_by > users.id
+Ref: teacher_profiles.updated_by > users.id
+
+Ref: parent_profiles.user_id > users.id
+
+Ref: parent_student.parent_id > parent_profiles.id
+Ref: parent_student.student_id > student_profiles.id
+
+Ref: staff_profiles.user_id > users.id
+Ref: staff_profiles.department_id > departments.id
+
+Ref: departments.branch_id > branches.id
+Ref: departments.head_of_department_id > users.id
+Ref: departments.parent_department_id > departments.id
+
+Ref: employee_attendance.employee_id > staff_profiles.id
+Ref: employee_attendance.approved_by > users.id
+
+Ref: leave_requests.employee_id > staff_profiles.id
+Ref: leave_requests.approved_by > users.id
+
+// Timetable
+Ref: timetables.class_id > classes.id
+Ref: timetables.academic_year_id > academic_years.id
+Ref: timetables.semester_id > semesters.id
+
+Ref: timetable_entries.timetable_id > timetables.id
+Ref: timetable_entries.subject_id > subjects.id
+Ref: timetable_entries.teacher_id > users.id
+Ref: timetable_entries.classroom_id > classrooms.id
+
+// Attendance
+Ref: attendance_records.class_id > classes.id
+Ref: attendance_records.subject_id > subjects.id
+Ref: attendance_records.academic_year_id > academic_years.id
+Ref: attendance_records.semester_id > semesters.id
+Ref: attendance_records.created_by > users.id
+
+Ref: attendance_details.attendance_record_id > attendance_records.id
+Ref: attendance_details.student_id > student_profiles.id
+
+Ref: attendance_summary.student_id > student_profiles.id
+Ref: attendance_summary.academic_year_id > academic_years.id
+Ref: attendance_summary.semester_id > semesters.id
+Ref: attendance_summary.class_id > classes.id
+
+// Exams
+Ref: exams.academic_year_id > academic_years.id
+Ref: exams.semester_id > semesters.id
+Ref: exams.class_id > classes.id
+Ref: exams.created_by > users.id
+Ref: exams.updated_by > users.id
+
+Ref: exam_subjects.exam_id > exams.id
+Ref: exam_subjects.subject_id > subjects.id
+Ref: exam_subjects.class_id > classes.id
+
+Ref: exam_results.exam_id > exams.id
+Ref: exam_results.student_id > student_profiles.id
+Ref: exam_results.subject_id > subjects.id
+Ref: exam_results.created_by > users.id
+Ref: exam_results.updated_by > users.id
+
+Ref: exam_grades.grade_level_id > grade_levels.id
+Ref: exam_grades.subject_id > subjects.id
+
+// Assignments
+Ref: assignments.class_id > classes.id
+Ref: assignments.subject_id > subjects.id
+Ref: assignments.teacher_id > users.id
+Ref: assignments.academic_year_id > academic_years.id
+Ref: assignments.semester_id > semesters.id
+Ref: assignments.created_by > users.id
+Ref: assignments.updated_by > users.id
+
+Ref: assignment_submissions.assignment_id > assignments.id
+Ref: assignment_submissions.student_id > student_profiles.id
+
+Ref: study_materials.class_id > classes.id
+Ref: study_materials.subject_id > subjects.id
+Ref: study_materials.teacher_id > users.id
+Ref: study_materials.academic_year_id > academic_years.id
+Ref: study_materials.semester_id > semesters.id
+Ref: study_materials.created_by > users.id
+Ref: study_materials.updated_by > users.id
+
+// Fee
+Ref: fee_structures.academic_year_id > academic_years.id
+Ref: fee_structures.fee_category_id > fee_categories.id
+Ref: fee_structures.class_id > classes.id
+Ref: fee_structures.grade_level_id > grade_levels.id
+Ref: fee_structures.created_by > users.id
+Ref: fee_structures.updated_by > users.id
+
+Ref: fee_discounts.class_id > classes.id
+Ref: fee_discounts.created_by > users.id
+
+Ref: invoices.student_id > student_profiles.id
+Ref: invoices.academic_year_id > academic_years.id
+Ref: invoices.created_by > users.id
+
+Ref: invoice_items.invoice_id > invoices.id
+Ref: invoice_items.fee_structure_id > fee_structures.id
+
+Ref: payments.invoice_id > invoices.id
+Ref: payments.student_id > student_profiles.id
+Ref: payments.collected_by > users.id
+Ref: payments.created_by > users.id
+
+Ref: receipts.payment_id > payments.id
+Ref: receipts.student_id > student_profiles.id
+Ref: receipts.created_by > users.id
+
+// Library
+Ref: library_categories.parent_category_id > library_categories.id
+
+Ref: library_items.branch_id > branches.id
+Ref: library_items.category_id > library_categories.id
+
+Ref: library_borrowings.library_item_id > library_items.id
+Ref: library_borrowings.borrower_id > users.id
+Ref: library_borrowings.created_by > users.id
+
+// Inventory
+Ref: inventory_categories.parent_category_id > inventory_categories.id
+
+Ref: inventory_items.branch_id > branches.id
+Ref: inventory_items.category_id > inventory_categories.id
+
+Ref: inventory_stock_movements.item_id > inventory_items.id
+Ref: inventory_stock_movements.created_by > users.id
+
+Ref: inventory_purchases.supplier_id > inventory_suppliers.id
+Ref: inventory_purchases.created_by > users.id
+
+Ref: inventory_purchase_items.purchase_id > inventory_purchases.id
+Ref: inventory_purchase_items.item_id > inventory_items.id
+
+// Transport
+Ref: transport_routes.branch_id > branches.id
+
+Ref: transport_stops.route_id > transport_routes.id
+
+Ref: transport_vehicles.driver_id > users.id
+
+Ref: transport_assignments.student_id > student_profiles.id
+Ref: transport_assignments.route_id > transport_routes.id
+Ref: transport_assignments.vehicle_id > transport_vehicles.id
+Ref: transport_assignments.stop_id > transport_stops.id
+Ref: transport_assignments.academic_year_id > academic_years.id
+
+// Hostel
+Ref: hostels.branch_id > branches.id
+Ref: hostels.warden_id > users.id
+
+Ref: hostel_rooms.hostel_id > hostels.id
+
+Ref: hostel_assignments.student_id > student_profiles.id
+Ref: hostel_assignments.hostel_id > hostels.id
+Ref: hostel_assignments.room_id > hostel_rooms.id
+Ref: hostel_assignments.academic_year_id > academic_years.id
+
+// Discipline
+Ref: behavior_records.student_id > student_profiles.id
+Ref: behavior_records.behavior_category_id > behavior_categories.id
+Ref: behavior_records.reported_by > users.id
+Ref: behavior_records.reviewed_by > users.id
+
+// Notifications
+Ref: broadcast_messages.created_by > users.id
+
+// Chat
+Ref: conversations.created_by > users.id
+
+Ref: conversation_participants.conversation_id > conversations.id
+Ref: conversation_participants.user_id > users.id
+
+Ref: messages.conversation_id > conversations.id
+Ref: messages.sender_id > users.id
+
+// Reports
+Ref: report_templates.created_by > users.id
+
+Ref: report_generations.report_template_id > report_templates.id
+Ref: report_generations.generated_by > users.id
