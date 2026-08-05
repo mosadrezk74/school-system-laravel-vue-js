@@ -3,9 +3,8 @@
 namespace Modules\Teacher\DTOs;
 
 use Illuminate\Http\Request;
-use Modules\Core\Abstracts\BaseDTO;
 
-final class CreateTeacherDTO extends BaseDTO
+final readonly class CreateTeacherDTO
 {
     public function __construct(
         public string $name,

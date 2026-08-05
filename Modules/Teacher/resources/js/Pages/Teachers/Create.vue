@@ -71,6 +71,7 @@ function submit() {
         type="submit"
         :loading="form.processing"
         color="primary"
+        @click="submit"
       >
         {{ t('common.save') }}
       </VBtn>

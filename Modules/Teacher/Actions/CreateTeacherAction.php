@@ -35,9 +35,7 @@ class CreateTeacherAction extends BaseAction
 
             $user->assignRole('teacher');
 
-            $teacher = $this->repository->createFromDTO($dto, auth()->id());
-            $teacher->user_id = $user->id;
-            $teacher->save();
+            $teacher = $this->repository->createFromDTO($dto, $user->id, auth()->id());
 
             return $teacher->load('user');
         });

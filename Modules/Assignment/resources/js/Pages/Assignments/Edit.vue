@@ -1,0 +1,81 @@
+<script setup>
+import { Head, Link, useForm } from '@inertiajs/vue3'
+import { useI18n } from 'vue-i18n'
+import AssignmentForm from './_Form.vue'
+
+const props = defineProps({
+  assignment: { type: Object, required: true },
+  academicYears: { type: Array, default: () => [] },
+  semesters: { type: Array, default: () => [] },
+  classes: { type: Array, default: () => [] },
+  subjects: { type: Array, default: () => [] },
+  teachers: { type: Array, default: () => [] },
+})
+
+const { t } = useI18n()
+
+const form = useForm({
+  title: props.assignment.title,
+  description: props.assignment.description,
+  class_id: props.assignment.class_id,
+  subject_id: props.assignment.subject_id,
+  teacher_id: props.assignment.teacher_id,
+  academic_year_id: props.assignment.academic_year_id,
+  semester_id: props.assignment.semester_id,
+  max_score: props.assignment.max_score,
+  deadline: props.assignment.deadline ? props.assignment.deadline.slice(0, 16) : null,
+  assignment_type: props.assignment.assignment_type,
+  is_group_work: props.assignment.is_group_work,
+  is_published: props.assignment.is_published,
+})
+
+function submit() {
+  form.put(`/assignments/assignments/${props.assignment.id}`)
+}
+</script>
+
+<template>
+  <Head :title="t('assignments.edit')" />
+
+  <VCard>
+    <VCardItem>
+      <VCardTitle>{{ t('assignments.edit') }}</VCardTitle>
+      <VCardSubtitle>{{ assignment.title }}</VCardSubtitle>
+    </VCardItem>
+
+    <VDivider />
+
+    <VCardText>
+      <form @submit.prevent="submit">
+        <AssignmentForm
+          :form="form"
+          :academic-years="academicYears"
+          :semesters="semesters"
+          :classes="classes"
+          :subjects="subjects"
+          :teachers="teachers"
+          is-edit
+        />
+      </form>
+    </VCardText>
+
+    <VDivider />
+
+    <VCardText class="d-flex justify-end gap-3">
+      <VBtn
+        variant="tonal"
+        color="secondary"
+        :href="'/assignments/assignments'"
+        :as="Link"
+      >
+        {{ t('common.cancel') }}
+      </VBtn>
+      <VBtn
+        :loading="form.processing"
+        @click="submit"
+      >
+        {{ t('common.update') }}
+      </VBtn>
+    </VCardText>
+  </VCard>
+</template>

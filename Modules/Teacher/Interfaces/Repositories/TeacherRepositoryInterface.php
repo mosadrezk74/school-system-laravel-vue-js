@@ -35,7 +35,9 @@ interface TeacherRepositoryInterface extends RepositoryInterface
 
     public function existsByEmployeeId(string $employeeId, ?int $excludeId = null): bool;
 
-    public function createFromDTO(CreateTeacherDTO $dto, ?int $actorId = null): TeacherProfile;
+    public function existsByEmail(string $email, ?int $excludeUserId = null): bool;
+
+    public function createFromDTO(CreateTeacherDTO $dto, int $userId, ?int $actorId = null): TeacherProfile;
 
     public function updateFromDTO(int $id, UpdateTeacherDTO $dto, ?int $actorId = null): TeacherProfile;
 

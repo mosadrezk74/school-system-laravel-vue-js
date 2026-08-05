@@ -2,6 +2,7 @@
 
 namespace Modules\Teacher\Repositories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Teacher\DTOs\CreateTeacherDTO;
 use Modules\Teacher\DTOs\UpdateTeacherDTO;
@@ -145,9 +146,23 @@ class TeacherRepository implements TeacherRepositoryInterface
             ->exists();
     }
 
-    public function createFromDTO(CreateTeacherDTO $dto, ?int $actorId = null): TeacherProfile
+    public function existsByEmail(string $email, ?int $excludeUserId = null): bool
+    {
+        return User::query()
+            ->where('email', $email)
+            ->when($excludeUserId, fn ($query) => $query->whereKeyNot($excludeUserId))
+            ->exists();
+    }
+
+    /**
+     * @param  int  $userId  Required: teacher_profiles.user_id is NOT NULL,
+     *                       so it must be present on the insert itself rather than patched in
+     *                       with a follow-up update after create().
+     */
+    public function createFromDTO(CreateTeacherDTO $dto, int $userId, ?int $actorId = null): TeacherProfile
     {
         $data = $dto->toArray();
+        $data['user_id'] = $userId;
         $data['created_by'] = $actorId;
         $data['updated_by'] = $actorId;
 

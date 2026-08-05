@@ -70,6 +70,23 @@ const { t } = useI18n()
     }"
   />
 
+  <!-- 👉 Assignments -->
+  <VerticalNavSectionTitle :item="{ heading: t('nav.assignments') }" />
+  <VerticalNavLink
+    :item="{
+      title: t('nav.assignments'),
+      to: '/assignments/assignments',
+      icon: 'bx-task',
+    }"
+  />
+  <VerticalNavLink
+    :item="{
+      title: t('nav.studyMaterials'),
+      to: '/assignments/study-materials',
+      icon: 'bx-folder-open',
+    }"
+  />
+
   <!-- 👉 Behavior -->
   <VerticalNavSectionTitle :item="{ heading: t('nav.behavior') }" />
   <VerticalNavLink

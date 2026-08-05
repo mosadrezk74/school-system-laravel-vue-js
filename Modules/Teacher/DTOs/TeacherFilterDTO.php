@@ -3,10 +3,9 @@
 namespace Modules\Teacher\DTOs;
 
 use Illuminate\Http\Request;
-use Modules\Core\Abstracts\BaseDTO;
 use Modules\Core\Constants\Pagination;
 
-final class TeacherFilterDTO extends BaseDTO
+final readonly class TeacherFilterDTO
 {
     public function __construct(
         public ?string $search,

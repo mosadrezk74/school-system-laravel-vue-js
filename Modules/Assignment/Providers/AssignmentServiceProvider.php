@@ -2,7 +2,19 @@
 
 namespace Modules\Assignment\Providers;
 
-use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Gate;
+use Modules\Assignment\Models\Assignment;
+use Modules\Assignment\Models\AssignmentSubmission;
+use Modules\Assignment\Models\StudyMaterial;
+use Modules\Assignment\Policies\AssignmentPolicy;
+use Modules\Assignment\Policies\AssignmentSubmissionPolicy;
+use Modules\Assignment\Policies\StudyMaterialPolicy;
+use Modules\Assignment\Repositories\AssignmentRepository;
+use Modules\Assignment\Repositories\AssignmentRepositoryInterface;
+use Modules\Assignment\Repositories\AssignmentSubmissionRepository;
+use Modules\Assignment\Repositories\AssignmentSubmissionRepositoryInterface;
+use Modules\Assignment\Repositories\StudyMaterialRepository;
+use Modules\Assignment\Repositories\StudyMaterialRepositoryInterface;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class AssignmentServiceProvider extends ModuleServiceProvider
@@ -33,6 +45,28 @@ class AssignmentServiceProvider extends ModuleServiceProvider
         EventServiceProvider::class,
         RouteServiceProvider::class,
     ];
+
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->bind(AssignmentRepositoryInterface::class, AssignmentRepository::class);
+        $this->app->bind(StudyMaterialRepositoryInterface::class, StudyMaterialRepository::class);
+        $this->app->bind(AssignmentSubmissionRepositoryInterface::class, AssignmentSubmissionRepository::class);
+    }
+
+    public function boot(): void
+    {
+        parent::boot();
+
+        // The package only namespaces published lang files, so in-module ones
+        // need binding explicitly for `assignment::` keys to resolve.
+        $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
+
+        Gate::policy(Assignment::class, AssignmentPolicy::class);
+        Gate::policy(StudyMaterial::class, StudyMaterialPolicy::class);
+        Gate::policy(AssignmentSubmission::class, AssignmentSubmissionPolicy::class);
+    }
 
     /**
      * Define module schedules.

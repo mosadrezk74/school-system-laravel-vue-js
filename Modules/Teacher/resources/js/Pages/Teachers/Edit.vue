@@ -70,7 +70,9 @@ function submit() {
         {{ t('common.cancel') }}
       </VBtn>
       <VBtn
+        type="submit"
         :loading="form.processing"
+        color="primary"
         @click="submit"
       >
         {{ t('common.update') }}

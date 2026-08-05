@@ -1,0 +1,219 @@
+<script setup>
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const props = defineProps({
+  form: { type: Object, required: true },
+  academicYears: { type: Array, default: () => [] },
+  semesters: { type: Array, default: () => [] },
+  classes: { type: Array, default: () => [] },
+  subjects: { type: Array, default: () => [] },
+  teachers: { type: Array, default: () => [] },
+})
+
+const { t } = useI18n()
+
+const required = label => `${label} *`
+
+const filteredClasses = computed(() =>
+  props.classes.filter(c => c.academic_year_id === props.form.academic_year_id))
+
+const classOptions = computed(() => filteredClasses.value.map(c => ({
+  title: [c.name, c.section_code].filter(Boolean).join(' · '),
+  value: c.id,
+})))
+
+const filteredSemesters = computed(() =>
+  props.semesters.filter(s => s.academic_year_id === props.form.academic_year_id))
+
+const semesterOptions = computed(() => filteredSemesters.value.map(s => ({
+  title: s.name,
+  value: s.id,
+})))
+
+watch(() => props.form.academic_year_id, () => {
+  if (!filteredClasses.value.some(c => c.id === props.form.class_id))
+    props.form.class_id = null
+
+  if (!filteredSemesters.value.some(s => s.id === props.form.semester_id))
+    props.form.semester_id = null
+})
+
+const activeTab = ref('details')
+
+const tabFields = {
+  details: ['title', 'description', 'class_id', 'subject_id', 'teacher_id', 'academic_year_id', 'semester_id', 'material_type'],
+  publishing: ['is_published'],
+}
+
+const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[field])
+</script>
+
+<template>
+  <VTabs
+    v-model="activeTab"
+    show-arrows
+    class="v-tabs-pill"
+  >
+    <VTab value="details">
+      <VIcon size="20" start icon="bx-detail" />
+      {{ $t('studyMaterials.sections.details') }}
+      <VIcon v-if="tabHasError('details')" size="16" end icon="bx-error-circle" color="error" />
+    </VTab>
+    <VTab value="publishing">
+      <VIcon size="20" start icon="bx-globe" />
+      {{ $t('studyMaterials.sections.publishing') }}
+      <VIcon v-if="tabHasError('publishing')" size="16" end icon="bx-error-circle" color="error" />
+    </VTab>
+  </VTabs>
+
+  <VWindow v-model="activeTab" class="mt-6 disable-tab-transition">
+    <VWindowItem value="details">
+      <div class="d-flex align-center gap-3 mb-6">
+        <VAvatar color="primary" variant="tonal" size="40">
+          <VIcon icon="bx-detail" />
+        </VAvatar>
+        <div>
+          <h6 class="text-h6">
+            {{ $t('studyMaterials.sections.details') }}
+          </h6>
+          <p class="text-body-2 text-medium-emphasis mb-0">
+            {{ $t('studyMaterials.sections.detailsDesc') }}
+          </p>
+        </div>
+      </div>
+
+      <VRow>
+        <VCol cols="12">
+          <VTextField
+            v-model="form.title"
+            :label="required(t('studyMaterials.titleField'))"
+            :hint="$t('studyMaterials.hints.title')"
+            persistent-hint
+            :error-messages="form.errors.title"
+            required
+          />
+        </VCol>
+
+        <VCol cols="12">
+          <VTextarea
+            v-model="form.description"
+            :label="$t('studyMaterials.description')"
+            :hint="$t('studyMaterials.hints.description')"
+            persistent-hint
+            :error-messages="form.errors.description"
+            rows="3"
+          />
+        </VCol>
+
+        <VCol cols="12" md="4">
+          <VSelect
+            v-model="form.academic_year_id"
+            :items="academicYears.map(y => ({ title: y.name, value: y.id }))"
+            :label="required(t('studyMaterials.academicYear'))"
+            :hint="$t('studyMaterials.hints.academicYear')"
+            persistent-hint
+            :error-messages="form.errors.academic_year_id"
+            required
+          />
+        </VCol>
+
+        <VCol cols="12" md="4">
+          <VSelect
+            v-model="form.semester_id"
+            clearable
+            :items="semesterOptions"
+            :label="$t('studyMaterials.semester')"
+            :hint="$t('studyMaterials.hints.semester')"
+            persistent-hint
+            :error-messages="form.errors.semester_id"
+            :disabled="!form.academic_year_id"
+          />
+        </VCol>
+
+        <VCol cols="12" md="4">
+          <VSelect
+            v-model="form.class_id"
+            clearable
+            :items="classOptions"
+            :label="$t('studyMaterials.class')"
+            :hint="$t('studyMaterials.hints.class')"
+            persistent-hint
+            :error-messages="form.errors.class_id"
+            :disabled="!form.academic_year_id"
+          />
+        </VCol>
+
+        <VCol cols="12" md="4">
+          <VSelect
+            v-model="form.subject_id"
+            :items="subjects.map(s => ({ title: s.name, value: s.id }))"
+            :label="required(t('studyMaterials.subject'))"
+            :hint="$t('studyMaterials.hints.subject')"
+            persistent-hint
+            :error-messages="form.errors.subject_id"
+            required
+          />
+        </VCol>
+
+        <VCol cols="12" md="4">
+          <VSelect
+            v-model="form.teacher_id"
+            :items="teachers.map(u => ({ title: u.name, value: u.id }))"
+            :label="required(t('studyMaterials.teacher'))"
+            :hint="$t('studyMaterials.hints.teacher')"
+            persistent-hint
+            :error-messages="form.errors.teacher_id"
+            required
+          />
+        </VCol>
+
+        <VCol cols="12" md="4">
+          <VTextField
+            v-model="form.material_type"
+            :label="$t('studyMaterials.materialType')"
+            :hint="$t('studyMaterials.hints.materialType')"
+            persistent-hint
+            :error-messages="form.errors.material_type"
+          />
+        </VCol>
+      </VRow>
+    </VWindowItem>
+
+    <VWindowItem value="publishing">
+      <div class="d-flex align-center gap-3 mb-6">
+        <VAvatar color="primary" variant="tonal" size="40">
+          <VIcon icon="bx-globe" />
+        </VAvatar>
+        <div>
+          <h6 class="text-h6">
+            {{ $t('studyMaterials.sections.publishing') }}
+          </h6>
+          <p class="text-body-2 text-medium-emphasis mb-0">
+            {{ $t('studyMaterials.sections.publishingDesc') }}
+          </p>
+        </div>
+      </div>
+
+      <VRow>
+        <VCol cols="12" class="d-flex flex-column justify-center">
+          <VSwitch
+            v-model="form.is_published"
+            :label="$t('studyMaterials.isPublished')"
+          />
+          <p class="text-caption text-medium-emphasis mb-0">
+            {{ $t('studyMaterials.hints.isPublished') }}
+          </p>
+        </VCol>
+      </VRow>
+    </VWindowItem>
+  </VWindow>
+</template>
+
+<style scoped>
+:deep(.v-input:not(.v-input--error) .v-messages) {
+  color: rgb(var(--v-theme-on-surface));
+  font-size: 0.75rem;
+  opacity: var(--v-medium-emphasis-opacity);
+}
+</style>

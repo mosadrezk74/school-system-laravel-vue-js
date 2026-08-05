@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./.phpunit.cache/**)",
+      "Read(./bootstrap/ssr/**)",
+      "Read(./node_modules/**)",
+      "Read(./public/build/**)",
+      "Read(./public/fonts-manifest.dev.json)",
+      "Read(./public/hot/**)",
+      "Read(./public/storage/**)",
+      "Read(./storage/*.key)",
+      "Read(./storage/pail/**)",
+      "Read(./resources/js/actions/**)",
+      "Read(./resources/js/routes/**)",
+      "Read(./resources/js/wayfinder/**)",
+      "Read(./vendor/**)",
+      "Read(./.env)",
+      "Read(./.env.backup)",
+      "Read(./.env.production)",
+      "Read(./.phpactor.json)",
+      "Read(./.phpunit.result.cache)",
+      "Read(./Homestead.json)",
+      "Read(./Homestead.yaml)",
+      "Read(./npm-debug.log)",
+      "Read(./yarn-error.log)",
+      "Read(./auth.json)",
+      "Read(./.fleet/**)",
+      "Read(./.idea/**)",
+      "Read(./.nova/**)",
+      "Read(./.vscode/**)",
+      "Read(./.zed/**)"
+    ]
+  }
+}
