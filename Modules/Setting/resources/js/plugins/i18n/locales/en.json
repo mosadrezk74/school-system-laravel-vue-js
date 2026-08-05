@@ -32,8 +32,6 @@
   "userMenu": {
     "profile": "Profile",
     "settings": "Settings",
-    "pricing": "Pricing",
-    "faq": "FAQ",
     "logout": "Logout"
   },
   "theme": {
@@ -832,5 +830,36 @@
     "search": "Search by name or code",
     "empty": "No classrooms yet. Add your first classroom to get started.",
     "view": "View"
+  },
+  "accountSettings": {
+    "title": "Account Settings",
+    "subtitle": "Manage your personal information and security.",
+    "tabs": {
+      "account": "Account",
+      "security": "Security"
+    },
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "username": "Username",
+      "phone": "Phone",
+      "gender": "Gender",
+      "birth_date": "Date of Birth",
+      "national_id": "National ID",
+      "language": "Language",
+      "theme": "Theme",
+      "timezone": "Timezone",
+      "current_password": "Current Password",
+      "password": "New Password",
+      "password_confirmation": "Confirm Password"
+    },
+    "male": "Male",
+    "female": "Female",
+    "deleteAccount": {
+      "title": "Delete Account",
+      "subtitle": "Permanently delete your account and all associated data.",
+      "confirm": "I confirm I want to delete my account.",
+      "submit": "Delete Account"
+    }
   }
 }

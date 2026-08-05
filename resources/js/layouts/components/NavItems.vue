@@ -87,6 +87,16 @@ const { t } = useI18n()
     }"
   />
 
+  <!-- 👉 Attendance -->
+  <VerticalNavSectionTitle :item="{ heading: t('nav.attendance') }" />
+  <VerticalNavLink
+    :item="{
+      title: t('nav.attendanceRecords'),
+      to: '/attendance/records',
+      icon: 'bx-calendar-check',
+    }"
+  />
+
   <!-- 👉 Behavior -->
   <VerticalNavSectionTitle :item="{ heading: t('nav.behavior') }" />
   <VerticalNavLink

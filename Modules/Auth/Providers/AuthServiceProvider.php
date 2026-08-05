@@ -3,6 +3,8 @@
 namespace Modules\Auth\Providers;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Modules\Auth\Repositories\ProfileRepository;
+use Modules\Auth\Repositories\ProfileRepositoryInterface;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class AuthServiceProvider extends ModuleServiceProvider
@@ -23,6 +25,13 @@ class AuthServiceProvider extends ModuleServiceProvider
      * @var string[]
      */
     // protected array $commands = [];
+
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->bind(ProfileRepositoryInterface::class, ProfileRepository::class);
+    }
 
     /**
      * Provider classes to register.
