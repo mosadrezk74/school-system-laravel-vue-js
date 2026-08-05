@@ -20,12 +20,7 @@ class LanguageSeeder extends Seeder
         ['name' => 'English', 'native' => 'English', 'code' => 'en', 'locale' => 'en', 'direction' => 'ltr'],
         ['name' => 'French', 'native' => 'Français', 'code' => 'fr', 'locale' => 'fr', 'direction' => 'ltr'],
         ['name' => 'German', 'native' => 'Deutsch', 'code' => 'de', 'locale' => 'de', 'direction' => 'ltr'],
-        ['name' => 'Turkish', 'native' => 'Türkçe', 'code' => 'tr', 'locale' => 'tr', 'direction' => 'ltr'],
-        ['name' => 'Urdu', 'native' => 'اردو', 'code' => 'ur', 'locale' => 'ur', 'direction' => 'rtl'],
-        ['name' => 'Indonesian', 'native' => 'Bahasa Indonesia', 'code' => 'id', 'locale' => 'id', 'direction' => 'ltr'],
-        ['name' => 'Hindi', 'native' => 'हिन्दी', 'code' => 'hi', 'locale' => 'hi', 'direction' => 'ltr'],
         ['name' => 'Spanish', 'native' => 'Español', 'code' => 'es', 'locale' => 'es', 'direction' => 'ltr'],
-        ['name' => 'Persian', 'native' => 'فارسی', 'code' => 'fa', 'locale' => 'fa', 'direction' => 'rtl'],
     ];
 
     /** Switched on out of the box; everything else ships disabled. */
@@ -39,8 +34,6 @@ class LanguageSeeder extends Seeder
             Language::query()->updateOrCreate(
                 ['locale' => $language['locale']],
                 [
-                    // `name` holds the endonym so the switcher reads naturally
-                    // to a speaker of that language.
                     'name' => $language['native'],
                     'code' => $language['code'],
                     'direction' => $language['direction'],

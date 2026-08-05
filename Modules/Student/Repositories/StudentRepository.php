@@ -3,135 +3,100 @@
 namespace Modules\Student\Repositories;
 
 use App\Models\User;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
+use Modules\Academic\Models\AcademicYear;
 use Modules\Auth\Enums\UserRole;
-use Modules\Student\DTOs\StudentData;
+use Modules\Student\DTOs\CreateStudentDTO;
+use Modules\Student\DTOs\UpdateStudentDTO;
+use Modules\Student\Models\StudentProfile;
 
-class StudentRepository
+/**
+ * Data access only: no validation, no business rules, no transactions.
+ * Callers (Actions) own the transaction boundary and business checks.
+ */
+class StudentRepository implements StudentRepositoryInterface
 {
-    public function getPaginated(int $perPage = 15): LengthAwarePaginator
+    public function findById(int $id): ?StudentProfile
+    {
+        return StudentProfile::query()->find($id);
+    }
+
+    public function findByIdOrFail(int $id): StudentProfile
+    {
+        return StudentProfile::query()->findOrFail($id);
+    }
+
+    public function findByAdmissionNumber(string $admissionNumber): ?StudentProfile
+    {
+        return StudentProfile::query()->where('admission_number', $admissionNumber)->first();
+    }
+
+    public function existsByEmail(string $email, ?int $excludeUserId = null): bool
     {
         return User::query()
-            ->where('role', UserRole::Student->value)
-            ->with('studentProfile')
-            ->latest()
-            ->paginate($perPage);
+            ->where('email', $email)
+            ->when($excludeUserId, fn ($query) => $query->whereKeyNot($excludeUserId))
+            ->exists();
     }
 
-    public function findWithProfile(int $id): User
+    public function existsByAdmissionNumber(string $admissionNumber, ?int $excludeId = null): bool
     {
-        return User::query()
-            ->where('role', UserRole::Student->value)
-            ->with('studentProfile')
-            ->findOrFail($id);
+        return StudentProfile::query()
+            ->where('admission_number', $admissionNumber)
+            ->when($excludeId, fn ($query) => $query->whereKeyNot($excludeId))
+            ->exists();
     }
 
-    public function create(StudentData $data): User
+    public function create(CreateStudentDTO $dto, ?int $actorId = null): StudentProfile
     {
-        return DB::transaction(function () use ($data) {
-            $userPayload = [
-                'name' => $data->name,
-                'email' => $data->email,
-                'username' => $data->username,
-                'password' => $data->password,
-                'gender' => $data->gender,
-                'birth_date' => $data->birthDate,
-                'national_id' => $data->nationalId,
-                'phone' => $data->phone,
-                'is_active' => $data->isActive,
-                'role' => UserRole::Student->value,
-            ];
+        $user = User::create([
+            ...$dto->toUserArray(),
+            'role' => UserRole::Student->value,
+        ]);
 
-            $user = User::create($userPayload);
-
-            $user->studentProfile()->create([
-                'academic_year_id' => $data->academicYearId,
-                'current_class_id' => $data->currentClassId,
-                'admission_date' => $data->admissionDate,
-                'scholarship_percentage' => $data->scholarshipPercentage,
-                'is_graduated' => $data->isGraduated,
-                'is_active' => $data->isActive,
-                'father_name' => $data->fatherName,
-                'father_phone' => $data->fatherPhone,
-                'mother_name' => $data->motherName,
-                'mother_phone' => $data->motherPhone,
-                'guardian_name' => $data->guardianName,
-                'guardian_phone' => $data->guardianPhone,
-                'guardian_relation' => $data->guardianRelation,
-                'address' => $data->address,
-                'city' => $data->city,
-                'blood_group' => $data->bloodGroup,
-                'allergies' => $data->allergies,
-                'medical_conditions' => $data->medicalConditions,
-                'previous_school' => $data->previousSchool,
-                'emergency_contact_name' => $data->emergencyContactName,
-                'emergency_contact_phone' => $data->emergencyContactPhone,
-                'emergency_contact_relation' => $data->emergencyContactRelation,
-            ]);
-
-            return $user;
-        });
+        return $user->studentProfile()->create([
+            ...$dto->toProfileArray(),
+            'academic_year_id' => $dto->academicYearId,
+            'admission_number' => $dto->admissionNumber,
+            'created_by' => $actorId,
+            'updated_by' => $actorId,
+        ]);
     }
 
-    public function update(User $user, StudentData $data): User
+    public function update(StudentProfile $student, UpdateStudentDTO $dto, ?int $actorId = null): StudentProfile
     {
-        return DB::transaction(function () use ($user, $data) {
-            $userPayload = [
-                'name' => $data->name,
-                'email' => $data->email,
-                'username' => $data->username,
-                'gender' => $data->gender,
-                'birth_date' => $data->birthDate,
-                'national_id' => $data->nationalId,
-                'phone' => $data->phone,
-                'is_active' => $data->isActive,
-            ];
+        $student->user->update($dto->toUserArray());
 
-            if ($data->password) {
-                $userPayload['password'] = $data->password;
-            }
+        $student->update([
+            ...$dto->toProfileArray(),
+            'academic_year_id' => $dto->academicYearId,
+            'admission_number' => $dto->admissionNumber,
+            'updated_by' => $actorId,
+        ]);
 
-            $user->update($userPayload);
-
-            $user->studentProfile()->updateOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'academic_year_id' => $data->academicYearId,
-                    'current_class_id' => $data->currentClassId,
-                    'admission_date' => $data->admissionDate,
-                    'scholarship_percentage' => $data->scholarshipPercentage,
-                    'is_graduated' => $data->isGraduated,
-                    'is_active' => $data->isActive,
-                    'father_name' => $data->fatherName,
-                    'father_phone' => $data->fatherPhone,
-                    'mother_name' => $data->motherName,
-                    'mother_phone' => $data->motherPhone,
-                    'guardian_name' => $data->guardianName,
-                    'guardian_phone' => $data->guardianPhone,
-                    'guardian_relation' => $data->guardianRelation,
-                    'address' => $data->address,
-                    'city' => $data->city,
-                    'blood_group' => $data->bloodGroup,
-                    'allergies' => $data->allergies,
-                    'medical_conditions' => $data->medicalConditions,
-                    'previous_school' => $data->previousSchool,
-                    'emergency_contact_name' => $data->emergencyContactName,
-                    'emergency_contact_phone' => $data->emergencyContactPhone,
-                    'emergency_contact_relation' => $data->emergencyContactRelation,
-                ]
-            );
-
-            return $user;
-        });
+        return $student->refresh();
     }
 
-    public function delete(User $user): bool
+    public function delete(StudentProfile $student): bool
     {
-        return DB::transaction(function () use ($user) {
-            $user->studentProfile()?->delete();
+        return (bool) $student->delete();
+    }
 
-            return (bool) $user->delete();
-        });
+    public function restore(StudentProfile $student): bool
+    {
+        return (bool) $student->restore();
+    }
+
+    public function lockNextAdmissionSequence(int $academicYearId): int
+    {
+        // Locking the academic_years row (guaranteed to exist) rather than a
+        // possibly-empty student_profiles subset: a row lock needs a row to
+        // lock, and this one is always there, so it serialises every
+        // "generate the next number for this year" caller against it.
+        AcademicYear::query()->whereKey($academicYearId)->lockForUpdate()->firstOrFail();
+
+        return StudentProfile::withTrashed()
+            ->where('academic_year_id', $academicYearId)
+            ->lockForUpdate()
+            ->count();
     }
 }

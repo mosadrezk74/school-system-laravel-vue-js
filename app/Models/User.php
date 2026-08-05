@@ -13,6 +13,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Modules\Auth\Enums\UserRole;
+use Modules\GuardianProfile\Models\GuardianProfile;
 use Modules\Student\Models\StudentProfile;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -85,6 +86,11 @@ class User extends Authenticatable
     public function studentProfile(): HasOne
     {
         return $this->hasOne(StudentProfile::class, 'user_id');
+    }
+
+    public function guardianProfile(): HasOne
+    {
+        return $this->hasOne(GuardianProfile::class, 'user_id');
     }
 
     protected static function booted(): void

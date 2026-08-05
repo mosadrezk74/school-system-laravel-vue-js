@@ -2,7 +2,11 @@
 
 namespace Modules\GuardianProfile\Providers;
 
-use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Gate;
+use Modules\GuardianProfile\Models\GuardianProfile;
+use Modules\GuardianProfile\Policies\GuardianPolicy;
+use Modules\GuardianProfile\Repositories\GuardianRepository;
+use Modules\GuardianProfile\Repositories\GuardianRepositoryInterface;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class GuardianProfileServiceProvider extends ModuleServiceProvider
@@ -17,12 +21,23 @@ class GuardianProfileServiceProvider extends ModuleServiceProvider
      */
     protected string $nameLower = 'guardianprofile';
 
-    /**
-     * Command classes to register.
-     *
-     * @var string[]
-     */
-    // protected array $commands = [];
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->bind(GuardianRepositoryInterface::class, GuardianRepository::class);
+    }
+
+    public function boot(): void
+    {
+        parent::boot();
+
+        // The package only namespaces published lang files, so in-module ones
+        // need binding explicitly for `guardian::` keys to resolve.
+        $this->loadTranslationsFrom(module_path($this->name, 'lang'), 'guardian');
+
+        Gate::policy(GuardianProfile::class, GuardianPolicy::class);
+    }
 
     /**
      * Provider classes to register.
@@ -33,14 +48,4 @@ class GuardianProfileServiceProvider extends ModuleServiceProvider
         EventServiceProvider::class,
         RouteServiceProvider::class,
     ];
-
-    /**
-     * Define module schedules.
-     *
-     * @param  $schedule
-     */
-    // protected function configureSchedules(Schedule $schedule): void
-    // {
-    //     $schedule->command('inspire')->hourly();
-    // }
 }

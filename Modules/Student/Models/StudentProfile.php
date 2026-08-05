@@ -3,47 +3,24 @@
 namespace Modules\Student\Models;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Academic\Models\AcademicYear;
+use Modules\Core\Abstracts\BaseModel;
+use Modules\GuardianProfile\Models\GuardianStudent;
+use Modules\SchoolClass\Models\SchoolClass;
+use Modules\Student\Database\Factories\StudentProfileFactory;
 
-class StudentProfile extends Model
+class StudentProfile extends BaseModel
 {
-    use SoftDeletes;
+    use HasFactory;
 
     protected $table = 'student_profiles';
 
-    protected $fillable = [
-        'user_id',
-        'academic_year_id',
-        'current_class_id',
-        'admission_number',
-        'roll_number',
-        'admission_date',
-        'emergency_contact_name',
-        'emergency_contact_phone',
-        'emergency_contact_relation',
-        'address',
-        'city',
-        'father_name',
-        'father_phone',
-        'mother_name',
-        'mother_phone',
-        'guardian_name',
-        'guardian_phone',
-        'guardian_relation',
-        'blood_group',
-        'allergies',
-        'medical_conditions',
-        'previous_school',
-        'scholarship_percentage',
-        'is_graduated',
-        'is_active',
-        'extra_fields',
-        'created_by',
-        'updated_by',
-    ];
-
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
@@ -58,5 +35,35 @@ class StudentProfile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function academicYear(): BelongsTo
+    {
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
+    }
+
+    public function currentClass(): BelongsTo
+    {
+        return $this->belongsTo(SchoolClass::class, 'current_class_id');
+    }
+
+    public function guardians(): HasMany
+    {
+        return $this->hasMany(GuardianStudent::class, 'student_id');
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    protected static function newFactory(): StudentProfileFactory
+    {
+        return StudentProfileFactory::new();
     }
 }

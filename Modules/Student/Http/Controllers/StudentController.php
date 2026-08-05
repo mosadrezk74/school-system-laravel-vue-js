@@ -2,68 +2,136 @@
 
 namespace Modules\Student\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Inertia\Inertia;
+use Illuminate\Http\Request;
 use Inertia\Response;
+use Modules\Academic\Models\AcademicYear;
+use Modules\Core\Abstracts\BaseInertiaController;
+use Modules\Core\Constants\Pagination;
+use Modules\SchoolClass\Models\SchoolClass;
+use Modules\Student\Actions\ArchiveStudentAction;
 use Modules\Student\Actions\CreateStudentAction;
-use Modules\Student\Actions\DeleteStudentAction;
+use Modules\Student\Actions\RestoreStudentAction;
 use Modules\Student\Actions\UpdateStudentAction;
-use Modules\Student\DTOs\StudentData;
+use Modules\Student\DTOs\CreateStudentDTO;
+use Modules\Student\DTOs\StudentFilterDTO;
+use Modules\Student\DTOs\UpdateStudentDTO;
 use Modules\Student\Http\Requests\StoreStudentRequest;
 use Modules\Student\Http\Requests\UpdateStudentRequest;
-use Modules\Student\Repositories\StudentRepository;
+use Modules\Student\Models\StudentProfile;
+use Modules\Student\Queries\StudentQuery;
 use Modules\Student\Transformers\StudentResource;
 
-class StudentController extends Controller
+class StudentController extends BaseInertiaController
 {
-    public function __construct(
-        protected StudentRepository $studentRepository
-    ) {}
-
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $students = $this->studentRepository->getPaginated();
+        $this->authorize('viewAny', StudentProfile::class);
 
-        return Inertia::render('Student::Index', [
-            'rows' => StudentResource::collection($students)->response()->getData(true),
+        $filters = StudentFilterDTO::fromRequest($request);
+
+        $query = (new StudentQuery)
+            ->searchUser($filters->search)
+            ->academicYearId($filters->academicYearId)
+            ->currentClassId($filters->currentClassId)
+            ->gradeLevelId($filters->gradeLevelId)
+            ->branchId($filters->branchId)
+            ->isActive($filters->isActive)
+            ->gender($filters->gender)
+            ->sort($filters->sortBy, $filters->sortOrder);
+
+        $students = $query->paginate($filters->perPage);
+
+        return $this->render('Student::Students/Index', [
+            'students' => StudentResource::collection($students),
+            'filters' => $request->only([
+                Pagination::SEARCH_PARAM,
+                'academic_year_id',
+                'current_class_id',
+                'grade_level_id',
+                'branch_id',
+                'is_active',
+                'gender',
+            ]),
         ]);
     }
 
     public function create(): Response
     {
-        return Inertia::render('Student::Create');
+        $this->authorize('create', StudentProfile::class);
+
+        return $this->render('Student::Students/Create', [
+            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
+            'classes' => SchoolClass::query()->where('is_active', true)
+                ->with(['gradeLevel:id,name', 'branch:id,name'])
+                ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id', 'branch_id']),
+        ]);
     }
 
     public function store(StoreStudentRequest $request, CreateStudentAction $action): RedirectResponse
     {
-        $data = StudentData::fromStoreRequest($request);
-        $action->execute($data);
+        $this->authorize('create', StudentProfile::class);
 
-        return redirect()->route('students.index');
+        $action->execute(CreateStudentDTO::fromRequest($request));
+
+        return $this->toRoute('students.index', [], __('student::student.created'));
     }
 
-    public function edit(int $id): Response
+    public function show(StudentProfile $student): Response
     {
-        $student = $this->studentRepository->findWithProfile($id);
+        $this->authorize('view', $student);
 
-        return Inertia::render('Student::Edit', [
+        $student->load([
+            'user', 'academicYear', 'currentClass.gradeLevel', 'currentClass.branch',
+            'guardians.parent.user',
+        ]);
+
+        return $this->render('Student::Students/Show', [
             'student' => new StudentResource($student),
         ]);
     }
 
-    public function update(UpdateStudentRequest $request, int $id, UpdateStudentAction $action): RedirectResponse
+    public function edit(StudentProfile $student): Response
     {
-        $data = StudentData::fromUpdateRequest($request);
-        $action->execute($id, $data);
+        $this->authorize('update', $student);
 
-        return redirect()->route('students.index');
+        $student->load('user');
+
+        return $this->render('Student::Students/Edit', [
+            'student' => new StudentResource($student),
+            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
+            'classes' => SchoolClass::query()->where('is_active', true)
+                ->with(['gradeLevel:id,name', 'branch:id,name'])
+                ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id', 'branch_id']),
+        ]);
     }
 
-    public function destroy(int $id, DeleteStudentAction $action): RedirectResponse
+    public function update(UpdateStudentRequest $request, StudentProfile $student, UpdateStudentAction $action): RedirectResponse
     {
-        $action->execute($id);
+        $this->authorize('update', $student);
 
-        return redirect()->route('students.index');
+        $action->execute(['student' => $student, 'dto' => UpdateStudentDTO::fromRequest($request)]);
+
+        return $this->toRoute('students.index', [], __('student::student.updated'));
+    }
+
+    public function destroy(StudentProfile $student, ArchiveStudentAction $action): RedirectResponse
+    {
+        $this->authorize('delete', $student);
+
+        $action->execute($student);
+
+        return $this->toRoute('students.index', [], __('student::student.archived'));
+    }
+
+    public function restore(int $student, RestoreStudentAction $action): RedirectResponse
+    {
+        $student = StudentProfile::withTrashed()->findOrFail($student);
+
+        $this->authorize('restore', $student);
+
+        $action->execute($student);
+
+        return $this->toRoute('students.index', [], __('student::student.restored'));
     }
 }

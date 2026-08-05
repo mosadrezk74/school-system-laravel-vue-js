@@ -53,6 +53,12 @@ class Language extends Model
      * collection comes back as __PHP_Incomplete_Class once the cache outlives
      * the request that wrote it.
      *
+     * Every write path (ToggleLanguageAction) refuses to leave zero rows
+     * active, but an unseeded database or a direct DB edit can still reach
+     * that state — the switcher and every RTL/locale consumer downstream
+     * need at least one entry to read, so fall back to config('app.locale')
+     * rather than serve an empty list nothing can render against.
+     *
      * @return Collection<int, array<string, mixed>>
      */
     public static function active(): Collection
@@ -71,6 +77,19 @@ class Language extends Model
                 'is_default' => (bool) $l->is_default,
             ])
             ->all());
+
+        if ($rows === []) {
+            $locale = config('app.locale', 'en');
+
+            $rows = [[
+                'id' => null,
+                'name' => strtoupper($locale),
+                'code' => $locale,
+                'locale' => $locale,
+                'direction' => 'ltr',
+                'is_default' => true,
+            ]];
+        }
 
         return collect($rows);
     }

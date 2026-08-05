@@ -1,0 +1,77 @@
+<script setup>
+import { Head, Link, useForm } from '@inertiajs/vue3'
+import { useI18n } from 'vue-i18n'
+import ClassForm from './_Form.vue'
+
+defineProps({
+  academicYears: { type: Array, default: () => [] },
+  gradeLevels: { type: Array, default: () => [] },
+  branches: { type: Array, default: () => [] },
+  classrooms: { type: Array, default: () => [] },
+  teachers: { type: Array, default: () => [] },
+})
+
+const { t } = useI18n()
+
+const form = useForm({
+  branch_id: null,
+  grade_level_id: null,
+  academic_year_id: null,
+  classroom_id: null,
+  name: '',
+  section_code: '',
+  capacity: 30,
+  class_teacher_id: null,
+  assistant_teacher_id: null,
+  is_active: true,
+})
+
+function submit() {
+  form.post('/academic/classes')
+}
+</script>
+
+<template>
+  <Head :title="t('classes.addNew')" />
+
+  <VCard>
+    <VCardItem>
+      <VCardTitle>{{ t('classes.addNew') }}</VCardTitle>
+      <VCardSubtitle>{{ t('classes.subtitle') }}</VCardSubtitle>
+    </VCardItem>
+
+    <VDivider />
+
+    <VCardText>
+      <form @submit.prevent="submit">
+        <ClassForm
+          :form="form"
+          :academic-years="academicYears"
+          :grade-levels="gradeLevels"
+          :branches="branches"
+          :classrooms="classrooms"
+          :teachers="teachers"
+        />
+      </form>
+    </VCardText>
+
+    <VDivider />
+
+    <VCardText class="d-flex justify-end gap-3">
+      <VBtn
+        variant="tonal"
+        color="secondary"
+        :href="'/academic/classes'"
+        :as="Link"
+      >
+        {{ t('common.cancel') }}
+      </VBtn>
+      <VBtn
+        :loading="form.processing"
+        @click="submit"
+      >
+        {{ t('common.save') }}
+      </VBtn>
+    </VCardText>
+  </VCard>
+</template>

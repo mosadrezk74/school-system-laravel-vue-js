@@ -44,6 +44,11 @@ class SchoolClass extends BaseModel
         return $this->belongsTo(User::class, 'class_teacher_id');
     }
 
+    public function assistantTeacher(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assistant_teacher_id');
+    }
+
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class, 'branch_id');

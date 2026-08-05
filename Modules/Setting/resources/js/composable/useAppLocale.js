@@ -31,12 +31,24 @@ export const useAppLocale = () => {
    */
   const page = usePage()
 
+  /*
+   * Last-resort entry so the switcher always has something to render even if
+   * both the live props and the module-load snapshot come back empty (e.g.
+   * an unseeded `languages` table). Language::active() now guarantees a
+   * non-empty `languages` prop server-side, so this should never be reached
+   * in practice — it exists to fail gracefully, not to paper over the real
+   * fix.
+   */
+  const FALLBACK_LOCALE = { code: locale.value || 'en', label: 'EN', dir: 'ltr' }
+
   const locales = computed(() => {
     const fromServer = page.props.languages ?? []
 
-    return fromServer.length
+    const list = fromServer.length
       ? fromServer.map(l => ({ code: l.locale, label: l.name, dir: l.direction }))
       : SUPPORTED_LOCALES
+
+    return list.length ? list : [FALLBACK_LOCALE]
   })
 
   const currentLocale = computed(() =>
