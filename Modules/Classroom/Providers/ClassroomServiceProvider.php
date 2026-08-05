@@ -2,45 +2,29 @@
 
 namespace Modules\Classroom\Providers;
 
-use Illuminate\Console\Scheduling\Schedule;
-use Nwidart\Modules\Support\ModuleServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
+use Modules\Classroom\Interfaces\Repositories\ClassroomRepositoryInterface;
+use Modules\Classroom\Models\Classroom;
+use Modules\Classroom\Policies\ClassroomPolicy;
+use Modules\Classroom\Repositories\ClassroomRepository;
 
-class ClassroomServiceProvider extends ModuleServiceProvider
+class ClassroomServiceProvider extends ServiceProvider
 {
-    /**
-     * The name of the module.
-     */
-    protected string $name = 'Classroom';
+    public function register(): void
+    {
+        $this->app->bind(
+            ClassroomRepositoryInterface::class,
+            ClassroomRepository::class
+        );
+    }
 
-    /**
-     * The lowercase version of the module name.
-     */
-    protected string $nameLower = 'classroom';
+    public function boot(): void
+    {
+        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'classroom');
+        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
 
-    /**
-     * Command classes to register.
-     *
-     * @var string[]
-     */
-    // protected array $commands = [];
-
-    /**
-     * Provider classes to register.
-     *
-     * @var string[]
-     */
-    protected array $providers = [
-        EventServiceProvider::class,
-        RouteServiceProvider::class,
-    ];
-
-    /**
-     * Define module schedules.
-     *
-     * @param  $schedule
-     */
-    // protected function configureSchedules(Schedule $schedule): void
-    // {
-    //     $schedule->command('inspire')->hourly();
-    // }
+        Gate::policy(Classroom::class, ClassroomPolicy::class);
+    }
 }

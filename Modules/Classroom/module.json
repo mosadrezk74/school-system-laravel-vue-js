@@ -1,11 +1,12 @@
 {
     "name": "Classroom",
     "alias": "classroom",
-    "description": "",
+    "description": "Classroom Management Module",
     "keywords": [],
-    "priority": 0,
+    "active": 1,
+    "order": 0,
     "providers": [
         "Modules\\Classroom\\Providers\\ClassroomServiceProvider"
     ],
-    "files": []
+    "aliases": {}
 }

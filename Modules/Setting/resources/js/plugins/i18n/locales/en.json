@@ -14,6 +14,7 @@
     "subjects": "Subjects",
     "teachers": "Teachers",
     "guardians": "Guardians",
+    "classrooms": "Classrooms",
     "behavior": "Behavior & Discipline",
     "behaviorRecords": "Behavior Records",
     "branches": "Branches",
@@ -630,6 +631,62 @@
     "search": "Search by name or code",
     "empty": "No subjects yet. Add your first subject to get started.",
     "view": "View"
- 
-}
+},
+  "classroom": {
+    "title": "Classrooms",
+    "subtitle": "Manage school classrooms and facilities.",
+    "addNew": "Add New Classroom",
+    "edit": "Edit Classroom",
+    "created": "Classroom created successfully.",
+    "updated": "Classroom updated successfully.",
+    "archived": "Classroom archived successfully.",
+    "restored": "Classroom restored successfully.",
+    "code_already_exists": "A classroom with this code already exists.",
+    "classroom_not_found": "Classroom not found.",
+    "fields": {
+      "name": "Name",
+      "code": "Code",
+      "branch_id": "Branch",
+      "capacity": "Capacity",
+      "floor": "Floor",
+      "building": "Building",
+      "room_type": "Room Type",
+      "has_projector": "Has Projector",
+      "has_smartboard": "Has Smartboard",
+      "is_active": "Active"
+    },
+    "hints": {
+      "name": "Required. Classroom name or identifier.",
+      "code": "Optional. Unique classroom code (e.g., R101).",
+      "branch_id": "Required. Branch where this classroom is located.",
+      "capacity": "Optional. Maximum number of students. Default: 30.",
+      "floor": "Optional. Floor number (e.g., 1, 2, 3).",
+      "building": "Optional. Building name or number.",
+      "room_type": "Required. Type of room (Classroom, Lab, Library, etc.).",
+      "has_projector": "Check if classroom has a projector.",
+      "has_smartboard": "Check if classroom has a smartboard.",
+      "is_active": "Classroom is available for scheduling."
+    },
+    "sections": {
+      "basic": "Basic Information",
+      "location": "Location",
+      "facilities": "Facilities",
+      "status": "Status"
+    },
+    "types": {
+      "classroom": "Classroom",
+      "lab": "Laboratory",
+      "library": "Library",
+      "auditorium": "Auditorium",
+      "gym": "Gymnasium",
+      "music_room": "Music Room",
+      "art_room": "Art Room",
+      "computer_lab": "Computer Lab",
+      "science_lab": "Science Lab"
+    },
+    "confirmArchive": "Archive this classroom? An administrator can restore it later.",
+    "search": "Search by name or code",
+    "empty": "No classrooms yet. Add your first classroom to get started.",
+    "view": "View"
+  }
 }
