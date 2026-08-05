@@ -17,8 +17,8 @@ class UpdateStudentRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $userId],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $userId],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$userId],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$userId],
             'password' => ['nullable', 'string', 'min:8'],
             'gender' => ['required', 'string', 'in:male,female'],
             'birth_date' => ['nullable', 'date'],

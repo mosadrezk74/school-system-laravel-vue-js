@@ -3,6 +3,7 @@
 namespace Modules\Core\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 trait HasSearchTrait
 {
@@ -12,8 +13,8 @@ trait HasSearchTrait
      * Only fields on that allow-list are ever queried, so a caller cannot
      * probe arbitrary columns.
      *
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
-     * @return Builder<\Illuminate\Database\Eloquent\Model>
+     * @param  Builder<Model>  $query
+     * @return Builder<Model>
      */
     protected function applySearch(Builder $query, ?string $term): Builder
     {

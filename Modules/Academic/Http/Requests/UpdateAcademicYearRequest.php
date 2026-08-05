@@ -3,6 +3,7 @@
 namespace Modules\Academic\Http\Requests;
 
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 use Modules\Core\Abstracts\BaseRequest;
 
 class UpdateAcademicYearRequest extends BaseRequest
@@ -36,9 +37,9 @@ class UpdateAcademicYearRequest extends BaseRequest
      * end_date alone, and the rule would then compare against nothing. Fall
      * back to the stored start_date when the payload omits it.
      */
-    public function withValidator(\Illuminate\Validation\Validator $validator): void
+    public function withValidator(Validator $validator): void
     {
-        $validator->after(function (\Illuminate\Validation\Validator $validator): void {
+        $validator->after(function (Validator $validator): void {
             if (! $this->has('end_date')) {
                 return;
             }

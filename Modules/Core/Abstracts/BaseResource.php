@@ -17,12 +17,14 @@ abstract class BaseResource extends JsonResource
     protected function getIncludes(): array
     {
         $includes = request()->input('include', '');
+
         return $includes ? explode(',', $includes) : [];
     }
 
     protected function getFields(): array
     {
         $fields = request()->input('fields', '');
+
         return $fields ? explode(',', $fields) : [];
     }
 
@@ -31,6 +33,7 @@ abstract class BaseResource extends JsonResource
         if ($this->resource->relationLoaded($relation)) {
             return $this->whenLoaded($relation);
         }
+
         return null;
     }
 

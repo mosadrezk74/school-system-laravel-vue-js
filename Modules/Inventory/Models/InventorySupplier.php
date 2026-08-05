@@ -7,6 +7,7 @@ use Modules\Core\Abstracts\BaseModel;
 class InventorySupplier extends BaseModel
 {
     protected $table = 'inventory_suppliers';
+
     /**
      * @return array<string, string>
      */

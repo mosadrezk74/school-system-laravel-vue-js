@@ -11,6 +11,7 @@ use Modules\Student\Models\StudentProfile;
 class Invoice extends BaseModel
 {
     protected $table = 'invoices';
+
     /**
      * @return array<string, string>
      */
@@ -26,14 +27,17 @@ class Invoice extends BaseModel
             'balance_due' => 'decimal:2',
         ];
     }
+
     public function student(): BelongsTo
     {
         return $this->belongsTo(StudentProfile::class, 'student_id');
     }
+
     public function academicYear(): BelongsTo
     {
         return $this->belongsTo(AcademicYear::class, 'academic_year_id');
     }
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

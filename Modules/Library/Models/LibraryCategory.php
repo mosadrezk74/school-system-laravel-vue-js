@@ -5,7 +5,6 @@ namespace Modules\Library\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Abstracts\BaseModel;
 use Spatie\Translatable\HasTranslations;
-use Modules\Library\Models\LibraryCategory;
 
 class LibraryCategory extends BaseModel
 {
@@ -20,6 +19,7 @@ class LibraryCategory extends BaseModel
     public array $translatable = ['name'];
 
     protected $table = 'library_categories';
+
     /**
      * @return array<string, string>
      */
@@ -29,6 +29,7 @@ class LibraryCategory extends BaseModel
             'is_active' => 'boolean',
         ];
     }
+
     public function parentCategory(): BelongsTo
     {
         return $this->belongsTo(LibraryCategory::class, 'parent_category_id');

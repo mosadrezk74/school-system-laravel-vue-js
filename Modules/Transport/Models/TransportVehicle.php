@@ -9,6 +9,7 @@ use Modules\Core\Abstracts\BaseModel;
 class TransportVehicle extends BaseModel
 {
     protected $table = 'transport_vehicles';
+
     /**
      * @return array<string, string>
      */
@@ -19,6 +20,7 @@ class TransportVehicle extends BaseModel
             'is_active' => 'boolean',
         ];
     }
+
     public function driver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'driver_id');

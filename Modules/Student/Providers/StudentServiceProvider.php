@@ -3,8 +3,8 @@
 namespace Modules\Student\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Modules\Student\Repositories\StudentRepositoryInterface;
 use Modules\Student\Repositories\StudentRepository;
+use Modules\Student\Repositories\StudentRepositoryInterface;
 
 class StudentServiceProvider extends ServiceProvider
 {
@@ -18,6 +18,6 @@ class StudentServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
     }
 }

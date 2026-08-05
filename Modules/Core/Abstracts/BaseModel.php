@@ -20,7 +20,7 @@ abstract class BaseModel extends Model
 
     public function getCacheKey(): string
     {
-        return class_basename($this) . ':' . $this->id;
+        return class_basename($this).':'.$this->id;
     }
 
     public function touchCache(): void
@@ -36,6 +36,7 @@ abstract class BaseModel extends Model
                 $data[$include] = $this->$include->toArray();
             }
         }
+
         return $data;
     }
 }

@@ -18,8 +18,8 @@ class CoreServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'core');
-        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'core');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
 
         $this->registerModulePageNamespaces();
     }

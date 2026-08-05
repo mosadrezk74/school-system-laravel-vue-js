@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Modules\Auth\Enums\UserRole;
 use Modules\Student\Models\StudentProfile;
 use Spatie\Permission\Traits\HasRoles;
+
 /**
  * @property int $id
  * @property string $ulid
@@ -57,7 +58,6 @@ class User extends Authenticatable
     use HasRoles {
         hasPermissionTo as private spatieHasPermissionTo;
     }
-
     use Notifiable;
 
     // Staff and student records are referenced by invoices, results and
@@ -81,6 +81,7 @@ class User extends Authenticatable
             'role' => UserRole::class,
         ];
     }
+
     public function studentProfile(): HasOne
     {
         return $this->hasOne(StudentProfile::class, 'user_id');

@@ -2,8 +2,8 @@
 
 namespace Modules\Core\Abstracts;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Modules\Core\Traits\ApiResponseTrait;
 use Propaganistas\LaravelPhone\PhoneNumber;
@@ -75,13 +75,14 @@ abstract class BaseRequest extends FormRequest
         foreach ($keys as $key) {
             unset($data[$key]);
         }
+
         return $data;
     }
 
     public function onlyFilled(): array
     {
         return array_filter($this->validated(), function ($value) {
-            return !is_null($value) && $value !== '';
+            return ! is_null($value) && $value !== '';
         });
     }
 }

@@ -3,6 +3,7 @@
 namespace Modules\Core\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 trait HasSortingTrait
 {
@@ -12,8 +13,8 @@ trait HasSortingTrait
      * reaching the database, which keeps `?sort=` from becoming an injection
      * or information-disclosure vector.
      *
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
-     * @return Builder<\Illuminate\Database\Eloquent\Model>
+     * @param  Builder<Model>  $query
+     * @return Builder<Model>
      */
     protected function applySorting(
         Builder $query,

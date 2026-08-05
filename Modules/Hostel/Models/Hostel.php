@@ -10,6 +10,7 @@ use Modules\Core\Abstracts\BaseModel;
 class Hostel extends BaseModel
 {
     protected $table = 'hostels';
+
     /**
      * @return array<string, string>
      */
@@ -19,10 +20,12 @@ class Hostel extends BaseModel
             'is_active' => 'boolean',
         ];
     }
+
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class, 'branch_id');
     }
+
     public function warden(): BelongsTo
     {
         return $this->belongsTo(User::class, 'warden_id');

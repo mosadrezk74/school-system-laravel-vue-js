@@ -9,6 +9,7 @@ use Modules\Core\Abstracts\BaseModel;
 class Conversation extends BaseModel
 {
     protected $table = 'conversations';
+
     /**
      * @return array<string, string>
      */
@@ -18,6 +19,7 @@ class Conversation extends BaseModel
             'last_message_at' => 'datetime',
         ];
     }
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

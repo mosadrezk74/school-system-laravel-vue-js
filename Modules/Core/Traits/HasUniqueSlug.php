@@ -4,15 +4,14 @@ namespace Modules\Core\Traits;
 
 use Illuminate\Support\Str;
 
-
 trait HasUniqueSlug
 {
     public static function bootHasUniqueSlug(): void
     {
         static::saving(function ($model) {
-                    if (empty($model->slug)) {
-                        $model->slug = $model->generateUniqueSlug();
-                    }
+            if (empty($model->slug)) {
+                $model->slug = $model->generateUniqueSlug();
+            }
         });
     }
 
@@ -27,7 +26,7 @@ trait HasUniqueSlug
                 ->when($this->exists, fn ($query) => $query->where($this->getKeyName(), '!=', $this->getKey()))
                 ->exists()
         ) {
-            $slug = $base . '-' . Str::lower(Str::random(5));
+            $slug = $base.'-'.Str::lower(Str::random(5));
         }
 
         return $slug;

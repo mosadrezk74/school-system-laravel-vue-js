@@ -1,36 +1,46 @@
 <?php
+
 namespace Modules\Core\Exceptions;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Modules\Core\Constants\HttpStatus;
 
 class BaseException extends Exception
 {
-    protected array $errors   = [];
+    protected array $errors = [];
+
     protected int $statusCode;
 
     public function __construct(
-        string      $message    = 'Something went wrong',
-        int         $statusCode = HttpStatus::INTERNAL_SERVER_ERROR,
-        array       $errors     = [],
-        ?\Throwable $previous   = null
+        string $message = 'Something went wrong',
+        int $statusCode = HttpStatus::INTERNAL_SERVER_ERROR,
+        array $errors = [],
+        ?\Throwable $previous = null
     ) {
         parent::__construct($message, $statusCode, $previous);
-        $this->errors     = $errors;
+        $this->errors = $errors;
         $this->statusCode = $statusCode;
     }
 
-    public function getErrors(): array   { return $this->errors; }
-    public function getStatusCode(): int { return $this->statusCode; }
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
 
-    public function render(): \Illuminate\Http\JsonResponse
+    public function getStatusCode(): int
+    {
+        return $this->statusCode;
+    }
+
+    public function render(): JsonResponse
     {
         $response = [
-            'status'  => 'error',
+            'status' => 'error',
             'message' => $this->getMessage(),
         ];
 
-        if (!empty($this->errors)) {
+        if (! empty($this->errors)) {
             $response['errors'] = $this->errors;
         }
 

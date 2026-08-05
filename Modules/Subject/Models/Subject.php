@@ -20,6 +20,7 @@ class Subject extends BaseModel
     public array $translatable = ['name', 'description'];
 
     protected $table = 'subjects';
+
     /**
      * @return array<string, string>
      */
@@ -31,6 +32,7 @@ class Subject extends BaseModel
             'is_active' => 'boolean',
         ];
     }
+
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class, 'branch_id');

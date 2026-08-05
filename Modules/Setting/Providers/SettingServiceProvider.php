@@ -2,12 +2,12 @@
 
 namespace Modules\Setting\Providers;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Modules\Setting\Models\Language;
 use Modules\Setting\Policies\LanguagePolicy;
 use Nwidart\Modules\Support\ModuleServiceProvider;
-use Illuminate\Console\Scheduling\Schedule;
 
 class SettingServiceProvider extends ModuleServiceProvider
 {
@@ -60,8 +60,8 @@ class SettingServiceProvider extends ModuleServiceProvider
 
     /**
      * Define module schedules.
-     * 
-     * @param $schedule
+     *
+     * @param  $schedule
      */
     // protected function configureSchedules(Schedule $schedule): void
     // {

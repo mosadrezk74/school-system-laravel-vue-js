@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\Core\Abstracts;
 
 use Modules\Core\Interfaces\EntityInterface;

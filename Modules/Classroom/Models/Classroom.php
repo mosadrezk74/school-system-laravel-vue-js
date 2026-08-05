@@ -9,6 +9,7 @@ use Modules\Core\Abstracts\BaseModel;
 class Classroom extends BaseModel
 {
     protected $table = 'classrooms';
+
     /**
      * @return array<string, string>
      */
@@ -20,6 +21,7 @@ class Classroom extends BaseModel
             'is_active' => 'boolean',
         ];
     }
+
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class, 'branch_id');

@@ -10,12 +10,13 @@ use Modules\Core\Traits\ApiResponseTrait;
 
 abstract class BaseController extends LaravelController
 {
-    use AuthorizesRequests, ValidatesRequests, ApiResponseTrait;
+    use ApiResponseTrait, AuthorizesRequests, ValidatesRequests;
 
     protected function getPaginationPerPage(): int
     {
         return $this->getLimit();
     }
+
     protected function getLimit(): int
     {
         return min(
@@ -45,12 +46,14 @@ abstract class BaseController extends LaravelController
     protected function getIncludes(): array
     {
         $includes = request()->input('include', '');
+
         return $includes ? explode(',', $includes) : [];
     }
 
     protected function getFields(): array
     {
         $fields = request()->input('fields', '');
+
         return $fields ? explode(',', $fields) : [];
     }
 }

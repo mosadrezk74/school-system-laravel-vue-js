@@ -32,6 +32,7 @@ abstract class BaseEnum
         foreach (static::all() as $key => $value) {
             $labels[$value] = static::label($value);
         }
+
         return $labels;
     }
 
@@ -45,6 +46,7 @@ abstract class BaseEnum
                 'key' => $key,
             ];
         }
+
         return $options;
     }
 
@@ -61,6 +63,7 @@ abstract class BaseEnum
     public static function random(): string
     {
         $values = static::values();
+
         return $values[array_rand($values)];
     }
 }

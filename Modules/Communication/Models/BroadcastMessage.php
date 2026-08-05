@@ -9,6 +9,7 @@ use Modules\Core\Abstracts\BaseModel;
 class BroadcastMessage extends BaseModel
 {
     protected $table = 'broadcast_messages';
+
     /**
      * @return array<string, string>
      */
@@ -20,6 +21,7 @@ class BroadcastMessage extends BaseModel
             'sent_at' => 'datetime',
         ];
     }
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

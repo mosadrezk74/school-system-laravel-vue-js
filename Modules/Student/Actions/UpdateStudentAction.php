@@ -18,6 +18,7 @@ class UpdateStudentAction
     {
         try {
             $user = $this->repository->findWithProfile($id);
+
             return $this->repository->update($user, $data);
         } catch (Throwable $e) {
             throw StudentOperationException::updateFailed($e->getMessage());

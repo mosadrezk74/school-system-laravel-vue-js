@@ -18,6 +18,7 @@ class BehaviorCategory extends BaseModel
     public array $translatable = ['name'];
 
     protected $table = 'behavior_categories';
+
     /**
      * @return array<string, string>
      */

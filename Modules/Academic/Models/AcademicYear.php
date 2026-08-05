@@ -3,6 +3,7 @@
 namespace Modules\Academic\Models;
 
 use App\Models\User;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,8 +14,8 @@ use Modules\Core\Abstracts\BaseModel;
  * @property int $id
  * @property string $name
  * @property string|null $code
- * @property \Carbon\CarbonInterface $start_date
- * @property \Carbon\CarbonInterface $end_date
+ * @property CarbonInterface $start_date
+ * @property CarbonInterface $end_date
  * @property bool $is_current
  * @property bool $is_active
  */

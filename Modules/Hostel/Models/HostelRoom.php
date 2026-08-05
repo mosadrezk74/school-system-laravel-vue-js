@@ -4,12 +4,13 @@ namespace Modules\Hostel\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Hostel\Models\Hostel;
 
 class HostelRoom extends Model
 {
     protected $table = 'hostel_rooms';
+
     protected $guarded = ['id'];
+
     /**
      * @return array<string, string>
      */
@@ -20,6 +21,7 @@ class HostelRoom extends Model
             'is_available' => 'boolean',
         ];
     }
+
     public function hostel(): BelongsTo
     {
         return $this->belongsTo(Hostel::class, 'hostel_id');

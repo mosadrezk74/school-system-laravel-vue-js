@@ -2,11 +2,13 @@
 
 namespace Modules\Core\Abstracts;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 abstract class BaseDTO
 {
     protected static array $fillable = [];
+
     protected static array $casts = [];
 
     public function __construct(array $data = [])
@@ -21,6 +23,7 @@ abstract class BaseDTO
                 $this->{$field} = $this->cast($field, $data[$field]);
             }
         }
+
         return $this;
     }
 
@@ -42,6 +45,7 @@ abstract class BaseDTO
                 $data[$field] = $this->{$field};
             }
         }
+
         return $data;
     }
 
@@ -52,7 +56,7 @@ abstract class BaseDTO
 
     protected function cast(string $field, mixed $value): mixed
     {
-        if (!isset(static::$casts[$field])) {
+        if (! isset(static::$casts[$field])) {
             return $value;
         }
 
@@ -62,7 +66,7 @@ abstract class BaseDTO
             'bool', 'boolean' => (bool) $value,
             'string' => (string) $value,
             'array', 'json' => json_decode($value, true),
-            'datetime', 'date' => \Carbon\Carbon::parse($value),
+            'datetime', 'date' => Carbon::parse($value),
             default => $value,
         };
     }
@@ -72,6 +76,7 @@ abstract class BaseDTO
         if (property_exists($this, $name)) {
             return $this->{$name};
         }
+
         return null;
     }
 
@@ -89,17 +94,20 @@ abstract class BaseDTO
     {
         if (str_starts_with($name, 'get')) {
             $field = lcfirst(substr($name, 3));
+
             return $this->{$field} ?? null;
         }
 
         if (str_starts_with($name, 'set')) {
             $field = lcfirst(substr($name, 3));
             $this->{$field} = $arguments[0] ?? null;
+
             return $this;
         }
 
         if (str_starts_with($name, 'has')) {
             $field = lcfirst(substr($name, 3));
+
             return isset($this->{$field});
         }
 

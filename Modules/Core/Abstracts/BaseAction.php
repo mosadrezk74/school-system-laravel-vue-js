@@ -16,6 +16,7 @@ abstract class BaseAction implements ActionInterface
         try {
             $result = $callback();
             \DB::commit();
+
             return $result;
         } catch (\Exception $e) {
             \DB::rollBack();
@@ -35,7 +36,7 @@ abstract class BaseAction implements ActionInterface
      */
     protected function authorize(string $permission, mixed $resource = null): void
     {
-        if (!auth()->user()?->can($permission, $resource)) {
+        if (! auth()->user()?->can($permission, $resource)) {
             throw BaseException::forbidden();
         }
     }

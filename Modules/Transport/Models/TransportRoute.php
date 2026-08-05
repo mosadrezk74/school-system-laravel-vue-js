@@ -9,6 +9,7 @@ use Modules\Core\Abstracts\BaseModel;
 class TransportRoute extends BaseModel
 {
     protected $table = 'transport_routes';
+
     /**
      * @return array<string, string>
      */
@@ -19,6 +20,7 @@ class TransportRoute extends BaseModel
             'is_active' => 'boolean',
         ];
     }
+
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class, 'branch_id');

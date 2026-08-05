@@ -5,11 +5,11 @@ namespace Modules\Library\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Abstracts\BaseModel;
-use Modules\Library\Models\LibraryItem;
 
 class LibraryBorrowing extends BaseModel
 {
     protected $table = 'library_borrowings';
+
     /**
      * @return array<string, string>
      */
@@ -23,14 +23,17 @@ class LibraryBorrowing extends BaseModel
             'fine_paid' => 'boolean',
         ];
     }
+
     public function libraryItem(): BelongsTo
     {
         return $this->belongsTo(LibraryItem::class, 'library_item_id');
     }
+
     public function borrower(): BelongsTo
     {
         return $this->belongsTo(User::class, 'borrower_id');
     }
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

@@ -9,6 +9,7 @@ use Modules\Core\Abstracts\BaseModel;
 class ReportTemplate extends BaseModel
 {
     protected $table = 'report_templates';
+
     /**
      * @return array<string, string>
      */
@@ -21,6 +22,7 @@ class ReportTemplate extends BaseModel
             'is_active' => 'boolean',
         ];
     }
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

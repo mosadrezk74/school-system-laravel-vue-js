@@ -7,6 +7,7 @@ use Modules\Core\Abstracts\BaseModel;
 class MessageTemplate extends BaseModel
 {
     protected $table = 'message_templates';
+
     /**
      * @return array<string, string>
      */

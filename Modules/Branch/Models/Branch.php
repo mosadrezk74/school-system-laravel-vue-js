@@ -9,6 +9,7 @@ use Modules\Core\Abstracts\BaseModel;
 class Branch extends BaseModel
 {
     protected $table = 'branches';
+
     /**
      * @return array<string, string>
      */
@@ -21,6 +22,7 @@ class Branch extends BaseModel
             'longitude' => 'decimal:8',
         ];
     }
+
     public function manager(): BelongsTo
     {
         return $this->belongsTo(User::class, 'manager_id');

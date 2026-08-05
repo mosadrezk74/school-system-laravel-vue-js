@@ -3,12 +3,12 @@
 namespace Modules\Student\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\RedirectResponse;
 use Modules\Student\Actions\CreateStudentAction;
-use Modules\Student\Actions\UpdateStudentAction;
 use Modules\Student\Actions\DeleteStudentAction;
+use Modules\Student\Actions\UpdateStudentAction;
 use Modules\Student\DTOs\StudentData;
 use Modules\Student\Http\Requests\StoreStudentRequest;
 use Modules\Student\Http\Requests\UpdateStudentRequest;

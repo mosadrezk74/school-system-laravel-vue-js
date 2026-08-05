@@ -9,6 +9,7 @@ trait CacheableTrait
     protected function cacheRemember(string $key, mixed $data, int $ttl = 3600): mixed
     {
         $key = $this->getCacheKey($key);
+
         return Cache::remember($key, $ttl, function () use ($data) {
             return is_callable($data) ? $data() : $data;
         });
@@ -17,6 +18,7 @@ trait CacheableTrait
     protected function cacheRememberForever(string $key, mixed $data): mixed
     {
         $key = $this->getCacheKey($key);
+
         return Cache::rememberForever($key, function () use ($data) {
             return is_callable($data) ? $data() : $data;
         });
@@ -48,7 +50,7 @@ trait CacheableTrait
         $result = true;
 
         foreach ($keys as $key) {
-            if (!Cache::forget($key)) {
+            if (! Cache::forget($key)) {
                 $result = false;
             }
         }
@@ -59,6 +61,7 @@ trait CacheableTrait
     protected function getCacheKey(string $key): string
     {
         $prefix = $this->getCachePrefix();
+
         return "{$prefix}_{$key}";
     }
 
@@ -95,6 +98,7 @@ trait CacheableTrait
     {
         if (method_exists(Cache::getStore(), 'tags')) {
             Cache::tags($tags)->flush();
+
             return true;
         }
 

@@ -12,6 +12,7 @@ trait ValidationTrait
         if ($validator->fails()) {
             throw new \Exception(json_encode($validator->errors()->toArray()), 422);
         }
+
         return $validator->validated();
     }
 
@@ -22,7 +23,7 @@ trait ValidationTrait
 
     protected function validateExists(string $model, int $id, string $field = 'id'): void
     {
-        if (!$model::where($field, $id)->exists()) {
+        if (! $model::where($field, $id)->exists()) {
             throw new \Exception('Record not found', 404);
         }
     }

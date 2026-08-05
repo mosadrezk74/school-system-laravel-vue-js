@@ -18,6 +18,7 @@ class GradeLevel extends BaseModel
     public array $translatable = ['name', 'description'];
 
     protected $table = 'grade_levels';
+
     /**
      * @return array<string, string>
      */

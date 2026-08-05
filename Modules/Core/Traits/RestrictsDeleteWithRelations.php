@@ -23,7 +23,6 @@ trait RestrictsDeleteWithRelations
         });
     }
 
-
     public function blockingRelations(): array
     {
         $blocking = [];

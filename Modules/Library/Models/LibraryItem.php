@@ -5,11 +5,11 @@ namespace Modules\Library\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Branch\Models\Branch;
 use Modules\Core\Abstracts\BaseModel;
-use Modules\Library\Models\LibraryCategory;
 
 class LibraryItem extends BaseModel
 {
     protected $table = 'library_items';
+
     /**
      * @return array<string, string>
      */
@@ -22,10 +22,12 @@ class LibraryItem extends BaseModel
             'is_active' => 'boolean',
         ];
     }
+
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class, 'branch_id');
     }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(LibraryCategory::class, 'category_id');

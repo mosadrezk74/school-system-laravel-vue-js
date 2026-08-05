@@ -16,6 +16,7 @@ class DeleteStudentAction
     {
         try {
             $user = $this->repository->findWithProfile($id);
+
             return $this->repository->delete($user);
         } catch (Throwable $e) {
             throw StudentOperationException::deleteFailed($e->getMessage());

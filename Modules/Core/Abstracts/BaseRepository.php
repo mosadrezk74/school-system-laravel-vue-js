@@ -2,8 +2,8 @@
 
 namespace Modules\Core\Abstracts;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Interfaces\RepositoryInterface;
 use Modules\Core\Traits\CacheableTrait;
 
@@ -12,9 +12,13 @@ abstract class BaseRepository implements RepositoryInterface
     use CacheableTrait;
 
     protected Model $model;
+
     protected array $searchableFields = [];
+
     protected array $filterableFields = [];
+
     protected array $sortableFields = ['created_at'];
+
     protected int $cacheTtl = 3600;
 
     public function __construct(Model $model)
@@ -25,6 +29,7 @@ abstract class BaseRepository implements RepositoryInterface
     public function findById(int $id): ?Model
     {
         $cacheKey = $this->getCacheKey("find_{$id}");
+
         return $this->cacheRemember($cacheKey, function () use ($id) {
             return $this->model->find($id);
         }, $this->cacheTtl);
@@ -37,7 +42,8 @@ abstract class BaseRepository implements RepositoryInterface
 
     public function findAll(array $filters = []): array
     {
-        $cacheKey = $this->getCacheKey('all_' . md5(json_encode($filters)));
+        $cacheKey = $this->getCacheKey('all_'.md5(json_encode($filters)));
+
         return $this->cacheRemember($cacheKey, function () use ($filters) {
             return $this->applyFilters($this->model->newQuery(), $filters)->get()->toArray();
         }, $this->cacheTtl);
@@ -52,6 +58,7 @@ abstract class BaseRepository implements RepositoryInterface
     {
         $model = $this->model->create($data);
         $this->cacheFlush();
+
         return $model;
     }
 
@@ -61,8 +68,10 @@ abstract class BaseRepository implements RepositoryInterface
         if ($model) {
             $model->update($data);
             $this->cacheFlush();
+
             return $model->fresh();
         }
+
         return null;
     }
 
@@ -72,14 +81,17 @@ abstract class BaseRepository implements RepositoryInterface
         if ($model) {
             $result = $model->delete();
             $this->cacheFlush();
+
             return $result;
         }
+
         return false;
     }
 
     public function findByField(string $field, mixed $value): ?Model
     {
         $cacheKey = $this->getCacheKey("field_{$field}_{$value}");
+
         return $this->cacheRemember($cacheKey, function () use ($field, $value) {
             return $this->model->where($field, $value)->first();
         }, $this->cacheTtl);
@@ -88,6 +100,7 @@ abstract class BaseRepository implements RepositoryInterface
     public function findManyByField(string $field, mixed $value): array
     {
         $cacheKey = $this->getCacheKey("many_{$field}_{$value}");
+
         return $this->cacheRemember($cacheKey, function () use ($field, $value) {
             return $this->model->where($field, $value)->get()->toArray();
         }, $this->cacheTtl);
@@ -124,8 +137,10 @@ abstract class BaseRepository implements RepositoryInterface
         if ($model) {
             $result = $model->restore();
             $this->cacheFlush();
+
             return $result;
         }
+
         return false;
     }
 
@@ -135,8 +150,10 @@ abstract class BaseRepository implements RepositoryInterface
         if ($model) {
             $result = $model->forceDelete();
             $this->cacheFlush();
+
             return $result;
         }
+
         return false;
     }
 
@@ -152,6 +169,7 @@ abstract class BaseRepository implements RepositoryInterface
                 $query->orderBy($field, $direction);
             }
         }
+
         return $query;
     }
 

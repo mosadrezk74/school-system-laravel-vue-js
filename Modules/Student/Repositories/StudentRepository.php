@@ -130,6 +130,7 @@ class StudentRepository
     {
         return DB::transaction(function () use ($user) {
             $user->studentProfile()?->delete();
+
             return (bool) $user->delete();
         });
     }

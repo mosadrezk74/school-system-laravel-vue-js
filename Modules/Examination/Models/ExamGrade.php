@@ -10,7 +10,9 @@ use Modules\Subject\Models\Subject;
 class ExamGrade extends Model
 {
     protected $table = 'exam_grades';
+
     protected $guarded = ['id'];
+
     /**
      * @return array<string, string>
      */
@@ -23,10 +25,12 @@ class ExamGrade extends Model
             'is_passing' => 'boolean',
         ];
     }
+
     public function gradeLevel(): BelongsTo
     {
         return $this->belongsTo(GradeLevel::class, 'grade_level_id');
     }
+
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class, 'subject_id');

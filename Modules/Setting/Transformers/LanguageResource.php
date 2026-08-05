@@ -4,9 +4,10 @@ namespace Modules\Setting\Transformers;
 
 use Illuminate\Http\Request;
 use Modules\Core\Abstracts\BaseResource;
+use Modules\Setting\Models\Language;
 
 /**
- * @mixin \Modules\Setting\Models\Language
+ * @mixin Language
  */
 class LanguageResource extends BaseResource
 {

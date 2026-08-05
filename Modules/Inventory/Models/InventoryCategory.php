@@ -5,7 +5,6 @@ namespace Modules\Inventory\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Abstracts\BaseModel;
 use Spatie\Translatable\HasTranslations;
-use Modules\Inventory\Models\InventoryCategory;
 
 class InventoryCategory extends BaseModel
 {
@@ -20,6 +19,7 @@ class InventoryCategory extends BaseModel
     public array $translatable = ['name'];
 
     protected $table = 'inventory_categories';
+
     /**
      * @return array<string, string>
      */
@@ -29,6 +29,7 @@ class InventoryCategory extends BaseModel
             'is_active' => 'boolean',
         ];
     }
+
     public function parentCategory(): BelongsTo
     {
         return $this->belongsTo(InventoryCategory::class, 'parent_category_id');

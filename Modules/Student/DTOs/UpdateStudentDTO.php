@@ -60,7 +60,7 @@ readonly class UpdateStudentDTO
             'is_active' => $this->isActive,
         ];
 
-        if (!empty($this->password)) {
+        if (! empty($this->password)) {
             $data['password'] = bcrypt($this->password);
         }
 

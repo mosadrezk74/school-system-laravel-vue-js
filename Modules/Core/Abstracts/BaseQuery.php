@@ -3,6 +3,7 @@
 namespace Modules\Core\Abstracts;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modules\Core\Constants\Pagination;
 use Modules\Core\Traits\CacheableTrait;
@@ -14,11 +15,17 @@ abstract class BaseQuery
     use HasPaginationTrait;
 
     protected Builder $query;
+
     protected array $filters = [];
+
     protected array $searchableFields = [];
+
     protected array $filterableFields = [];
+
     protected array $sortableFields = ['created_at'];
+
     protected array $withRelations = [];
+
     protected int $cacheTtl = 3600;
 
     public function __construct()
@@ -31,12 +38,14 @@ abstract class BaseQuery
     public function with(array $relations): self
     {
         $this->withRelations = array_merge($this->withRelations, $relations);
+
         return $this;
     }
 
     public function where(array $filters): self
     {
         $this->filters = array_merge($this->filters, $filters);
+
         return $this;
     }
 
@@ -60,21 +69,24 @@ abstract class BaseQuery
         if (in_array($field, $this->sortableFields)) {
             $this->query->orderBy($field, $direction);
         }
+
         return $this;
     }
 
     public function limit(int $limit): self
     {
         $this->query->limit($limit);
+
         return $this;
     }
 
-    public function get(): \Illuminate\Database\Eloquent\Collection
+    public function get(): Collection
     {
         return $this->applyFilters()
             ->with($this->withRelations)
             ->get();
     }
+
     /**
      * $perPage is clamped: it usually arrives straight from ?per_page= , and
      * an unbounded value would let a client pull an entire table in one call.

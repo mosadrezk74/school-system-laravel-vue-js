@@ -2,8 +2,8 @@
 
 namespace Modules\Core\Abstracts;
 
-use Modules\Core\Interfaces\ServiceInterface;
 use Modules\Core\Interfaces\RepositoryInterface;
+use Modules\Core\Interfaces\ServiceInterface;
 use Modules\Core\Traits\CacheableTrait;
 use Modules\Core\Traits\ValidationTrait;
 
@@ -12,6 +12,7 @@ abstract class BaseService implements ServiceInterface
     use CacheableTrait, ValidationTrait;
 
     protected RepositoryInterface $repository;
+
     protected array $validationRules = [];
 
     public function __construct(RepositoryInterface $repository)
@@ -45,6 +46,7 @@ abstract class BaseService implements ServiceInterface
         $this->beforeCreate($data);
         $result = $this->repository->create($data);
         $this->afterCreate($result);
+
         return $result;
     }
 
@@ -54,6 +56,7 @@ abstract class BaseService implements ServiceInterface
         $this->beforeUpdate($id, $data);
         $result = $this->repository->update($id, $data);
         $this->afterUpdate($result);
+
         return $result;
     }
 
@@ -62,14 +65,20 @@ abstract class BaseService implements ServiceInterface
         $this->beforeDelete($id);
         $result = $this->repository->delete($id);
         $this->afterDelete($id);
+
         return $result;
     }
 
     protected function beforeCreate(array &$data): void {}
+
     protected function afterCreate($model): void {}
+
     protected function beforeUpdate(int $id, array &$data): void {}
+
     protected function afterUpdate($model): void {}
+
     protected function beforeDelete(int $id): void {}
+
     protected function afterDelete(int $id): void {}
 
     protected function validate(array $data, bool $isUpdate = false): void
@@ -92,6 +101,7 @@ abstract class BaseService implements ServiceInterface
                 $rules[$field] = $rule;
             }
         }
+
         return $rules;
     }
 

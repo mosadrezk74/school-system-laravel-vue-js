@@ -10,6 +10,7 @@ use Modules\SchoolClass\Models\SchoolClass;
 class FeeDiscount extends BaseModel
 {
     protected $table = 'fee_discounts';
+
     /**
      * @return array<string, string>
      */
@@ -23,10 +24,12 @@ class FeeDiscount extends BaseModel
             'is_active' => 'boolean',
         ];
     }
+
     public function class(): BelongsTo
     {
         return $this->belongsTo(SchoolClass::class, 'class_id');
     }
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

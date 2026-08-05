@@ -13,6 +13,7 @@ use Modules\Subject\Models\Subject;
 class Assignment extends BaseModel
 {
     protected $table = 'assignments';
+
     /**
      * @return array<string, string>
      */
@@ -26,30 +27,37 @@ class Assignment extends BaseModel
             'is_published' => 'boolean',
         ];
     }
+
     public function class(): BelongsTo
     {
         return $this->belongsTo(SchoolClass::class, 'class_id');
     }
+
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class, 'subject_id');
     }
+
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'teacher_id');
     }
+
     public function academicYear(): BelongsTo
     {
         return $this->belongsTo(AcademicYear::class, 'academic_year_id');
     }
+
     public function semester(): BelongsTo
     {
         return $this->belongsTo(Semester::class, 'semester_id');
     }
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');

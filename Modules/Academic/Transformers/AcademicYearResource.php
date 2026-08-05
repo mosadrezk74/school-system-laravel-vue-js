@@ -3,10 +3,11 @@
 namespace Modules\Academic\Transformers;
 
 use Illuminate\Http\Request;
+use Modules\Academic\Models\AcademicYear;
 use Modules\Core\Abstracts\BaseResource;
 
 /**
- * @mixin \Modules\Academic\Models\AcademicYear
+ * @mixin AcademicYear
  */
 class AcademicYearResource extends BaseResource
 {

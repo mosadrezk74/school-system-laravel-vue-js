@@ -4,13 +4,13 @@ namespace Modules\Finance\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Finance\Models\FeeStructure;
-use Modules\Finance\Models\Invoice;
 
 class InvoiceItem extends Model
 {
     protected $table = 'invoice_items';
+
     protected $guarded = ['id'];
+
     /**
      * @return array<string, string>
      */
@@ -22,10 +22,12 @@ class InvoiceItem extends Model
             'total' => 'decimal:2',
         ];
     }
+
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class, 'invoice_id');
     }
+
     public function feeStructure(): BelongsTo
     {
         return $this->belongsTo(FeeStructure::class, 'fee_structure_id');

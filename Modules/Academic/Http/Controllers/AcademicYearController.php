@@ -22,7 +22,7 @@ class AcademicYearController extends BaseInertiaController
 {
     public function index(Request $request): Response
     {
-        $query = new AcademicYearQuery();
+        $query = new AcademicYearQuery;
 
         if ($search = $request->string(Pagination::SEARCH_PARAM)->toString()) {
             $query->search($search);

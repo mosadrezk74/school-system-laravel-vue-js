@@ -18,6 +18,7 @@ class FeeCategory extends BaseModel
     public array $translatable = ['name', 'description'];
 
     protected $table = 'fee_categories';
+
     /**
      * @return array<string, string>
      */

@@ -7,6 +7,7 @@ use Modules\Core\Abstracts\BaseModel;
 class SchoolSetting extends BaseModel
 {
     protected $table = 'school_settings';
+
     /**
      * @return array<string, string>
      */
