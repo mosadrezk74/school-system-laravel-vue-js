@@ -82,6 +82,7 @@ class StudentResource extends BaseResource
 
             'guardians' => $this->whenLoaded('guardians', fn () => $this->guardians->map(fn ($guardianStudent) => [
                 'id' => $guardianStudent->id,
+                'parent_id' => $guardianStudent->parent_id,
                 'relationship' => $guardianStudent->relationship,
                 'is_primary_contact' => $guardianStudent->is_primary_contact,
                 'name' => $guardianStudent->parent?->user?->name,

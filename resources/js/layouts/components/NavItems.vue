@@ -32,13 +32,20 @@ const { t } = useI18n()
     }"
   />
 
-  <!-- 👉 Student Management -->
+  <!-- 👉 User Management -->
   <VerticalNavSectionTitle :item="{ heading: t('nav.user_management') }" />
   <VerticalNavLink
     :item="{
       title: t('nav.students'),
       to: '/user-management/students',
       icon: 'bx-user',
+    }"
+  />
+  <VerticalNavLink
+    :item="{
+      title: t('nav.teachers'),
+      to: '/user-management/teachers',
+      icon: 'bx-briefcase-alt-2',
     }"
   />
   <VerticalNavLink
@@ -68,8 +75,6 @@ const { t } = useI18n()
 
   <!-- 👉 Settings -->
   <VerticalNavSectionTitle :item="{ heading: t('nav.settings') }" />
-  
-  <!-- 🔴 NEW: Branches Link Added Here -->
   <VerticalNavLink
     :item="{
       title: t('nav.branches'),
@@ -77,7 +82,6 @@ const { t } = useI18n()
       icon: 'bx-store-alt',
     }"
   />
-  
   <VerticalNavLink
     :item="{
       title: t('nav.languages'),

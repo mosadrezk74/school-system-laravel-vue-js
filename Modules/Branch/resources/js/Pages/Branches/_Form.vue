@@ -1,11 +1,19 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   form: { type: Object, required: true },
   managers: { type: Array, default: () => [] },
   isEdit: { type: Boolean, default: false },
 })
+
+const { t } = useI18n()
+
+// A trailing "*" on the label is the one cue every field needs, required or
+// not — leaving it off already reads as optional, so there's no separate
+// "Optional" marker to maintain in sync.
+const required = label => `${label} *`
 
 const activeTab = ref('basic')
 
@@ -19,18 +27,11 @@ const tabFields = {
 const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[field])
 
 // Manager options
-const managerOptions = computed(() => 
+const managerOptions = computed(() =>
   props.managers.map(m => ({
     title: `${m.name} (${m.email})`,
     value: m.id,
-  }))
-)
-
-// Helper to format coordinates
-const formatCoordinate = (value) => {
-  if (value === null || value === undefined || value === '') return null
-  return parseFloat(value)
-}
+  })))
 </script>
 
 <template>
@@ -59,11 +60,25 @@ const formatCoordinate = (value) => {
   <VWindow v-model="activeTab" class="mt-6 disable-tab-transition">
     <!-- Basic Information Tab -->
     <VWindowItem value="basic">
+      <div class="d-flex align-center gap-3 mb-6">
+        <VAvatar color="primary" variant="tonal" size="40">
+          <VIcon icon="bx-building" />
+        </VAvatar>
+        <div>
+          <h6 class="text-h6">
+            {{ $t('branch.sections.basic') }}
+          </h6>
+          <p class="text-body-2 text-medium-emphasis mb-0">
+            {{ $t('branch.sections.basicDesc') }}
+          </p>
+        </div>
+      </div>
+
       <VRow>
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.name"
-            :label="$t('branch.fields.name')"
+            :label="required(t('branch.fields.name'))"
             :hint="$t('branch.hints.name')"
             persistent-hint
             :error-messages="form.errors.name"
@@ -107,6 +122,20 @@ const formatCoordinate = (value) => {
 
     <!-- Location Tab -->
     <VWindowItem value="location">
+      <div class="d-flex align-center gap-3 mb-6">
+        <VAvatar color="primary" variant="tonal" size="40">
+          <VIcon icon="bx-map-pin" />
+        </VAvatar>
+        <div>
+          <h6 class="text-h6">
+            {{ $t('branch.sections.location') }}
+          </h6>
+          <p class="text-body-2 text-medium-emphasis mb-0">
+            {{ $t('branch.sections.locationDesc') }}
+          </p>
+        </div>
+      </div>
+
       <VRow>
         <VCol cols="12" md="6">
           <VTextField
@@ -141,12 +170,25 @@ const formatCoordinate = (value) => {
         <VCol cols="12" md="6">
           <!-- Empty spacer for alignment -->
         </VCol>
-
       </VRow>
     </VWindowItem>
 
     <!-- Management Tab -->
     <VWindowItem value="management">
+      <div class="d-flex align-center gap-3 mb-6">
+        <VAvatar color="primary" variant="tonal" size="40">
+          <VIcon icon="bx-user" />
+        </VAvatar>
+        <div>
+          <h6 class="text-h6">
+            {{ $t('branch.sections.management') }}
+          </h6>
+          <p class="text-body-2 text-medium-emphasis mb-0">
+            {{ $t('branch.sections.managementDesc') }}
+          </p>
+        </div>
+      </div>
+
       <VRow>
         <VCol cols="12" md="8">
           <VSelect
@@ -169,6 +211,18 @@ const formatCoordinate = (value) => {
 </template>
 
 <style scoped>
+/*
+ * The field-level hint doubles as help text here, not a brief input format
+ * note, so it needs to read clearly as secondary/quiet — smaller and greyer
+ * than the label above it, matching the .text-caption/.text-medium-emphasis
+ * pair already used for the switch captions in this same form.
+ *
+ * The template's own _field.scss colours the hint with the active theme
+ * colour while a field is focused (v-messages inherits that colour), so
+ * `color` has to be forced here too — opacity alone isn't enough to override
+ * it back to a neutral grey. Scoped to :not(.v-input--error) so a real
+ * validation message underneath still shows in the theme's error colour.
+ */
 :deep(.v-input:not(.v-input--error) .v-messages) {
   color: rgb(var(--v-theme-on-surface));
   font-size: 0.75rem;

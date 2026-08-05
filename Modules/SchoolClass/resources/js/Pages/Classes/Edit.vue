@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import ClassForm from './_Form.vue'
 
 const props = defineProps({
-  schoolClass: {
+  class: {
     type: Object,
     required: true,
   },
@@ -33,20 +33,20 @@ const props = defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  branch_id: props.schoolClass.branch_id,
-  grade_level_id: props.schoolClass.grade_level_id,
-  academic_year_id: props.schoolClass.academic_year_id,
-  classroom_id: props.schoolClass.classroom_id,
-  name: props.schoolClass.name,
-  section_code: props.schoolClass.section_code,
-  capacity: props.schoolClass.capacity,
-  class_teacher_id: props.schoolClass.class_teacher_id,
-  assistant_teacher_id: props.schoolClass.assistant_teacher_id,
-  is_active: props.schoolClass.is_active,
+  branch_id: props.class.branch_id,
+  grade_level_id: props.class.grade_level_id,
+  academic_year_id: props.class.academic_year_id,
+  classroom_id: props.class.classroom_id,
+  name: props.class.name,
+  section_code: props.class.section_code,
+  capacity: props.class.capacity,
+  class_teacher_id: props.class.class_teacher_id,
+  assistant_teacher_id: props.class.assistant_teacher_id,
+  is_active: props.class.is_active,
 })
 
 function submit() {
-  form.put(`/academic/classes/${props.schoolClass.id}`)
+  form.put(`/academic/classes/${props.class.id}`)
 }
 </script>
 
@@ -60,7 +60,7 @@ function submit() {
       </VCardTitle>
 
       <VCardSubtitle>
-        {{ schoolClass.name }} {{ schoolClass.section_code }}
+        {{ $props.class.name }} {{ $props.class.section_code }}
       </VCardSubtitle>
     </VCardItem>
 

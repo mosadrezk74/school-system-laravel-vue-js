@@ -1,5 +1,5 @@
-<x-teacher::layouts.master>
+<x-student::layouts.master>
     <h1>Hello World</h1>
 
-    <p>Module: {!! config('teacher.name') !!}</p>
-</x-teacher::layouts.master>
+    <p>Module: {!! config('student.name') !!}</p>
+</x-student::layouts.master>

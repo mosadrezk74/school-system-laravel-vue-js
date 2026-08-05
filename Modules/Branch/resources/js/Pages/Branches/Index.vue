@@ -101,6 +101,7 @@ const filterOptions = {
   <VCard>
     <VCardItem>
       <VCardTitle>{{ t('branch.title') }}</VCardTitle>
+      <VCardSubtitle>{{ t('branch.subtitle') }}</VCardSubtitle>
 
       <template #append>
         <VBtn
@@ -114,6 +115,8 @@ const filterOptions = {
         </VBtn>
       </template>
     </VCardItem>
+
+    <VDivider />
 
     <VCardText>
       <VRow>
@@ -208,7 +211,8 @@ const filterOptions = {
       </template>
 
       <template #no-data>
-        <div class="pa-8 text-center text-disabled">
+        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
+          <VIcon icon="bx-building" size="40" class="mb-2" />
           {{ t('common.empty') }}
         </div>
       </template>

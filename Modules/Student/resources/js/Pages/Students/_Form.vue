@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -7,6 +8,13 @@ const props = defineProps({
   classes: { type: Array, default: () => [] },
   isEdit: { type: Boolean, default: false },
 })
+
+const { t } = useI18n()
+
+// A trailing "*" on the label is the one cue every field needs, required or
+// not — leaving it off already reads as optional, so there's no separate
+// "Optional" marker to maintain in sync.
+const required = label => `${label} *`
 
 // A class belongs to exactly one academic year, so the picker only ever
 // offers classes that match the year currently selected above it.
@@ -72,11 +80,25 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
 
   <VWindow v-model="activeTab" class="mt-6 disable-tab-transition">
     <VWindowItem value="account">
+      <div class="d-flex align-center gap-3 mb-6">
+        <VAvatar color="primary" variant="tonal" size="40">
+          <VIcon icon="bx-user" />
+        </VAvatar>
+        <div>
+          <h6 class="text-h6">
+            {{ $t('students.sections.account') }}
+          </h6>
+          <p class="text-body-2 text-medium-emphasis mb-0">
+            {{ $t('students.sections.accountDesc') }}
+          </p>
+        </div>
+      </div>
+
       <VRow>
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.name"
-            :label="$t('students.name')"
+            :label="required(t('students.name'))"
             :hint="$t('students.hints.name')"
             persistent-hint
             :error-messages="form.errors.name"
@@ -88,7 +110,7 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
           <VTextField
             v-model="form.email"
             type="email"
-            :label="$t('students.email')"
+            :label="required(t('students.email'))"
             :hint="$t('students.hints.email')"
             persistent-hint
             :error-messages="form.errors.email"
@@ -99,7 +121,7 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.username"
-            :label="$t('students.username')"
+            :label="required(t('students.username'))"
             :hint="$t('students.hints.username')"
             persistent-hint
             :error-messages="form.errors.username"
@@ -111,7 +133,7 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
           <VTextField
             v-model="form.password"
             type="password"
-            :label="$t('students.password')"
+            :label="isEdit ? t('students.password') : required(t('students.password'))"
             :hint="isEdit ? $t('students.hints.passwordHint') : $t('students.hints.password')"
             persistent-hint
             :error-messages="form.errors.password"
@@ -126,7 +148,7 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
               { title: $t('students.male'), value: 'male' },
               { title: $t('students.female'), value: 'female' },
             ]"
-            :label="$t('students.gender')"
+            :label="required(t('students.gender'))"
             :hint="$t('students.hints.gender')"
             persistent-hint
             :error-messages="form.errors.gender"
@@ -178,12 +200,26 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
     </VWindowItem>
 
     <VWindowItem value="enrollment">
+      <div class="d-flex align-center gap-3 mb-6">
+        <VAvatar color="primary" variant="tonal" size="40">
+          <VIcon icon="bx-book-open" />
+        </VAvatar>
+        <div>
+          <h6 class="text-h6">
+            {{ $t('students.sections.enrollment') }}
+          </h6>
+          <p class="text-body-2 text-medium-emphasis mb-0">
+            {{ $t('students.sections.enrollmentDesc') }}
+          </p>
+        </div>
+      </div>
+
       <VRow>
         <VCol cols="12" md="4">
           <VSelect
             v-model="form.academic_year_id"
             :items="academicYears.map(y => ({ title: y.name, value: y.id }))"
-            :label="$t('students.academicYear')"
+            :label="required(t('students.academicYear'))"
             :hint="$t('students.hints.academicYear')"
             persistent-hint
             :error-messages="form.errors.academic_year_id"
@@ -208,7 +244,7 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
           <VTextField
             v-model="form.admission_date"
             type="date"
-            :label="$t('students.admissionDate')"
+            :label="required(t('students.admissionDate'))"
             :hint="$t('students.hints.admissionDate')"
             persistent-hint
             :error-messages="form.errors.admission_date"
@@ -262,6 +298,20 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
     </VWindowItem>
 
     <VWindowItem value="guardians">
+      <div class="d-flex align-center gap-3 mb-6">
+        <VAvatar color="primary" variant="tonal" size="40">
+          <VIcon icon="bx-group" />
+        </VAvatar>
+        <div>
+          <h6 class="text-h6">
+            {{ $t('students.sections.guardians') }}
+          </h6>
+          <p class="text-body-2 text-medium-emphasis mb-0">
+            {{ $t('students.sections.guardiansDesc') }}
+          </p>
+        </div>
+      </div>
+
       <VRow>
         <VCol cols="12" md="6">
           <VTextField
@@ -356,6 +406,20 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
     </VWindowItem>
 
     <VWindowItem value="medical">
+      <div class="d-flex align-center gap-3 mb-6">
+        <VAvatar color="primary" variant="tonal" size="40">
+          <VIcon icon="bx-first-aid" />
+        </VAvatar>
+        <div>
+          <h6 class="text-h6">
+            {{ $t('students.sections.medical') }}
+          </h6>
+          <p class="text-body-2 text-medium-emphasis mb-0">
+            {{ $t('students.sections.medicalDesc') }}
+          </p>
+        </div>
+      </div>
+
       <VRow>
         <VCol cols="12" md="4">
           <VTextField

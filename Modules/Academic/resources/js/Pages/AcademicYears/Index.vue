@@ -10,6 +10,11 @@ const props = defineProps({
 
 const { t } = useI18n()
 
+// A trailing "*" on the label is the one cue every field needs, required or
+// not — leaving it off already reads as optional, so there's no separate
+// "Optional" marker to maintain in sync.
+const required = label => `${label} *`
+
 const search = ref(props.filters.search ?? '')
 
 // Debounced so typing doesn't fire a visit per keystroke. preserveState keeps
@@ -112,6 +117,7 @@ function goToPage(page) {
   <VCard>
     <VCardItem>
       <VCardTitle>{{ t('academicYears.title') }}</VCardTitle>
+      <VCardSubtitle>{{ t('academicYears.subtitle') }}</VCardSubtitle>
 
       <template #append>
         <VBtn
@@ -177,7 +183,8 @@ function goToPage(page) {
       </template>
 
       <template #no-data>
-        <div class="pa-8 text-center text-disabled">
+        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
+          <VIcon icon="bx-calendar" size="40" class="mb-2" />
           {{ t('academicYears.empty') }}
         </div>
       </template>
@@ -206,6 +213,9 @@ function goToPage(page) {
         <VCardTitle>
           {{ editing ? t('academicYears.edit') : t('academicYears.create') }}
         </VCardTitle>
+        <VCardSubtitle>
+          {{ t('academicYears.dialogDescription') }}
+        </VCardSubtitle>
       </VCardItem>
 
       <VCardText>
@@ -216,8 +226,9 @@ function goToPage(page) {
           >
             <VTextField
               v-model="form.name"
-              :label="t('academicYears.name')"
+              :label="required(t('academicYears.name'))"
               :error-messages="form.errors.name"
+              required
             />
           </VCol>
           <VCol
@@ -237,8 +248,9 @@ function goToPage(page) {
             <VTextField
               v-model="form.start_date"
               type="date"
-              :label="t('academicYears.startDate')"
+              :label="required(t('academicYears.startDate'))"
               :error-messages="form.errors.start_date"
+              required
             />
           </VCol>
           <VCol
@@ -248,8 +260,9 @@ function goToPage(page) {
             <VTextField
               v-model="form.end_date"
               type="date"
-              :label="t('academicYears.endDate')"
+              :label="required(t('academicYears.endDate'))"
               :error-messages="form.errors.end_date"
+              required
             />
           </VCol>
           <VCol

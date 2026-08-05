@@ -1,16 +1,39 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
 defineProps({
   form: { type: Object, required: true },
   isEdit: { type: Boolean, default: false },
 })
+
+const { t } = useI18n()
+
+// A trailing "*" on the label is the one cue every field needs, required or
+// not — leaving it off already reads as optional, so there's no separate
+// "Optional" marker to maintain in sync.
+const required = label => `${label} *`
 </script>
 
 <template>
+  <div class="d-flex align-center gap-3 mb-6">
+    <VAvatar color="primary" variant="tonal" size="40">
+      <VIcon icon="bx-user" />
+    </VAvatar>
+    <div>
+      <h6 class="text-h6">
+        {{ $t('guardians.sections.account') }}
+      </h6>
+      <p class="text-body-2 text-medium-emphasis mb-0">
+        {{ $t('guardians.sections.accountDesc') }}
+      </p>
+    </div>
+  </div>
+
   <VRow>
     <VCol cols="12" md="6">
       <VTextField
         v-model="form.name"
-        :label="$t('guardians.name')"
+        :label="required(t('guardians.name'))"
         :hint="$t('guardians.hints.name')"
         persistent-hint
         :error-messages="form.errors.name"
@@ -22,7 +45,7 @@ defineProps({
       <VTextField
         v-model="form.email"
         type="email"
-        :label="$t('guardians.email')"
+        :label="required(t('guardians.email'))"
         :hint="$t('guardians.hints.email')"
         persistent-hint
         :error-messages="form.errors.email"
@@ -33,7 +56,7 @@ defineProps({
     <VCol cols="12" md="6">
       <VTextField
         v-model="form.username"
-        :label="$t('guardians.username')"
+        :label="required(t('guardians.username'))"
         :hint="$t('guardians.hints.username')"
         persistent-hint
         :error-messages="form.errors.username"
@@ -45,7 +68,7 @@ defineProps({
       <VTextField
         v-model="form.password"
         type="password"
-        :label="$t('guardians.password')"
+        :label="isEdit ? t('guardians.password') : required(t('guardians.password'))"
         :hint="isEdit ? $t('guardians.hints.passwordHint') : $t('guardians.hints.password')"
         persistent-hint
         :error-messages="form.errors.password"

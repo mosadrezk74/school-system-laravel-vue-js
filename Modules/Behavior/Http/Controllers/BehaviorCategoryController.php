@@ -1,0 +1,79 @@
+<?php
+
+namespace Modules\Behavior\Http\Controllers;
+
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Response;
+use Modules\Behavior\Actions\CreateBehaviorCategoryAction;
+use Modules\Behavior\Actions\DeleteBehaviorCategoryAction;
+use Modules\Behavior\Actions\UpdateBehaviorCategoryAction;
+use Modules\Behavior\DTOs\BehaviorCategoryDTO;
+use Modules\Behavior\Http\Requests\StoreBehaviorCategoryRequest;
+use Modules\Behavior\Http\Requests\UpdateBehaviorCategoryRequest;
+use Modules\Behavior\Models\BehaviorCategory;
+use Modules\Behavior\Queries\BehaviorCategoryQuery;
+use Modules\Behavior\Transformers\BehaviorCategoryResource;
+use Modules\Core\Abstracts\BaseInertiaController;
+use Modules\Core\Constants\Pagination;
+
+class BehaviorCategoryController extends BaseInertiaController
+{
+    public function index(Request $request): Response
+    {
+        $this->authorize('viewAny', BehaviorCategory::class);
+
+        $query = new BehaviorCategoryQuery;
+
+        if ($search = $request->string(Pagination::SEARCH_PARAM)->toString()) {
+            $query->search($search);
+        }
+
+        $query->sort(
+            $request->string(Pagination::SORT_PARAM, Pagination::DEFAULT_SORT)->toString(),
+            $request->string(Pagination::ORDER_PARAM, Pagination::DEFAULT_ORDER)->toString(),
+        );
+
+        $categories = $query->paginate(
+            $request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE),
+        );
+
+        return $this->render('Behavior::Categories/Index', [
+            'categories' => BehaviorCategoryResource::collection($categories),
+            'filters' => $request->only([Pagination::SEARCH_PARAM]),
+        ]);
+    }
+
+    public function store(StoreBehaviorCategoryRequest $request, CreateBehaviorCategoryAction $action): RedirectResponse
+    {
+        $this->authorize('create', BehaviorCategory::class);
+
+        $action->execute(BehaviorCategoryDTO::fromRequest($request));
+
+        return $this->backWithSuccess(__('behavior::behavior.category_created'));
+    }
+
+    public function update(
+        UpdateBehaviorCategoryRequest $request,
+        BehaviorCategory $category,
+        UpdateBehaviorCategoryAction $action,
+    ): RedirectResponse {
+        $this->authorize('update', $category);
+
+        $action->execute([
+            'category' => $category,
+            'dto' => BehaviorCategoryDTO::fromRequest($request),
+        ]);
+
+        return $this->backWithSuccess(__('behavior::behavior.category_updated'));
+    }
+
+    public function destroy(BehaviorCategory $category, DeleteBehaviorCategoryAction $action): RedirectResponse
+    {
+        $this->authorize('delete', $category);
+
+        $action->execute($category);
+
+        return $this->backWithSuccess(__('behavior::behavior.category_deleted'));
+    }
+}

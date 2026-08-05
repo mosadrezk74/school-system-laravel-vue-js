@@ -11,18 +11,35 @@ const props = defineProps({
 const { t } = useI18n()
 
 const search = ref(props.filters.search ?? '')
+const status = ref(props.filters.is_active ?? null)
+
+// Omit the key entirely when cleared, rather than sending an empty string:
+// $request->has('is_active') would still be true for '', so the backend
+// would read that as an explicit "false" instead of "no filter".
+function buildQuery(extra = {}) {
+  const query = { search: search.value, ...extra }
+
+  if (status.value !== null)
+    query.is_active = status.value
+
+  return query
+}
+
+function applyFilters() {
+  router.get('/user-management/students', buildQuery(), {
+    preserveState: true,
+    preserveScroll: true,
+    replace: true,
+  })
+}
 
 let searchTimer
-watch(search, value => {
+watch(search, () => {
   clearTimeout(searchTimer)
-  searchTimer = setTimeout(() => {
-    router.get('/user-management/students', { search: value }, {
-      preserveState: true,
-      preserveScroll: true,
-      replace: true,
-    })
-  }, 350)
+  searchTimer = setTimeout(applyFilters, 350)
 })
+
+watch(status, applyFilters)
 
 const headers = computed(() => [
   { title: t('students.name'), key: 'name' },
@@ -42,7 +59,7 @@ function archive(item) {
 }
 
 function goToPage(page) {
-  router.get('/user-management/students', { page, search: search.value }, {
+  router.get('/user-management/students', buildQuery({ page }), {
     preserveState: true,
     preserveScroll: true,
   })
@@ -55,6 +72,7 @@ function goToPage(page) {
   <VCard>
     <VCardItem>
       <VCardTitle>{{ t('students.title') }}</VCardTitle>
+      <VCardSubtitle>{{ t('students.subtitle') }}</VCardSubtitle>
 
       <template #append>
         <VBtn
@@ -68,14 +86,29 @@ function goToPage(page) {
       </template>
     </VCardItem>
 
-    <VCardText>
+    <VDivider />
+
+    <VCardText class="d-flex flex-wrap gap-4">
       <VTextField
         v-model="search"
         :label="t('students.search')"
         prepend-inner-icon="bx-search"
         clearable
         density="compact"
-        style="max-inline-size: 360px;"
+        style="max-inline-size: 360px; flex: 1 1 260px;"
+      />
+
+      <VSelect
+        v-model="status"
+        :label="t('common.filter')"
+        :items="[
+          { title: t('common.all'), value: null },
+          { title: t('students.active'), value: true },
+          { title: t('students.inactive'), value: false },
+        ]"
+        density="compact"
+        clearable
+        style="max-inline-size: 200px;"
       />
     </VCardText>
 
@@ -115,7 +148,8 @@ function goToPage(page) {
       </template>
 
       <template #no-data>
-        <div class="pa-8 text-center text-disabled">
+        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
+          <VIcon icon="bx-user" size="40" class="mb-2" />
           {{ t('students.empty') }}
         </div>
       </template>

@@ -6,6 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Academic\Models\AcademicYear;
+use Modules\Behavior\Models\BehaviorRecord;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
 use Modules\SchoolClass\Models\SchoolClass;
@@ -86,8 +87,19 @@ class StudentController extends BaseInertiaController
             'guardians.parent.user',
         ]);
 
+        // Kept as a separate light query rather than a relation on
+        // StudentProfile: Behavior is a separate module and this is the only
+        // place the Student module needs to reach into it, so a direct query
+        // here avoids coupling the two models together for one summary list.
+        $recentBehaviorRecords = BehaviorRecord::where('student_id', $student->id)
+            ->with('behaviorCategory')
+            ->latest('date')
+            ->limit(5)
+            ->get();
+
         return $this->render('Student::Students/Show', [
             'student' => new StudentResource($student),
+            'recentBehaviorRecords' => $recentBehaviorRecords,
         ]);
     }
 
