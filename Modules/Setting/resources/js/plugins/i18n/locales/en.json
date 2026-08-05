@@ -11,6 +11,7 @@
     "settings": "Settings",
     "user_management": "User Management",
     "students": "Students",
+    "subjects": "Subjects",
     "teachers": "Teachers",
     "guardians": "Guardians",
     "behavior": "Behavior & Discipline",
@@ -566,5 +567,69 @@
       "description": "Optional. Additional details about the incident.",
       "status": "Required. Mark as reviewed once a staff member has confirmed this record."
     }
-  }
+  },
+  "subject": {
+    "title": "Subjects",
+    "subtitle": "Manage school subjects and academic disciplines.",
+    "addNew": "Add New Subject",
+    "edit": "Edit Subject",
+    "created": "Subject created successfully.",
+    "updated": "Subject updated successfully.",
+    "archived": "Subject archived successfully.",
+    "restored": "Subject restored successfully.",
+    "code_already_exists": "A subject with this code already exists.",
+    "subject_not_found": "Subject not found.",
+    "fields": {
+      "name": "Name",
+      "name_en": "Name (English)",
+      "name_ar": "Name (Arabic)",
+      "code": "Code",
+      "description": "Description",
+      "description_en": "Description (English)",
+      "description_ar": "Description (Arabic)",
+      "short_name": "Short Name",
+      "branch_id": "Branch",
+      "subject_type": "Subject Type",
+      "pass_grade": "Pass Grade",
+      "credit_hours": "Credit Hours",
+      "max_marks": "Maximum Marks",
+      "color": "Color",
+      "icon": "Icon",
+      "is_active": "Active"
+    },
+    "hints": {
+      "name": "Required. The name of the subject in all languages.",
+      "name_en": "Required. Subject name in English.",
+      "name_ar": "Required. Subject name in Arabic.",
+      "code": "Optional. Unique subject code (e.g., MATH101).",
+      "description": "Optional. Brief description of the subject.",
+      "description_en": "Optional. Description in English.",
+      "description_ar": "Optional. Description in Arabic.",
+      "short_name": "Optional. Abbreviated name (e.g., Math).",
+      "branch_id": "Optional. Branch where this subject is offered.",
+      "subject_type": "Required. Type of subject (Core, Elective, Extracurricular).",
+      "pass_grade": "Optional. Minimum grade required to pass (0-100). Default: 60.",
+      "credit_hours": "Optional. Number of credit hours for this subject. Default: 1.",
+      "max_marks": "Optional. Maximum marks for the subject. Default: 100.",
+      "color": "Optional. Color code for visual identification. Default: #2563eb.",
+      "icon": "Optional. Icon name for the subject.",
+      "is_active": "Subject is available for use in the system."
+    },
+    "sections": {
+      "basic": "Basic Information",
+      "details": "Subject Details",
+      "grading": "Grading & Credits",
+      "appearance": "Appearance"
+    },
+    "types": {
+      "core": "Core",
+      "elective": "Elective",
+      "extracurricular": "Extracurricular"
+    },
+    "confirmArchive": "Archive this subject? An administrator can restore it later.",
+    "search": "Search by name or code",
+    "empty": "No subjects yet. Add your first subject to get started.",
+    "view": "View"
+ 
+}
 }

@@ -31,6 +31,13 @@ const { t } = useI18n()
       icon: 'bx-chalkboard',
     }"
   />
+  <VerticalNavLink
+    :item="{
+      title: t('nav.subjects'),
+      to: '/academic/subjects',
+      icon: 'bx-book-open',
+    }"
+  />
 
   <!-- 👉 User Management -->
   <VerticalNavSectionTitle :item="{ heading: t('nav.user_management') }" />

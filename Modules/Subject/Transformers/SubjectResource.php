@@ -1,0 +1,39 @@
+<?php
+
+namespace Modules\Subject\Transformers;
+
+use Modules\Core\Abstracts\BaseResource;
+use Modules\Subject\Models\Subject;
+
+class SubjectResource extends BaseResource
+{
+    public function toArray($request): array
+    {
+        return [
+            'id' => $this->id,
+            'branch_id' => $this->branch_id,
+            'branch' => $this->whenLoaded('branch', fn() => [
+                'id' => $this->branch->id,
+                'name' => $this->branch->name,
+            ]),
+            'code' => $this->code,
+            'name' => $this->name,
+            'name_en' => $this->getTranslation('name', 'en'),
+            'name_ar' => $this->getTranslation('name', 'ar'),
+            'description' => $this->description,
+            'description_en' => $this->getTranslation('description', 'en'),
+            'description_ar' => $this->getTranslation('description', 'ar'),
+            'short_name' => $this->short_name,
+            'subject_type' => $this->subject_type,
+            'pass_grade' => (float) $this->pass_grade,
+            'credit_hours' => $this->credit_hours,
+            'max_marks' => (float) $this->max_marks,
+            'color' => $this->color,
+            'icon' => $this->icon,
+            'is_active' => (bool) $this->is_active,
+            'created_at' => $this->created_at?->toISOString(),
+            'updated_at' => $this->updated_at?->toISOString(),
+            'deleted_at' => $this->deleted_at?->toISOString(),
+        ];
+    }
+}

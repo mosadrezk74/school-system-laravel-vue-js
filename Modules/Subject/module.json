@@ -1,11 +1,12 @@
 {
     "name": "Subject",
     "alias": "subject",
-    "description": "",
+    "description": "Subject Management Module",
     "keywords": [],
-    "priority": 0,
+    "active": 1,
+    "order": 0,
     "providers": [
         "Modules\\Subject\\Providers\\SubjectServiceProvider"
     ],
-    "files": []
+    "aliases": {}
 }

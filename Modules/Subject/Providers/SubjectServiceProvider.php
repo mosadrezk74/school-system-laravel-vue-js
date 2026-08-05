@@ -2,45 +2,29 @@
 
 namespace Modules\Subject\Providers;
 
-use Illuminate\Console\Scheduling\Schedule;
-use Nwidart\Modules\Support\ModuleServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
+use Modules\Subject\Interfaces\Repositories\SubjectRepositoryInterface;
+use Modules\Subject\Models\Subject;
+use Modules\Subject\Policies\SubjectPolicy;
+use Modules\Subject\Repositories\SubjectRepository;
 
-class SubjectServiceProvider extends ModuleServiceProvider
+class SubjectServiceProvider extends ServiceProvider
 {
-    /**
-     * The name of the module.
-     */
-    protected string $name = 'Subject';
+    public function register(): void
+    {
+        $this->app->bind(
+            SubjectRepositoryInterface::class,
+            SubjectRepository::class
+        );
+    }
 
-    /**
-     * The lowercase version of the module name.
-     */
-    protected string $nameLower = 'subject';
+    public function boot(): void
+    {
+        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'subject');
+        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
 
-    /**
-     * Command classes to register.
-     *
-     * @var string[]
-     */
-    // protected array $commands = [];
-
-    /**
-     * Provider classes to register.
-     *
-     * @var string[]
-     */
-    protected array $providers = [
-        EventServiceProvider::class,
-        RouteServiceProvider::class,
-    ];
-
-    /**
-     * Define module schedules.
-     *
-     * @param  $schedule
-     */
-    // protected function configureSchedules(Schedule $schedule): void
-    // {
-    //     $schedule->command('inspire')->hourly();
-    // }
+        Gate::policy(Subject::class, SubjectPolicy::class);
+    }
 }
