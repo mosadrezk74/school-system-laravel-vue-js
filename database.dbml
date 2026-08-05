@@ -212,8 +212,6 @@ Table branches {
   manager_id bigint
   is_main tinyint(1) [default: 0]
   is_active tinyint(1) [default: 1]
-  latitude decimal(10,8)
-  longitude decimal(11,8)
   created_at timestamp
   updated_at timestamp
   deleted_at timestamp
@@ -517,43 +515,6 @@ Table staff_profiles {
     user_id [unique]
     employee_id [unique]
     department_id
-  }
-}
-
-Table departments {
-  id bigint [primary key, increment]
-  branch_id bigint
-  name varchar(100) [not null]
-  code varchar(50) [unique]
-  head_of_department_id bigint
-  parent_department_id bigint
-  is_active tinyint(1) [default: 1]
-  created_at timestamp
-  updated_at timestamp
-  deleted_at timestamp
-
-  indexes {
-    code [unique]
-    parent_department_id
-  }
-}
-
-Table employee_attendance {
-  id bigint [primary key, increment]
-  employee_id bigint [not null]
-  date date [not null]
-  check_in_time time
-  check_out_time time
-  worked_minutes int
-  status varchar(20) [not null]
-  overtime_hours decimal(5,2) [default: 0]
-  approved_by bigint
-  created_at timestamp
-  updated_at timestamp
-
-  indexes {
-    (employee_id, date) [unique]
-    status
   }
 }
 
@@ -1002,191 +963,6 @@ Table receipts {
     payment_id
   }
 }
-
-// ================================================================
-// LIBRARY
-// ================================================================
-
-Table library_categories {
-  id bigint [primary key, increment]
-  code varchar(50) [unique]
-  name json [not null]
-  parent_category_id bigint
-  is_active tinyint(1) [default: 1]
-  created_at timestamp
-  updated_at timestamp
-  deleted_at timestamp
-
-  indexes {
-    code [unique]
-    parent_category_id
-  }
-}
-
-Table library_items {
-  id bigint [primary key, increment]
-  branch_id bigint
-  isbn varchar(20) [unique]
-  title varchar(255) [not null]
-  authors json [not null]
-  publisher varchar(100)
-  publication_year year
-  language varchar(20)
-  category_id bigint
-  shelf_location varchar(50)
-  item_type varchar(15)
-  quantity smallint [default: 1]
-  available_quantity smallint [default: 1]
-  price decimal(10,2)
-  fine_per_day decimal(6,2)
-  max_borrow_days tinyint [default: 14]
-  is_active tinyint(1) [default: 1]
-  created_at timestamp
-  updated_at timestamp
-  deleted_at timestamp
-
-  indexes {
-    isbn [unique]
-    category_id
-  }
-}
-
-Table library_borrowings {
-  id bigint [primary key, increment]
-  library_item_id bigint [not null]
-  borrower_id bigint [not null]
-  borrower_type varchar(10)
-  borrowing_date date [not null]
-  due_date date [not null]
-  actual_return_date date
-  quantity smallint [default: 1]
-  status varchar(15)
-  fine_amount decimal(8,2) [default: 0]
-  fine_paid tinyint(1) [default: 0]
-  created_by bigint
-  created_at timestamp
-  updated_at timestamp
-  deleted_at timestamp
-
-  indexes {
-    (library_item_id, borrower_id, status)
-    due_date
-  }
-}
-
-// ================================================================
-// INVENTORY
-// ================================================================
-
-Table inventory_categories {
-  id bigint [primary key, increment]
-  code varchar(50) [unique]
-  name json [not null]
-  parent_category_id bigint
-  is_active tinyint(1) [default: 1]
-  created_at timestamp
-  updated_at timestamp
-  deleted_at timestamp
-
-  indexes {
-    code [unique]
-  }
-}
-
-Table inventory_items {
-  id bigint [primary key, increment]
-  branch_id bigint
-  category_id bigint [not null]
-  name varchar(255) [not null]
-  code varchar(50) [unique]
-  sku varchar(100)
-  barcode varchar(100)
-  unit varchar(15)
-  unit_price decimal(10,2)
-  reorder_level int [default: 0]
-  current_stock int [default: 0]
-  stock_status varchar(15)
-  is_active tinyint(1) [default: 1]
-  created_at timestamp
-  updated_at timestamp
-  deleted_at timestamp
-
-  indexes {
-    code [unique]
-    sku [unique]
-    category_id
-  }
-}
-
-Table inventory_stock_movements {
-  id bigint [primary key, increment]
-  item_id bigint [not null]
-  movement_type varchar(15) [not null]
-  quantity int [not null]
-  previous_stock int [not null]
-  new_stock int [not null]
-  unit_price decimal(10,2)
-  reference_type varchar(50)
-  reference_id bigint
-  created_by bigint
-  created_at timestamp
-
-  indexes {
-    item_id
-    (reference_type, reference_id)
-  }
-}
-
-Table inventory_suppliers {
-  id bigint [primary key, increment]
-  name varchar(255) [not null]
-  code varchar(50) [unique]
-  email varchar(200)
-  phone varchar(20)
-  contact_person varchar(255)
-  is_active tinyint(1) [default: 1]
-  created_at timestamp
-  updated_at timestamp
-  deleted_at timestamp
-
-  indexes {
-    code [unique]
-  }
-}
-
-Table inventory_purchases {
-  id bigint [primary key, increment]
-  supplier_id bigint [not null]
-  purchase_number varchar(50) [unique]
-  purchase_date date [not null]
-  total_amount decimal(10,2) [not null]
-  paid_amount decimal(10,2) [default: 0]
-  status varchar(15)
-  created_by bigint
-  created_at timestamp
-  updated_at timestamp
-  deleted_at timestamp
-
-  indexes {
-    purchase_number [unique]
-    supplier_id
-  }
-}
-
-Table inventory_purchase_items {
-  id bigint [primary key, increment]
-  purchase_id bigint [not null]
-  item_id bigint [not null]
-  quantity int [not null]
-  unit_price decimal(10,2) [not null]
-  received_quantity int [default: 0]
-  created_at timestamp
-
-  indexes {
-    (purchase_id, item_id) [unique]
-  }
-}
-
 // ================================================================
 // TRANSPORT
 // ================================================================
@@ -1260,63 +1036,6 @@ Table transport_assignments {
   }
 }
 
-// ================================================================
-// HOSTEL
-// ================================================================
-
-Table hostels {
-  id bigint [primary key, increment]
-  branch_id bigint
-  name varchar(100) [not null]
-  code varchar(50) [unique]
-  type varchar(10) [not null]
-  warden_id bigint
-  total_capacity smallint [default: 0]
-  current_occupancy smallint [default: 0]
-  is_active tinyint(1) [default: 1]
-  created_at timestamp
-  updated_at timestamp
-  deleted_at timestamp
-
-  indexes {
-    code [unique]
-  }
-}
-
-Table hostel_rooms {
-  id bigint [primary key, increment]
-  hostel_id bigint [not null]
-  room_number varchar(50) [not null]
-  capacity tinyint [not null]
-  current_occupancy tinyint [default: 0]
-  room_type varchar(15) [default: 'double']
-  monthly_fee decimal(8,2)
-  is_available tinyint(1) [default: 1]
-  created_at timestamp
-  updated_at timestamp
-
-  indexes {
-    (hostel_id, room_number) [unique]
-  }
-}
-
-Table hostel_assignments {
-  id bigint [primary key, increment]
-  student_id bigint [not null]
-  hostel_id bigint [not null]
-  room_id bigint [not null]
-  academic_year_id bigint [not null]
-  check_in_date date [not null]
-  check_out_date date
-  is_current tinyint(1) [default: 1]
-  created_at timestamp
-  updated_at timestamp
-  deleted_at timestamp
-
-  indexes {
-    (student_id, academic_year_id) [unique]
-  }
-}
 
 // ================================================================
 // DISCIPLINE
@@ -1356,37 +1075,7 @@ Table behavior_records {
     date
   }
 }
-
-// ================================================================
-// MEDIA -> spatie/laravel-medialibrary
-// ================================================================
-
-Table media {
-  id bigint [primary key, increment]
-  model_type varchar(100) [not null]
-  model_id bigint [not null]
-  uuid char(36) [unique]
-  collection_name varchar(100) [not null]
-  name varchar(255) [not null]
-  file_name varchar(255) [not null]
-  mime_type varchar(100)
-  disk varchar(50) [not null]
-  conversions_disk varchar(50)
-  size bigint [not null]
-  manipulations json
-  custom_properties json
-  generated_conversions json
-  responsive_images json
-  order_column int
-  created_at timestamp
-  updated_at timestamp
-
-  indexes {
-    (model_type, model_id)
-    uuid [unique]
-    order_column
-  }
-}
+ 
 
 // ================================================================
 // NOTIFICATIONS
@@ -1575,49 +1264,7 @@ Table languages {
     locale [unique]
   }
 }
-
-// ================================================================
-// JOBS / QUEUE
-// ================================================================
-
-Table jobs {
-  id bigint [primary key, increment]
-  queue varchar(255) [not null]
-  payload longtext [not null]
-  attempts tinyint [not null]
-  reserved_at int
-  available_at int [not null]
-  created_at int [not null]
-
-  indexes {
-    queue
-  }
-}
-
-Table failed_jobs {
-  id bigint [primary key, increment]
-  uuid varchar(255) [unique, not null]
-  connection text [not null]
-  queue text [not null]
-  payload longtext [not null]
-  exception longtext [not null]
-  failed_at timestamp
-}
-
-Table schedule_logs {
-  id bigint [primary key, increment]
-  job_name varchar(100)
-  started_at timestamp
-  completed_at timestamp
-  status varchar(10)
-  error_message text
-  created_at timestamp
-
-  indexes {
-    started_at
-  }
-}
-
+ 
 // ================================================================
 // RELATIONSHIPS
 // ================================================================

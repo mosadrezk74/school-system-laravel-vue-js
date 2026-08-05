@@ -1,5 +1,5 @@
-<x-branch::layouts.master>
+<x-student::layouts.master>
     <h1>Hello World</h1>
 
-    <p>Module: {!! config('branch.name') !!}</p>
-</x-branch::layouts.master>
+    <p>Module: {!! config('student.name') !!}</p>
+</x-student::layouts.master>

@@ -68,6 +68,16 @@ const { t } = useI18n()
 
   <!-- 👉 Settings -->
   <VerticalNavSectionTitle :item="{ heading: t('nav.settings') }" />
+  
+  <!-- 🔴 NEW: Branches Link Added Here -->
+  <VerticalNavLink
+    :item="{
+      title: t('nav.branches'),
+      to: '/settings/branches',
+      icon: 'bx-store-alt',
+    }"
+  />
+  
   <VerticalNavLink
     :item="{
       title: t('nav.languages'),

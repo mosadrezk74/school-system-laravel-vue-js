@@ -18,8 +18,6 @@ return new class extends Migration
             $table->unsignedBigInteger('manager_id')->nullable();
             $table->boolean('is_main')->default(false);
             $table->boolean('is_active')->default(true);
-            $table->decimal('latitude', 10, 8)->nullable();
-            $table->decimal('longitude', 11, 8)->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->unique('code');
