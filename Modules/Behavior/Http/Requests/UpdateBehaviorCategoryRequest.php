@@ -15,7 +15,7 @@ class UpdateBehaviorCategoryRequest extends BaseRequest
         $categoryId = is_object($category) ? $category->id : $category;
 
         return [
-            'name' => ['required', 'string', 'max:255'],
+            ...$this->translatableRules('name'),
             'code' => ['nullable', 'string', 'max:50', 'unique:behavior_categories,code,'.$categoryId],
             'type' => ['required', 'string', 'in:merit,violation'],
             'points' => ['required', 'integer'],

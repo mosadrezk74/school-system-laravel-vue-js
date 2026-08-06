@@ -25,7 +25,14 @@
     "attendanceRecords": "سجلات الحضور",
     "examination": "الاختبارات",
     "exams": "الاختبارات",
-    "examGrades": "سلم التقديرات"
+    "examGrades": "سلم التقديرات",
+    "schedule": "الجدول الدراسي",
+    "periods": "الحصص والأيام",
+    "timetables": "الجداول الدراسية",
+    "generalSettings": "عام",
+    "organizationSettings": "التنظيم",
+    "moduleSettings": "الموديولات",
+    "aiTranslationSettings": "الترجمة الآلية"
   },
   "navbar": {
     "search": "بحث",
@@ -50,6 +57,7 @@
     "inactive": "غير نشط",
     "cancel": "إلغاء",
     "save": "حفظ",
+    "clear": "مسح",
     "update": "تحديث",
     "edit": "تعديل",
     "filter": "تصفية",
@@ -1049,6 +1057,110 @@
     "isPassing": "ناجح",
     "hints": {
       "subject": "اختياري. اتركه فارغًا لتطبيق هذا التقدير على جميع المواد في هذه المرحلة."
+    }
+  },
+  "timetables": {
+    "title": "الجداول الدراسية",
+    "subtitle": "إنشاء وإدارة الجدول الدراسي الأسبوعي لكل فصل.",
+    "addNew": "جدول جديد",
+    "empty": "لا توجد جداول دراسية بعد. أضف أول جدول دراسي للبدء.",
+    "confirmArchive": "هل أنت متأكد من أرشفة هذا الجدول الدراسي؟",
+    "class": "الفصل",
+    "academicYear": "العام الدراسي",
+    "semester": "الفصل الدراسي",
+    "subject": "المادة",
+    "teacher": "المعلم",
+    "classroom": "قاعة الدراسة",
+    "grid": {
+      "title": "الجدول الأسبوعي",
+      "subtitle": "انقر على أي خلية لتحديد المادة والمعلم لهذه الحصة.",
+      "period": "الحصة",
+      "assignCell": "تحديد الحصة",
+      "save": "حفظ الجدول"
+    },
+    "periods": {
+      "title": "الحصص",
+      "subtitle": "حدد هيكل الحصص اليومي المستخدم في كل الجداول الدراسية.",
+      "addNew": "حصة جديدة",
+      "edit": "تعديل الحصة",
+      "empty": "لا توجد حصص محددة بعد. أضف أول حصة للبدء.",
+      "confirmArchive": "هل أنت متأكد من أرشفة هذه الحصة؟",
+      "periodNumber": "رقم الحصة",
+      "name": "الاسم",
+      "nameEn": "الاسم (إنجليزي)",
+      "nameAr": "الاسم (عربي)",
+      "startTime": "وقت البداية",
+      "endTime": "وقت النهاية",
+      "time": "الوقت",
+      "isBreak": "استراحة",
+      "isActive": "مفعّل",
+      "weekdaysTitle": "أيام الدراسة",
+      "weekdaysSubtitle": "حدد أيام الأسبوع التي تُعقد فيها الحصص الدراسية.",
+      "sections": {
+        "details": "تفاصيل الحصة",
+        "detailsDesc": "حدد رقم الحصة ووقت البداية والنهاية."
+      },
+      "hints": {
+        "periodNumber": "ترتيب هذه الحصة ضمن الجدول اليومي."
+      }
+    }
+  },
+  "onboarding": {
+    "title": "معالج الإعداد",
+    "actions": {
+      "getStarted": "ابدأ",
+      "next": "التالي",
+      "finish": "إنهاء الإعداد"
+    },
+    "fields": {
+      "schoolName": "اسم المدرسة",
+      "schoolCode": "كود المدرسة",
+      "timezone": "المنطقة الزمنية",
+      "currency": "العملة",
+      "currencySymbol": "رمز العملة",
+      "logo": "الشعار",
+      "multiBranch": "فروع متعددة",
+      "multiAcademicYear": "أعوام دراسية متعددة",
+      "aiTranslationEnabled": "تفعيل الترجمة الآلية",
+      "aiTranslationProvider": "المزود"
+    },
+    "hints": {
+      "multiBranch": "فعّل هذا الخيار إذا كانت المدرسة تدير أكثر من فرع.",
+      "multiAcademicYear": "فعّل هذا الخيار إذا كان يتم إدارة أكثر من عام دراسي في نفس الوقت.",
+      "aiTranslationEnabled": "تعبئة الترجمات الناقصة تلقائيًا للغات الأخرى المفعّلة عند الحفظ."
+    },
+    "steps": {
+      "welcome": "ترحيب",
+      "schoolInfo": "بيانات المدرسة",
+      "languages": "اللغات",
+      "organization": "التنظيم",
+      "modules": "الموديولات",
+      "review": "المراجعة",
+      "welcomeTitle": "لنقم بإعداد مدرستك",
+      "welcomeDescription": "هذا المعالج القصير يقوم بإعداد بيانات مدرستك الأساسية واللغات وهيكل التنظيم والموديولات. يمكنك تعديل كل شيء لاحقًا من الإعدادات.",
+      "schoolInfoTitle": "بيانات المدرسة",
+      "schoolInfoDescription": "أخبرنا عن مدرستك.",
+      "languagesTitle": "اللغات",
+      "languagesDescription": "اختر اللغات التي تستخدمها مدرستك.",
+      "organizationTitle": "التنظيم",
+      "organizationDescription": "بعض الأسئلة حول طريقة تنظيم مدرستك.",
+      "modulesTitle": "الموديولات",
+      "modulesDescription": "فعّل الميزات التي تحتاجها مدرستك. يمكنك تغيير هذا في أي وقت.",
+      "reviewTitle": "المراجعة",
+      "reviewDescription": "تأكد من صحة كل شيء قبل الإنهاء."
+    },
+    "modules": {
+      "foundational": "موديول أساسي"
+    },
+    "settings": {
+      "generalTitle": "عام",
+      "generalSubtitle": "اسم المدرسة والشعار والمنطقة الزمنية والعملة.",
+      "organizationTitle": "التنظيم",
+      "organizationSubtitle": "الفروع وهيكل العام الدراسي.",
+      "modulesTitle": "الموديولات",
+      "modulesSubtitle": "تفعيل أو تعطيل ميزات التطبيق.",
+      "aiTranslationTitle": "الترجمة الآلية",
+      "aiTranslationSubtitle": "الترجمة التلقائية للحقول القابلة للترجمة."
     }
   }
 }

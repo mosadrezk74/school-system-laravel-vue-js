@@ -1,5 +1,6 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3'
+import { Head, Link, usePage } from '@inertiajs/vue3'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -7,6 +8,17 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+const page = usePage()
+
+const languages = computed(() => page.props.languages ?? [])
+
+const nameTranslations = computed(() => languages.value
+  .map(language => ({ language, value: props.subject.name_translations?.[language.locale] }))
+  .filter(entry => entry.value))
+
+const descriptionTranslations = computed(() => languages.value
+  .map(language => ({ language, value: props.subject.description_translations?.[language.locale] }))
+  .filter(entry => entry.value))
 
 const typeLabels = {
   core: t('subject.types.core'),
@@ -34,7 +46,7 @@ const appearanceInfo = [
 </script>
 
 <template>
-  <Head :title="subject.name_en || subject.name?.en || subject.code" />
+  <Head :title="subject.name || subject.code" />
 
   <VRow>
     <VCol cols="12">
@@ -56,9 +68,11 @@ const appearanceInfo = [
               <VIcon :icon="subject.icon || 'bx-book'" size="24" />
             </div>
           </template>
-          <VCardTitle>{{ subject.name_en || subject.name?.en || subject.code }}</VCardTitle>
-          <VCardSubtitle v-if="subject.name_ar || subject.name?.ar">
-            {{ subject.name_ar || subject.name?.ar }}
+          <VCardTitle>{{ subject.name || subject.code }}</VCardTitle>
+          <VCardSubtitle v-if="nameTranslations.length" class="d-flex flex-wrap gap-2 mt-1">
+            <VChip v-for="entry in nameTranslations" :key="entry.language.locale" size="x-small" variant="tonal">
+              {{ entry.language.name }}: {{ entry.value }}
+            </VChip>
           </VCardSubtitle>
           <template #append>
             <VChip :color="subject.is_active ? 'success' : 'secondary'" size="small">
@@ -99,15 +113,11 @@ const appearanceInfo = [
           <VCardTitle>{{ t('subject.sections.details') }}</VCardTitle>
         </VCardItem>
         <VCardText>
-          <div v-if="subject.description_en || subject.description?.en">
-            <strong>{{ t('subject.fields.description_en') }}:</strong>
-            <p>{{ subject.description_en || subject.description?.en }}</p>
+          <div v-for="entry in descriptionTranslations" :key="entry.language.locale" class="mb-3">
+            <strong>{{ t('subject.fields.description') }} ({{ entry.language.name }}):</strong>
+            <p>{{ entry.value }}</p>
           </div>
-          <div v-if="subject.description_ar || subject.description?.ar">
-            <strong>{{ t('subject.fields.description_ar') }}:</strong>
-            <p>{{ subject.description_ar || subject.description?.ar }}</p>
-          </div>
-          <div v-if="!subject.description_en && !subject.description_ar && !subject.description?.en && !subject.description?.ar" class="text-disabled">
+          <div v-if="!descriptionTranslations.length" class="text-disabled">
             {{ t('common.noItems') }}
           </div>
         </VCardText>

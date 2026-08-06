@@ -12,11 +12,9 @@ const props = defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  name_en: props.subject.name_en || props.subject.name?.en || '',
-  name_ar: props.subject.name_ar || props.subject.name?.ar || '',
+  name: { ...props.subject.name_translations },
   code: props.subject.code || '',
-  description_en: props.subject.description_en || props.subject.description?.en || '',
-  description_ar: props.subject.description_ar || props.subject.description?.ar || '',
+  description: { ...props.subject.description_translations },
   short_name: props.subject.short_name || '',
   branch_id: props.subject.branch_id || null,
   subject_type: props.subject.subject_type || 'core',
@@ -39,7 +37,7 @@ function submit() {
   <VCard>
     <VCardItem>
       <VCardTitle>{{ t('subject.edit') }}</VCardTitle>
-      <VCardSubtitle>{{ subject.name_en || subject.name?.en || subject.code }}</VCardSubtitle>
+      <VCardSubtitle>{{ subject.name || subject.code }}</VCardSubtitle>
     </VCardItem>
 
     <VDivider />

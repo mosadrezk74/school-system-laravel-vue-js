@@ -4,6 +4,7 @@ namespace Modules\Auth\Http\Requests;
 
 use Illuminate\Validation\Rule;
 use Modules\Core\Abstracts\BaseRequest;
+use Modules\Setting\Services\LanguageService;
 
 class UpdateProfileRequest extends BaseRequest
 {
@@ -22,7 +23,7 @@ class UpdateProfileRequest extends BaseRequest
             'gender' => ['nullable', 'string', 'in:male,female'],
             'birth_date' => ['nullable', 'date', 'before:today'],
             'national_id' => ['nullable', 'string', 'max:20'],
-            'language' => ['required', 'string', 'in:en,ar,de,fr'],
+            'language' => ['required', 'string', Rule::in(app(LanguageService::class)->activeLocales())],
             'theme' => ['required', 'string', 'in:light,dark'],
             'timezone' => ['required', 'string', 'max:50'],
         ];

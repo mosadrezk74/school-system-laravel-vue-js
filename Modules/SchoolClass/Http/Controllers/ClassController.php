@@ -139,7 +139,9 @@ class ClassController extends BaseInertiaController
     {
         return [
             'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
-            'gradeLevels' => GradeLevel::query()->where('is_active', true)->get(['id', 'name']),
+            'gradeLevels' => GradeLevel::query()->where('is_active', true)->get()
+                ->map(fn (GradeLevel $gradeLevel) => ['id' => $gradeLevel->id, 'name' => $gradeLevel->name])
+                ->values(),
             'branches' => Branch::query()->where('is_active', true)->get(['id', 'name']),
             'classrooms' => Classroom::query()->where('is_active', true)->get(['id', 'name', 'branch_id']),
             'teachers' => TeacherProfile::query()

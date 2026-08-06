@@ -15,7 +15,7 @@ use Modules\Behavior\Http\Requests\UpdateBehaviorCategoryRequest;
 final readonly class BehaviorCategoryDTO
 {
     public function __construct(
-        public string $name,
+        public array $name,
         public ?string $code,
         public string $type,
         public int $points,

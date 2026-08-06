@@ -1,4 +1,4 @@
-import { usePage } from '@inertiajs/vue3'
+import { router, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useLocale } from 'vuetify'
@@ -54,6 +54,16 @@ export const useAppLocale = () => {
   const currentLocale = computed(() =>
     locales.value.find(l => l.code === locale.value) ?? locales.value[0])
 
+  /*
+   * Every translated attribute in the app (Subject.name, Period.name, ...)
+   * is resolved server-side from app()->getLocale(), which SetLocaleMiddleware
+   * only re-evaluates on an actual request. Flipping the client-side i18n
+   * locale alone would relabel the chrome but leave every table/dropdown/card
+   * showing whatever locale the last full page load resolved — so this has to
+   * round-trip through the server (query param the middleware reads and
+   * persists to the session/user), then reload every prop on the current
+   * page, not just swap strings client-side.
+   */
   const setLocale = code => {
     if (!locales.value.some(l => l.code === code))
       return
@@ -62,6 +72,15 @@ export const useAppLocale = () => {
     vuetifyLocale.current.value = code
     applyDocumentDirection(code)
     localStorage.setItem(STORAGE_KEY, code)
+
+    const url = new URL(window.location.href)
+
+    url.searchParams.set('lang', code)
+
+    router.get(url.pathname + url.search, {}, {
+      preserveScroll: true,
+      preserveState: false,
+    })
   }
 
   return {

@@ -5,8 +5,13 @@ namespace Modules\Setting\Providers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Modules\Core\Services\ModuleRegistry;
 use Modules\Setting\Models\Language;
+use Modules\Setting\Models\SchoolSetting;
 use Modules\Setting\Policies\LanguagePolicy;
+use Modules\Setting\Policies\SchoolSettingPolicy;
+use Modules\Setting\Services\LanguageService;
+use Modules\Setting\Services\SettingsService;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class SettingServiceProvider extends ModuleServiceProvider
@@ -42,14 +47,17 @@ class SettingServiceProvider extends ModuleServiceProvider
         $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
 
         Gate::policy(Language::class, LanguagePolicy::class);
+        Gate::policy(SchoolSetting::class, SchoolSettingPolicy::class);
 
         // The frontend switcher renders exactly what the school has enabled,
         // so adding or removing a language is a database change with no
         // rebuild and no hard-coded locale list in the JS.
         Inertia::share([
             'locale' => fn () => app()->getLocale(),
-            'direction' => fn () => Language::directionFor(app()->getLocale()),
-            'languages' => fn () => Language::active()->values()->all(),
+            'direction' => fn () => app(LanguageService::class)->directionFor(app()->getLocale()),
+            'languages' => fn () => app(LanguageService::class)->active()->values()->all(),
+            'setupCompleted' => fn () => app(SettingsService::class)->isSetupCompleted(),
+            'enabledModules' => fn () => app(ModuleRegistry::class)->enabledNames(),
         ]);
     }
 

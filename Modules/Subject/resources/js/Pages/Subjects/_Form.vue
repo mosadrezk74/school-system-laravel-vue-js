@@ -1,5 +1,8 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import TranslatableTextInput from '@/components/TranslatableTextInput.vue'
+import TranslatableTextarea from '@/components/TranslatableTextarea.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -8,16 +11,19 @@ const props = defineProps({
   isEdit: { type: Boolean, default: false },
 })
 
+const { t } = useI18n()
+
 const activeTab = ref('basic')
 
 const tabFields = {
-  basic: ['name_en', 'name_ar', 'code', 'short_name', 'branch_id', 'subject_type'],
-  details: ['description_en', 'description_ar'],
+  basic: ['name', 'code', 'short_name', 'branch_id', 'subject_type'],
+  details: ['description'],
   grading: ['pass_grade', 'credit_hours', 'max_marks'],
   appearance: ['color', 'icon', 'is_active'],
 }
 
-const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[field])
+const tabHasError = tab => tabFields[tab].some(field =>
+  Object.keys(props.form.errors).some(key => key === field || key.startsWith(`${field}.`)))
 
 const branchOptions = computed(() =>
   props.branches.map(b => ({
@@ -68,29 +74,16 @@ const colorOptions = [
 
   <VWindow v-model="activeTab" class="mt-6 disable-tab-transition">
     <VWindowItem value="basic">
+      <TranslatableTextInput
+        v-model="form.name"
+        field="name"
+        :label="t('subject.fields.name')"
+        :errors="form.errors"
+        required
+        class="mb-4"
+      />
+
       <VRow>
-        <VCol cols="12" md="6">
-          <VTextField
-            v-model="form.name_en"
-            :label="$t('subject.fields.name_en')"
-            :hint="$t('subject.hints.name_en')"
-            persistent-hint
-            :error-messages="form.errors['name.en'] || form.errors.name_en"
-            required
-          />
-        </VCol>
-
-        <VCol cols="12" md="6">
-          <VTextField
-            v-model="form.name_ar"
-            :label="$t('subject.fields.name_ar')"
-            :hint="$t('subject.hints.name_ar')"
-            persistent-hint
-            :error-messages="form.errors['name.ar'] || form.errors.name_ar"
-            required
-          />
-        </VCol>
-
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.code"
@@ -138,29 +131,12 @@ const colorOptions = [
     </VWindowItem>
 
     <VWindowItem value="details">
-      <VRow>
-        <VCol cols="12" md="6">
-          <VTextarea
-            v-model="form.description_en"
-            :label="$t('subject.fields.description_en')"
-            :hint="$t('subject.hints.description_en')"
-            persistent-hint
-            rows="4"
-            :error-messages="form.errors['description.en'] || form.errors.description_en"
-          />
-        </VCol>
-
-        <VCol cols="12" md="6">
-          <VTextarea
-            v-model="form.description_ar"
-            :label="$t('subject.fields.description_ar')"
-            :hint="$t('subject.hints.description_ar')"
-            persistent-hint
-            rows="4"
-            :error-messages="form.errors['description.ar'] || form.errors.description_ar"
-          />
-        </VCol>
-      </VRow>
+      <TranslatableTextarea
+        v-model="form.description"
+        field="description"
+        :label="t('subject.fields.description')"
+        :errors="form.errors"
+      />
     </VWindowItem>
 
     <VWindowItem value="grading">

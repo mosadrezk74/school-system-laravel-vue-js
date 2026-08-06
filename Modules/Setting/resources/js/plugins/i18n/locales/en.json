@@ -25,7 +25,14 @@
     "attendanceRecords": "Attendance Records",
     "examination": "Examination",
     "exams": "Exams",
-    "examGrades": "Grading Scale"
+    "examGrades": "Grading Scale",
+    "schedule": "Schedule",
+    "periods": "Periods & Days",
+    "timetables": "Timetables",
+    "generalSettings": "General",
+    "organizationSettings": "Organization",
+    "moduleSettings": "Modules",
+    "aiTranslationSettings": "AI Translation"
   },
   "navbar": {
     "search": "Search",
@@ -50,6 +57,7 @@
     "inactive": "Inactive",
     "cancel": "Cancel",
     "save": "Save",
+    "clear": "Clear",
     "update": "Update",
     "edit": "Edit",
     "filter": "Filter",
@@ -958,6 +966,110 @@
     "isPassing": "Passing",
     "hints": {
       "subject": "Optional. Leave empty to apply this grade band to all subjects at this grade level."
+    }
+  },
+  "timetables": {
+    "title": "Timetables",
+    "subtitle": "Build and manage the weekly schedule for each class.",
+    "addNew": "New Timetable",
+    "empty": "No timetables yet. Create your first class timetable to get started.",
+    "confirmArchive": "Are you sure you want to archive this timetable?",
+    "class": "Class",
+    "academicYear": "Academic Year",
+    "semester": "Semester",
+    "subject": "Subject",
+    "teacher": "Teacher",
+    "classroom": "Classroom",
+    "grid": {
+      "title": "Weekly Schedule",
+      "subtitle": "Click a cell to assign a subject and teacher for that period.",
+      "period": "Period",
+      "assignCell": "Assign Period",
+      "save": "Save Timetable"
+    },
+    "periods": {
+      "title": "Periods",
+      "subtitle": "Define the daily period structure reused across all class timetables.",
+      "addNew": "New Period",
+      "edit": "Edit Period",
+      "empty": "No periods defined yet. Add your first period to get started.",
+      "confirmArchive": "Are you sure you want to archive this period?",
+      "periodNumber": "Period Number",
+      "name": "Name",
+      "nameEn": "Name (English)",
+      "nameAr": "Name (Arabic)",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "time": "Time",
+      "isBreak": "Break",
+      "isActive": "Active",
+      "weekdaysTitle": "School Days",
+      "weekdaysSubtitle": "Select the days of the week classes are held.",
+      "sections": {
+        "details": "Period Details",
+        "detailsDesc": "Set the period number and its start and end time."
+      },
+      "hints": {
+        "periodNumber": "The order this period appears in the daily schedule."
+      }
+    }
+  },
+  "onboarding": {
+    "title": "Setup Wizard",
+    "actions": {
+      "getStarted": "Get Started",
+      "next": "Next",
+      "finish": "Finish Setup"
+    },
+    "fields": {
+      "schoolName": "School Name",
+      "schoolCode": "School Code",
+      "timezone": "Timezone",
+      "currency": "Currency",
+      "currencySymbol": "Currency Symbol",
+      "logo": "Logo",
+      "multiBranch": "Multiple Branches",
+      "multiAcademicYear": "Multiple Academic Years",
+      "aiTranslationEnabled": "Enable Automatic Translation",
+      "aiTranslationProvider": "Provider"
+    },
+    "hints": {
+      "multiBranch": "Enable if the school operates more than one branch.",
+      "multiAcademicYear": "Enable if more than one academic year is managed at a time.",
+      "aiTranslationEnabled": "Automatically fill missing translations for other active languages when saving."
+    },
+    "steps": {
+      "welcome": "Welcome",
+      "schoolInfo": "School Info",
+      "languages": "Languages",
+      "organization": "Organization",
+      "modules": "Modules",
+      "review": "Review",
+      "welcomeTitle": "Let's set up your school",
+      "welcomeDescription": "This short wizard configures your school's basic information, languages, organization structure, and modules. You can change everything later from Settings.",
+      "schoolInfoTitle": "School Information",
+      "schoolInfoDescription": "Tell us about your school.",
+      "languagesTitle": "Languages",
+      "languagesDescription": "Choose which languages your school uses.",
+      "organizationTitle": "Organization",
+      "organizationDescription": "A few questions about how your school is organized.",
+      "modulesTitle": "Modules",
+      "modulesDescription": "Enable the features your school needs. You can change this anytime.",
+      "reviewTitle": "Review",
+      "reviewDescription": "Confirm everything looks right before finishing."
+    },
+    "modules": {
+      "foundational": "Required module"
+    },
+    "settings": {
+      "generalTitle": "General",
+      "generalSubtitle": "School name, logo, timezone and currency.",
+      "organizationTitle": "Organization",
+      "organizationSubtitle": "Branches and academic year structure.",
+      "modulesTitle": "Modules",
+      "modulesSubtitle": "Enable or disable application features.",
+      "aiTranslationTitle": "AI Translation",
+      "aiTranslationSubtitle": "Automatic translation of translatable fields."
     }
   }
 }

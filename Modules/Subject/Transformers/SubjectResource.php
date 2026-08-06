@@ -3,7 +3,6 @@
 namespace Modules\Subject\Transformers;
 
 use Modules\Core\Abstracts\BaseResource;
-use Modules\Subject\Models\Subject;
 
 class SubjectResource extends BaseResource
 {
@@ -12,17 +11,15 @@ class SubjectResource extends BaseResource
         return [
             'id' => $this->id,
             'branch_id' => $this->branch_id,
-            'branch' => $this->whenLoaded('branch', fn() => [
+            'branch' => $this->whenLoaded('branch', fn () => [
                 'id' => $this->branch->id,
                 'name' => $this->branch->name,
             ]),
             'code' => $this->code,
             'name' => $this->name,
-            'name_en' => $this->getTranslation('name', 'en'),
-            'name_ar' => $this->getTranslation('name', 'ar'),
+            'name_translations' => $this->getTranslations('name'),
             'description' => $this->description,
-            'description_en' => $this->getTranslation('description', 'en'),
-            'description_ar' => $this->getTranslation('description', 'ar'),
+            'description_translations' => $this->getTranslations('description'),
             'short_name' => $this->short_name,
             'subject_type' => $this->subject_type,
             'pass_grade' => (float) $this->pass_grade,

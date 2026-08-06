@@ -10,13 +10,9 @@ class UpdateSubjectRequest extends BaseRequest
     {
         return [
             'branch_id' => ['nullable', 'integer', 'exists:branches,id'],
-            'code' => ['nullable', 'string', 'max:50', 'unique:subjects,code,' . $this->route('subject') . ',id'],
-            'name' => ['required', 'array'],
-            'name.en' => ['required_with:name', 'string', 'max:255'],
-            'name.ar' => ['required_with:name', 'string', 'max:255'],
-            'description' => ['nullable', 'array'],
-            'description.en' => ['nullable', 'string'],
-            'description.ar' => ['nullable', 'string'],
+            'code' => ['nullable', 'string', 'max:50', 'unique:subjects,code,'.$this->route('subject').',id'],
+            ...$this->translatableRules('name'),
+            ...$this->translatableRules('description', required: false),
             'short_name' => ['nullable', 'string', 'max:50'],
             'subject_type' => ['required', 'string', 'in:core,elective,extracurricular'],
             'pass_grade' => ['nullable', 'numeric', 'min:0', 'max:100'],

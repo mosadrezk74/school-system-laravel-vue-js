@@ -44,8 +44,8 @@ class ExamGradeController extends BaseInertiaController
                 'grade_level_id',
                 'subject_id',
             ]),
-            'gradeLevels' => GradeLevel::query()->get(['id', 'name']),
-            'subjects' => Subject::query()->get(['id', 'name']),
+            'gradeLevels' => GradeLevel::query()->get()->map(fn (GradeLevel $gradeLevel) => ['id' => $gradeLevel->id, 'name' => $gradeLevel->name])->values(),
+            'subjects' => Subject::query()->get()->map(fn (Subject $subject) => ['id' => $subject->id, 'name' => $subject->name])->values(),
         ]);
     }
 

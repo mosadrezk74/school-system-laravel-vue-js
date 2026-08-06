@@ -8,21 +8,18 @@ use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Setting\Actions\SetDefaultLanguageAction;
 use Modules\Setting\Actions\ToggleLanguageAction;
 use Modules\Setting\Models\Language;
+use Modules\Setting\Services\LanguageService;
 use Modules\Setting\Transformers\LanguageResource;
 
 class LanguageController extends BaseInertiaController
 {
+    public function __construct(private readonly LanguageService $languages) {}
+
     public function index(): Response
     {
         $this->authorize('viewAny', Language::class);
 
-        // Enabled first, then alphabetical: the languages in use are what an
-        // administrator came here to check.
-        $languages = Language::query()
-            ->orderByDesc('is_default')
-            ->orderByDesc('is_active')
-            ->orderBy('name')
-            ->get();
+        $languages = $this->languages->all();
 
         /*
          * Named `rows`, not `languages`: HandleInertiaRequests already shares a

@@ -11,11 +11,9 @@ defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  name_en: '',
-  name_ar: '',
+  name: {},
   code: '',
-  description_en: '',
-  description_ar: '',
+  description: {},
   short_name: '',
   branch_id: null,
   subject_type: 'core',

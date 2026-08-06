@@ -12,7 +12,7 @@ class StoreBehaviorCategoryRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            ...$this->translatableRules('name'),
             'code' => ['nullable', 'string', 'max:50', 'unique:behavior_categories,code'],
             'type' => ['required', 'string', 'in:merit,violation'],
             'points' => ['required', 'integer'],

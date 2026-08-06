@@ -17,20 +17,21 @@ use Modules\Auth\Http\Requests\UpdatePasswordRequest;
 use Modules\Auth\Http\Requests\UpdateProfileRequest;
 use Modules\Auth\Transformers\AccountResource;
 use Modules\Core\Abstracts\BaseInertiaController;
+use Modules\Setting\Services\LanguageService;
 
 class AccountSettingsController extends BaseInertiaController
 {
+    public function __construct(private readonly LanguageService $languages) {}
+
     /**
      * @return array<int, array{title: string, value: string}>
      */
-    private function languages(): array
+    private function languageOptions(): array
     {
-        return [
-            ['title' => __('auth::account.languages.en'), 'value' => 'en'],
-            ['title' => __('auth::account.languages.ar'), 'value' => 'ar'],
-            ['title' => __('auth::account.languages.de'), 'value' => 'de'],
-            ['title' => __('auth::account.languages.fr'), 'value' => 'fr'],
-        ];
+        return $this->languages->active()
+            ->map(fn (array $language) => ['title' => $language['name'], 'value' => $language['locale']])
+            ->values()
+            ->all();
     }
 
     /**
@@ -60,7 +61,11 @@ class AccountSettingsController extends BaseInertiaController
             'account' => new AccountResource($request->user()),
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'passwordRules' => Password::default()->toPasswordRulesString(),
-            'languages' => $this->languages(),
+            // Not `languages`: HandleInertiaRequests/SettingServiceProvider
+            // already shares a `languages` prop (the enabled list every page
+            // reads for the locale switcher), and a page prop of the same
+            // name silently overwrites it.
+            'languageOptions' => $this->languageOptions(),
             'themes' => $this->themes(),
             'timezones' => $this->timezones(),
         ]);

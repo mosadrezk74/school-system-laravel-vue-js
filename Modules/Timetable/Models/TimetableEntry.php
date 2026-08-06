@@ -45,4 +45,9 @@ class TimetableEntry extends Model
     {
         return $this->belongsTo(Classroom::class, 'classroom_id');
     }
+
+    public function period(): BelongsTo
+    {
+        return $this->belongsTo(Period::class, 'period_id');
+    }
 }

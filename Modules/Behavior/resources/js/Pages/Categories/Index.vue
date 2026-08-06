@@ -2,6 +2,7 @@
 import { Head, router, useForm } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import TranslatableTextInput from '@/components/TranslatableTextInput.vue'
 
 const props = defineProps({
   categories: { type: Object, required: true },
@@ -35,7 +36,7 @@ const dialog = ref(false)
 const editing = ref(null)
 
 const form = useForm({
-  name: '',
+  name: {},
   code: '',
   type: 'violation',
   points: 0,
@@ -59,7 +60,7 @@ const typeOptions = computed(() => [
 function openCreate() {
   editing.value = null
   form.defaults({
-    name: '', code: '', type: 'violation', points: 0, is_active: true,
+    name: {}, code: '', type: 'violation', points: 0, is_active: true,
   })
   form.reset()
   form.clearErrors()
@@ -69,7 +70,7 @@ function openCreate() {
 function openEdit(item) {
   editing.value = item
   form.defaults({
-    name: item.name ?? '',
+    name: { ...item.name_translations },
     code: item.code ?? '',
     type: item.type ?? 'violation',
     points: item.points ?? 0,
@@ -206,17 +207,16 @@ function goToPage(page) {
       </VCardItem>
 
       <VCardText>
+        <TranslatableTextInput
+          v-model="form.name"
+          field="name"
+          :label="t('behaviorCategories.name')"
+          :errors="form.errors"
+          required
+          class="mb-4"
+        />
+
         <VRow>
-          <VCol cols="12" md="6">
-            <VTextField
-              v-model="form.name"
-              :label="required(t('behaviorCategories.name'))"
-              :hint="t('behaviorCategories.hints.name')"
-              persistent-hint
-              :error-messages="form.errors.name"
-              required
-            />
-          </VCol>
           <VCol cols="12" md="6">
             <VTextField
               v-model="form.code"

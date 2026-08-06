@@ -6,6 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Modules\Core\Traits\ApiResponseTrait;
+use Modules\Setting\Services\LanguageService;
 use Propaganistas\LaravelPhone\PhoneNumber;
 
 abstract class BaseRequest extends FormRequest
@@ -84,5 +85,42 @@ abstract class BaseRequest extends FormRequest
         return array_filter($this->validated(), function ($value) {
             return ! is_null($value) && $value !== '';
         });
+    }
+
+    /**
+     * Validation rules for a translatable JSON field, generated from the
+     * school's currently active languages rather than a hardcoded locale
+     * pair. Only one locale needs a value (the source language the user
+     * typed in); the rest are filled in later by translation.
+     *
+     * @return array<string, mixed>
+     */
+    protected function translatableRules(string $field, bool $required = true): array
+    {
+        $locales = app(LanguageService::class)->activeLocales();
+
+        $rules = [
+            $field => [$required ? 'required' : 'nullable', 'array'],
+        ];
+
+        foreach ($locales as $locale) {
+            $rules["{$field}.{$locale}"] = [
+                $required ? "required_without_all:{$this->siblingLocaleFields($field, $locale)}" : 'sometimes',
+                'nullable',
+                'string',
+            ];
+        }
+
+        return $rules;
+    }
+
+    private function siblingLocaleFields(string $field, string $except): string
+    {
+        $locales = array_filter(
+            app(LanguageService::class)->activeLocales(),
+            fn (string $locale) => $locale !== $except,
+        );
+
+        return implode(',', array_map(fn (string $locale) => "{$field}.{$locale}", $locales));
     }
 }

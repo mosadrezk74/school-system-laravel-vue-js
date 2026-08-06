@@ -185,7 +185,7 @@ class ExamController extends BaseInertiaController
             'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
             'classes' => SchoolClass::query()->where('is_active', true)
                 ->get(['id', 'name', 'section_code', 'academic_year_id']),
-            'subjects' => Subject::query()->get(['id', 'name']),
+            'subjects' => Subject::query()->get()->map(fn (Subject $subject) => ['id' => $subject->id, 'name' => $subject->name])->values(),
         ];
     }
 }

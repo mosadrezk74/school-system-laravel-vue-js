@@ -164,7 +164,7 @@ const filterOptions = {
               marginRight: '8px'
             }"
           />
-          <span>{{ item.name_en || item.name?.en || '-' }}</span>
+          <span>{{ item.name || '-' }}</span>
         </div>
       </template>
 

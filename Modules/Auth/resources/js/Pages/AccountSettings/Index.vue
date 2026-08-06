@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   account: { type: Object, required: true },
-  languages: { type: Array, default: () => [] },
+  languageOptions: { type: Array, default: () => [] },
   themes: { type: Array, default: () => [] },
   timezones: { type: Array, default: () => [] },
 })
@@ -164,7 +164,7 @@ const tabHasError = (form, fields) => fields.some(field => !!form.errors[field])
               <VCol cols="12" md="4">
                 <VSelect
                   v-model="profileForm.language"
-                  :items="languages"
+                  :items="languageOptions"
                   :label="required(t('accountSettings.fields.language'))"
                   :error-messages="profileForm.errors.language"
                   required

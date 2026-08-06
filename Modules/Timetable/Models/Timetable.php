@@ -3,6 +3,7 @@
 namespace Modules\Timetable\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\Semester;
 use Modules\Core\Abstracts\BaseModel;
@@ -35,5 +36,10 @@ class Timetable extends BaseModel
     public function semester(): BelongsTo
     {
         return $this->belongsTo(Semester::class, 'semester_id');
+    }
+
+    public function entries(): HasMany
+    {
+        return $this->hasMany(TimetableEntry::class, 'timetable_id');
     }
 }

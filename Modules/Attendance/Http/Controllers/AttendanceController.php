@@ -2,7 +2,6 @@
 
 namespace Modules\Attendance\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -46,7 +45,7 @@ class AttendanceController extends BaseInertiaController
                 'class_id', 'subject_id', 'academic_year_id', 'semester_id', 'session', 'date_from', 'date_to',
             ]),
             'classes' => $this->activeClasses(),
-            'subjects' => Subject::query()->get(['id', 'name']),
+            'subjects' => $this->subjectOptions(),
             'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
             'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
         ]);
@@ -58,7 +57,7 @@ class AttendanceController extends BaseInertiaController
 
         return $this->render('Attendance::Records/Create', [
             'classes' => $this->activeClasses(),
-            'subjects' => Subject::query()->get(['id', 'name']),
+            'subjects' => $this->subjectOptions(),
             'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
             'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
             'roster' => $request->filled('class_id') ? $this->rosterForClass((int) $request->input('class_id')) : [],
@@ -112,7 +111,7 @@ class AttendanceController extends BaseInertiaController
             'record' => new AttendanceRecordResource($record),
             'roster' => $roster,
             'classes' => $this->activeClasses(),
-            'subjects' => Subject::query()->get(['id', 'name']),
+            'subjects' => $this->subjectOptions(),
             'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
             'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
         ]);
@@ -137,13 +136,36 @@ class AttendanceController extends BaseInertiaController
     }
 
     /**
-     * @return Collection<int, SchoolClass>
+     * @return array<int, array<string, mixed>>
      */
-    protected function activeClasses()
+    protected function activeClasses(): array
     {
         return SchoolClass::query()->where('is_active', true)
             ->with(['gradeLevel:id,name', 'branch:id,name'])
-            ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id', 'branch_id']);
+            ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id', 'branch_id'])
+            ->map(fn (SchoolClass $class) => [
+                'id' => $class->id,
+                'name' => $class->name,
+                'section_code' => $class->section_code,
+                'grade_level_id' => $class->grade_level_id,
+                'academic_year_id' => $class->academic_year_id,
+                'branch_id' => $class->branch_id,
+                'grade_level' => $class->gradeLevel ? ['id' => $class->gradeLevel->id, 'name' => $class->gradeLevel->name] : null,
+                'branch' => $class->branch ? ['id' => $class->branch->id, 'name' => $class->branch->name] : null,
+            ])
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @return array<int, array{id: int, name: string}>
+     */
+    protected function subjectOptions(): array
+    {
+        return Subject::query()->get()
+            ->map(fn (Subject $subject) => ['id' => $subject->id, 'name' => $subject->name])
+            ->values()
+            ->all();
     }
 
     /**

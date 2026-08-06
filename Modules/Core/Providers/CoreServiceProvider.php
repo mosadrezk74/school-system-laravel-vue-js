@@ -3,6 +3,8 @@
 namespace Modules\Core\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Contracts\TranslationProviderInterface;
+use Modules\Core\Services\Translation\LibreTranslateProvider;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,7 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(TranslationProviderInterface::class, LibreTranslateProvider::class);
     }
 
     public function boot(): void
