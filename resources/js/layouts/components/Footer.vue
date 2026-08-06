@@ -10,7 +10,7 @@
         href="https://m.athr-sa.com/"
         target="_blank"
         class="text-primary ms-1"
-      >أثر للبرمجة والتسويق</a>
+      >ATHR</a>
     </span>
 
   </div>

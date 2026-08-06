@@ -3,9 +3,13 @@
 namespace Modules\Attendance\Repositories;
 
 use Illuminate\Support\Collection;
+use Modules\Attendance\DTOs\AttendanceDashboardFilterDTO;
+use Modules\Attendance\DTOs\AttendanceReportFilterDTO;
+use Modules\Attendance\DTOs\StudentAttendanceFilterDTO;
 use Modules\Attendance\Models\AttendanceDetail;
 use Modules\Attendance\Models\AttendanceRecord;
 use Modules\Attendance\Models\AttendanceSummary;
+use Modules\Student\Models\StudentProfile;
 
 interface AttendanceRepositoryInterface
 {
@@ -47,4 +51,37 @@ interface AttendanceRepositoryInterface
      * @param  array<string, mixed>  $attributes
      */
     public function upsertSummary(int $studentId, int $academicYearId, ?int $semesterId, int $classId, array $attributes): AttendanceSummary;
+
+    /**
+     * Status counts per student for the filtered attendance_records, produced
+     * by a single grouped aggregate rather than one query per student.
+     *
+     * @return Collection<int, array<string, int>>
+     */
+    public function statusCountsByStudent(AttendanceReportFilterDTO $filter): Collection;
+
+    /**
+     * @return Collection<int, StudentProfile>
+     */
+    public function studentsForReport(AttendanceReportFilterDTO $filter): Collection;
+
+    /**
+     * @return array<string, int>
+     */
+    public function statusCountsBetween(AttendanceDashboardFilterDTO $filter, string $from, string $to): array;
+
+    /**
+     * @return Collection<int, object>
+     */
+    public function dailyStatusTotals(AttendanceDashboardFilterDTO $filter, string $from, string $to): Collection;
+
+    /**
+     * @return array<string, int>
+     */
+    public function statusCountsForStudent(StudentAttendanceFilterDTO $filter): array;
+
+    /**
+     * @return Collection<int, AttendanceDetail>
+     */
+    public function timelineForStudent(StudentAttendanceFilterDTO $filter): Collection;
 }

@@ -21,6 +21,7 @@
     "assignments": "الواجبات",
     "studyMaterials": "المواد التعليمية",
     "attendance": "الحضور والغياب",
+    "attendanceTake": "تسجيل الحضور",
     "attendanceRecords": "سجلات الحضور",
     "examination": "الاختبارات",
     "exams": "الاختبارات",
@@ -35,7 +36,9 @@
     "meetings": "الاجتماعات",
     "communication": "التواصل",
     "messages": "الرسائل",
-    "emailBroadcast": "إرسال بريد إلكتروني"
+    "emailBroadcast": "إرسال بريد إلكتروني",
+    "attendanceReport": "تقرير الحضور",
+    "attendanceDashboard": "لوحة الحضور"
   },
   "navbar": {
     "search": "بحث",
@@ -668,7 +671,8 @@
       "present": "حاضر",
       "absent": "غائب",
       "late": "متأخر",
-      "excused": "معذور"
+      "excused": "معذور",
+      "other": "أخرى"
     },
     "student": "الطالب",
     "admissionNumber": "رقم القيد",
@@ -1095,5 +1099,64 @@
       "subtitle": "إرسال بريد إلكتروني جماعي إلى جمهور محدد.",
       "send": "إرسال البريد"
     }
+  },
+  "attendanceTake": {
+    "title": "تسجيل الحضور",
+    "subtitle": "اختر الفصل والتاريخ ثم سجّل حالة حضور كل طالب.",
+    "selectClass": "اختر الفصل لعرض طلابه.",
+    "emptyRoster": "لا يوجد طلاب نشطون في الفصل المحدد.",
+    "markAllPresent": "تعيين الكل حاضر",
+    "notes": "ملاحظات",
+    "save": "حفظ الحضور",
+    "other": "أخرى"
+  },
+  "attendanceReport": {
+    "title": "تقرير الحضور",
+    "subtitle": "إنشاء ملخص حضور لفصل خلال فترة زمنية.",
+    "generate": "إنشاء التقرير",
+    "resultsTitle": "نتائج التقرير",
+    "empty": "لا يوجد طلاب مطابقون للفلاتر المحددة.",
+    "student": "الطالب",
+    "present": "حاضر",
+    "absent": "غائب",
+    "late": "متأخر",
+    "excused": "تأخير بعذر",
+    "other": "أخرى",
+    "attendancePercentage": "نسبة الحضور",
+    "absencePercentage": "نسبة الغياب",
+    "stats": {
+      "totalStudents": "إجمالي الطلاب",
+      "averageAttendance": "متوسط نسبة الحضور",
+      "averageAbsence": "متوسط نسبة الغياب",
+      "totalPresent": "إجمالي الحضور",
+      "totalAbsent": "إجمالي الغياب",
+      "totalLate": "إجمالي التأخير",
+      "totalExcused": "إجمالي التأخير بعذر",
+      "totalOther": "إجمالي أخرى"
+    }
+  },
+  "attendanceDashboard": {
+    "title": "لوحة الحضور",
+    "subtitle": "مؤشرات الحضور المباشرة للمدرسة.",
+    "todayAttendance": "نسبة حضور اليوم",
+    "todayAbsent": "غياب اليوم",
+    "todayLate": "تأخير اليوم",
+    "todayExcused": "بعذر اليوم",
+    "todayOther": "أخرى اليوم",
+    "weekAttendance": "نسبة حضور الأسبوع",
+    "monthAttendance": "نسبة حضور الشهر",
+    "trendTitle": "اتجاه الحضور",
+    "trendSubtitle": "آخر ٣٠ يوماً",
+    "distributionTitle": "توزيع الحالات",
+    "distributionSubtitle": "هذا الشهر",
+    "attendancePercentage": "نسبة الحضور",
+    "noTrendData": "لا توجد بيانات حضور لهذه الفترة."
+  },
+  "attendanceStudent": {
+    "title": "حضور الطالب",
+    "timelineTitle": "سجل الحضور",
+    "empty": "لا توجد سجلات حضور للفلاتر المحددة.",
+    "notes": "ملاحظات",
+    "teacher": "المعلم"
   }
 }

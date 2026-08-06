@@ -5,6 +5,7 @@ namespace Modules\Attendance\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\Semester;
 use Modules\SchoolClass\Models\SchoolClass;
@@ -24,6 +25,11 @@ class AttendanceRecord extends Model
         return [
             'date' => 'date',
         ];
+    }
+
+    public function details(): HasMany
+    {
+        return $this->hasMany(AttendanceDetail::class, 'attendance_record_id');
     }
 
     public function class(): BelongsTo

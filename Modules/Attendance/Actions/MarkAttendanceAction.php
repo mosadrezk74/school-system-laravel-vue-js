@@ -4,6 +4,7 @@ namespace Modules\Attendance\Actions;
 
 use Modules\Attendance\Actions\Concerns\RecomputesAttendanceSummary;
 use Modules\Attendance\DTOs\MarkAttendanceDTO;
+use Modules\Attendance\Enums\AttendanceStatus;
 use Modules\Attendance\Models\AttendanceRecord;
 use Modules\Attendance\Repositories\AttendanceRepositoryInterface;
 use Modules\Core\Abstracts\BaseAction;
@@ -49,6 +50,7 @@ class MarkAttendanceAction extends BaseAction
                 'absent_count' => $counts['absent'],
                 'late_count' => $counts['late'],
                 'excused_count' => $counts['excused'],
+                'other_count' => $counts['other'],
             ]);
 
             foreach (array_column($dto->students, 'student_id') as $studentId) {
@@ -60,17 +62,18 @@ class MarkAttendanceAction extends BaseAction
     }
 
     /**
-     * @return array{present: int, absent: int, late: int, excused: int}
+     * @return array<string, int>
      */
     protected function countStatuses(int $recordId): array
     {
         $details = $this->repository->detailsForRecord($recordId);
 
-        return [
-            'present' => $details->where('status', 'present')->count(),
-            'absent' => $details->where('status', 'absent')->count(),
-            'late' => $details->where('status', 'late')->count(),
-            'excused' => $details->where('status', 'excused')->count(),
-        ];
+        $counts = [];
+
+        foreach (AttendanceStatus::cases() as $status) {
+            $counts[$status->value] = $details->where('status', $status->value)->count();
+        }
+
+        return $counts;
     }
 }

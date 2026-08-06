@@ -4,6 +4,7 @@ namespace Modules\Attendance\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Attendance\Enums\AttendanceStatus;
 use Modules\Student\Models\StudentProfile;
 
 class AttendanceDetail extends Model
@@ -18,6 +19,7 @@ class AttendanceDetail extends Model
     protected function casts(): array
     {
         return [
+            'status' => AttendanceStatus::class,
             'check_in_time' => 'string',
             'check_out_time' => 'string',
         ];

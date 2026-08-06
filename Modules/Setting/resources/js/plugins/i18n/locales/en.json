@@ -21,6 +21,7 @@
     "assignments": "Assignments",
     "studyMaterials": "Study Materials",
     "attendance": "Attendance",
+    "attendanceTake": "Take Attendance",
     "attendanceRecords": "Attendance Records",
     "examination": "Examination",
     "exams": "Exams",
@@ -35,7 +36,9 @@
     "meetings": "Meetings",
     "communication": "Communication",
     "messages": "Messages",
-    "emailBroadcast": "Send Email"
+    "emailBroadcast": "Send Email",
+    "attendanceReport": "Attendance Report",
+    "attendanceDashboard": "Attendance Dashboard"
   },
   "navbar": {
     "search": "Search",
@@ -676,7 +679,8 @@
       "present": "Present",
       "absent": "Absent",
       "late": "Late",
-      "excused": "Excused"
+      "excused": "Excused",
+      "other": "Other"
     },
     "student": "Student",
     "admissionNumber": "Admission Number",
@@ -1103,5 +1107,64 @@
       "subtitle": "Send an email broadcast to a targeted audience.",
       "send": "Send Email"
     }
+  },
+  "attendanceTake": {
+    "title": "Take Attendance",
+    "subtitle": "Select a class and date, then record each student's attendance.",
+    "selectClass": "Select a class to load its students.",
+    "emptyRoster": "No active students found in the selected class.",
+    "markAllPresent": "Mark all present",
+    "notes": "Notes",
+    "save": "Save Attendance",
+    "other": "Other"
+  },
+  "attendanceReport": {
+    "title": "Attendance Report",
+    "subtitle": "Generate an attendance summary for a class over a date range.",
+    "generate": "Generate Report",
+    "resultsTitle": "Report Results",
+    "empty": "No students found for the selected filters.",
+    "student": "Student",
+    "present": "Present",
+    "absent": "Absent",
+    "late": "Late",
+    "excused": "Excused Late",
+    "other": "Other",
+    "attendancePercentage": "Attendance %",
+    "absencePercentage": "Absence %",
+    "stats": {
+      "totalStudents": "Total Students",
+      "averageAttendance": "Average Attendance %",
+      "averageAbsence": "Average Absence %",
+      "totalPresent": "Total Present",
+      "totalAbsent": "Total Absent",
+      "totalLate": "Total Late",
+      "totalExcused": "Total Excused Late",
+      "totalOther": "Total Other"
+    }
+  },
+  "attendanceDashboard": {
+    "title": "Attendance Dashboard",
+    "subtitle": "Live attendance indicators for the school.",
+    "todayAttendance": "Today's Attendance %",
+    "todayAbsent": "Today's Absent",
+    "todayLate": "Today's Late",
+    "todayExcused": "Today's Excused",
+    "todayOther": "Today's Other",
+    "weekAttendance": "This Week Attendance %",
+    "monthAttendance": "This Month Attendance %",
+    "trendTitle": "Attendance Trend",
+    "trendSubtitle": "Last 30 days",
+    "distributionTitle": "Status Distribution",
+    "distributionSubtitle": "This month",
+    "attendancePercentage": "Attendance %",
+    "noTrendData": "No attendance data for this period."
+  },
+  "attendanceStudent": {
+    "title": "Student Attendance",
+    "timelineTitle": "Attendance History",
+    "empty": "No attendance records for the selected filters.",
+    "notes": "Notes",
+    "teacher": "Teacher"
   }
 }

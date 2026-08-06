@@ -15,7 +15,10 @@
     "guardians": "Erziehungsberechtigte",
     "behavior": "Verhalten & Disziplin",
     "behaviorRecords": "Verhaltensaufzeichnungen",
-    "behaviorCategories": "Verhaltenskategorien"
+    "behaviorCategories": "Verhaltenskategorien",
+    "attendanceTake": "Anwesenheit erfassen",
+    "attendanceReport": "Anwesenheitsbericht",
+    "attendanceDashboard": "Anwesenheits-Dashboard"
   },
   "navbar": {
     "search": "Suche",
@@ -361,5 +364,64 @@
       "employment": "Beschäftigungsdaten",
       "subjects": "Fächer"
     }
+  },
+  "attendanceTake": {
+    "title": "Anwesenheit erfassen",
+    "subtitle": "Klasse und Datum wählen, dann die Anwesenheit erfassen.",
+    "selectClass": "Wählen Sie eine Klasse, um die Schüler zu laden.",
+    "emptyRoster": "Keine aktiven Schüler in der Klasse.",
+    "markAllPresent": "Alle als anwesend markieren",
+    "notes": "Notizen",
+    "save": "Anwesenheit speichern",
+    "other": "Andere"
+  },
+  "attendanceReport": {
+    "title": "Anwesenheitsbericht",
+    "subtitle": "Anwesenheitsübersicht für eine Klasse in einem Zeitraum.",
+    "generate": "Bericht erstellen",
+    "resultsTitle": "Berichtsergebnisse",
+    "empty": "Keine Schüler für die gewählten Filter.",
+    "student": "Schüler",
+    "present": "Anwesend",
+    "absent": "Abwesend",
+    "late": "Verspätet",
+    "excused": "Entschuldigt verspätet",
+    "other": "Andere",
+    "attendancePercentage": "Anwesenheit %",
+    "absencePercentage": "Abwesenheit %",
+    "stats": {
+      "totalStudents": "Schüler gesamt",
+      "averageAttendance": "Ø Anwesenheit %",
+      "averageAbsence": "Ø Abwesenheit %",
+      "totalPresent": "Anwesend gesamt",
+      "totalAbsent": "Abwesend gesamt",
+      "totalLate": "Verspätet gesamt",
+      "totalExcused": "Entschuldigt gesamt",
+      "totalOther": "Andere gesamt"
+    }
+  },
+  "attendanceDashboard": {
+    "title": "Anwesenheits-Dashboard",
+    "subtitle": "Aktuelle Anwesenheitskennzahlen.",
+    "todayAttendance": "Anwesenheit heute %",
+    "todayAbsent": "Abwesend heute",
+    "todayLate": "Verspätet heute",
+    "todayExcused": "Entschuldigt heute",
+    "todayOther": "Andere heute",
+    "weekAttendance": "Anwesenheit Woche %",
+    "monthAttendance": "Anwesenheit Monat %",
+    "trendTitle": "Anwesenheitstrend",
+    "trendSubtitle": "Letzte 30 Tage",
+    "distributionTitle": "Statusverteilung",
+    "distributionSubtitle": "Diesen Monat",
+    "attendancePercentage": "Anwesenheit %",
+    "noTrendData": "Keine Anwesenheitsdaten für diesen Zeitraum."
+  },
+  "attendanceStudent": {
+    "title": "Schüleranwesenheit",
+    "timelineTitle": "Anwesenheitsverlauf",
+    "empty": "Keine Einträge für die gewählten Filter.",
+    "notes": "Notizen",
+    "teacher": "Lehrer"
   }
 }

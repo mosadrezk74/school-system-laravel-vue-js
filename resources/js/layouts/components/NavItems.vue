@@ -139,9 +139,30 @@ const isModuleEnabled = name => enabledModules.value.includes(name)
     <VerticalNavSectionTitle :item="{ heading: t('nav.attendance') }" />
     <VerticalNavLink
       :item="{
+        title: t('nav.attendanceDashboard'),
+        to: '/attendance/dashboard',
+        icon: 'bx-tachometer',
+      }"
+    />
+    <VerticalNavLink
+      :item="{
+        title: t('nav.attendanceTake'),
+        to: '/attendance/take',
+        icon: 'bx-list-check',
+      }"
+    />
+    <VerticalNavLink
+      :item="{
         title: t('nav.attendanceRecords'),
         to: '/attendance/records',
         icon: 'bx-calendar-check',
+      }"
+    />
+    <VerticalNavLink
+      :item="{
+        title: t('nav.attendanceReport'),
+        to: '/attendance/report',
+        icon: 'bx-bar-chart-alt-2',
       }"
     />
   </template>

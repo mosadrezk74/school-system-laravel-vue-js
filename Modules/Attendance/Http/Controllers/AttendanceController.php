@@ -7,14 +7,26 @@ use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\Semester;
+use Modules\Attendance\Actions\BuildAttendanceDashboardAction;
+use Modules\Attendance\Actions\BuildStudentAttendanceHistoryAction;
 use Modules\Attendance\Actions\DeleteAttendanceRecordAction;
+use Modules\Attendance\Actions\GenerateAttendanceReportAction;
 use Modules\Attendance\Actions\MarkAttendanceAction;
+use Modules\Attendance\DTOs\AttendanceDashboardFilterDTO;
 use Modules\Attendance\DTOs\AttendanceFilterDTO;
+use Modules\Attendance\DTOs\AttendanceReportFilterDTO;
 use Modules\Attendance\DTOs\MarkAttendanceDTO;
+use Modules\Attendance\DTOs\StudentAttendanceFilterDTO;
+use Modules\Attendance\Enums\AttendanceStatus;
+use Modules\Attendance\Http\Requests\AttendanceReportRequest;
 use Modules\Attendance\Http\Requests\StoreAttendanceRequest;
 use Modules\Attendance\Models\AttendanceRecord;
 use Modules\Attendance\Queries\AttendanceQuery;
+use Modules\Attendance\Services\AttendanceRosterService;
 use Modules\Attendance\Transformers\AttendanceRecordResource;
+use Modules\Attendance\Transformers\AttendanceReportRowResource;
+use Modules\Attendance\Transformers\StudentAttendanceProfileResource;
+use Modules\Attendance\Transformers\StudentAttendanceTimelineResource;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\Student\Models\StudentProfile;
@@ -22,6 +34,102 @@ use Modules\Subject\Models\Subject;
 
 class AttendanceController extends BaseInertiaController
 {
+    public function dashboard(Request $request, BuildAttendanceDashboardAction $action): Response
+    {
+        $this->authorize('viewAny', AttendanceRecord::class);
+
+        $filter = AttendanceDashboardFilterDTO::fromRequest($request);
+
+        return $this->render('Attendance::Dashboard/Index', [
+            ...$this->reportOptions(),
+            'filters' => $request->only(['class_id', 'academic_year_id', 'semester_id']),
+            'dashboard' => $action->execute($filter),
+        ]);
+    }
+
+    public function studentHistory(Request $request, StudentProfile $student, BuildStudentAttendanceHistoryAction $action): Response
+    {
+        $this->authorize('viewAny', AttendanceRecord::class);
+
+        $history = $action->execute(StudentAttendanceFilterDTO::fromRequest($request, $student->id));
+
+        return $this->render('Attendance::Students/Show', [
+            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
+            'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
+            'filters' => $request->only(['academic_year_id', 'semester_id', 'date_from', 'date_to']),
+            'student' => new StudentAttendanceProfileResource($history['student']),
+            'summary' => $history['summary']->toArray(),
+            'timeline' => StudentAttendanceTimelineResource::collection($history['timeline']),
+        ]);
+    }
+
+    public function reportForm(Request $request): Response
+    {
+        $this->authorize('viewAny', AttendanceRecord::class);
+
+        return $this->render('Attendance::Report/Index', [
+            ...$this->reportOptions(),
+            'filters' => $request->only(['class_id', 'academic_year_id', 'semester_id', 'date_from', 'date_to']),
+            'generated' => false,
+            'rows' => AttendanceReportRowResource::collection(collect()),
+            'statistics' => null,
+        ]);
+    }
+
+    public function report(AttendanceReportRequest $request, GenerateAttendanceReportAction $action): Response
+    {
+        $this->authorize('viewAny', AttendanceRecord::class);
+
+        $report = $action->execute(AttendanceReportFilterDTO::fromRequest($request));
+
+        return $this->render('Attendance::Report/Index', [
+            ...$this->reportOptions(),
+            'filters' => $request->only(['class_id', 'academic_year_id', 'semester_id', 'date_from', 'date_to']),
+            'generated' => true,
+            'rows' => AttendanceReportRowResource::collection($report['rows']),
+            'statistics' => $report['statistics'],
+        ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function reportOptions(): array
+    {
+        return [
+            'classes' => $this->activeClasses(),
+            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
+            'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
+        ];
+    }
+
+    public function take(Request $request, AttendanceRosterService $roster): Response
+    {
+        $this->authorize('create', AttendanceRecord::class);
+
+        $classId = $request->filled('class_id') ? (int) $request->input('class_id') : null;
+        $date = $request->filled('date') ? $request->date('date')->toDateString() : now()->toDateString();
+
+        return $this->render('Attendance::Take/Index', [
+            'classes' => $this->activeClasses(),
+            'statuses' => AttendanceStatus::options(),
+            'filters' => [
+                'class_id' => $classId,
+                'date' => $date,
+            ],
+            'roster' => $classId ? $roster->forClassAndDate($classId, $date) : [],
+        ]);
+    }
+
+    public function storeTaken(StoreAttendanceRequest $request, MarkAttendanceAction $action): RedirectResponse
+    {
+        $this->authorize('create', AttendanceRecord::class);
+
+        $action->execute(MarkAttendanceDTO::fromRequest($request));
+
+        return $this->backWithSuccess(__('attendance::attendance.marked'));
+    }
+
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', AttendanceRecord::class);

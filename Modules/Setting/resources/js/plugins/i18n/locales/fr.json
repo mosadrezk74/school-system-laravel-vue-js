@@ -15,7 +15,10 @@
     "guardians": "Tuteurs",
     "behavior": "Comportement et discipline",
     "behaviorRecords": "Registres de comportement",
-    "behaviorCategories": "Catégories de comportement"
+    "behaviorCategories": "Catégories de comportement",
+    "attendanceTake": "Faire l'appel",
+    "attendanceReport": "Rapport de présence",
+    "attendanceDashboard": "Tableau de bord présence"
   },
   "navbar": {
     "search": "Rechercher",
@@ -361,5 +364,64 @@
       "employment": "Données d'emploi",
       "subjects": "Matières"
     }
+  },
+  "attendanceTake": {
+    "title": "Faire l'appel",
+    "subtitle": "Sélectionnez une classe et une date, puis enregistrez la présence.",
+    "selectClass": "Sélectionnez une classe pour charger ses élèves.",
+    "emptyRoster": "Aucun élève actif dans cette classe.",
+    "markAllPresent": "Tout marquer présent",
+    "notes": "Notes",
+    "save": "Enregistrer",
+    "other": "Autre"
+  },
+  "attendanceReport": {
+    "title": "Rapport de présence",
+    "subtitle": "Générer un résumé de présence pour une classe sur une période.",
+    "generate": "Générer le rapport",
+    "resultsTitle": "Résultats du rapport",
+    "empty": "Aucun élève pour les filtres choisis.",
+    "student": "Élève",
+    "present": "Présent",
+    "absent": "Absent",
+    "late": "En retard",
+    "excused": "Retard excusé",
+    "other": "Autre",
+    "attendancePercentage": "Présence %",
+    "absencePercentage": "Absence %",
+    "stats": {
+      "totalStudents": "Total élèves",
+      "averageAttendance": "Présence moyenne %",
+      "averageAbsence": "Absence moyenne %",
+      "totalPresent": "Total présents",
+      "totalAbsent": "Total absents",
+      "totalLate": "Total retards",
+      "totalExcused": "Total retards excusés",
+      "totalOther": "Total autres"
+    }
+  },
+  "attendanceDashboard": {
+    "title": "Tableau de bord présence",
+    "subtitle": "Indicateurs de présence en direct.",
+    "todayAttendance": "Présence aujourd'hui %",
+    "todayAbsent": "Absents aujourd'hui",
+    "todayLate": "Retards aujourd'hui",
+    "todayExcused": "Excusés aujourd'hui",
+    "todayOther": "Autres aujourd'hui",
+    "weekAttendance": "Présence semaine %",
+    "monthAttendance": "Présence mois %",
+    "trendTitle": "Tendance de présence",
+    "trendSubtitle": "30 derniers jours",
+    "distributionTitle": "Répartition des statuts",
+    "distributionSubtitle": "Ce mois",
+    "attendancePercentage": "Présence %",
+    "noTrendData": "Aucune donnée de présence pour cette période."
+  },
+  "attendanceStudent": {
+    "title": "Présence de l'élève",
+    "timelineTitle": "Historique de présence",
+    "empty": "Aucun enregistrement pour ces filtres.",
+    "notes": "Notes",
+    "teacher": "Enseignant"
   }
 }

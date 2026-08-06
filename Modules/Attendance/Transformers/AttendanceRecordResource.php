@@ -28,6 +28,7 @@ class AttendanceRecordResource extends BaseResource
             'absent_count' => $this->absent_count,
             'late_count' => $this->late_count,
             'excused_count' => $this->excused_count,
+            'other_count' => $this->other_count,
             'created_at' => $this->created_at?->toIso8601String(),
 
             'class' => $this->whenLoaded('class', fn () => $this->class ? [
@@ -57,6 +58,7 @@ class AttendanceRecordResource extends BaseResource
                 'student_name' => $detail->student?->user?->name,
                 'admission_number' => $detail->student?->admission_number,
                 'status' => $detail->status,
+                'notes' => $detail->notes,
                 'check_in_time' => $detail->check_in_time,
                 'check_out_time' => $detail->check_out_time,
             ])->all()),

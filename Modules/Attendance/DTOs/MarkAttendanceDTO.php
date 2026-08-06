@@ -7,7 +7,7 @@ use Modules\Attendance\Http\Requests\StoreAttendanceRequest;
 final readonly class MarkAttendanceDTO
 {
     /**
-     * @param  array<int, array{student_id: int, status: string, check_in_time: ?string, check_out_time: ?string}>  $students
+     * @param  array<int, array{student_id: int, status: string, notes: ?string, check_in_time: ?string, check_out_time: ?string}>  $students
      */
     public function __construct(
         public int $classId,
