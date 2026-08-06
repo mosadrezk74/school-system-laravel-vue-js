@@ -5,9 +5,15 @@ namespace Modules\Report\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Abstracts\BaseModel;
+use Spatie\Translatable\HasTranslations;
 
 class ReportTemplate extends BaseModel
 {
+    use HasTranslations;
+
+    /** @var array<int, string> */
+    public array $translatable = ['name'];
+
     protected $table = 'report_templates';
 
     /**

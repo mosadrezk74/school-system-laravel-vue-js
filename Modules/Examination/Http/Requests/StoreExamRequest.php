@@ -15,7 +15,7 @@ class StoreExamRequest extends BaseRequest
             'academic_year_id' => ['required', 'integer', 'exists:academic_years,id'],
             'semester_id' => ['nullable', 'integer', 'exists:semesters,id'],
             'class_id' => ['nullable', 'integer', 'exists:classes,id'],
-            'name' => ['required', 'string', 'max:100'],
+            ...$this->translatableRules('name'),
             'code' => ['nullable', 'string', 'max:50', 'unique:exams,code'],
             'exam_type' => ['required', 'string', 'max:20'],
             'start_date' => ['required', 'date'],

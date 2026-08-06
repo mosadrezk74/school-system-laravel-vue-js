@@ -15,8 +15,8 @@ const props = defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  title: props.assignment.title,
-  description: props.assignment.description,
+  title: { ...props.assignment.title_translations },
+  description: { ...props.assignment.description_translations },
   class_id: props.assignment.class_id,
   subject_id: props.assignment.subject_id,
   teacher_id: props.assignment.teacher_id,

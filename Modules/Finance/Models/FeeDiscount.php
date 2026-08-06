@@ -6,9 +6,15 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Abstracts\BaseModel;
 use Modules\SchoolClass\Models\SchoolClass;
+use Spatie\Translatable\HasTranslations;
 
 class FeeDiscount extends BaseModel
 {
+    use HasTranslations;
+
+    /** @var array<int, string> */
+    public array $translatable = ['name'];
+
     protected $table = 'fee_discounts';
 
     /**

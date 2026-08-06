@@ -8,7 +8,14 @@ use Modules\Core\Abstracts\BaseQuery;
 
 class StudyMaterialQuery extends BaseQuery
 {
-    /** @var array<int, string> */
+    /**
+     * `title` is a Spatie-translatable JSON column now; a LIKE against it
+     * matches raw JSON text rather than the human-readable value, but it's
+     * kept here since it's the only searchable field this query has (same
+     * tradeoff already accepted by ExamQuery/AssignmentQuery/BehaviorCategoryQuery).
+     *
+     * @var array<int, string>
+     */
     protected array $searchableFields = ['title'];
 
     /** @var array<int, string> */
@@ -17,7 +24,7 @@ class StudyMaterialQuery extends BaseQuery
     ];
 
     /** @var array<int, string> */
-    protected array $sortableFields = ['title', 'created_at'];
+    protected array $sortableFields = ['created_at'];
 
     protected function baseQuery(): Builder
     {

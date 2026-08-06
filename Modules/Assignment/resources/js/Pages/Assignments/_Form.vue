@@ -1,6 +1,8 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import TranslatableTextInput from '@/components/TranslatableTextInput.vue'
+import TranslatableTextarea from '@/components/TranslatableTextarea.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -53,7 +55,8 @@ const tabFields = {
   publishing: ['is_published'],
 }
 
-const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[field])
+const tabHasError = tab => tabFields[tab].some(field =>
+  Object.keys(props.form.errors).some(key => key === field || key.startsWith(`${field}.`)))
 </script>
 
 <template>
@@ -95,29 +98,25 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         </div>
       </div>
 
+      <TranslatableTextInput
+        v-model="form.title"
+        field="title"
+        :label="t('assignments.titleField')"
+        :errors="form.errors"
+        required
+        class="mb-4"
+      />
+
+      <TranslatableTextarea
+        v-model="form.description"
+        field="description"
+        :label="t('assignments.description')"
+        :errors="form.errors"
+        :rows="3"
+        class="mb-4"
+      />
+
       <VRow>
-        <VCol cols="12">
-          <VTextField
-            v-model="form.title"
-            :label="required(t('assignments.titleField'))"
-            :hint="$t('assignments.hints.title')"
-            persistent-hint
-            :error-messages="form.errors.title"
-            required
-          />
-        </VCol>
-
-        <VCol cols="12">
-          <VTextarea
-            v-model="form.description"
-            :label="$t('assignments.description')"
-            :hint="$t('assignments.hints.description')"
-            persistent-hint
-            :error-messages="form.errors.description"
-            rows="3"
-          />
-        </VCol>
-
         <VCol cols="12" md="4">
           <VSelect
             v-model="form.academic_year_id"

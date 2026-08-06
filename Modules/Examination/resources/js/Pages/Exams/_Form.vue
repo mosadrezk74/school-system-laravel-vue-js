@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import TranslatableTextInput from '@/components/TranslatableTextInput.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -52,7 +53,8 @@ const tabFields = {
   grading: ['passing_grade', 'total_marks', 'weightage', 'is_published'],
 }
 
-const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[field])
+const tabHasError = tab => tabFields[tab].some(field =>
+  Object.keys(props.form.errors).some(key => key === field || key.startsWith(`${field}.`)))
 </script>
 
 <template>
@@ -94,18 +96,16 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         </div>
       </div>
 
-      <VRow>
-        <VCol cols="12" md="6">
-          <VTextField
-            v-model="form.name"
-            :label="required(t('exams.name'))"
-            :hint="$t('exams.hints.name')"
-            persistent-hint
-            :error-messages="form.errors.name"
-            required
-          />
-        </VCol>
+      <TranslatableTextInput
+        v-model="form.name"
+        field="name"
+        :label="t('exams.name')"
+        :errors="form.errors"
+        required
+        class="mb-4"
+      />
 
+      <VRow>
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.code"

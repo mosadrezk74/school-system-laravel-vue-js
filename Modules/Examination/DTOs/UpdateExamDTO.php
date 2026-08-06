@@ -10,7 +10,7 @@ final readonly class UpdateExamDTO
         public int $academicYearId,
         public ?int $semesterId,
         public ?int $classId,
-        public string $name,
+        public array $name,
         public ?string $code,
         public string $examType,
         public string $startDate,

@@ -17,8 +17,8 @@ class UpdateStudyMaterialRequest extends BaseRequest
             'teacher_id' => ['required', 'integer', 'exists:users,id'],
             'academic_year_id' => ['required', 'integer', 'exists:academic_years,id'],
             'semester_id' => ['nullable', 'integer', 'exists:semesters,id'],
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
+            ...$this->translatableRules('title'),
+            ...$this->translatableRules('description', required: false),
             'material_type' => ['nullable', 'string', 'max:20'],
             'is_published' => ['sometimes', 'boolean'],
         ];

@@ -8,14 +8,21 @@ use Modules\Examination\Models\Exam;
 
 class ExamQuery extends BaseQuery
 {
-    /** @var array<int, string> */
-    protected array $searchableFields = ['name', 'code'];
+    /**
+     * `name` is now a Spatie-translatable JSON column, so a plain LIKE
+     * against it matches raw JSON rather than the human-readable text (same
+     * tradeoff already accepted by BehaviorCategoryQuery). Searches `code`
+     * only rather than over-engineering a JSON-aware search.
+     *
+     * @var array<int, string>
+     */
+    protected array $searchableFields = ['code'];
 
     /** @var array<int, string> */
     protected array $filterableFields = ['academic_year_id', 'semester_id', 'class_id', 'exam_type', 'is_published'];
 
     /** @var array<int, string> */
-    protected array $sortableFields = ['name', 'start_date', 'end_date', 'created_at'];
+    protected array $sortableFields = ['start_date', 'end_date', 'created_at'];
 
     protected function baseQuery(): Builder
     {

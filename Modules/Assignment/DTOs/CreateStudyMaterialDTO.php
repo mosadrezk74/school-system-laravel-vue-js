@@ -12,8 +12,8 @@ final readonly class CreateStudyMaterialDTO
         public int $teacherId,
         public int $academicYearId,
         public ?int $semesterId,
-        public string $title,
-        public ?string $description,
+        public array $title,
+        public ?array $description,
         public ?string $materialType,
         public bool $isPublished,
     ) {}

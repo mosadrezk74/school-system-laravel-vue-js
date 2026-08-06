@@ -22,6 +22,7 @@ class ExamResource extends BaseResource
             'semester_id' => $this->semester_id,
             'class_id' => $this->class_id,
             'name' => $this->name,
+            'name_translations' => $this->getTranslations('name'),
             'code' => $this->code,
             'exam_type' => $this->exam_type,
             'start_date' => $this->start_date?->toDateString(),

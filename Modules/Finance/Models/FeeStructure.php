@@ -8,9 +8,15 @@ use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
 use Modules\Core\Abstracts\BaseModel;
 use Modules\SchoolClass\Models\SchoolClass;
+use Spatie\Translatable\HasTranslations;
 
 class FeeStructure extends BaseModel
 {
+    use HasTranslations;
+
+    /** @var array<int, string> */
+    public array $translatable = ['name'];
+
     protected $table = 'fee_structures';
 
     /**

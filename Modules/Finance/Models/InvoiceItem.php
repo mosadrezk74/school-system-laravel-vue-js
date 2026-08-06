@@ -4,9 +4,15 @@ namespace Modules\Finance\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Translatable\HasTranslations;
 
 class InvoiceItem extends Model
 {
+    use HasTranslations;
+
+    /** @var array<int, string> */
+    public array $translatable = ['description'];
+
     protected $table = 'invoice_items';
 
     protected $guarded = ['id'];
