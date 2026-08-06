@@ -115,6 +115,25 @@ const isModuleEnabled = name => enabledModules.value.includes(name)
     />
   </template>
 
+  <!-- 👉 Communication -->
+  <template v-if="isModuleEnabled('Communication')">
+    <VerticalNavSectionTitle :item="{ heading: t('nav.communication') }" />
+    <VerticalNavLink
+      :item="{
+        title: t('nav.messages'),
+        to: '/communication/messages',
+        icon: 'bx-message-detail',
+      }"
+    />
+    <VerticalNavLink
+      :item="{
+        title: t('nav.emailBroadcast'),
+        to: '/communication/email-broadcast',
+        icon: 'bx-envelope',
+      }"
+    />
+  </template>
+
   <!-- 👉 Attendance -->
   <template v-if="isModuleEnabled('Attendance')">
     <VerticalNavSectionTitle :item="{ heading: t('nav.attendance') }" />

@@ -28,8 +28,8 @@ class BroadcastMessage extends BaseModel
         ];
     }
 
-    public function createdBy(): BelongsTo
+    public function sender(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'sender_id');
     }
 }

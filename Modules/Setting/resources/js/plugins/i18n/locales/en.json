@@ -33,7 +33,10 @@
     "organizationSettings": "Organization",
     "moduleSettings": "Modules",
     "aiTranslationSettings": "AI Translation",
-    "meetings": "Meetings"
+    "meetings": "Meetings",
+    "communication": "Communication",
+    "messages": "Messages",
+    "emailBroadcast": "Send Email"
   },
   "navbar": {
     "search": "Search",
@@ -65,7 +68,8 @@
     "empty": "No data available",
     "noItems": "No items found",
     "confirmArchive": "Are you sure you want to archive this item?",
-    "confirmRestore": "Are you sure you want to restore this item?"
+    "confirmRestore": "Are you sure you want to restore this item?",
+    "back": "Back"
   },
   "academicYears": {
     "title": "Academic Years",
@@ -1124,5 +1128,43 @@
       "password": "Optional. A password required to join the meeting."
     },
     "quickActions": "Quick Actions"
+  },
+  "communication": {
+    "fields": {
+      "title": "Title",
+      "body": "Body",
+      "subject": "Subject",
+      "targetType": "Audience",
+      "targetIds": "Recipients"
+    },
+    "audience": {
+      "all": "All Users",
+      "role": "By Role",
+      "branch": "By Branch",
+      "academic_year": "By Academic Year",
+      "class": "By Class",
+      "section": "By Section",
+      "users": "Specific Users"
+    },
+    "messages": {
+      "title": "Messages",
+      "subtitle": "Send internal messages to a targeted audience.",
+      "addNew": "New Message",
+      "send": "Send Message",
+      "search": "Search by title",
+      "empty": "No messages yet. Send your first message to get started.",
+      "status": "Status",
+      "sentAt": "Sent At",
+      "body": "Body",
+      "statuses": {
+        "pending": "Pending",
+        "sent": "Sent"
+      }
+    },
+    "emailBroadcast": {
+      "title": "Send Email",
+      "subtitle": "Send an email broadcast to a targeted audience.",
+      "send": "Send Email"
+    }
   }
 }
