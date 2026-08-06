@@ -15,4 +15,5 @@ return [
 
     'cannot_delete_current' => 'The current academic year cannot be deleted. Set another year as current first.',
     'cannot_activate_inactive' => 'An inactive academic year cannot be set as current.',
+    'no_current_year' => 'No current academic year is set. Set one as current first.',
 ];

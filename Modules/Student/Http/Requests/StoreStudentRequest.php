@@ -22,7 +22,6 @@ class StoreStudentRequest extends BaseRequest
             'phone' => ['nullable', 'string', 'max:20'],
             'is_active' => ['sometimes', 'boolean'],
 
-            'academic_year_id' => ['required', 'integer', 'exists:academic_years,id'],
             'current_class_id' => ['nullable', 'integer', 'exists:classes,id'],
             'admission_number' => ['nullable', 'string', 'max:50', 'unique:student_profiles,admission_number'],
             'roll_number' => ['nullable', 'string', 'max:50'],
@@ -64,7 +63,6 @@ class StoreStudentRequest extends BaseRequest
             'username' => __('student::student.fields.username'),
             'password' => __('student::student.fields.password'),
             'gender' => __('student::student.fields.gender'),
-            'academic_year_id' => __('student::student.fields.academic_year_id'),
             'current_class_id' => __('student::student.fields.current_class_id'),
             'admission_number' => __('student::student.fields.admission_number'),
             'admission_date' => __('student::student.fields.admission_date'),

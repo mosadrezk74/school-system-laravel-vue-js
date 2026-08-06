@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 import ClassForm from './_Form.vue'
 
 defineProps({
-  academicYears: { type: Array, default: () => [] },
   gradeLevels: { type: Array, default: () => [] },
   classrooms: { type: Array, default: () => [] },
   teachers: { type: Array, default: () => [] },
@@ -14,7 +13,6 @@ const { t } = useI18n()
 
 const form = useForm({
   grade_level_id: null,
-  academic_year_id: null,
   classroom_id: null,
   name: '',
   section_code: '',
@@ -44,7 +42,6 @@ function submit() {
       <form @submit.prevent="submit">
         <ClassForm
           :form="form"
-          :academic-years="academicYears"
           :grade-levels="gradeLevels"
           :classrooms="classrooms"
           :teachers="teachers"

@@ -8,10 +8,6 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  academicYears: {
-    type: Array,
-    default: () => [],
-  },
   gradeLevels: {
     type: Array,
     default: () => [],
@@ -30,7 +26,6 @@ const { t } = useI18n()
 
 const form = useForm({
   grade_level_id: props.class.grade_level_id,
-  academic_year_id: props.class.academic_year_id,
   classroom_id: props.class.classroom_id,
   name: props.class.name,
   section_code: props.class.section_code,
@@ -65,7 +60,6 @@ function submit() {
       <form @submit.prevent="submit">
         <ClassForm
           :form="form"
-          :academic-years="academicYears"
           :grade-levels="gradeLevels"
           :classrooms="classrooms"
           :teachers="teachers"

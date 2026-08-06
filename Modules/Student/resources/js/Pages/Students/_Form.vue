@@ -1,10 +1,9 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   form: { type: Object, required: true },
-  academicYears: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   isEdit: { type: Boolean, default: false },
 })
@@ -16,24 +15,12 @@ const { t } = useI18n()
 // "Optional" marker to maintain in sync.
 const required = label => `${label} *`
 
-// A class belongs to exactly one academic year, so the picker only ever
-// offers classes that match the year currently selected above it.
-const filteredClasses = computed(() =>
-  props.classes.filter(c => c.academic_year_id === props.form.academic_year_id))
-
-const classOptions = computed(() => filteredClasses.value.map(c => ({
+const classOptions = computed(() => props.classes.map(c => ({
   title: [c.name, c.section_code, c.grade_level?.name]
     .filter(Boolean)
     .join(' · '),
   value: c.id,
 })))
-
-watch(() => props.form.academic_year_id, () => {
-  const stillValid = filteredClasses.value.some(c => c.id === props.form.current_class_id)
-
-  if (!stillValid)
-    props.form.current_class_id = null
-})
 
 const activeTab = ref('account')
 
@@ -42,7 +29,7 @@ const activeTab = ref('account')
 // find out which one needs attention.
 const tabFields = {
   account: ['name', 'email', 'username', 'password', 'gender', 'birth_date', 'national_id', 'phone', 'is_active'],
-  enrollment: ['academic_year_id', 'current_class_id', 'admission_date', 'admission_number', 'roll_number', 'scholarship_percentage', 'is_graduated'],
+  enrollment: ['current_class_id', 'admission_date', 'admission_number', 'roll_number', 'scholarship_percentage', 'is_graduated'],
   guardians: ['father_name', 'father_phone', 'mother_name', 'mother_phone', 'guardian_name', 'guardian_phone', 'guardian_relation', 'address', 'city'],
   medical: ['blood_group', 'allergies', 'medical_conditions', 'previous_school', 'emergency_contact_name', 'emergency_contact_phone', 'emergency_contact_relation'],
 }
@@ -217,18 +204,6 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
       <VRow>
         <VCol cols="12" md="4">
           <VSelect
-            v-model="form.academic_year_id"
-            :items="academicYears.map(y => ({ title: y.name, value: y.id }))"
-            :label="required(t('students.academicYear'))"
-            :hint="$t('students.hints.academicYear')"
-            persistent-hint
-            :error-messages="form.errors.academic_year_id"
-            required
-          />
-        </VCol>
-
-        <VCol cols="12" md="4">
-          <VSelect
             v-model="form.current_class_id"
             clearable
             :items="classOptions"
@@ -236,7 +211,6 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
             :hint="$t('students.hints.currentClass')"
             persistent-hint
             :error-messages="form.errors.current_class_id"
-            :disabled="!form.academic_year_id"
           />
         </VCol>
 

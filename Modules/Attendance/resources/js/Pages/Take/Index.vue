@@ -19,7 +19,6 @@ const form = useForm({
   class_id: props.filters.class_id ?? null,
   date: props.filters.date ?? date.value,
   session: 1,
-  academic_year_id: null,
   students: [],
 })
 
@@ -38,7 +37,6 @@ const statusOptions = computed(() =>
 function syncForm() {
   form.class_id = classId.value
   form.date = date.value
-  form.academic_year_id = selectedClass.value?.academic_year_id ?? null
   form.students = props.roster.map(student => ({
     student_id: student.student_id,
     status: student.status,

@@ -3,6 +3,7 @@
 namespace Modules\Student\DTOs;
 
 use Illuminate\Http\Request;
+use Modules\Academic\Services\AcademicYearService;
 use Modules\Core\Constants\Pagination;
 
 final readonly class StudentFilterDTO
@@ -23,7 +24,7 @@ final readonly class StudentFilterDTO
     {
         return new self(
             search: $request->string(Pagination::SEARCH_PARAM)->toString() ?: null,
-            academicYearId: $request->filled('academic_year_id') ? (int) $request->input('academic_year_id') : null,
+            academicYearId: AcademicYearService::id(),
             currentClassId: $request->filled('current_class_id') ? (int) $request->input('current_class_id') : null,
             gradeLevelId: $request->filled('grade_level_id') ? (int) $request->input('grade_level_id') : null,
             isActive: $request->has('is_active') ? $request->boolean('is_active') : null,

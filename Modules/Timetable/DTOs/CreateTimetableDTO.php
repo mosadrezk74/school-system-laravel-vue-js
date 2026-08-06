@@ -2,6 +2,7 @@
 
 namespace Modules\Timetable\DTOs;
 
+use Modules\Academic\Services\AcademicYearService;
 use Modules\Timetable\Http\Requests\StoreTimetableRequest;
 use Modules\Timetable\Http\Requests\UpdateTimetableRequest;
 
@@ -18,7 +19,7 @@ final readonly class CreateTimetableDTO
     {
         return new self(
             classId: (int) $request->validated('class_id'),
-            academicYearId: (int) $request->validated('academic_year_id'),
+            academicYearId: AcademicYearService::requiredId(),
             semesterId: $request->validated('semester_id') ? (int) $request->validated('semester_id') : null,
             isActive: (bool) $request->validated('is_active', true),
         );

@@ -6,7 +6,6 @@ import AttendanceForm from './_Form.vue'
 const props = defineProps({
   record: { type: Object, required: true },
   roster: { type: Array, default: () => [] },
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   subjects: { type: Array, default: () => [] },
@@ -15,7 +14,6 @@ const props = defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  academic_year_id: props.record.academic_year_id,
   semester_id: props.record.semester_id,
   class_id: props.record.class_id,
   subject_id: props.record.subject_id,
@@ -46,7 +44,6 @@ function submit() {
       <form @submit.prevent="submit">
         <AttendanceForm
           :form="form"
-          :academic-years="academicYears"
           :semesters="semesters"
           :classes="classes"
           :subjects="subjects"

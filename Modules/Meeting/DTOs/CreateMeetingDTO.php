@@ -2,6 +2,7 @@
 
 namespace Modules\Meeting\DTOs;
 
+use Modules\Academic\Services\AcademicYearService;
 use Modules\Meeting\Http\Requests\StoreMeetingRequest;
 
 final readonly class CreateMeetingDTO
@@ -29,7 +30,7 @@ final readonly class CreateMeetingDTO
             scheduledAt: $request->validated('scheduled_at'),
             durationMinutes: (int) $request->validated('duration_minutes'),
             teacherId: (int) $request->validated('teacher_id'),
-            academicYearId: $request->validated('academic_year_id') ? (int) $request->validated('academic_year_id') : null,
+            academicYearId: AcademicYearService::id(),
             semesterId: $request->validated('semester_id') ? (int) $request->validated('semester_id') : null,
         );
     }

@@ -8,14 +8,12 @@ const props = defineProps({
   filters: { type: Object, default: () => ({}) },
   classes: { type: Array, default: () => [] },
   subjects: { type: Array, default: () => [] },
-  academicYears: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
 const classId = ref(props.filters.class_id ?? null)
 const subjectId = ref(props.filters.subject_id ?? null)
-const academicYearId = ref(props.filters.academic_year_id ?? null)
 const dateFrom = ref(props.filters.date_from ?? null)
 const dateTo = ref(props.filters.date_to ?? null)
 
@@ -26,8 +24,6 @@ function buildQuery(extra = {}) {
     query.class_id = classId.value
   if (subjectId.value)
     query.subject_id = subjectId.value
-  if (academicYearId.value)
-    query.academic_year_id = academicYearId.value
   if (dateFrom.value)
     query.date_from = dateFrom.value
   if (dateTo.value)
@@ -45,7 +41,7 @@ function applyFilters() {
 }
 
 let filterTimer
-watch([classId, subjectId, academicYearId], applyFilters)
+watch([classId, subjectId], applyFilters)
 watch([dateFrom, dateTo], () => {
   clearTimeout(filterTimer)
   filterTimer = setTimeout(applyFilters, 350)
@@ -119,14 +115,6 @@ function goToPage(page) {
         style="max-inline-size: 220px;"
       />
 
-      <VSelect
-        v-model="academicYearId"
-        :label="t('attendanceRecords.academicYear')"
-        :items="academicYears.map(y => ({ title: y.name, value: y.id }))"
-        density="compact"
-        clearable
-        style="max-inline-size: 220px;"
-      />
 
       <VTextField
         v-model="dateFrom"

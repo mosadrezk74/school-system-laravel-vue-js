@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 import AttendanceForm from './_Form.vue'
 
 const props = defineProps({
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   subjects: { type: Array, default: () => [] },
@@ -14,7 +13,6 @@ const props = defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  academic_year_id: null,
   semester_id: null,
   class_id: null,
   subject_id: null,
@@ -57,7 +55,6 @@ function submit() {
       <form @submit.prevent="submit">
         <AttendanceForm
           :form="form"
-          :academic-years="academicYears"
           :semesters="semesters"
           :classes="classes"
           :subjects="subjects"

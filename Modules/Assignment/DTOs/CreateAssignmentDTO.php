@@ -2,6 +2,7 @@
 
 namespace Modules\Assignment\DTOs;
 
+use Modules\Academic\Services\AcademicYearService;
 use Modules\Assignment\Http\Requests\StoreAssignmentRequest;
 
 final readonly class CreateAssignmentDTO
@@ -27,7 +28,7 @@ final readonly class CreateAssignmentDTO
             classId: (int) $request->validated('class_id'),
             subjectId: (int) $request->validated('subject_id'),
             teacherId: (int) $request->validated('teacher_id'),
-            academicYearId: (int) $request->validated('academic_year_id'),
+            academicYearId: AcademicYearService::requiredId(),
             semesterId: $request->validated('semester_id') ? (int) $request->validated('semester_id') : null,
             title: $request->validated('title'),
             description: $request->validated('description'),

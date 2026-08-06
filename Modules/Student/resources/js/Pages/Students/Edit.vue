@@ -5,7 +5,6 @@ import StudentForm from './_Form.vue'
 
 const props = defineProps({
   student: { type: Object, required: true },
-  academicYears: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
 })
 
@@ -21,7 +20,6 @@ const form = useForm({
   national_id: props.student.national_id,
   phone: props.student.phone,
   is_active: props.student.is_active,
-  academic_year_id: props.student.academic_year_id,
   current_class_id: props.student.current_class_id,
   admission_number: props.student.admission_number,
   roll_number: props.student.roll_number,
@@ -66,7 +64,6 @@ function submit() {
       <form @submit.prevent="submit">
         <StudentForm
           :form="form"
-          :academic-years="academicYears"
           :classes="classes"
           is-edit
         />

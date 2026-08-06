@@ -13,7 +13,6 @@ class UpdateTimetableRequest extends BaseRequest
     {
         return [
             'class_id' => ['required', 'integer', 'exists:classes,id'],
-            'academic_year_id' => ['required', 'integer', 'exists:academic_years,id'],
             'semester_id' => ['nullable', 'integer', 'exists:semesters,id'],
             'is_active' => ['sometimes', 'boolean'],
         ];
@@ -26,7 +25,6 @@ class UpdateTimetableRequest extends BaseRequest
     {
         return [
             'class_id' => __('timetable::timetable.fields.class'),
-            'academic_year_id' => __('timetable::timetable.fields.academic_year'),
             'semester_id' => __('timetable::timetable.fields.semester'),
         ];
     }

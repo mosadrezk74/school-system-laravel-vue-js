@@ -3,6 +3,7 @@
 namespace Modules\Attendance\DTOs;
 
 use Illuminate\Http\Request;
+use Modules\Academic\Services\AcademicYearService;
 
 final readonly class AttendanceDashboardFilterDTO
 {
@@ -17,7 +18,7 @@ final readonly class AttendanceDashboardFilterDTO
     {
         return new self(
             classId: $request->filled('class_id') ? (int) $request->input('class_id') : null,
-            academicYearId: $request->filled('academic_year_id') ? (int) $request->input('academic_year_id') : null,
+            academicYearId: AcademicYearService::id(),
             semesterId: $request->filled('semester_id') ? (int) $request->input('semester_id') : null,
             trendDays: 30,
         );

@@ -15,7 +15,6 @@ class StoreStudyMaterialRequest extends BaseRequest
             'class_id' => ['nullable', 'integer', 'exists:classes,id'],
             'subject_id' => ['required', 'integer', 'exists:subjects,id'],
             'teacher_id' => ['required', 'integer', 'exists:users,id'],
-            'academic_year_id' => ['required', 'integer', 'exists:academic_years,id'],
             'semester_id' => ['nullable', 'integer', 'exists:semesters,id'],
             ...$this->translatableRules('title'),
             ...$this->translatableRules('description', required: false),
@@ -32,7 +31,6 @@ class StoreStudyMaterialRequest extends BaseRequest
         return [
             'subject_id' => __('assignment::study_material.fields.subject_id'),
             'teacher_id' => __('assignment::study_material.fields.teacher_id'),
-            'academic_year_id' => __('assignment::study_material.fields.academic_year_id'),
             'semester_id' => __('assignment::study_material.fields.semester_id'),
             'title' => __('assignment::study_material.fields.title'),
         ];

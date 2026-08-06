@@ -5,7 +5,7 @@ namespace Modules\Student\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Modules\Academic\Models\AcademicYear;
+use Modules\Academic\Services\AcademicYearService;
 use Modules\Behavior\Models\BehaviorRecord;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
@@ -46,7 +46,6 @@ class StudentController extends BaseInertiaController
             'students' => StudentResource::collection($students),
             'filters' => $request->only([
                 Pagination::SEARCH_PARAM,
-                'academic_year_id',
                 'current_class_id',
                 'grade_level_id',
                 'is_active',
@@ -60,8 +59,7 @@ class StudentController extends BaseInertiaController
         $this->authorize('create', StudentProfile::class);
 
         return $this->render('Student::Students/Create', [
-            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
-            'classes' => SchoolClass::query()->where('is_active', true)
+            'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
                 ->with(['gradeLevel:id,name'])
                 ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id']),
         ]);
@@ -109,8 +107,7 @@ class StudentController extends BaseInertiaController
 
         return $this->render('Student::Students/Edit', [
             'student' => new StudentResource($student),
-            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
-            'classes' => SchoolClass::query()->where('is_active', true)
+            'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
                 ->with(['gradeLevel:id,name'])
                 ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id']),
         ]);

@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   classes: { type: Array, default: () => [] },
-  academicYears: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -13,7 +12,6 @@ const required = label => `${label} *`
 
 const form = useForm({
   class_id: null,
-  academic_year_id: null,
   semester_id: null,
   is_active: true,
 })
@@ -43,16 +41,6 @@ function submit() {
               :items="classes.map(c => ({ title: `${c.name} ${c.section_code}`, value: c.id }))"
               :label="required(t('timetables.class'))"
               :error-messages="form.errors.class_id"
-              required
-            />
-          </VCol>
-
-          <VCol cols="12" md="6">
-            <VSelect
-              v-model="form.academic_year_id"
-              :items="academicYears.map(y => ({ title: y.name, value: y.id }))"
-              :label="required(t('timetables.academicYear'))"
-              :error-messages="form.errors.academic_year_id"
               required
             />
           </VCol>

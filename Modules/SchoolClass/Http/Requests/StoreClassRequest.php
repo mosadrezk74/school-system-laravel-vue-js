@@ -3,6 +3,7 @@
 namespace Modules\SchoolClass\Http\Requests;
 
 use Illuminate\Validation\Rule;
+use Modules\Academic\Services\AcademicYearService;
 use Modules\Core\Abstracts\BaseRequest;
 
 class StoreClassRequest extends BaseRequest
@@ -14,14 +15,13 @@ class StoreClassRequest extends BaseRequest
     {
         return [
             'grade_level_id' => ['required', 'integer', 'exists:grade_levels,id'],
-            'academic_year_id' => ['required', 'integer', 'exists:academic_years,id'],
             'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
             'name' => ['required', 'string', 'max:100'],
             'section_code' => [
                 'required', 'string', 'max:10',
                 Rule::unique('classes', 'section_code')->where(function ($query) {
                     return $query
-                        ->where('academic_year_id', $this->input('academic_year_id'))
+                        ->where('academic_year_id', AcademicYearService::id())
                         ->where('grade_level_id', $this->input('grade_level_id'));
                 }),
             ],
@@ -39,7 +39,6 @@ class StoreClassRequest extends BaseRequest
     {
         return [
             'grade_level_id' => __('school-class::class.fields.grade_level_id'),
-            'academic_year_id' => __('school-class::class.fields.academic_year_id'),
             'classroom_id' => __('school-class::class.fields.classroom_id'),
             'name' => __('school-class::class.fields.name'),
             'section_code' => __('school-class::class.fields.section_code'),

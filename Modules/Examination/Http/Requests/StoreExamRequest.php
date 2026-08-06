@@ -12,7 +12,6 @@ class StoreExamRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'academic_year_id' => ['required', 'integer', 'exists:academic_years,id'],
             'semester_id' => ['nullable', 'integer', 'exists:semesters,id'],
             'class_id' => ['nullable', 'integer', 'exists:classes,id'],
             ...$this->translatableRules('name'),
@@ -33,7 +32,6 @@ class StoreExamRequest extends BaseRequest
     public function attributes(): array
     {
         return [
-            'academic_year_id' => __('examination::exam.fields.academic_year_id'),
             'semester_id' => __('examination::exam.fields.semester_id'),
             'class_id' => __('examination::exam.fields.class_id'),
             'name' => __('examination::exam.fields.name'),

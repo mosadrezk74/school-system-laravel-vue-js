@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   form: { type: Object, required: true },
-  academicYears: { type: Array, default: () => [] },
   gradeLevels: { type: Array, default: () => [] },
   classrooms: { type: Array, default: () => [] },
   teachers: { type: Array, default: () => [] },
@@ -31,7 +30,7 @@ const teacherOptions = computed(() => props.teachers.map(t => ({
 const activeTab = ref('details')
 
 const tabFields = {
-  details: ['grade_level_id', 'academic_year_id', 'name', 'section_code', 'capacity', 'classroom_id', 'is_active'],
+  details: ['grade_level_id', 'name', 'section_code', 'capacity', 'classroom_id', 'is_active'],
   staffing: ['class_teacher_id', 'assistant_teacher_id'],
 }
 
@@ -73,7 +72,6 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
       </div>
 
       <VRow>
-
         <VCol cols="12" md="4">
           <VSelect
             v-model="form.grade_level_id"
@@ -82,18 +80,6 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
             :hint="$t('classes.hints.gradeLevel')"
             persistent-hint
             :error-messages="form.errors.grade_level_id"
-            required
-          />
-        </VCol>
-
-        <VCol cols="12" md="4">
-          <VSelect
-            v-model="form.academic_year_id"
-            :items="academicYears.map(y => ({ title: y.name, value: y.id }))"
-            :label="required(t('classes.academicYear'))"
-            :hint="$t('classes.hints.academicYear')"
-            persistent-hint
-            :error-messages="form.errors.academic_year_id"
             required
           />
         </VCol>

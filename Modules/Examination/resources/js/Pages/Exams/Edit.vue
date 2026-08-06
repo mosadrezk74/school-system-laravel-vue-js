@@ -6,7 +6,6 @@ import ExamSubjectsSection from './_SubjectsSection.vue'
 
 const props = defineProps({
   exam: { type: Object, required: true },
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   subjects: { type: Array, default: () => [] },
@@ -18,7 +17,6 @@ const form = useForm({
   name: props.exam.name || '',
   code: props.exam.code,
   exam_type: props.exam.exam_type,
-  academic_year_id: props.exam.academic_year_id,
   semester_id: props.exam.semester_id,
   class_id: props.exam.class_id,
   start_date: props.exam.start_date,
@@ -49,7 +47,6 @@ function submit() {
       <form @submit.prevent="submit">
         <ExamForm
           :form="form"
-          :academic-years="academicYears"
           :semesters="semesters"
           :classes="classes"
         />

@@ -5,7 +5,6 @@ import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   classes: { type: Array, default: () => [] },
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   rows: { type: Object, default: () => ({ data: [] }) },
   statistics: { type: Object, default: null },
@@ -17,7 +16,6 @@ const { t } = useI18n()
 
 const form = useForm({
   class_id: props.filters.class_id ?? null,
-  academic_year_id: props.filters.academic_year_id ?? null,
   semester_id: props.filters.semester_id ?? null,
   date_from: props.filters.date_from ?? null,
   date_to: props.filters.date_to ?? null,
@@ -29,12 +27,8 @@ const classOptions = computed(() =>
     value: c.id,
   })))
 
-const academicYearOptions = computed(() =>
-  props.academicYears.map(y => ({ title: y.name, value: y.id })))
-
 const semesterOptions = computed(() =>
   props.semesters
-    .filter(s => !form.academic_year_id || s.academic_year_id === form.academic_year_id)
     .map(s => ({ title: s.name, value: s.id })))
 
 const reportRows = computed(() => props.rows?.data ?? [])
@@ -85,15 +79,6 @@ function generate() {
         <VDivider />
 
         <VCardText class="d-flex flex-wrap gap-4">
-          <VSelect
-            v-model="form.academic_year_id"
-            :label="t('attendanceRecords.academicYear')"
-            :items="academicYearOptions"
-            :error-messages="form.errors.academic_year_id"
-            density="compact"
-            clearable
-            style="max-inline-size: 220px;"
-          />
 
           <VSelect
             v-model="form.semester_id"

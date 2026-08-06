@@ -2,6 +2,7 @@
 
 namespace Modules\Attendance\DTOs;
 
+use Modules\Academic\Services\AcademicYearService;
 use Modules\Attendance\Http\Requests\AttendanceReportRequest;
 
 final readonly class AttendanceReportFilterDTO
@@ -18,7 +19,7 @@ final readonly class AttendanceReportFilterDTO
     {
         return new self(
             classId: (int) $request->validated('class_id'),
-            academicYearId: $request->validated('academic_year_id') ? (int) $request->validated('academic_year_id') : null,
+            academicYearId: AcademicYearService::id(),
             semesterId: $request->validated('semester_id') ? (int) $request->validated('semester_id') : null,
             dateFrom: $request->validated('date_from') ?: null,
             dateTo: $request->validated('date_to') ?: null,

@@ -18,7 +18,6 @@ class UpdateMeetingRequest extends BaseRequest
             'scheduled_at' => ['required', 'date'],
             'duration_minutes' => ['required', 'integer', 'min:1', 'max:600'],
             'teacher_id' => ['required', 'integer', 'exists:users,id'],
-            'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
             'semester_id' => ['nullable', 'integer', 'exists:semesters,id'],
         ];
     }
@@ -33,7 +32,6 @@ class UpdateMeetingRequest extends BaseRequest
             'scheduled_at' => __('meeting::meeting.fields.scheduled_at'),
             'duration_minutes' => __('meeting::meeting.fields.duration_minutes'),
             'teacher_id' => __('meeting::meeting.fields.teacher_id'),
-            'academic_year_id' => __('meeting::meeting.fields.academic_year_id'),
             'semester_id' => __('meeting::meeting.fields.semester_id'),
         ];
     }

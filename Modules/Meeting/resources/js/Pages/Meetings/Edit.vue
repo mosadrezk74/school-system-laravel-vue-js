@@ -6,7 +6,6 @@ import MeetingForm from './_Form.vue'
 const props = defineProps({
   meeting: { type: Object, required: true },
   teachers: { type: Array, default: () => [] },
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
 })
 
@@ -19,7 +18,6 @@ const form = useForm({
   scheduled_at: props.meeting.scheduled_at ? props.meeting.scheduled_at.slice(0, 16) : null,
   duration_minutes: props.meeting.duration_minutes,
   teacher_id: props.meeting.teacher_id,
-  academic_year_id: props.meeting.academic_year_id,
   semester_id: props.meeting.semester_id,
 })
 
@@ -44,7 +42,6 @@ function submit() {
         <MeetingForm
           :form="form"
           :teachers="teachers"
-          :academic-years="academicYears"
           :semesters="semesters"
         />
       </form>

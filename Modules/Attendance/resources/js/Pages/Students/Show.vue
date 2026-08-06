@@ -7,14 +7,12 @@ const props = defineProps({
   student: { type: Object, required: true },
   summary: { type: Object, required: true },
   timeline: { type: Object, default: () => ({ data: [] }) },
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   filters: { type: Object, default: () => ({}) },
 })
 
 const { t } = useI18n()
 
-const academicYearId = ref(props.filters.academic_year_id ?? null)
 const semesterId = ref(props.filters.semester_id ?? null)
 const dateFrom = ref(props.filters.date_from ?? null)
 const dateTo = ref(props.filters.date_to ?? null)
@@ -23,25 +21,20 @@ let filterTimer
 
 function applyFilters() {
   router.get(`/attendance/students/${props.student.id}`, {
-    academic_year_id: academicYearId.value || undefined,
     semester_id: semesterId.value || undefined,
     date_from: dateFrom.value || undefined,
     date_to: dateTo.value || undefined,
   }, { preserveState: true, preserveScroll: true, replace: true })
 }
 
-watch([academicYearId, semesterId], applyFilters)
+watch([semesterId], applyFilters)
 watch([dateFrom, dateTo], () => {
   clearTimeout(filterTimer)
   filterTimer = setTimeout(applyFilters, 350)
 })
 
-const academicYearOptions = computed(() =>
-  props.academicYears.map(y => ({ title: y.name, value: y.id })))
-
 const semesterOptions = computed(() =>
   props.semesters
-    .filter(s => !academicYearId.value || s.academic_year_id === academicYearId.value)
     .map(s => ({ title: s.name, value: s.id })))
 
 const rows = computed(() => props.timeline?.data ?? [])
@@ -108,14 +101,6 @@ const statusColor = status => ({
         <VDivider />
 
         <VCardText class="d-flex flex-wrap gap-4">
-          <VSelect
-            v-model="academicYearId"
-            :label="t('attendanceRecords.academicYear')"
-            :items="academicYearOptions"
-            density="compact"
-            clearable
-            style="max-inline-size: 220px;"
-          />
 
           <VSelect
             v-model="semesterId"

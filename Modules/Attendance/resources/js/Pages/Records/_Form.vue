@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   form: { type: Object, required: true },
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   subjects: { type: Array, default: () => [] },
@@ -24,18 +23,12 @@ const statusOptions = computed(() => [
   { title: t('attendanceRecords.statuses.excused'), value: 'excused' },
 ])
 
-const filteredClasses = computed(() =>
-  props.classes.filter(c => c.academic_year_id === props.form.academic_year_id))
-
-const classOptions = computed(() => filteredClasses.value.map(c => ({
+const classOptions = computed(() => props.classes.map(c => ({
   title: [c.name, c.section_code].filter(Boolean).join(' · '),
   value: c.id,
 })))
 
-const filteredSemesters = computed(() =>
-  props.semesters.filter(s => s.academic_year_id === props.form.academic_year_id))
-
-const semesterOptions = computed(() => filteredSemesters.value.map(s => ({
+const semesterOptions = computed(() => props.semesters.map(s => ({
   title: s.name,
   value: s.id,
 })))
@@ -47,16 +40,6 @@ function onClassChange(value) {
 
 <template>
   <VRow>
-    <VCol cols="12" md="4">
-      <VSelect
-        v-model="form.academic_year_id"
-        :items="academicYears.map(y => ({ title: y.name, value: y.id }))"
-        :label="required(t('attendanceRecords.academicYear'))"
-        :error-messages="form.errors.academic_year_id"
-        :disabled="isEdit"
-        required
-      />
-    </VCol>
 
     <VCol cols="12" md="4">
       <VSelect
@@ -65,7 +48,7 @@ function onClassChange(value) {
         :items="semesterOptions"
         :label="t('attendanceRecords.semester')"
         :error-messages="form.errors.semester_id"
-        :disabled="isEdit || !form.academic_year_id"
+        :disabled="isEdit"
       />
     </VCol>
 
@@ -75,7 +58,7 @@ function onClassChange(value) {
         :items="classOptions"
         :label="required(t('attendanceRecords.class'))"
         :error-messages="form.errors.class_id"
-        :disabled="isEdit || !form.academic_year_id"
+        :disabled="isEdit"
         required
         @update:model-value="onClassChange"
       />

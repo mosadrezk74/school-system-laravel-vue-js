@@ -5,8 +5,8 @@ namespace Modules\Examination\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\Semester;
+use Modules\Academic\Services\AcademicYearService;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
 use Modules\Examination\Actions\ArchiveExamAction;
@@ -53,7 +53,6 @@ class ExamController extends BaseInertiaController
             'exams' => ExamResource::collection($exams),
             'filters' => $request->only([
                 Pagination::SEARCH_PARAM,
-                'academic_year_id',
                 'semester_id',
                 'class_id',
                 'exam_type',
@@ -181,9 +180,8 @@ class ExamController extends BaseInertiaController
     protected function formOptions(): array
     {
         return [
-            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
-            'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
-            'classes' => SchoolClass::query()->where('is_active', true)
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
+            'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
                 ->get(['id', 'name', 'section_code', 'academic_year_id']),
             'subjects' => Subject::query()->get()->map(fn (Subject $subject) => ['id' => $subject->id, 'name' => $subject->name])->values(),
         ];

@@ -6,8 +6,8 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\Semester;
+use Modules\Academic\Services\AcademicYearService;
 use Modules\Assignment\Actions\ArchiveStudyMaterialAction;
 use Modules\Assignment\Actions\CreateStudyMaterialAction;
 use Modules\Assignment\Actions\RestoreStudyMaterialAction;
@@ -53,7 +53,6 @@ class StudyMaterialController extends BaseInertiaController
                 'class_id',
                 'subject_id',
                 'teacher_id',
-                'academic_year_id',
                 'semester_id',
                 'is_published',
             ]),
@@ -132,9 +131,8 @@ class StudyMaterialController extends BaseInertiaController
     protected function formOptions(): array
     {
         return [
-            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
-            'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
-            'classes' => SchoolClass::query()->where('is_active', true)
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
+            'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
                 ->get(['id', 'name', 'section_code', 'academic_year_id']),
             'subjects' => Subject::query()->get()->map(fn (Subject $subject) => ['id' => $subject->id, 'name' => $subject->name])->values(),
             'teachers' => User::query()->where('role', UserRole::Teacher->value)->get(['id', 'name']),

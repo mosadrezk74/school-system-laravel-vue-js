@@ -3,6 +3,7 @@
 namespace Modules\Assignment\DTOs;
 
 use Illuminate\Http\Request;
+use Modules\Academic\Services\AcademicYearService;
 use Modules\Core\Constants\Pagination;
 
 final readonly class StudyMaterialFilterDTO
@@ -27,7 +28,7 @@ final readonly class StudyMaterialFilterDTO
             classId: $request->filled('class_id') ? (int) $request->input('class_id') : null,
             subjectId: $request->filled('subject_id') ? (int) $request->input('subject_id') : null,
             teacherId: $request->filled('teacher_id') ? (int) $request->input('teacher_id') : null,
-            academicYearId: $request->filled('academic_year_id') ? (int) $request->input('academic_year_id') : null,
+            academicYearId: AcademicYearService::id(),
             semesterId: $request->filled('semester_id') ? (int) $request->input('semester_id') : null,
             isPublished: $request->has('is_published') ? $request->boolean('is_published') : null,
             sortBy: $request->string(Pagination::SORT_PARAM, Pagination::DEFAULT_SORT)->toString(),

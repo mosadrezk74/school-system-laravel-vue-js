@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 import ExamForm from './_Form.vue'
 
 defineProps({
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
 })
@@ -15,7 +14,6 @@ const form = useForm({
   name: '',
   code: '',
   exam_type: 'midterm',
-  academic_year_id: null,
   semester_id: null,
   class_id: null,
   start_date: null,
@@ -46,7 +44,6 @@ function submit() {
       <form @submit.prevent="submit">
         <ExamForm
           :form="form"
-          :academic-years="academicYears"
           :semesters="semesters"
           :classes="classes"
         />

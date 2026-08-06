@@ -5,7 +5,6 @@ namespace Modules\SchoolClass\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
 use Modules\Classroom\Models\Classroom;
 use Modules\Core\Abstracts\BaseInertiaController;
@@ -46,7 +45,6 @@ class ClassController extends BaseInertiaController
             'classes' => ClassResource::collection($classes),
             'filters' => $request->only([
                 Pagination::SEARCH_PARAM,
-                'academic_year_id',
                 'grade_level_id',
                 'is_active',
             ]),
@@ -135,7 +133,6 @@ class ClassController extends BaseInertiaController
     protected function lookups(): array
     {
         return [
-            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
             'gradeLevels' => GradeLevel::query()->where('is_active', true)->get()
                 ->map(fn (GradeLevel $gradeLevel) => ['id' => $gradeLevel->id, 'name' => $gradeLevel->name])
                 ->values(),

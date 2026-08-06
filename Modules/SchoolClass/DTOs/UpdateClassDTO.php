@@ -2,6 +2,7 @@
 
 namespace Modules\SchoolClass\DTOs;
 
+use Modules\Academic\Services\AcademicYearService;
 use Modules\SchoolClass\Http\Requests\UpdateClassRequest;
 
 final readonly class UpdateClassDTO
@@ -22,7 +23,7 @@ final readonly class UpdateClassDTO
     {
         return new self(
             gradeLevelId: (int) $request->validated('grade_level_id'),
-            academicYearId: (int) $request->validated('academic_year_id'),
+            academicYearId: AcademicYearService::requiredId(),
             classroomId: $request->validated('classroom_id') ? (int) $request->validated('classroom_id') : null,
             name: $request->validated('name'),
             sectionCode: $request->validated('section_code'),

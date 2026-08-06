@@ -5,7 +5,6 @@ import StudyMaterialForm from './_Form.vue'
 
 const props = defineProps({
   studyMaterial: { type: Object, required: true },
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   subjects: { type: Array, default: () => [] },
@@ -20,7 +19,6 @@ const form = useForm({
   class_id: props.studyMaterial.class_id,
   subject_id: props.studyMaterial.subject_id,
   teacher_id: props.studyMaterial.teacher_id,
-  academic_year_id: props.studyMaterial.academic_year_id,
   semester_id: props.studyMaterial.semester_id,
   material_type: props.studyMaterial.material_type,
   is_published: props.studyMaterial.is_published,
@@ -46,7 +44,6 @@ function submit() {
       <form @submit.prevent="submit">
         <StudyMaterialForm
           :form="form"
-          :academic-years="academicYears"
           :semesters="semesters"
           :classes="classes"
           :subjects="subjects"

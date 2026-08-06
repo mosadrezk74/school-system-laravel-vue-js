@@ -1,12 +1,11 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TranslatableTextInput from '@/components/TranslatableTextInput.vue'
 import TranslatableTextarea from '@/components/TranslatableTextarea.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   subjects: { type: Array, default: () => [] },
@@ -17,34 +16,21 @@ const { t } = useI18n()
 
 const required = label => `${label} *`
 
-const filteredClasses = computed(() =>
-  props.classes.filter(c => c.academic_year_id === props.form.academic_year_id))
-
-const classOptions = computed(() => filteredClasses.value.map(c => ({
+const classOptions = computed(() => props.classes.map(c => ({
   title: [c.name, c.section_code].filter(Boolean).join(' · '),
   value: c.id,
 })))
 
-const filteredSemesters = computed(() =>
-  props.semesters.filter(s => s.academic_year_id === props.form.academic_year_id))
-
-const semesterOptions = computed(() => filteredSemesters.value.map(s => ({
+const semesterOptions = computed(() => props.semesters.map(s => ({
   title: s.name,
   value: s.id,
 })))
 
-watch(() => props.form.academic_year_id, () => {
-  if (!filteredClasses.value.some(c => c.id === props.form.class_id))
-    props.form.class_id = null
-
-  if (!filteredSemesters.value.some(s => s.id === props.form.semester_id))
-    props.form.semester_id = null
-})
 
 const activeTab = ref('details')
 
 const tabFields = {
-  details: ['title', 'description', 'class_id', 'subject_id', 'teacher_id', 'academic_year_id', 'semester_id', 'material_type'],
+  details: ['title', 'description', 'class_id', 'subject_id', 'teacher_id', 'semester_id', 'material_type'],
   publishing: ['is_published'],
 }
 
@@ -105,17 +91,6 @@ const tabHasError = tab => tabFields[tab].some(field =>
       />
 
       <VRow>
-        <VCol cols="12" md="4">
-          <VSelect
-            v-model="form.academic_year_id"
-            :items="academicYears.map(y => ({ title: y.name, value: y.id }))"
-            :label="required(t('studyMaterials.academicYear'))"
-            :hint="$t('studyMaterials.hints.academicYear')"
-            persistent-hint
-            :error-messages="form.errors.academic_year_id"
-            required
-          />
-        </VCol>
 
         <VCol cols="12" md="4">
           <VSelect
@@ -126,7 +101,6 @@ const tabHasError = tab => tabFields[tab].some(field =>
             :hint="$t('studyMaterials.hints.semester')"
             persistent-hint
             :error-messages="form.errors.semester_id"
-            :disabled="!form.academic_year_id"
           />
         </VCol>
 
@@ -139,7 +113,6 @@ const tabHasError = tab => tabFields[tab].some(field =>
             :hint="$t('studyMaterials.hints.class')"
             persistent-hint
             :error-messages="form.errors.class_id"
-            :disabled="!form.academic_year_id"
           />
         </VCol>
 

@@ -5,7 +5,6 @@ import MeetingForm from './_Form.vue'
 
 defineProps({
   teachers: { type: Array, default: () => [] },
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
 })
 
@@ -18,7 +17,6 @@ const form = useForm({
   scheduled_at: null,
   duration_minutes: 45,
   teacher_id: null,
-  academic_year_id: null,
   semester_id: null,
 })
 
@@ -43,7 +41,6 @@ function submit() {
         <MeetingForm
           :form="form"
           :teachers="teachers"
-          :academic-years="academicYears"
           :semesters="semesters"
         />
       </form>

@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 import StudyMaterialForm from './_Form.vue'
 
 defineProps({
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   subjects: { type: Array, default: () => [] },
@@ -19,7 +18,6 @@ const form = useForm({
   class_id: null,
   subject_id: null,
   teacher_id: null,
-  academic_year_id: null,
   semester_id: null,
   material_type: '',
   is_published: true,
@@ -45,7 +43,6 @@ function submit() {
       <form @submit.prevent="submit">
         <StudyMaterialForm
           :form="form"
-          :academic-years="academicYears"
           :semesters="semesters"
           :classes="classes"
           :subjects="subjects"

@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 import StudentForm from './_Form.vue'
 
 defineProps({
-  academicYears: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
 })
 
@@ -20,7 +19,6 @@ const form = useForm({
   national_id: '',
   phone: '',
   is_active: true,
-  academic_year_id: null,
   current_class_id: null,
   admission_number: '',
   roll_number: '',
@@ -65,7 +63,6 @@ function submit() {
       <form @submit.prevent="submit">
         <StudentForm
           :form="form"
-          :academic-years="academicYears"
           :classes="classes"
         />
       </form>

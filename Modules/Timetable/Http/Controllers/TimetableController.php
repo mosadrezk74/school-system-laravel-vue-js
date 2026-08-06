@@ -5,7 +5,7 @@ namespace Modules\Timetable\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Modules\Academic\Models\AcademicYear;
+use Modules\Academic\Services\AcademicYearService;
 use Modules\Classroom\Models\Classroom;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
@@ -37,7 +37,7 @@ class TimetableController extends BaseInertiaController
 
         $query = (new TimetableQuery)
             ->classId($request->integer('class_id') ?: null)
-            ->academicYearId($request->integer('academic_year_id') ?: null)
+            ->academicYearId(AcademicYearService::id())
             ->isActive($request->has('is_active') ? $request->boolean('is_active') : null)
             ->sort('created_at', 'desc');
 
@@ -45,7 +45,7 @@ class TimetableController extends BaseInertiaController
 
         return $this->render('Timetable::Timetables/Index', [
             'timetables' => TimetableResource::collection($timetables),
-            'filters' => $request->only(['class_id', 'academic_year_id', 'is_active']),
+            'filters' => $request->only(['class_id', 'is_active']),
         ]);
     }
 
@@ -140,10 +140,9 @@ class TimetableController extends BaseInertiaController
     protected function classAndYearLookups(): array
     {
         return [
-            'classes' => SchoolClass::query()->where('is_active', true)
+            'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
                 ->with(['gradeLevel:id,name'])
                 ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id']),
-            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
         ];
     }
 

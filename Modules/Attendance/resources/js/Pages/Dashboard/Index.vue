@@ -6,7 +6,6 @@ import { useTheme } from 'vuetify'
 
 const props = defineProps({
   classes: { type: Array, default: () => [] },
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   dashboard: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
@@ -16,13 +15,11 @@ const { t } = useI18n()
 const theme = useTheme()
 
 const classId = ref(props.filters.class_id ?? null)
-const academicYearId = ref(props.filters.academic_year_id ?? null)
 const semesterId = ref(props.filters.semester_id ?? null)
 
-watch([classId, academicYearId, semesterId], () => {
+watch([classId, semesterId], () => {
   router.get('/attendance/dashboard', {
     class_id: classId.value || undefined,
-    academic_year_id: academicYearId.value || undefined,
     semester_id: semesterId.value || undefined,
   }, { preserveState: true, preserveScroll: true, replace: true })
 })
@@ -33,12 +30,8 @@ const classOptions = computed(() =>
     value: c.id,
   })))
 
-const academicYearOptions = computed(() =>
-  props.academicYears.map(y => ({ title: y.name, value: y.id })))
-
 const semesterOptions = computed(() =>
   props.semesters
-    .filter(s => !academicYearId.value || s.academic_year_id === academicYearId.value)
     .map(s => ({ title: s.name, value: s.id })))
 
 const tiles = computed(() => [
@@ -105,14 +98,6 @@ const hasDistribution = computed(() =>
         <VDivider />
 
         <VCardText class="d-flex flex-wrap gap-4">
-          <VSelect
-            v-model="academicYearId"
-            :label="t('attendanceRecords.academicYear')"
-            :items="academicYearOptions"
-            density="compact"
-            clearable
-            style="max-inline-size: 220px;"
-          />
 
           <VSelect
             v-model="semesterId"

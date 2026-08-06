@@ -2,10 +2,9 @@
 import { useI18n } from 'vue-i18n'
 import TranslatableTextarea from '@/components/TranslatableTextarea.vue'
 
-const props = defineProps({
+defineProps({
   form: { type: Object, required: true },
   teachers: { type: Array, default: () => [] },
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
 })
 
@@ -13,8 +12,6 @@ const { t } = useI18n()
 
 const required = label => `${label} *`
 
-const filteredSemesters = () =>
-  props.semesters.filter(s => s.academic_year_id === props.form.academic_year_id)
 </script>
 
 <template>
@@ -56,28 +53,16 @@ const filteredSemesters = () =>
     </VCol>
 
 
-    <VCol cols="12" md="4">
-      <VSelect
-        v-model="form.academic_year_id"
-        clearable
-        :items="academicYears.map(y => ({ title: y.name, value: y.id }))"
-        :label="t('meetings.academicYear')"
-        :hint="t('meetings.hints.academicYear')"
-        persistent-hint
-        :error-messages="form.errors.academic_year_id"
-      />
-    </VCol>
 
     <VCol cols="12" md="4">
       <VSelect
         v-model="form.semester_id"
         clearable
-        :items="filteredSemesters().map(s => ({ title: s.name, value: s.id }))"
+        :items="semesters.map(s => ({ title: s.name, value: s.id }))"
         :label="t('meetings.semester')"
         :hint="t('meetings.hints.semester')"
         persistent-hint
         :error-messages="form.errors.semester_id"
-        :disabled="!form.academic_year_id"
       />
     </VCol>
 

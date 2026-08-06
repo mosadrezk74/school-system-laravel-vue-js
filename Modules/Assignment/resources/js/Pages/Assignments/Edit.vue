@@ -5,7 +5,6 @@ import AssignmentForm from './_Form.vue'
 
 const props = defineProps({
   assignment: { type: Object, required: true },
-  academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   subjects: { type: Array, default: () => [] },
@@ -20,7 +19,6 @@ const form = useForm({
   class_id: props.assignment.class_id,
   subject_id: props.assignment.subject_id,
   teacher_id: props.assignment.teacher_id,
-  academic_year_id: props.assignment.academic_year_id,
   semester_id: props.assignment.semester_id,
   max_score: props.assignment.max_score,
   deadline: props.assignment.deadline ? props.assignment.deadline.slice(0, 16) : null,
@@ -49,7 +47,6 @@ function submit() {
       <form @submit.prevent="submit">
         <AssignmentForm
           :form="form"
-          :academic-years="academicYears"
           :semesters="semesters"
           :classes="classes"
           :subjects="subjects"

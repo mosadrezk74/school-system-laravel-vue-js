@@ -5,8 +5,8 @@ namespace Modules\Attendance\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\Semester;
+use Modules\Academic\Services\AcademicYearService;
 use Modules\Attendance\Actions\BuildAttendanceDashboardAction;
 use Modules\Attendance\Actions\BuildStudentAttendanceHistoryAction;
 use Modules\Attendance\Actions\DeleteAttendanceRecordAction;
@@ -42,7 +42,7 @@ class AttendanceController extends BaseInertiaController
 
         return $this->render('Attendance::Dashboard/Index', [
             ...$this->reportOptions(),
-            'filters' => $request->only(['class_id', 'academic_year_id', 'semester_id']),
+            'filters' => $request->only(['class_id', 'semester_id']),
             'dashboard' => $action->execute($filter),
         ]);
     }
@@ -54,9 +54,8 @@ class AttendanceController extends BaseInertiaController
         $history = $action->execute(StudentAttendanceFilterDTO::fromRequest($request, $student->id));
 
         return $this->render('Attendance::Students/Show', [
-            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
-            'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
-            'filters' => $request->only(['academic_year_id', 'semester_id', 'date_from', 'date_to']),
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
+            'filters' => $request->only(['semester_id', 'date_from', 'date_to']),
             'student' => new StudentAttendanceProfileResource($history['student']),
             'summary' => $history['summary']->toArray(),
             'timeline' => StudentAttendanceTimelineResource::collection($history['timeline']),
@@ -69,7 +68,7 @@ class AttendanceController extends BaseInertiaController
 
         return $this->render('Attendance::Report/Index', [
             ...$this->reportOptions(),
-            'filters' => $request->only(['class_id', 'academic_year_id', 'semester_id', 'date_from', 'date_to']),
+            'filters' => $request->only(['class_id', 'semester_id', 'date_from', 'date_to']),
             'generated' => false,
             'rows' => AttendanceReportRowResource::collection(collect()),
             'statistics' => null,
@@ -84,7 +83,7 @@ class AttendanceController extends BaseInertiaController
 
         return $this->render('Attendance::Report/Index', [
             ...$this->reportOptions(),
-            'filters' => $request->only(['class_id', 'academic_year_id', 'semester_id', 'date_from', 'date_to']),
+            'filters' => $request->only(['class_id', 'semester_id', 'date_from', 'date_to']),
             'generated' => true,
             'rows' => AttendanceReportRowResource::collection($report['rows']),
             'statistics' => $report['statistics'],
@@ -98,8 +97,7 @@ class AttendanceController extends BaseInertiaController
     {
         return [
             'classes' => $this->activeClasses(),
-            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
-            'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
         ];
     }
 
@@ -150,12 +148,11 @@ class AttendanceController extends BaseInertiaController
         return $this->render('Attendance::Records/Index', [
             'records' => AttendanceRecordResource::collection($records),
             'filters' => $request->only([
-                'class_id', 'subject_id', 'academic_year_id', 'semester_id', 'session', 'date_from', 'date_to',
+                'class_id', 'subject_id', 'semester_id', 'session', 'date_from', 'date_to',
             ]),
             'classes' => $this->activeClasses(),
             'subjects' => $this->subjectOptions(),
-            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
-            'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
         ]);
     }
 
@@ -166,8 +163,7 @@ class AttendanceController extends BaseInertiaController
         return $this->render('Attendance::Records/Create', [
             'classes' => $this->activeClasses(),
             'subjects' => $this->subjectOptions(),
-            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
-            'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
             'roster' => $request->filled('class_id') ? $this->rosterForClass((int) $request->input('class_id')) : [],
         ]);
     }
@@ -220,8 +216,7 @@ class AttendanceController extends BaseInertiaController
             'roster' => $roster,
             'classes' => $this->activeClasses(),
             'subjects' => $this->subjectOptions(),
-            'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
-            'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
         ]);
     }
 
@@ -248,7 +243,7 @@ class AttendanceController extends BaseInertiaController
      */
     protected function activeClasses(): array
     {
-        return SchoolClass::query()->where('is_active', true)
+        return SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
             ->with(['gradeLevel:id,name'])
             ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id'])
             ->map(fn (SchoolClass $class) => [
