@@ -15,5 +15,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ThemeSwitcher: typeof import('./resources/js/@core/components/ThemeSwitcher.vue')['default']
+    TranslatableTextarea: typeof import('./resources/js/components/TranslatableTextarea.vue')['default']
+    TranslatableTextInput: typeof import('./resources/js/components/TranslatableTextInput.vue')['default']
   }
 }
