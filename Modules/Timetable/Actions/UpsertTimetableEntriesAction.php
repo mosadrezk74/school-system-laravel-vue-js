@@ -75,6 +75,7 @@ class UpsertTimetableEntriesAction extends BaseAction
                     'teacher_id' => $entry->teacherId,
                     'classroom_id' => $entry->classroomId,
                     'is_break' => $entry->isBreak,
+                    'is_online' => $entry->isOnline,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];

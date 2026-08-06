@@ -12,9 +12,9 @@ const props = defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  name: { ...props.subject.name_translations },
+  name: props.subject.name || '',
   code: props.subject.code || '',
-  description: { ...props.subject.description_translations },
+  description: props.subject.description || '',
   short_name: props.subject.short_name || '',
   branch_id: props.subject.branch_id || null,
   subject_type: props.subject.subject_type || 'core',

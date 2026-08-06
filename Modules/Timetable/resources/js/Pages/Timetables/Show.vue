@@ -18,9 +18,11 @@ function cellKey(day, periodId) {
 const entries = {}
 for (const entry of props.timetable.entries ?? []) {
   entries[cellKey(entry.day_of_week, entry.period_id)] = {
+    id: entry.id,
     subject_id: entry.subject?.id ?? null,
     teacher_id: entry.teacher?.id ?? null,
     classroom_id: entry.classroom?.id ?? null,
+    is_online: entry.is_online ?? false,
   }
 }
 
@@ -59,6 +61,7 @@ const teachers = (props.timetable.entries ?? [])
         :subjects="subjects"
         :teachers="teachers"
         :editable="false"
+        show-meeting-actions
       />
     </VCardText>
   </VCard>

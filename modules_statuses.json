@@ -18,5 +18,6 @@
     "Communication": true,
     "Notification": true,
     "Report": true,
-    "Student": true
+    "Student": true,
+    "Meeting": true
 }

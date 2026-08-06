@@ -14,6 +14,8 @@ use Modules\Timetable\Repositories\TimetableEntryRepository;
 use Modules\Timetable\Repositories\TimetableEntryRepositoryInterface;
 use Modules\Timetable\Repositories\TimetableRepository;
 use Modules\Timetable\Repositories\TimetableRepositoryInterface;
+use Modules\Timetable\Repositories\TimetableSessionRepository;
+use Modules\Timetable\Repositories\TimetableSessionRepositoryInterface;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class TimetableServiceProvider extends ModuleServiceProvider
@@ -52,6 +54,7 @@ class TimetableServiceProvider extends ModuleServiceProvider
         $this->app->bind(PeriodRepositoryInterface::class, PeriodRepository::class);
         $this->app->bind(TimetableRepositoryInterface::class, TimetableRepository::class);
         $this->app->bind(TimetableEntryRepositoryInterface::class, TimetableEntryRepository::class);
+        $this->app->bind(TimetableSessionRepositoryInterface::class, TimetableSessionRepository::class);
     }
 
     public function boot(): void

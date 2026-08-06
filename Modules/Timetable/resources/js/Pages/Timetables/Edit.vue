@@ -26,6 +26,7 @@ for (const entry of props.timetable.entries ?? []) {
     subject_id: entry.subject?.id ?? null,
     teacher_id: entry.teacher?.id ?? null,
     classroom_id: entry.classroom?.id ?? null,
+    is_online: entry.is_online ?? false,
   }
 }
 
@@ -68,6 +69,7 @@ function submit() {
       teacher_id: value.teacher_id,
       classroom_id: value.classroom_id,
       is_break: false,
+      is_online: value.is_online ?? false,
     }
   })
 

@@ -15,7 +15,7 @@ const props = defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  name: { ...props.exam.name_translations },
+  name: props.exam.name || '',
   code: props.exam.code,
   exam_type: props.exam.exam_type,
   academic_year_id: props.exam.academic_year_id,

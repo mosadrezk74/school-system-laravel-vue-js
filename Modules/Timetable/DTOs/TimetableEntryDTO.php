@@ -11,6 +11,7 @@ final readonly class TimetableEntryDTO
         public ?int $teacherId,
         public ?int $classroomId,
         public bool $isBreak,
+        public bool $isOnline,
     ) {}
 
     /**
@@ -25,6 +26,7 @@ final readonly class TimetableEntryDTO
             teacherId: isset($row['teacher_id']) ? (int) $row['teacher_id'] : null,
             classroomId: isset($row['classroom_id']) ? (int) $row['classroom_id'] : null,
             isBreak: (bool) ($row['is_break'] ?? false),
+            isOnline: (bool) ($row['is_online'] ?? false),
         );
     }
 }

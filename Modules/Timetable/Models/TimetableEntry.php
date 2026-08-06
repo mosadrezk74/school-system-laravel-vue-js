@@ -5,6 +5,7 @@ namespace Modules\Timetable\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Classroom\Models\Classroom;
 use Modules\Subject\Models\Subject;
 
@@ -23,6 +24,7 @@ class TimetableEntry extends Model
             'start_time' => 'string',
             'end_time' => 'string',
             'is_break' => 'boolean',
+            'is_online' => 'boolean',
         ];
     }
 
@@ -49,5 +51,10 @@ class TimetableEntry extends Model
     public function period(): BelongsTo
     {
         return $this->belongsTo(Period::class, 'period_id');
+    }
+
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(TimetableSession::class, 'timetable_entry_id');
     }
 }

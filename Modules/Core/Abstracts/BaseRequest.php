@@ -5,8 +5,8 @@ namespace Modules\Core\Abstracts;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Modules\Core\Services\Translation\TranslationService;
 use Modules\Core\Traits\ApiResponseTrait;
-use Modules\Setting\Services\LanguageService;
 use Propaganistas\LaravelPhone\PhoneNumber;
 
 abstract class BaseRequest extends FormRequest
@@ -26,17 +26,77 @@ abstract class BaseRequest extends FormRequest
      */
     protected function passedValidation(): void
     {
-        if (! $this->filled('phone') || ! class_exists(PhoneNumber::class)) {
+        if ($this->filled('phone') && class_exists(PhoneNumber::class)) {
+            $normalized = (string) (new PhoneNumber($this->input('phone')))->formatE164();
+
+            $this->merge(['phone' => $normalized]);
+
+            /** @var \Illuminate\Validation\Validator $validator */
+            $validator = $this->validator;
+            $validator->setValue('phone', $normalized);
+        }
+
+        foreach ($this->translatableFields as $field) {
+            $this->expandTranslatableField($field);
+        }
+    }
+
+    /**
+     * Field names registered via translatableRules(), expanded into the
+     * per-locale array shape once validation passes.
+     *
+     * @var array<int, string>
+     */
+    private array $translatableFields = [];
+
+    /**
+     * The single-input UX submits one plain string per translatable field.
+     * This expands it into the full `{locale => text}` shape the DTOs and
+     * Actions already expect: the typed text is detected and placed under
+     * its source locale, merged over the record's existing translations (if
+     * editing) so untouched locales are preserved, and TranslationService
+     * fills in whatever locales are still missing.
+     */
+    private function expandTranslatableField(string $field): void
+    {
+        $text = $this->input($field);
+
+        if (! is_string($text)) {
             return;
         }
 
-        $normalized = (string) (new PhoneNumber($this->input('phone')))->formatE164();
+        $translationService = app(TranslationService::class);
+        $sourceLocale = $translationService->detectSourceLocale($text);
 
-        $this->merge(['phone' => $normalized]);
+        $existing = $this->existingTranslations($field);
+        $translations = array_merge($existing, [$sourceLocale => $text]);
+        $translations = $translationService->fillMissing($translations, $sourceLocale);
+
+        $this->merge([$field => $translations]);
 
         /** @var \Illuminate\Validation\Validator $validator */
         $validator = $this->validator;
-        $validator->setValue('phone', $normalized);
+        $validator->setValue($field, $translations);
+    }
+
+    /**
+     * @return array<string, string|null>
+     */
+    private function existingTranslations(string $field): array
+    {
+        foreach ($this->route()?->parameters() ?? [] as $parameter) {
+            if (! is_object($parameter) || ! method_exists($parameter, 'getTranslations')) {
+                continue;
+            }
+
+            $translatable = $parameter->translatable ?? [];
+
+            if (in_array($field, $translatable, true)) {
+                return $parameter->getTranslations($field);
+            }
+        }
+
+        return [];
     }
 
     public function attributes(): array
@@ -88,39 +148,19 @@ abstract class BaseRequest extends FormRequest
     }
 
     /**
-     * Validation rules for a translatable JSON field, generated from the
-     * school's currently active languages rather than a hardcoded locale
-     * pair. Only one locale needs a value (the source language the user
-     * typed in); the rest are filled in later by translation.
+     * Validation rules for a translatable field. The form submits a single
+     * plain-text value; its language is auto-detected and the other active
+     * locales are filled in automatically once validation passes (see
+     * expandTranslatableField()), so the field only needs a string rule here.
      *
      * @return array<string, mixed>
      */
     protected function translatableRules(string $field, bool $required = true): array
     {
-        $locales = app(LanguageService::class)->activeLocales();
+        $this->translatableFields[] = $field;
 
-        $rules = [
-            $field => [$required ? 'required' : 'nullable', 'array'],
+        return [
+            $field => [$required ? 'required' : 'nullable', 'string'],
         ];
-
-        foreach ($locales as $locale) {
-            $rules["{$field}.{$locale}"] = [
-                $required ? "required_without_all:{$this->siblingLocaleFields($field, $locale)}" : 'sometimes',
-                'nullable',
-                'string',
-            ];
-        }
-
-        return $rules;
-    }
-
-    private function siblingLocaleFields(string $field, string $except): string
-    {
-        $locales = array_filter(
-            app(LanguageService::class)->activeLocales(),
-            fn (string $locale) => $locale !== $except,
-        );
-
-        return implode(',', array_map(fn (string $locale) => "{$field}.{$locale}", $locales));
     }
 }

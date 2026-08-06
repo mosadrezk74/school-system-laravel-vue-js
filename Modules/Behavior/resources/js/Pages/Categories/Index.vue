@@ -36,7 +36,7 @@ const dialog = ref(false)
 const editing = ref(null)
 
 const form = useForm({
-  name: {},
+  name: '',
   code: '',
   type: 'violation',
   points: 0,
@@ -60,7 +60,7 @@ const typeOptions = computed(() => [
 function openCreate() {
   editing.value = null
   form.defaults({
-    name: {}, code: '', type: 'violation', points: 0, is_active: true,
+    name: '', code: '', type: 'violation', points: 0, is_active: true,
   })
   form.reset()
   form.clearErrors()
@@ -70,7 +70,7 @@ function openCreate() {
 function openEdit(item) {
   editing.value = item
   form.defaults({
-    name: { ...item.name_translations },
+    name: item.name ?? '',
     code: item.code ?? '',
     type: item.type ?? 'violation',
     points: item.points ?? 0,

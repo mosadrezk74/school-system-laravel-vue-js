@@ -32,7 +32,8 @@
     "generalSettings": "General",
     "organizationSettings": "Organization",
     "moduleSettings": "Modules",
-    "aiTranslationSettings": "AI Translation"
+    "aiTranslationSettings": "AI Translation",
+    "meetings": "Meetings"
   },
   "navbar": {
     "search": "Search",
@@ -985,7 +986,9 @@
       "subtitle": "Click a cell to assign a subject and teacher for that period.",
       "period": "Period",
       "assignCell": "Assign Period",
-      "save": "Save Timetable"
+      "save": "Save Timetable",
+      "isOnline": "Online Meeting",
+      "startMeeting": "Start Meeting"
     },
     "periods": {
       "title": "Periods",
@@ -1071,5 +1074,55 @@
       "aiTranslationTitle": "AI Translation",
       "aiTranslationSubtitle": "Automatic translation of translatable fields."
     }
+  },
+  "meetings": {
+    "title": "Meetings",
+    "subtitle": "Schedule and manage online meetings powered by Jitsi.",
+    "addNew": "New Meeting",
+    "edit": "Edit Meeting",
+    "titleField": "Title",
+    "description": "Description",
+    "teacher": "Teacher",
+    "branch": "Branch",
+    "academicYear": "Academic Year",
+    "semester": "Semester",
+    "scheduledAt": "Scheduled At",
+    "durationMinutes": "Duration (minutes)",
+    "password": "Password",
+    "roomName": "Room Name",
+    "hasPassword": "Password Protected",
+    "status": "Status",
+    "date": "Date",
+    "search": "Search by title, teacher or room name",
+    "empty": "No meetings yet. Schedule your first meeting to get started.",
+    "join": "Join Meeting",
+    "start": "Start",
+    "finish": "Finish",
+    "cancel": "Cancel",
+    "copyLink": "Copy Meeting Link",
+    "confirmFinish": "Finish this meeting? It will become read-only.",
+    "confirmCancel": "Cancel this meeting?",
+    "statuses": {
+      "scheduled": "Scheduled",
+      "live": "Live",
+      "finished": "Finished",
+      "cancelled": "Cancelled"
+    },
+    "sections": {
+      "details": "Details",
+      "detailsDesc": "Title, description, teacher and academic period.",
+      "schedule": "Schedule"
+    },
+    "hints": {
+      "title": "Required. A short, descriptive name for the meeting.",
+      "teacher": "Required. The teacher hosting this meeting.",
+      "branch": "Optional. The branch this meeting belongs to.",
+      "academicYear": "Optional. The academic year this meeting belongs to.",
+      "semester": "Optional. The semester this meeting belongs to.",
+      "durationMinutes": "Required. Expected length of the meeting in minutes.",
+      "scheduledAt": "Required. The date and time the meeting is scheduled to start.",
+      "password": "Optional. A password required to join the meeting."
+    },
+    "quickActions": "Quick Actions"
   }
 }

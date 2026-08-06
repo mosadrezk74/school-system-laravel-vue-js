@@ -1,4 +1,5 @@
 <script setup>
+import { router } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -9,11 +10,16 @@ const props = defineProps({
   teachers: { type: Array, default: () => [] },
   editable: { type: Boolean, default: false },
   conflictCells: { type: Array, default: () => [] },
+  showMeetingActions: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['cell-click'])
 
 const { t } = useI18n()
+
+function startMeeting(entry) {
+  router.patch(`/meetings/timetable-entries/${entry.id}/start-meeting`)
+}
 
 function cellKey(day, periodId) {
   return `${day}-${periodId}`
@@ -78,12 +84,30 @@ function onCellClick(day, period) {
             </div>
 
             <template v-else-if="entries[cellKey(day.value, period.id)]">
-              <div class="text-body-2 font-weight-medium">
-                {{ subjectName(entries[cellKey(day.value, period.id)].subject_id) }}
+              <div class="d-flex align-center justify-center gap-1">
+                <div class="text-body-2 font-weight-medium">
+                  {{ subjectName(entries[cellKey(day.value, period.id)].subject_id) }}
+                </div>
+                <VIcon
+                  v-if="entries[cellKey(day.value, period.id)].is_online"
+                  icon="bx-video"
+                  size="14"
+                  color="success"
+                />
               </div>
               <div class="text-caption text-medium-emphasis">
                 {{ teacherName(entries[cellKey(day.value, period.id)].teacher_id) }}
               </div>
+              <VBtn
+                v-if="showMeetingActions && entries[cellKey(day.value, period.id)].is_online"
+                size="x-small"
+                variant="tonal"
+                color="success"
+                class="mt-1"
+                @click.stop="startMeeting(entries[cellKey(day.value, period.id)])"
+              >
+                {{ t('timetables.grid.startMeeting') }}
+              </VBtn>
             </template>
 
             <div v-else-if="editable" class="text-disabled text-center">

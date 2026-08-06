@@ -7,7 +7,7 @@ const { t } = useI18n()
 
 const form = useForm({
   period_number: null,
-  name: {},
+  name: '',
   start_time: null,
   end_time: null,
   is_break: false,

@@ -17,11 +17,13 @@ const { t } = useI18n()
 const subjectId = ref(null)
 const teacherId = ref(null)
 const classroomId = ref(null)
+const isOnline = ref(false)
 
 watch(() => props.cell, (cell) => {
   subjectId.value = cell?.entry?.subject_id ?? null
   teacherId.value = cell?.entry?.teacher_id ?? null
   classroomId.value = cell?.entry?.classroom_id ?? null
+  isOnline.value = cell?.entry?.is_online ?? false
 }, { immediate: true })
 
 function close() {
@@ -33,6 +35,7 @@ function save() {
     subject_id: subjectId.value,
     teacher_id: teacherId.value,
     classroom_id: classroomId.value,
+    is_online: isOnline.value,
   })
   close()
 }
@@ -83,6 +86,12 @@ function clear() {
               :items="classrooms.map(c => ({ title: c.name, value: c.id }))"
               :label="t('timetables.classroom')"
               clearable
+            />
+          </VCol>
+          <VCol cols="12">
+            <VSwitch
+              v-model="isOnline"
+              :label="t('timetables.grid.isOnline')"
             />
           </VCol>
         </VRow>

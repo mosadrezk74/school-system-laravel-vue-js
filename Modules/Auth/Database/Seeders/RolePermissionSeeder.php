@@ -35,6 +35,7 @@ class RolePermissionSeeder extends Seeder
         'Examination' => ['exam', 'exam-result'],
         'Assignment' => ['assignment', 'study-material'],
         'Behavior' => ['behavior-record'],
+        'Meeting' => ['meeting'],
         'Finance' => ['fee', 'invoice', 'payment'],
         'Library' => ['library-item', 'library-borrowing'],
         'Inventory' => ['inventory-item', 'purchase'],
@@ -68,6 +69,7 @@ class RolePermissionSeeder extends Seeder
             'school-class' => ['view'],
             'subject' => ['view'],
             'message' => ['view', 'create'],
+            'meeting' => ['view', 'create', 'update', 'delete'],
         ],
 
         'staff' => [
@@ -87,6 +89,7 @@ class RolePermissionSeeder extends Seeder
             'timetable' => ['view'],
             'attendance' => ['view'],
             'message' => ['view', 'create'],
+            'meeting' => ['view'],
         ],
 
         'guardian' => [

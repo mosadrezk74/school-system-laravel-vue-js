@@ -14,8 +14,8 @@ defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  title: {},
-  description: {},
+  title: '',
+  description: '',
   class_id: null,
   subject_id: null,
   teacher_id: null,

@@ -103,6 +103,18 @@ const isModuleEnabled = name => enabledModules.value.includes(name)
     />
   </template>
 
+  <!-- 👉 Meetings -->
+  <template v-if="isModuleEnabled('Meeting')">
+    <VerticalNavSectionTitle :item="{ heading: t('nav.meetings') }" />
+    <VerticalNavLink
+      :item="{
+        title: t('nav.meetings'),
+        to: '/meetings/meetings',
+        icon: 'bx-video',
+      }"
+    />
+  </template>
+
   <!-- 👉 Attendance -->
   <template v-if="isModuleEnabled('Attendance')">
     <VerticalNavSectionTitle :item="{ heading: t('nav.attendance') }" />

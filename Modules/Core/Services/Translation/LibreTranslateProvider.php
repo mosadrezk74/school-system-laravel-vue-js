@@ -37,4 +37,28 @@ class LibreTranslateProvider implements TranslationProviderInterface
             return null;
         }
     }
+
+    public function detect(string $text): ?string
+    {
+        $url = config('services.libretranslate.url');
+
+        if (! $url) {
+            return null;
+        }
+
+        try {
+            $response = $this->http->asForm()->post(rtrim($url, '/').'/detect', array_filter([
+                'q' => $text,
+                'api_key' => config('services.libretranslate.api_key'),
+            ]));
+
+            if (! $response->successful()) {
+                return null;
+            }
+
+            return $response->json('0.language');
+        } catch (\Throwable) {
+            return null;
+        }
+    }
 }

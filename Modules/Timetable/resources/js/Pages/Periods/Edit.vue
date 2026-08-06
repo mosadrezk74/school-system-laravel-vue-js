@@ -11,7 +11,7 @@ const { t } = useI18n()
 
 const form = useForm({
   period_number: props.period.period_number,
-  name: { ...props.period.name_translations },
+  name: props.period.name || '',
   start_time: props.period.start_time,
   end_time: props.period.end_time,
   is_break: props.period.is_break,

@@ -12,7 +12,7 @@ defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  name: {},
+  name: '',
   code: '',
   exam_type: 'midterm',
   academic_year_id: null,

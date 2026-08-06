@@ -25,6 +25,7 @@ class TimetableEntryResource extends BaseResource
             'start_time' => $this->start_time,
             'end_time' => $this->end_time,
             'is_break' => $this->is_break,
+            'is_online' => $this->is_online,
 
             'subject' => $this->whenLoaded('subject', fn () => $this->subject ? [
                 'id' => $this->subject->id,

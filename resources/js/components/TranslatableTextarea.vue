@@ -1,47 +1,21 @@
 <script setup>
-import { computed } from 'vue'
-import { usePage } from '@inertiajs/vue3'
-
 const props = defineProps({
-  modelValue: { type: Object, required: true },
+  modelValue: { type: String, default: '' },
   label: { type: String, required: true },
   field: { type: String, default: null },
   errors: { type: Object, default: () => ({}) },
   rows: { type: [String, Number], default: 4 },
 })
 
-const emit = defineEmits(['update:modelValue'])
-
-const page = usePage()
-const languages = computed(() => page.props.languages ?? [])
-
-function errorFor(locale) {
-  const key = props.field ?? props.label
-
-  return props.errors[`${key}.${locale}`] ?? props.errors[locale]
-}
-
-function update(locale, value) {
-  emit('update:modelValue', { ...props.modelValue, [locale]: value })
-}
+defineEmits(['update:modelValue'])
 </script>
 
 <template>
-  <VRow>
-    <VCol
-      v-for="language in languages"
-      :key="language.locale"
-      cols="12"
-      :md="Math.max(6, Math.floor(12 / languages.length))"
-    >
-      <VTextarea
-        :model-value="modelValue[language.locale]"
-        :label="`${label} (${language.name})`"
-        :rows="rows"
-        :error-messages="errorFor(language.locale)"
-        :dir="language.direction"
-        @update:model-value="value => update(language.locale, value)"
-      />
-    </VCol>
-  </VRow>
+  <VTextarea
+    :model-value="modelValue"
+    :label="label"
+    :rows="rows"
+    :error-messages="errors[field ?? label]"
+    @update:model-value="value => $emit('update:modelValue', value)"
+  />
 </template>

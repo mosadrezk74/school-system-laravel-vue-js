@@ -16,15 +16,19 @@ class TranslationService
     ) {}
 
     /**
-     * The locale the user actually typed in: the one non-empty value among
-     * the submitted translations, falling back to the app locale when that's
-     * ambiguous (e.g. editing a record that already has more than one).
-     *
-     * @param  array<string, string|null>  $translations
+     * The language the user actually typed in, detected from the raw text
+     * rather than assumed from the current UI locale. Falls back to the app
+     * locale when detection is unavailable or returns an inactive language.
      */
-    public function detectSourceLocale(array $translations): string
+    public function detectSourceLocale(string $text): string
     {
-        return array_key_first(array_filter($translations)) ?? app()->getLocale();
+        $detected = trim($text) !== '' ? $this->provider->detect($text) : null;
+
+        if ($detected && $this->languages->isSupported($detected)) {
+            return $detected;
+        }
+
+        return app()->getLocale();
     }
 
     /**

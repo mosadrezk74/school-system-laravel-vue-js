@@ -16,6 +16,7 @@ class UpdateTimetableEntriesRequest extends BaseRequest
             'entries.*.day_of_week' => ['required', 'integer', 'between:0,6'],
             'entries.*.period_id' => ['required', 'integer', 'exists:periods,id'],
             'entries.*.is_break' => ['sometimes', 'boolean'],
+            'entries.*.is_online' => ['sometimes', 'boolean'],
             'entries.*.subject_id' => ['required_if:entries.*.is_break,false', 'nullable', 'integer', 'exists:subjects,id'],
             'entries.*.teacher_id' => ['required_if:entries.*.is_break,false', 'nullable', 'integer', 'exists:users,id'],
             'entries.*.classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
