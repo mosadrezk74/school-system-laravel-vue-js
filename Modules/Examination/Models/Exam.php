@@ -4,6 +4,7 @@ namespace Modules\Examination\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\Semester;
 use Modules\Core\Abstracts\BaseModel;
@@ -51,5 +52,15 @@ class Exam extends BaseModel
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function examSubjects(): HasMany
+    {
+        return $this->hasMany(ExamSubject::class, 'exam_id');
+    }
+
+    public function results(): HasMany
+    {
+        return $this->hasMany(ExamResult::class, 'exam_id');
     }
 }

@@ -22,7 +22,10 @@
     "assignments": "Assignments",
     "studyMaterials": "Study Materials",
     "attendance": "Attendance",
-    "attendanceRecords": "Attendance Records"
+    "attendanceRecords": "Attendance Records",
+    "examination": "Examination",
+    "exams": "Exams",
+    "examGrades": "Grading Scale"
   },
   "navbar": {
     "search": "Search",
@@ -860,6 +863,101 @@
       "subtitle": "Permanently delete your account and all associated data.",
       "confirm": "I confirm I want to delete my account.",
       "submit": "Delete Account"
+    }
+  },
+  "exams": {
+    "title": "Exams",
+    "subtitle": "Schedule exams and manage subject-level grading configuration.",
+    "addNew": "New Exam",
+    "edit": "Edit Exam",
+    "name": "Name",
+    "code": "Code",
+    "examType": "Exam Type",
+    "academicYear": "Academic Year",
+    "semester": "Semester",
+    "class": "Class",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "passingGrade": "Passing Grade",
+    "totalMarks": "Total Marks",
+    "weightage": "Weightage",
+    "isPublished": "Published",
+    "published": "Published",
+    "unpublished": "Unpublished",
+    "status": "Status",
+    "search": "Search by name or code",
+    "empty": "No exams yet. Add your first exam to get started.",
+    "confirmArchive": "Archive this exam? An admin can restore it later.",
+    "types": {
+      "midterm": "Midterm",
+      "final": "Final",
+      "quiz": "Quiz",
+      "unit_test": "Unit Test"
+    },
+    "sections": {
+      "details": "Details",
+      "detailsDesc": "Name, code, type and the academic period this exam belongs to.",
+      "schedule": "Schedule",
+      "scheduleDesc": "The exam period's start and end dates.",
+      "grading": "Grading",
+      "gradingDesc": "Passing grade, total marks and weightage."
+    },
+    "hints": {
+      "name": "Required. A short, descriptive name for the exam.",
+      "code": "Optional. A unique code identifying the exam.",
+      "academicYear": "Required. The academic year the exam belongs to — determines the available classes and semesters below.",
+      "semester": "Optional. The semester this exam belongs to.",
+      "class": "Optional. Restrict this exam to a single class.",
+      "examType": "Required. e.g. midterm, final, quiz.",
+      "startDate": "Required. The date the exam period starts.",
+      "endDate": "Required. The date the exam period ends.",
+      "passingGrade": "Optional. Minimum passing grade, defaults to 60.",
+      "totalMarks": "Optional. Maximum total marks, defaults to 100.",
+      "weightage": "Optional. Weight of this exam relative to others, defaults to 1.",
+      "isPublished": "Controls visibility to students. Unpublished exams are only visible to staff."
+    },
+    "subjectsSection": "Subjects",
+    "subjectsSectionDesc": "Subjects scheduled for this exam, with their marks and timing.",
+    "addSubject": "Add Subject",
+    "editSubject": "Edit Subject",
+    "noSubjects": "No subjects scheduled yet.",
+    "confirmRemoveSubject": "Remove this subject from the exam?",
+    "subject": "Subject",
+    "subjectTotalMarks": "Total Marks",
+    "passingMarks": "Passing Marks",
+    "examDate": "Exam Date",
+    "examTime": "Exam Time",
+    "room": "Room",
+    "enterResults": "Enter Results",
+    "noStudents": "No active students in this class.",
+    "student": "Student",
+    "admissionNumber": "Admission Number",
+    "obtainedMarks": "Obtained Marks",
+    "remarks": "Remarks",
+    "quickActions": "Quick Actions",
+    "quickAction": {
+      "edit": "Edit Exam"
+    }
+  },
+  "examGrades": {
+    "title": "Grading Scale",
+    "subtitle": "Define grade bands used to translate exam percentages into letter grades.",
+    "addNew": "New Grade",
+    "edit": "Edit Grade",
+    "search": "Search by grade name",
+    "empty": "No grade bands yet. Add your first grade to get started.",
+    "confirmDelete": "Delete grade '{name}'?",
+    "gradeLevel": "Grade Level",
+    "subject": "Subject",
+    "allSubjects": "All Subjects",
+    "gradeName": "Grade Name",
+    "gradePoint": "Grade Point",
+    "minPercentage": "Min Percentage",
+    "maxPercentage": "Max Percentage",
+    "range": "Range",
+    "isPassing": "Passing",
+    "hints": {
+      "subject": "Optional. Leave empty to apply this grade band to all subjects at this grade level."
     }
   }
 }

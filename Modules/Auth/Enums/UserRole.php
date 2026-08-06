@@ -20,7 +20,6 @@ enum UserRole: string
     case Teacher = 'teacher';
     case Student = 'student';
     case Guardian = 'guardian';
-    case Staff = 'staff';
 
     public function label(): string
     {
@@ -30,6 +29,6 @@ enum UserRole: string
     /** Roles that belong to the school's payroll rather than its families. */
     public function isEmployee(): bool
     {
-        return in_array($this, [self::Owner, self::Admin, self::Teacher, self::Staff], true);
+        return in_array($this, [self::Owner, self::Admin, self::Teacher], true);
     }
 }

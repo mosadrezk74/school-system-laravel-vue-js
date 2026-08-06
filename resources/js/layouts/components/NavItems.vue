@@ -114,6 +114,23 @@ const { t } = useI18n()
     }"
   />
 
+  <!-- 👉 Examination -->
+  <VerticalNavSectionTitle :item="{ heading: t('nav.examination') }" />
+  <VerticalNavLink
+    :item="{
+      title: t('nav.exams'),
+      to: '/examination/exams',
+      icon: 'bx-file',
+    }"
+  />
+  <VerticalNavLink
+    :item="{
+      title: t('nav.examGrades'),
+      to: '/examination/grades',
+      icon: 'bx-medal',
+    }"
+  />
+
   <!-- 👉 Settings -->
   <VerticalNavSectionTitle :item="{ heading: t('nav.settings') }" />
   <VerticalNavLink
