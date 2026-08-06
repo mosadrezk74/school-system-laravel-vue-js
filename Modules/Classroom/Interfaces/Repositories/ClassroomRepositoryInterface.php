@@ -25,5 +25,4 @@ interface ClassroomRepositoryInterface extends RepositoryInterface
     public function createFromDTO(CreateClassroomDTO $dto, ?int $actorId = null): Classroom;
     public function updateFromDTO(int $id, UpdateClassroomDTO $dto, ?int $actorId = null): Classroom;
     public function getActiveClassrooms(): iterable;
-    public function getClassroomsByBranch(int $branchId): iterable;
 }

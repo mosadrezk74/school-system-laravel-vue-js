@@ -22,7 +22,7 @@ const filteredClasses = computed(() =>
   props.classes.filter(c => c.academic_year_id === props.form.academic_year_id))
 
 const classOptions = computed(() => filteredClasses.value.map(c => ({
-  title: [c.name, c.section_code, c.grade_level?.name, c.branch?.name]
+  title: [c.name, c.section_code, c.grade_level?.name]
     .filter(Boolean)
     .join(' · '),
   value: c.id,

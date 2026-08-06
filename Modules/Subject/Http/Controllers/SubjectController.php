@@ -31,7 +31,6 @@ class SubjectController extends BaseInertiaController
 
         $query = (new SubjectQuery)
             ->search($filters->search)
-            ->branchId($filters->branchId)
             ->subjectType($filters->subjectType)
             ->isActive($filters->isActive)
             ->sort($filters->sortBy, $filters->sortOrder);
@@ -42,7 +41,6 @@ class SubjectController extends BaseInertiaController
             'subjects' => SubjectResource::collection($subjects),
             'filters' => $request->only([
                 Pagination::SEARCH_PARAM,
-                'branch_id',
                 'subject_type',
                 'is_active',
             ]),
@@ -54,9 +52,6 @@ class SubjectController extends BaseInertiaController
         $this->authorize('create', Subject::class);
 
         return Inertia::render('Subject::Subjects/Create', [
-            'branches' => \Modules\Branch\Models\Branch::query()
-                ->where('is_active', true)
-                ->get(['id', 'name']),
             'subjectTypes' => [
                 ['title' => __('subject::subject.types.core'), 'value' => 'core'],
                 ['title' => __('subject::subject.types.elective'), 'value' => 'elective'],
@@ -78,8 +73,7 @@ class SubjectController extends BaseInertiaController
     {
         $this->authorize('view', $subject);
 
-        $subject->load(['branch']);
-
+        
         return Inertia::render('Subject::Subjects/Show', [
             'subject' => new SubjectResource($subject),
         ]);
@@ -89,13 +83,9 @@ class SubjectController extends BaseInertiaController
     {
         $this->authorize('update', $subject);
 
-        $subject->load('branch');
-
+        
         return Inertia::render('Subject::Subjects/Edit', [
             'subject' => new SubjectResource($subject),
-            'branches' => \Modules\Branch\Models\Branch::query()
-                ->where('is_active', true)
-                ->get(['id', 'name']),
             'subjectTypes' => [
                 ['title' => __('subject::subject.types.core'), 'value' => 'core'],
                 ['title' => __('subject::subject.types.elective'), 'value' => 'elective'],

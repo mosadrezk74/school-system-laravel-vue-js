@@ -18,7 +18,6 @@ class ClassResource extends BaseResource
     {
         return [
             'id' => $this->id,
-            'branch_id' => $this->branch_id,
             'grade_level_id' => $this->grade_level_id,
             'academic_year_id' => $this->academic_year_id,
             'classroom_id' => $this->classroom_id,
@@ -40,11 +39,6 @@ class ClassResource extends BaseResource
             'academic_year' => $this->whenLoaded('academicYear', fn () => $this->academicYear ? [
                 'id' => $this->academicYear->id,
                 'name' => $this->academicYear->name,
-            ] : null),
-
-            'branch' => $this->whenLoaded('branch', fn () => $this->branch ? [
-                'id' => $this->branch->id,
-                'name' => $this->branch->name,
             ] : null),
 
             'classroom' => $this->whenLoaded('classroom', fn () => $this->classroom ? [

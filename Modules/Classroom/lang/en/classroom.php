@@ -14,7 +14,6 @@ return [
     'fields' => [
         'name' => 'Name',
         'code' => 'Code',
-        'branch_id' => 'Branch',
         'capacity' => 'Capacity',
         'floor' => 'Floor',
         'building' => 'Building',
@@ -26,7 +25,6 @@ return [
     'hints' => [
         'name' => 'Required. Classroom name or identifier.',
         'code' => 'Optional. Unique classroom code (e.g., R101).',
-        'branch_id' => 'Required. Branch where this classroom is located.',
         'capacity' => 'Optional. Maximum number of students. Default: 30.',
         'floor' => 'Optional. Floor number (e.g., 1, 2, 3).',
         'building' => 'Optional. Building name or number.',

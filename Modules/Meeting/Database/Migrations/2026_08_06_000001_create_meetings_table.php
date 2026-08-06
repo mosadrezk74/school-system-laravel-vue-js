@@ -20,7 +20,6 @@ return new class extends Migration
             $table->unsignedInteger('duration_minutes');
             $table->string('status', 20)->default('scheduled');
             $table->unsignedBigInteger('teacher_id');
-            $table->unsignedBigInteger('branch_id')->nullable();
             $table->unsignedBigInteger('academic_year_id')->nullable();
             $table->unsignedBigInteger('semester_id')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
@@ -28,12 +27,10 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->index(['teacher_id']);
-            $table->index(['branch_id']);
             $table->index(['academic_year_id', 'semester_id']);
             $table->index(['status']);
             $table->index(['scheduled_at']);
             $table->foreign('teacher_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->foreign('branch_id')->references('id')->on('branches')->nullOnDelete();
             $table->foreign('academic_year_id')->references('id')->on('academic_years')->nullOnDelete();
             $table->foreign('semester_id')->references('id')->on('semesters')->nullOnDelete();
             $table->foreign('created_by')->references('id')->on('users')->nullOnDelete();

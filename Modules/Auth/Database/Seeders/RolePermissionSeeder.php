@@ -21,7 +21,7 @@ class RolePermissionSeeder extends Seeder
     private const RESOURCES = [
         'Auth' => ['user', 'role'],
         'Setting' => ['setting', 'language'],
-        'Branch' => ['branch', 'department'],
+        'Teacher' => ['department'],
         'Academic' => ['academic-year', 'semester', 'grade-level'],
         'Classroom' => ['classroom'],
         'SchoolClass' => ['school-class'],

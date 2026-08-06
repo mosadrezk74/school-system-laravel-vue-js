@@ -10,13 +10,13 @@ class SubjectQuery extends BaseQuery
 {
     protected array $searchableFields = ['code', 'short_name'];
 
-    protected array $filterableFields = ['branch_id', 'subject_type', 'is_active'];
+    protected array $filterableFields = ['subject_type', 'is_active'];
 
     protected array $sortableFields = ['code', 'short_name', 'subject_type', 'credit_hours', 'is_active', 'created_at'];
 
     protected function baseQuery(): Builder
     {
-        return Subject::query()->with(['branch']);
+        return Subject::query();
     }
 
     public function search(?string $term): self
@@ -37,14 +37,6 @@ class SubjectQuery extends BaseQuery
         return $this;
     }
 
-    public function branchId(?int $branchId): self
-    {
-        if ($branchId) {
-            $this->query->where('branch_id', $branchId);
-        }
-
-        return $this;
-    }
 
     public function subjectType(?string $subjectType): self
     {

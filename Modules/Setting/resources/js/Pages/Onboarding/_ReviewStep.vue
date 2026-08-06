@@ -74,9 +74,6 @@ function finish() {
         </VCardItem>
         <VCardText>
           <div class="text-body-2">
-            {{ t('onboarding.fields.multiBranch') }}: {{ schoolSetting?.settings?.multi_branch ? t('common.yes') : t('common.no') }}
-          </div>
-          <div class="text-body-2">
             {{ t('onboarding.fields.multiAcademicYear') }}: {{ schoolSetting?.settings?.multi_academic_year ? t('common.yes') : t('common.no') }}
           </div>
         </VCardText>

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\Semester;
-use Modules\Branch\Models\Branch;
 use Modules\Core\Abstracts\BaseModel;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\Subject\Models\Subject;
@@ -52,11 +51,6 @@ class Meeting extends BaseModel
     public function timetableSession(): BelongsTo
     {
         return $this->belongsTo(TimetableSession::class, 'timetable_session_id');
-    }
-
-    public function branch(): BelongsTo
-    {
-        return $this->belongsTo(Branch::class, 'branch_id');
     }
 
     public function academicYear(): BelongsTo

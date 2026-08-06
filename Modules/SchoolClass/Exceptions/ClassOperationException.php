@@ -12,9 +12,9 @@ class ClassOperationException extends BaseException
         return new static($message ?: __('school-class::class.section_already_exists'), HttpStatus::CONFLICT);
     }
 
-    public static function classroomBranchMismatch(string $message = ''): static
+    public static function classroomNotFound(string $message = ''): static
     {
-        return new static($message ?: __('school-class::class.classroom_branch_mismatch'), HttpStatus::UNPROCESSABLE_ENTITY);
+        return new static($message ?: __('school-class::class.classroom_not_found'), HttpStatus::UNPROCESSABLE_ENTITY);
     }
 
     public static function invalidCapacity(string $message = ''): static

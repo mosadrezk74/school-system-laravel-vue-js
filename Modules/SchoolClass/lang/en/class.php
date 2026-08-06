@@ -7,12 +7,11 @@ return [
     'restored' => 'Class restored successfully.',
 
     'section_already_exists' => 'A class with this section code already exists for the selected academic year and grade level.',
-    'classroom_branch_mismatch' => 'The selected classroom does not belong to the selected branch.',
+    'classroom_not_found' => 'The selected classroom was not found.',
     'invalid_capacity' => 'Capacity must be a positive number.',
     'class_not_found' => 'Class not found.',
 
     'fields' => [
-        'branch_id' => 'Branch',
         'grade_level_id' => 'Grade Level',
         'academic_year_id' => 'Academic Year',
         'classroom_id' => 'Classroom',

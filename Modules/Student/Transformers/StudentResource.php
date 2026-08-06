@@ -74,10 +74,6 @@ class StudentResource extends BaseResource
                     'id' => $this->currentClass->gradeLevel?->id,
                     'name' => $this->currentClass->gradeLevel?->name,
                 ] : null,
-                'branch' => $this->currentClass->relationLoaded('branch') ? [
-                    'id' => $this->currentClass->branch?->id,
-                    'name' => $this->currentClass->branch?->name,
-                ] : null,
             ] : null),
 
             'guardians' => $this->whenLoaded('guardians', fn () => $this->guardians->map(fn ($guardianStudent) => [

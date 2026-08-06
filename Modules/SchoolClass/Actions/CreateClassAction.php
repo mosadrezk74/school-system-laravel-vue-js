@@ -35,8 +35,8 @@ class CreateClassAction extends BaseAction
             if ($dto->classroomId) {
                 $classroom = Classroom::find($dto->classroomId);
 
-                if (! $classroom || $classroom->branch_id !== $dto->branchId) {
-                    throw ClassOperationException::classroomBranchMismatch();
+                if (! $classroom) {
+                    throw ClassOperationException::classroomNotFound();
                 }
             }
 

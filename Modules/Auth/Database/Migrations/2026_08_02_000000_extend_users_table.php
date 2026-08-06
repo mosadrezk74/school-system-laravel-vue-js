@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('national_id', 20)->nullable()->after('birth_date');
 
             // Coarse account type. Fine-grained access is Spatie roles;
-            // this exists so the UI can branch without a permission lookup.
+            // this exists so the UI can  without a permission lookup.
             $table->string('role', 30)->default('student')->after('national_id');
             $table->boolean('is_active')->default(true)->after('role');
 

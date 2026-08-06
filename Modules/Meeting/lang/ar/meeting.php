@@ -18,7 +18,6 @@ return [
         'scheduled_at' => 'موعد الاجتماع',
         'duration_minutes' => 'المدة (بالدقائق)',
         'teacher_id' => 'المعلم',
-        'branch_id' => 'الفرع',
         'academic_year_id' => 'العام الدراسي',
         'semester_id' => 'الفصل الدراسي',
     ],

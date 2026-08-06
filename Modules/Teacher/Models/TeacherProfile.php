@@ -4,7 +4,7 @@ namespace Modules\Teacher\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Branch\Models\Department;
+use Modules\Teacher\Models\Department;
 use Modules\Core\Abstracts\BaseModel;
 
 class TeacherProfile extends BaseModel

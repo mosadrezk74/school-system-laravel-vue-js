@@ -13,7 +13,6 @@ class RecipientResolverService
 
     public const TYPE_ROLE = 'role';
 
-    public const TYPE_BRANCH = 'branch';
 
     public const TYPE_ACADEMIC_YEAR = 'academic_year';
 
@@ -27,7 +26,6 @@ class RecipientResolverService
     public const TYPES = [
         self::TYPE_ALL,
         self::TYPE_ROLE,
-        self::TYPE_BRANCH,
         self::TYPE_ACADEMIC_YEAR,
         self::TYPE_CLASS,
         self::TYPE_SECTION,
@@ -42,7 +40,6 @@ class RecipientResolverService
         return match ($targetType) {
             self::TYPE_ALL => User::query(),
             self::TYPE_ROLE => $this->byRole($targetIds ?? []),
-            self::TYPE_BRANCH => $this->byBranch($targetIds ?? []),
             self::TYPE_ACADEMIC_YEAR => $this->byAcademicYear($targetIds ?? []),
             self::TYPE_CLASS => $this->byClass($targetIds ?? []),
             self::TYPE_SECTION => $this->bySection($targetIds ?? []),
@@ -59,17 +56,6 @@ class RecipientResolverService
         return User::query()->whereIn('role', $roles);
     }
 
-    /**
-     * @param  array<int, int>  $branchIds
-     */
-    private function byBranch(array $branchIds): Builder
-    {
-        $studentUserIds = StudentProfile::query()
-            ->whereHas('currentClass', fn (Builder $query) => $query->whereIn('branch_id', $branchIds))
-            ->pluck('user_id');
-
-        return User::query()->whereIn('id', $studentUserIds);
-    }
 
     /**
      * @param  array<int, int>  $academicYearIds

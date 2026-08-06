@@ -70,7 +70,6 @@ class StartMeetingForSessionAction extends BaseAction
             scheduledAt: $scheduledAt->toDateTimeString(),
             durationMinutes: $durationMinutes,
             teacherId: $entry->teacher_id,
-            branchId: $timetable?->class?->branch_id,
             academicYearId: $timetable?->academic_year_id,
             semesterId: $timetable?->semester_id,
             subjectId: $entry->subject_id,

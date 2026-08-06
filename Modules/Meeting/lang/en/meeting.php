@@ -18,7 +18,6 @@ return [
         'scheduled_at' => 'Scheduled At',
         'duration_minutes' => 'Duration (minutes)',
         'teacher_id' => 'Teacher',
-        'branch_id' => 'Branch',
         'academic_year_id' => 'Academic Year',
         'semester_id' => 'Semester',
     ],

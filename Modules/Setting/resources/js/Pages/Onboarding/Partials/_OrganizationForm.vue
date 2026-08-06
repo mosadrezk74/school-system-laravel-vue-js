@@ -12,7 +12,6 @@ const props = defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  multi_branch: props.schoolSetting?.settings?.multi_branch ?? false,
   multi_academic_year: props.schoolSetting?.settings?.multi_academic_year ?? false,
 })
 
@@ -27,16 +26,6 @@ function submit() {
 <template>
   <form @submit.prevent="submit">
     <VRow>
-      <VCol cols="12" md="6">
-        <VSwitch
-          v-model="form.multi_branch"
-          :label="t('onboarding.fields.multiBranch')"
-        />
-        <p class="text-caption text-medium-emphasis mb-0">
-          {{ t('onboarding.hints.multiBranch') }}
-        </p>
-      </VCol>
-
       <VCol cols="12" md="6">
         <VSwitch
           v-model="form.multi_academic_year"

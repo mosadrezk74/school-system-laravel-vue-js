@@ -12,7 +12,6 @@ class UpdateOrganizationSettingsRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'multi_branch' => ['required', 'boolean'],
             'multi_academic_year' => ['required', 'boolean'],
         ];
     }

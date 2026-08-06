@@ -16,7 +16,7 @@ class TimetableQuery extends BaseQuery
 
     protected function baseQuery(): Builder
     {
-        return Timetable::query()->with(['class.gradeLevel', 'class.branch', 'academicYear', 'semester']);
+        return Timetable::query()->with(['class.gradeLevel', 'academicYear', 'semester']);
     }
 
     public function classId(?int $classId): self

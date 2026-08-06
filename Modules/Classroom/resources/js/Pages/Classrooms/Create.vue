@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 import ClassroomForm from './_Form.vue'
 
 defineProps({
-  branches: { type: Array, default: () => [] },
   roomTypes: { type: Array, default: () => [] },
 })
 
@@ -13,7 +12,6 @@ const { t } = useI18n()
 const form = useForm({
   name: '',
   code: '',
-  branch_id: null,
   capacity: 30,
   floor: null,
   building: '',
@@ -43,7 +41,6 @@ function submit() {
       <form @submit.prevent="submit">
         <ClassroomForm
           :form="form"
-          :branches="branches"
           :room-types="roomTypes"
         />
       </form>

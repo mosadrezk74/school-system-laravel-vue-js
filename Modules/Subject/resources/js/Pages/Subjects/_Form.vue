@@ -6,7 +6,6 @@ import TranslatableTextarea from '@/components/TranslatableTextarea.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
-  branches: { type: Array, default: () => [] },
   subjectTypes: { type: Array, default: () => [] },
   isEdit: { type: Boolean, default: false },
 })
@@ -16,7 +15,7 @@ const { t } = useI18n()
 const activeTab = ref('basic')
 
 const tabFields = {
-  basic: ['name', 'code', 'short_name', 'branch_id', 'subject_type'],
+  basic: ['name', 'code', 'short_name', 'subject_type'],
   details: ['description'],
   grading: ['pass_grade', 'credit_hours', 'max_marks'],
   appearance: ['color', 'icon', 'is_active'],
@@ -25,12 +24,6 @@ const tabFields = {
 const tabHasError = tab => tabFields[tab].some(field =>
   Object.keys(props.form.errors).some(key => key === field || key.startsWith(`${field}.`)))
 
-const branchOptions = computed(() =>
-  props.branches.map(b => ({
-    title: b.name,
-    value: b.id,
-  }))
-)
 
 const colorOptions = [
   { title: 'Blue', value: '#2563eb' },
@@ -104,17 +97,6 @@ const colorOptions = [
           />
         </VCol>
 
-        <VCol cols="12" md="4">
-          <VSelect
-            v-model="form.branch_id"
-            clearable
-            :items="branchOptions"
-            :label="$t('subject.fields.branch_id')"
-            :hint="$t('subject.hints.branch_id')"
-            persistent-hint
-            :error-messages="form.errors.branch_id"
-          />
-        </VCol>
 
         <VCol cols="12" md="6">
           <VSelect

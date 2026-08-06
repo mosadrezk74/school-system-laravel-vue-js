@@ -6,7 +6,6 @@ import ClassForm from './_Form.vue'
 defineProps({
   academicYears: { type: Array, default: () => [] },
   gradeLevels: { type: Array, default: () => [] },
-  branches: { type: Array, default: () => [] },
   classrooms: { type: Array, default: () => [] },
   teachers: { type: Array, default: () => [] },
 })
@@ -14,7 +13,6 @@ defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  branch_id: null,
   grade_level_id: null,
   academic_year_id: null,
   classroom_id: null,
@@ -48,7 +46,6 @@ function submit() {
           :form="form"
           :academic-years="academicYears"
           :grade-levels="gradeLevels"
-          :branches="branches"
           :classrooms="classrooms"
           :teachers="teachers"
         />

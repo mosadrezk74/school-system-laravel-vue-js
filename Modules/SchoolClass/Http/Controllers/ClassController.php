@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
-use Modules\Branch\Models\Branch;
 use Modules\Classroom\Models\Classroom;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
@@ -38,7 +37,6 @@ class ClassController extends BaseInertiaController
             ->search($filters->search ?? '')
             ->academicYearId($filters->academicYearId)
             ->gradeLevelId($filters->gradeLevelId)
-            ->branchId($filters->branchId)
             ->isActive($filters->isActive)
             ->sort($filters->sortBy, $filters->sortOrder);
 
@@ -50,7 +48,6 @@ class ClassController extends BaseInertiaController
                 Pagination::SEARCH_PARAM,
                 'academic_year_id',
                 'grade_level_id',
-                'branch_id',
                 'is_active',
             ]),
         ]);
@@ -76,7 +73,7 @@ class ClassController extends BaseInertiaController
     {
         $this->authorize('view', $class);
 
-        $class->load(['gradeLevel', 'academicYear', 'branch', 'classroom', 'classTeacher', 'assistantTeacher']);
+        $class->load(['gradeLevel', 'academicYear', 'classroom', 'classTeacher', 'assistantTeacher']);
 
         $roster = StudentProfile::query()
             ->where('current_class_id', $class->id)
@@ -142,8 +139,7 @@ class ClassController extends BaseInertiaController
             'gradeLevels' => GradeLevel::query()->where('is_active', true)->get()
                 ->map(fn (GradeLevel $gradeLevel) => ['id' => $gradeLevel->id, 'name' => $gradeLevel->name])
                 ->values(),
-            'branches' => Branch::query()->where('is_active', true)->get(['id', 'name']),
-            'classrooms' => Classroom::query()->where('is_active', true)->get(['id', 'name', 'branch_id']),
+            'classrooms' => Classroom::query()->where('is_active', true)->get(['id', 'name']),
             'teachers' => TeacherProfile::query()
                 ->where('is_active', true)
                 ->with('user:id,name')

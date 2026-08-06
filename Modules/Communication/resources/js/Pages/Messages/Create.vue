@@ -7,7 +7,6 @@ import AudienceSelector from '../../components/AudienceSelector.vue'
 
 defineProps({
   roles: { type: Array, default: () => [] },
-  branches: { type: Array, default: () => [] },
   academicYears: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   users: { type: Array, default: () => [] },
@@ -62,7 +61,6 @@ function submit() {
           v-model:target-type="form.target_type"
           v-model:target-ids="form.target_ids"
           :roles="roles"
-          :branches="branches"
           :academic-years="academicYears"
           :classes="classes"
           :users="users"

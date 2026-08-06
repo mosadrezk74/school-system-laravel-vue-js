@@ -169,7 +169,7 @@ Table password_reset_tokens {
 }
 
 // ================================================================
-// SCHOOL / BRANCH
+// SCHOOL 
 // ================================================================
 
 Table school_settings {
@@ -202,25 +202,6 @@ Table school_settings {
   }
 }
 
-Table branches {
-  id bigint [primary key, increment]
-  name varchar(255) [not null]
-  code varchar(50) [unique]
-  address text
-  city varchar(100)
-  phone varchar(20)
-  manager_id bigint
-  is_main tinyint(1) [default: 0]
-  is_active tinyint(1) [default: 1]
-  created_at timestamp
-  updated_at timestamp
-  deleted_at timestamp
-
-  indexes {
-    code [unique]
-    (is_main)
-  }
-}
 
 // ================================================================
 // ACADEMIC STRUCTURE
@@ -287,7 +268,6 @@ Table grade_levels {
 
 Table classrooms {
   id bigint [primary key, increment]
-  branch_id bigint [not null]
   name varchar(100) [not null]
   code varchar(50) [unique]
   capacity smallint [default: 30]
@@ -303,13 +283,12 @@ Table classrooms {
 
   indexes {
     code [unique]
-    (branch_id, is_active)
+    (is_active)
   }
 }
 
 Table classes {
   id bigint [primary key, increment]
-  branch_id bigint [not null]
   grade_level_id bigint [not null]
   academic_year_id bigint [not null]
   classroom_id bigint
@@ -328,7 +307,6 @@ Table classes {
 
   indexes {
     (academic_year_id, grade_level_id, section_code) [unique]
-    branch_id
     class_teacher_id
   }
 }

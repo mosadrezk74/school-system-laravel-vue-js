@@ -17,7 +17,6 @@
     "classrooms": "Classrooms",
     "behavior": "Behavior & Discipline",
     "behaviorRecords": "Behavior Records",
-    "branches": "Branches",
     "behaviorCategories": "Behavior Categories",
     "assignments": "Assignments",
     "studyMaterials": "Study Materials",
@@ -317,7 +316,6 @@
     "currentEnrollment": "Currently Enrolled",
     "academicYear": "Academic Year",
     "gradeLevel": "Grade Level",
-    "branch": "Branch",
     "classroom": "Classroom",
     "classTeacher": "Class Teacher",
     "assistantTeacher": "Assistant Teacher",
@@ -348,62 +346,10 @@
       "capacity": "Required. The maximum number of students this class can accommodate. Must be at least 1.",
       "academicYear": "Required. The academic year this class belongs to — determines the available section codes.",
       "gradeLevel": "Required. The grade level taught in this class.",
-      "branch": "Required. The school branch where this class is held — determines available classrooms below.",
       "classroom": "Optional. The classroom assigned to this class. Only shows rooms belonging to the selected branch.",
       "classTeacher": "Optional. The teacher primarily responsible for this class.",
       "assistantTeacher": "Optional. A supporting teacher who assists the class teacher.",
       "active": "Controls whether the class is available for new enrollments. Deactivate to hide it without archiving."
-    }
-  },
-  "branch": {
-    "title": "Branches",
-    "addNew": "Add New Branch",
-    "edit": "Edit Branch",
-    "subtitle": "Manage school branches and locations",
-    "created": "Branch created successfully.",
-    "updated": "Branch updated successfully.",
-    "archived": "Branch archived successfully.",
-    "restored": "Branch restored successfully.",
-    "code_already_exists": "Another branch with the same code already exists.",
-    "branch_not_found": "Branch not found.",
-    "cannot_delete_main_branch": "Cannot delete the main branch.",
-    "main_branch_already_exists": "Another main branch already exists.",
-    "fields": {
-      "name": "Name",
-      "code": "Code",
-      "address": "Address",
-      "city": "City",
-      "phone": "Phone",
-      "manager_id": "Manager",
-      "is_main": "Main Branch",
-      "is_active": "Active",
-      "latitude": "Latitude",
-      "longitude": "Longitude"
-    },
-    "hints": {
-      "name": "Required. The full name of the branch.",
-      "code": "Optional. A unique code for the branch (e.g., BR001).",
-      "address": "Optional. The physical address of the branch.",
-      "city": "Optional. The city where the branch is located.",
-      "phone": "Optional. The phone number to contact the branch.",
-      "manager_id": "Optional. The user responsible for managing this branch.",
-      "is_main": "Set this branch as the main school branch.",
-      "is_active": "The branch is operational and available for use.",
-      "latitude": "Optional. GPS coordinates (latitude) of the branch location.",
-      "longitude": "Optional. GPS coordinates (longitude) of the branch location."
-    },
-    "sections": {
-      "basic": "Basic Information",
-      "basicDesc": "The branch's name, code, and primary designation.",
-      "location": "Location",
-      "locationDesc": "Address, city, and contact number for this branch.",
-      "management": "Management",
-      "managementDesc": "The staff member responsible for managing this branch."
-    },
-    "quickActions": "Quick Actions",
-    "quickAction": {
-      "edit": "Edit Branch",
-      "viewClasses": "View Branch Classes"
     }
   },
   "teachers": {
@@ -607,7 +553,6 @@
       "description_en": "Description (English)",
       "description_ar": "Description (Arabic)",
       "short_name": "Short Name",
-      "branch_id": "Branch",
       "subject_type": "Subject Type",
       "pass_grade": "Pass Grade",
       "credit_hours": "Credit Hours",
@@ -625,7 +570,6 @@
       "description_en": "Optional. Description in English.",
       "description_ar": "Optional. Description in Arabic.",
       "short_name": "Optional. Abbreviated name (e.g., Math).",
-      "branch_id": "Optional. Branch where this subject is offered.",
       "subject_type": "Required. Type of subject (Core, Elective, Extracurricular).",
       "pass_grade": "Optional. Minimum grade required to pass (0-100). Default: 60.",
       "credit_hours": "Optional. Number of credit hours for this subject. Default: 1.",
@@ -804,7 +748,6 @@
     "fields": {
       "name": "Name",
       "code": "Code",
-      "branch_id": "Branch",
       "capacity": "Capacity",
       "floor": "Floor",
       "building": "Building",
@@ -816,7 +759,6 @@
     "hints": {
       "name": "Required. Classroom name or identifier.",
       "code": "Optional. Unique classroom code (e.g., R101).",
-      "branch_id": "Required. Branch where this classroom is located.",
       "capacity": "Optional. Maximum number of students. Default: 30.",
       "floor": "Optional. Floor number (e.g., 1, 2, 3).",
       "building": "Optional. Building name or number.",
@@ -1035,13 +977,11 @@
       "currency": "Currency",
       "currencySymbol": "Currency Symbol",
       "logo": "Logo",
-      "multiBranch": "Multiple Branches",
       "multiAcademicYear": "Multiple Academic Years",
       "aiTranslationEnabled": "Enable Automatic Translation",
       "aiTranslationProvider": "Provider"
     },
     "hints": {
-      "multiBranch": "Enable if the school operates more than one branch.",
       "multiAcademicYear": "Enable if more than one academic year is managed at a time.",
       "aiTranslationEnabled": "Automatically fill missing translations for other active languages when saving."
     },
@@ -1087,7 +1027,6 @@
     "titleField": "Title",
     "description": "Description",
     "teacher": "Teacher",
-    "branch": "Branch",
     "academicYear": "Academic Year",
     "semester": "Semester",
     "scheduledAt": "Scheduled At",
@@ -1120,7 +1059,6 @@
     "hints": {
       "title": "Required. A short, descriptive name for the meeting.",
       "teacher": "Required. The teacher hosting this meeting.",
-      "branch": "Optional. The branch this meeting belongs to.",
       "academicYear": "Optional. The academic year this meeting belongs to.",
       "semester": "Optional. The semester this meeting belongs to.",
       "durationMinutes": "Required. Expected length of the meeting in minutes.",
@@ -1140,7 +1078,6 @@
     "audience": {
       "all": "All Users",
       "role": "By Role",
-      "branch": "By Branch",
       "academic_year": "By Academic Year",
       "class": "By Class",
       "section": "By Section",

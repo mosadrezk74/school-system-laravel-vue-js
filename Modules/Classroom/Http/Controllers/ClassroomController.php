@@ -31,7 +31,6 @@ class ClassroomController extends BaseInertiaController
 
         $query = (new ClassroomQuery)
             ->search($filters->search)
-            ->branchId($filters->branchId)
             ->roomType($filters->roomType)
             ->isActive($filters->isActive)
             ->sort($filters->sortBy, $filters->sortOrder);
@@ -42,7 +41,6 @@ class ClassroomController extends BaseInertiaController
             'classrooms' => ClassroomResource::collection($classrooms),
             'filters' => $request->only([
                 Pagination::SEARCH_PARAM,
-                'branch_id',
                 'room_type',
                 'is_active',
             ]),
@@ -54,9 +52,6 @@ class ClassroomController extends BaseInertiaController
         $this->authorize('create', Classroom::class);
 
         return Inertia::render('Classroom::Classrooms/Create', [
-            'branches' => \Modules\Branch\Models\Branch::query()
-                ->where('is_active', true)
-                ->get(['id', 'name']),
             'roomTypes' => [
                 ['title' => __('classroom::classroom.types.classroom'), 'value' => 'classroom'],
                 ['title' => __('classroom::classroom.types.lab'), 'value' => 'lab'],
@@ -84,8 +79,7 @@ class ClassroomController extends BaseInertiaController
     {
         $this->authorize('view', $classroom);
 
-        $classroom->load(['branch']);
-
+        
         return Inertia::render('Classroom::Classrooms/Show', [
             'classroom' => new ClassroomResource($classroom),
         ]);
@@ -95,13 +89,9 @@ class ClassroomController extends BaseInertiaController
     {
         $this->authorize('update', $classroom);
 
-        $classroom->load('branch');
-
+        
         return Inertia::render('Classroom::Classrooms/Edit', [
             'classroom' => new ClassroomResource($classroom),
-            'branches' => \Modules\Branch\Models\Branch::query()
-                ->where('is_active', true)
-                ->get(['id', 'name']),
             'roomTypes' => [
                 ['title' => __('classroom::classroom.types.classroom'), 'value' => 'classroom'],
                 ['title' => __('classroom::classroom.types.lab'), 'value' => 'lab'],

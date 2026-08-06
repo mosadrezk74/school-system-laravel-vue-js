@@ -32,10 +32,6 @@ class TimetableResource extends BaseResource
                     'id' => $this->class->gradeLevel?->id,
                     'name' => $this->class->gradeLevel?->name,
                 ] : null,
-                'branch' => $this->class->relationLoaded('branch') ? [
-                    'id' => $this->class->branch?->id,
-                    'name' => $this->class->branch?->name,
-                ] : null,
             ] : null),
 
             'academic_year' => $this->whenLoaded('academicYear', fn () => $this->academicYear ? [

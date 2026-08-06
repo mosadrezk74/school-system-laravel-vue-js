@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('classrooms', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('branch_id');
             $table->string('name', 100);
             $table->string('code', 50)->nullable();
             $table->smallInteger('capacity')->default(30);
@@ -23,8 +22,6 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->unique('code');
-            $table->index(['branch_id', 'is_active']);
-            $table->foreign('branch_id')->references('id')->on('branches')->cascadeOnDelete();
         });
     }
 

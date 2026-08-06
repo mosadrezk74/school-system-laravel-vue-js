@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('departments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('branch_id')->nullable();
             $table->string('name', 100);
             $table->string('code', 50)->nullable();
             $table->unsignedBigInteger('head_of_department_id')->nullable();
@@ -20,7 +19,6 @@ return new class extends Migration
             $table->softDeletes();
             $table->unique('code');
             $table->index(['parent_department_id']);
-            $table->foreign('branch_id')->references('id')->on('branches')->nullOnDelete();
             $table->foreign('head_of_department_id')->references('id')->on('users')->nullOnDelete();
             $table->foreign('parent_department_id')->references('id')->on('departments')->nullOnDelete();
         });

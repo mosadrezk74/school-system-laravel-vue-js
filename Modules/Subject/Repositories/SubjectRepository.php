@@ -22,7 +22,7 @@ class SubjectRepository implements SubjectRepositoryInterface
 
     public function findAll(array $filters = []): array
     {
-        $query = Subject::query()->with(['branch']);
+        $query = Subject::query();
         
         foreach ($filters as $field => $value) {
             if ($value !== null) {
@@ -35,7 +35,7 @@ class SubjectRepository implements SubjectRepositoryInterface
 
     public function findAllPaginated(int $perPage = 15, array $filters = [])
     {
-        $query = Subject::query()->with(['branch']);
+        $query = Subject::query();
         
         foreach ($filters as $field => $value) {
             if ($value !== null) {
@@ -173,11 +173,4 @@ class SubjectRepository implements SubjectRepositoryInterface
         return Subject::query()->where('is_active', true)->get();
     }
 
-    public function getSubjectsByBranch(int $branchId): iterable
-    {
-        return Subject::query()
-            ->where('branch_id', $branchId)
-            ->where('is_active', true)
-            ->get();
-    }
 }

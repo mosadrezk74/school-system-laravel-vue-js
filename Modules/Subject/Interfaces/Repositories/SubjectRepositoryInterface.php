@@ -25,5 +25,4 @@ interface SubjectRepositoryInterface extends RepositoryInterface
     public function createFromDTO(CreateSubjectDTO $dto, ?int $actorId = null): Subject;
     public function updateFromDTO(int $id, UpdateSubjectDTO $dto, ?int $actorId = null): Subject;
     public function getActiveSubjects(): iterable;
-    public function getSubjectsByBranch(int $branchId): iterable;
 }

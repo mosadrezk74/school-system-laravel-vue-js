@@ -10,7 +10,6 @@ final readonly class MeetingFilterDTO
     public function __construct(
         public ?string $search,
         public ?int $teacherId,
-        public ?int $branchId,
         public ?string $status,
         public ?string $date,
         public string $sortBy,
@@ -23,7 +22,6 @@ final readonly class MeetingFilterDTO
         return new self(
             search: $request->string(Pagination::SEARCH_PARAM)->toString() ?: null,
             teacherId: $request->filled('teacher_id') ? (int) $request->input('teacher_id') : null,
-            branchId: $request->filled('branch_id') ? (int) $request->input('branch_id') : null,
             status: $request->string('status')->toString() ?: null,
             date: $request->string('date')->toString() ?: null,
             sortBy: $request->string(Pagination::SORT_PARAM, 'scheduled_at')->toString(),

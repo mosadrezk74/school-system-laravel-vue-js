@@ -11,7 +11,6 @@ const props = defineProps({
 const { t } = useI18n()
 
 const search = ref(props.filters.search ?? '')
-const branchFilter = ref(props.filters.branch_id ?? null)
 const roomTypeFilter = ref(props.filters.room_type ?? null)
 const isActiveFilter = ref(props.filters.is_active ?? null)
 
@@ -23,14 +22,13 @@ watch(search, value => {
   }, 350)
 })
 
-watch([branchFilter, roomTypeFilter, isActiveFilter], () => {
+watch([roomTypeFilter, isActiveFilter], () => {
   applyFilters()
 })
 
 function applyFilters() {
   const params = {
     search: search.value || undefined,
-    branch_id: branchFilter.value || undefined,
     room_type: roomTypeFilter.value || undefined,
     is_active: isActiveFilter.value !== null ? isActiveFilter.value : undefined,
   }
@@ -45,7 +43,6 @@ function applyFilters() {
 const headers = computed(() => [
   { title: t('classroom.fields.name'), key: 'name' },
   { title: t('classroom.fields.code'), key: 'code' },
-  { title: t('classroom.fields.branch_id'), key: 'branch' },
   { title: t('classroom.fields.room_type'), key: 'room_type' },
   { title: t('classroom.fields.capacity'), key: 'capacity' },
   { title: t('classroom.fields.is_active'), key: 'is_active', sortable: false },
@@ -78,7 +75,6 @@ function goToPage(page) {
   const params = {
     page,
     search: search.value || undefined,
-    branch_id: branchFilter.value || undefined,
     room_type: roomTypeFilter.value || undefined,
     is_active: isActiveFilter.value !== null ? isActiveFilter.value : undefined,
   }
@@ -165,9 +161,6 @@ const filterOptions = {
         </VChip>
       </template>
 
-      <template #item.branch="{ item }">
-        {{ item.branch?.name || '—' }}
-      </template>
 
       <template #item.is_active="{ item }">
         <VChip

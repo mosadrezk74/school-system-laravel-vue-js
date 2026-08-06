@@ -65,9 +65,6 @@ function copyLink() {
             </div>
             <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
               {{ meeting.teacher?.name ?? '—' }}
-              <template v-if="meeting.branch">
-                · {{ meeting.branch.name }}
-              </template>
             </p>
           </div>
 

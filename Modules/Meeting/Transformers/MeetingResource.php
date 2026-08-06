@@ -30,7 +30,6 @@ class MeetingResource extends BaseResource
             'status' => $this->status,
             'can_manage' => $request->user()?->can('update', $this->resource) ?? false,
             'teacher_id' => $this->teacher_id,
-            'branch_id' => $this->branch_id,
             'academic_year_id' => $this->academic_year_id,
             'semester_id' => $this->semester_id,
             'subject_id' => $this->subject_id,
@@ -41,11 +40,6 @@ class MeetingResource extends BaseResource
             'teacher' => $this->whenLoaded('teacher', fn () => $this->teacher ? [
                 'id' => $this->teacher->id,
                 'name' => $this->teacher->name,
-            ] : null),
-
-            'branch' => $this->whenLoaded('branch', fn () => $this->branch ? [
-                'id' => $this->branch->id,
-                'name' => $this->branch->name,
             ] : null),
 
             'academic_year' => $this->whenLoaded('academicYear', fn () => $this->academicYear ? [

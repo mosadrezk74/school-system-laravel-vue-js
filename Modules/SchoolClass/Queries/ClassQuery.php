@@ -12,7 +12,7 @@ class ClassQuery extends BaseQuery
     protected array $searchableFields = ['name', 'section_code'];
 
     /** @var array<int, string> */
-    protected array $filterableFields = ['academic_year_id', 'grade_level_id', 'branch_id', 'is_active'];
+    protected array $filterableFields = ['academic_year_id', 'grade_level_id', 'is_active'];
 
     /** @var array<int, string> */
     protected array $sortableFields = [
@@ -26,7 +26,7 @@ class ClassQuery extends BaseQuery
 
     protected function baseQuery(): Builder
     {
-        return SchoolClass::query()->with(['gradeLevel', 'academicYear', 'branch', 'classroom', 'classTeacher']);
+        return SchoolClass::query()->with(['gradeLevel', 'academicYear', 'classroom', 'classTeacher']);
     }
 
     public function academicYearId(?int $academicYearId): self
@@ -47,14 +47,6 @@ class ClassQuery extends BaseQuery
         return $this;
     }
 
-    public function branchId(?int $branchId): self
-    {
-        if ($branchId) {
-            $this->query->where('branch_id', $branchId);
-        }
-
-        return $this;
-    }
 
     public function isActive(?bool $isActive): self
     {

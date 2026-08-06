@@ -5,7 +5,6 @@ import SubjectForm from './_Form.vue'
 
 const props = defineProps({
   subject: { type: Object, required: true },
-  branches: { type: Array, default: () => [] },
   subjectTypes: { type: Array, default: () => [] },
 })
 
@@ -16,7 +15,6 @@ const form = useForm({
   code: props.subject.code || '',
   description: props.subject.description || '',
   short_name: props.subject.short_name || '',
-  branch_id: props.subject.branch_id || null,
   subject_type: props.subject.subject_type || 'core',
   pass_grade: props.subject.pass_grade || 60,
   credit_hours: props.subject.credit_hours || 1,
@@ -46,7 +44,6 @@ function submit() {
       <form @submit.prevent="submit">
         <SubjectForm
           :form="form"
-          :branches="branches"
           :subject-types="subjectTypes"
           is-edit
         />

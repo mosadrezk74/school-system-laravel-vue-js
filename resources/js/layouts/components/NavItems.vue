@@ -207,13 +207,6 @@ const isModuleEnabled = name => enabledModules.value.includes(name)
   <VerticalNavSectionTitle :item="{ heading: t('nav.settings') }" />
   <VerticalNavLink
     :item="{
-      title: t('nav.branches'),
-      to: '/settings/branches',
-      icon: 'bx-store-alt',
-    }"
-  />
-  <VerticalNavLink
-    :item="{
       title: t('nav.languages'),
       to: '/settings/languages',
       icon: 'bx-globe',

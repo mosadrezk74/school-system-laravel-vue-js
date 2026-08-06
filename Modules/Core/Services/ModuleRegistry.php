@@ -10,7 +10,7 @@ class ModuleRegistry
 {
     public const CACHE_KEY = 'modules.enabled';
 
-    private const FOUNDATIONAL = ['Core', 'Auth', 'Setting', 'Branch', 'Academic'];
+    private const FOUNDATIONAL = ['Core', 'Auth', 'Setting', 'Academic'];
 
     public function isFoundational(string $name): bool
     {

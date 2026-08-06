@@ -6,7 +6,6 @@ const props = defineProps({
   form: { type: Object, required: true },
   academicYears: { type: Array, default: () => [] },
   gradeLevels: { type: Array, default: () => [] },
-  branches: { type: Array, default: () => [] },
   classrooms: { type: Array, default: () => [] },
   teachers: { type: Array, default: () => [] },
   isEdit: { type: Boolean, default: false },
@@ -19,22 +18,10 @@ const { t } = useI18n()
 // "Optional" marker to maintain in sync.
 const required = label => `${label} *`
 
-// A classroom belongs to exactly one branch, so the picker only ever offers
-// classrooms that match the branch currently selected above it.
-const filteredClassrooms = computed(() =>
-  props.classrooms.filter(c => c.branch_id === props.form.branch_id))
-
-const classroomOptions = computed(() => filteredClassrooms.value.map(c => ({
+const classroomOptions = computed(() => props.classrooms.map(c => ({
   title: c.name,
   value: c.id,
 })))
-
-watch(() => props.form.branch_id, () => {
-  const stillValid = filteredClassrooms.value.some(c => c.id === props.form.classroom_id)
-
-  if (!stillValid)
-    props.form.classroom_id = null
-})
 
 const teacherOptions = computed(() => props.teachers.map(t => ({
   title: t.name,
@@ -44,7 +31,7 @@ const teacherOptions = computed(() => props.teachers.map(t => ({
 const activeTab = ref('details')
 
 const tabFields = {
-  details: ['branch_id', 'grade_level_id', 'academic_year_id', 'name', 'section_code', 'capacity', 'classroom_id', 'is_active'],
+  details: ['grade_level_id', 'academic_year_id', 'name', 'section_code', 'capacity', 'classroom_id', 'is_active'],
   staffing: ['class_teacher_id', 'assistant_teacher_id'],
 }
 
@@ -86,17 +73,6 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
       </div>
 
       <VRow>
-        <VCol cols="12" md="4">
-          <VSelect
-            v-model="form.branch_id"
-            :items="branches.map(b => ({ title: b.name, value: b.id }))"
-            :label="required(t('classes.branch'))"
-            :hint="$t('classes.hints.branch')"
-            persistent-hint
-            :error-messages="form.errors.branch_id"
-            required
-          />
-        </VCol>
 
         <VCol cols="12" md="4">
           <VSelect
@@ -166,7 +142,6 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
             :hint="$t('classes.hints.classroom')"
             persistent-hint
             :error-messages="form.errors.classroom_id"
-            :disabled="!form.branch_id"
           />
         </VCol>
 

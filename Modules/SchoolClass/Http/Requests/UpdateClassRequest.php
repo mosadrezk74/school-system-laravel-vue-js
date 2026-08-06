@@ -15,7 +15,6 @@ class UpdateClassRequest extends BaseRequest
         $class = $this->route('class');
 
         return [
-            'branch_id' => ['required', 'integer', 'exists:branches,id'],
             'grade_level_id' => ['required', 'integer', 'exists:grade_levels,id'],
             'academic_year_id' => ['required', 'integer', 'exists:academic_years,id'],
             'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
@@ -41,7 +40,6 @@ class UpdateClassRequest extends BaseRequest
     public function attributes(): array
     {
         return [
-            'branch_id' => __('school-class::class.fields.branch_id'),
             'grade_level_id' => __('school-class::class.fields.grade_level_id'),
             'academic_year_id' => __('school-class::class.fields.academic_year_id'),
             'classroom_id' => __('school-class::class.fields.classroom_id'),

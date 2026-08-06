@@ -5,7 +5,6 @@ import TranslatableTextarea from '@/components/TranslatableTextarea.vue'
 const props = defineProps({
   form: { type: Object, required: true },
   teachers: { type: Array, default: () => [] },
-  branches: { type: Array, default: () => [] },
   academicYears: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
 })
@@ -56,29 +55,6 @@ const filteredSemesters = () =>
       />
     </VCol>
 
-    <VCol cols="12" md="6">
-      <VSelect
-        v-model="form.teacher_id"
-        :items="teachers.map(u => ({ title: u.name, value: u.id }))"
-        :label="required(t('meetings.teacher'))"
-        :hint="t('meetings.hints.teacher')"
-        persistent-hint
-        :error-messages="form.errors.teacher_id"
-        required
-      />
-    </VCol>
-
-    <VCol cols="12" md="6">
-      <VSelect
-        v-model="form.branch_id"
-        clearable
-        :items="branches.map(b => ({ title: b.name, value: b.id }))"
-        :label="t('meetings.branch')"
-        :hint="t('meetings.hints.branch')"
-        persistent-hint
-        :error-messages="form.errors.branch_id"
-      />
-    </VCol>
 
     <VCol cols="12" md="4">
       <VSelect

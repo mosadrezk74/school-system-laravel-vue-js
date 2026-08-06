@@ -7,7 +7,6 @@ use Modules\SchoolClass\Http\Requests\UpdateClassRequest;
 final readonly class UpdateClassDTO
 {
     public function __construct(
-        public int $branchId,
         public int $gradeLevelId,
         public int $academicYearId,
         public ?int $classroomId,
@@ -22,7 +21,6 @@ final readonly class UpdateClassDTO
     public static function fromRequest(UpdateClassRequest $request): self
     {
         return new self(
-            branchId: (int) $request->validated('branch_id'),
             gradeLevelId: (int) $request->validated('grade_level_id'),
             academicYearId: (int) $request->validated('academic_year_id'),
             classroomId: $request->validated('classroom_id') ? (int) $request->validated('classroom_id') : null,
@@ -41,7 +39,6 @@ final readonly class UpdateClassDTO
     public function toArray(): array
     {
         return [
-            'branch_id' => $this->branchId,
             'grade_level_id' => $this->gradeLevelId,
             'academic_year_id' => $this->academicYearId,
             'classroom_id' => $this->classroomId,

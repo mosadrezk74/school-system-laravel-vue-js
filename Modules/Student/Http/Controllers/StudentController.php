@@ -36,7 +36,6 @@ class StudentController extends BaseInertiaController
             ->academicYearId($filters->academicYearId)
             ->currentClassId($filters->currentClassId)
             ->gradeLevelId($filters->gradeLevelId)
-            ->branchId($filters->branchId)
             ->isActive($filters->isActive)
             ->gender($filters->gender)
             ->sort($filters->sortBy, $filters->sortOrder);
@@ -50,7 +49,6 @@ class StudentController extends BaseInertiaController
                 'academic_year_id',
                 'current_class_id',
                 'grade_level_id',
-                'branch_id',
                 'is_active',
                 'gender',
             ]),
@@ -64,8 +62,8 @@ class StudentController extends BaseInertiaController
         return $this->render('Student::Students/Create', [
             'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
             'classes' => SchoolClass::query()->where('is_active', true)
-                ->with(['gradeLevel:id,name', 'branch:id,name'])
-                ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id', 'branch_id']),
+                ->with(['gradeLevel:id,name'])
+                ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id']),
         ]);
     }
 
@@ -83,7 +81,7 @@ class StudentController extends BaseInertiaController
         $this->authorize('view', $student);
 
         $student->load([
-            'user', 'academicYear', 'currentClass.gradeLevel', 'currentClass.branch',
+            'user', 'academicYear', 'currentClass.gradeLevel',
             'guardians.parent.user',
         ]);
 
@@ -113,8 +111,8 @@ class StudentController extends BaseInertiaController
             'student' => new StudentResource($student),
             'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
             'classes' => SchoolClass::query()->where('is_active', true)
-                ->with(['gradeLevel:id,name', 'branch:id,name'])
-                ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id', 'branch_id']),
+                ->with(['gradeLevel:id,name'])
+                ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id']),
         ]);
     }
 

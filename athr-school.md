@@ -54,7 +54,6 @@ Modules/
     Student/
     Teacher/
     Guardian/
-    Branch/
     SchoolClass/
     Behavior/
     Setting/
@@ -491,7 +490,6 @@ Modules/Setting/resources/js/plugins/i18n/locales
 ## Completed
 
 - Academic
-- Branch
 - Student
 - Guardian
 - Teacher

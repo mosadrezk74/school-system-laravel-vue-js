@@ -29,7 +29,6 @@ const typeLabels = {
 const basicInfo = [
   { key: 'code', label: 'subject.fields.code', value: props.subject.code || '—' },
   { key: 'short_name', label: 'subject.fields.short_name', value: props.subject.short_name || '—' },
-  { key: 'branch', label: 'subject.fields.branch_id', value: props.subject.branch?.name || '—' },
   { key: 'subject_type', label: 'subject.fields.subject_type', value: typeLabels[props.subject.subject_type] || props.subject.subject_type || '—' },
 ]
 

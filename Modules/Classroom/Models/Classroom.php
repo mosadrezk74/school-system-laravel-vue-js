@@ -3,7 +3,6 @@
 namespace Modules\Classroom\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Branch\Models\Branch;
 use Modules\Core\Abstracts\BaseModel;
 
 class Classroom extends BaseModel
@@ -20,10 +19,5 @@ class Classroom extends BaseModel
             'has_smartboard' => 'boolean',
             'is_active' => 'boolean',
         ];
-    }
-
-    public function branch(): BelongsTo
-    {
-        return $this->belongsTo(Branch::class, 'branch_id');
     }
 }

@@ -40,9 +40,6 @@ const quickActions = [
             </div>
             <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
               {{ $props.class.grade_level?.name ?? '—' }} · {{ $props.class.academic_year?.name ?? '—' }}
-              <template v-if="$props.class.branch">
-                · {{ $props.class.branch.name }}
-              </template>
             </p>
           </div>
 
@@ -85,16 +82,6 @@ const quickActions = [
                 </VListItemTitle>
                 <VListItemSubtitle class="text-body-1 text-high-emphasis">
                   {{ $props.class.academic_year?.name ?? '—' }}
-                </VListItemSubtitle>
-              </VListItem>
-            </VCol>
-            <VCol cols="6">
-              <VListItem>
-                <VListItemTitle class="text-medium-emphasis text-caption">
-                  {{ t('classes.branch') }}
-                </VListItemTitle>
-                <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ $props.class.branch?.name ?? '—' }}
                 </VListItemSubtitle>
               </VListItem>
             </VCol>

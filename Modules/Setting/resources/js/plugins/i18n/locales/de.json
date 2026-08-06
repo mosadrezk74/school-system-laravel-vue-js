@@ -15,7 +15,6 @@
     "guardians": "Erziehungsberechtigte",
     "behavior": "Verhalten & Disziplin",
     "behaviorRecords": "Verhaltensaufzeichnungen",
-    "branches": "Zweigstellen",
     "behaviorCategories": "Verhaltenskategorien"
   },
   "navbar": {
@@ -234,7 +233,6 @@
     "currentEnrollment": "Aktuelle Einschreibung",
     "academicYear": "Schuljahr",
     "gradeLevel": "Klassenstufe",
-    "branch": "Zweigstelle",
     "classroom": "Klassenzimmer",
     "classTeacher": "Klassenlehrer",
     "assistantTeacher": "Assistenzlehrer",
@@ -254,54 +252,10 @@
       "capacity": "Erforderlich. Die maximale Anzahl von Schülern, die diese Klasse aufnehmen kann. Muss mindestens 1 sein.",
       "academicYear": "Erforderlich. Das Schuljahr, zu dem diese Klasse gehört — bestimmt die verfügbaren Abteilungscodes.",
       "gradeLevel": "Erforderlich. Die Klassenstufe, die in dieser Klasse unterrichtet wird.",
-      "branch": "Erforderlich. Die Schulzweigstelle, in der diese Klasse stattfindet — bestimmt die unten verfügbaren Klassenzimmer.",
       "classroom": "Optional. Das Klassenzimmer, das dieser Klasse zugewiesen ist. Zeigt nur Räume an, die zur ausgewählten Zweigstelle gehören.",
       "classTeacher": "Optional. Der Lehrer, der hauptsächlich für diese Klasse verantwortlich ist.",
       "assistantTeacher": "Optional. Ein unterstützender Lehrer, der den Klassenlehrer unterstützt.",
       "active": "Steuert, ob die Klasse für neue Einschreibungen verfügbar ist. Deaktivieren, um sie ohne Archivierung auszublenden."
-    }
-  },
-  "branch": {
-    "title": "Zweigstellen",
-    "addNew": "Neue Zweigstelle hinzufügen",
-    "edit": "Zweigstelle bearbeiten",
-    "subtitle": "Verwalten Sie Schulzweigstellen und Standorte",
-    "created": "Zweigstelle erfolgreich erstellt.",
-    "updated": "Zweigstelle erfolgreich aktualisiert.",
-    "archived": "Zweigstelle erfolgreich archiviert.",
-    "restored": "Zweigstelle erfolgreich wiederhergestellt.",
-    "code_already_exists": "Eine andere Zweigstelle mit demselben Code existiert bereits.",
-    "branch_not_found": "Zweigstelle nicht gefunden.",
-    "cannot_delete_main_branch": "Die Hauptzweigstelle kann nicht gelöscht werden.",
-    "main_branch_already_exists": "Eine andere Hauptzweigstelle existiert bereits.",
-    "fields": {
-      "name": "Name",
-      "code": "Code",
-      "address": "Adresse",
-      "city": "Stadt",
-      "phone": "Telefon",
-      "manager_id": "Leiter",
-      "is_main": "Hauptzweigstelle",
-      "is_active": "Aktiv",
-      "latitude": "Breitengrad",
-      "longitude": "Längengrad"
-    },
-    "hints": {
-      "name": "Erforderlich. Der vollständige Name der Zweigstelle.",
-      "code": "Optional. Ein eindeutiger Code für die Zweigstelle (z.B. BR001).",
-      "address": "Optional. Die physische Adresse der Zweigstelle.",
-      "city": "Optional. Die Stadt, in der sich die Zweigstelle befindet.",
-      "phone": "Optional. Die Telefonnummer zur Kontaktaufnahme mit der Zweigstelle.",
-      "manager_id": "Optional. Der Benutzer, der für die Verwaltung dieser Zweigstelle verantwortlich ist.",
-      "is_main": "Diese Zweigstelle als Hauptzweigstelle der Schule festlegen.",
-      "is_active": "Die Zweigstelle ist betriebsbereit und für die Nutzung verfügbar.",
-      "latitude": "Optional. GPS-Koordinaten (Breitengrad) des Zweigstellenstandorts.",
-      "longitude": "Optional. GPS-Koordinaten (Längengrad) des Zweigstellenstandorts."
-    },
-    "sections": {
-      "basic": "Grundinformationen",
-      "location": "Standort",
-      "management": "Verwaltung"
     }
   },
   "teachers": {

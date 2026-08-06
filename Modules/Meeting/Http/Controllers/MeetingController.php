@@ -9,7 +9,6 @@ use Inertia\Response;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\Semester;
 use Modules\Auth\Enums\UserRole;
-use Modules\Branch\Models\Branch;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
 use Modules\Meeting\Actions\CancelMeetingAction;
@@ -44,7 +43,6 @@ class MeetingController extends BaseInertiaController
         $query = (new MeetingQuery)
             ->searchTerm($filters->search)
             ->teacherId($teacherId)
-            ->branchId($filters->branchId)
             ->status($status)
             ->date($filters->date)
             ->sort($filters->sortBy, $filters->sortOrder);
@@ -56,12 +54,10 @@ class MeetingController extends BaseInertiaController
             'filters' => $request->only([
                 Pagination::SEARCH_PARAM,
                 'teacher_id',
-                'branch_id',
                 'status',
                 'date',
             ]),
             'teachers' => User::query()->where('role', UserRole::Teacher->value)->get(['id', 'name']),
-            'branches' => Branch::query()->where('is_active', true)->get(['id', 'name']),
         ]);
     }
 
@@ -85,7 +81,7 @@ class MeetingController extends BaseInertiaController
     {
         $this->authorize('view', $meeting);
 
-        $meeting->load(['teacher', 'branch', 'academicYear', 'semester', 'subject', 'schoolClass']);
+        $meeting->load(['teacher', 'academicYear', 'semester', 'subject', 'schoolClass']);
 
         return $this->render('Meeting::Meetings/Show', [
             'meeting' => new MeetingResource($meeting),
@@ -166,7 +162,6 @@ class MeetingController extends BaseInertiaController
     {
         return [
             'teachers' => User::query()->where('role', UserRole::Teacher->value)->get(['id', 'name']),
-            'branches' => Branch::query()->where('is_active', true)->get(['id', 'name']),
             'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
             'semesters' => Semester::query()->get(['id', 'name', 'academic_year_id']),
         ];

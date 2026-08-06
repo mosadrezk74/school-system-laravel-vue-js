@@ -10,13 +10,13 @@ class ClassroomQuery extends BaseQuery
 {
     protected array $searchableFields = ['name', 'code', 'building'];
 
-    protected array $filterableFields = ['branch_id', 'room_type', 'is_active'];
+    protected array $filterableFields = ['room_type', 'is_active'];
 
     protected array $sortableFields = ['name', 'code', 'capacity', 'floor', 'building', 'room_type', 'is_active', 'created_at'];
 
     protected function baseQuery(): Builder
     {
-        return Classroom::query()->with(['branch']);
+        return Classroom::query();
     }
 
     public function search(?string $term): self
@@ -34,14 +34,6 @@ class ClassroomQuery extends BaseQuery
         return $this;
     }
 
-    public function branchId(?int $branchId): self
-    {
-        if ($branchId) {
-            $this->query->where('branch_id', $branchId);
-        }
-
-        return $this;
-    }
 
     public function roomType(?string $roomType): self
     {

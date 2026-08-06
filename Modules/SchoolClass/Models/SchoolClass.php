@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
-use Modules\Branch\Models\Branch;
 use Modules\Classroom\Models\Classroom;
 use Modules\Core\Abstracts\BaseModel;
 
@@ -47,10 +46,5 @@ class SchoolClass extends BaseModel
     public function assistantTeacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assistant_teacher_id');
-    }
-
-    public function branch(): BelongsTo
-    {
-        return $this->belongsTo(Branch::class, 'branch_id');
     }
 }

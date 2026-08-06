@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('branch_id')->nullable();
             $table->string('code', 50)->nullable();
             $table->json('name');
             $table->json('description')->nullable();
@@ -28,7 +27,6 @@ return new class extends Migration
             $table->softDeletes();
             $table->unique('code');
             $table->index(['is_active']);
-            $table->foreign('branch_id')->references('id')->on('branches')->nullOnDelete();
         });
     }
 

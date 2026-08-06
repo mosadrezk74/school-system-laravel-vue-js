@@ -22,7 +22,6 @@ class UpdateOrganizationSettingsAction extends BaseAction
             $setting->update([
                 'settings' => [
                     ...($setting->settings ?? []),
-                    'multi_branch' => $dto->multiBranch,
                     'multi_academic_year' => $dto->multiAcademicYear,
                 ],
             ]);

@@ -5,7 +5,6 @@ use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
 use Modules\Auth\Database\Seeders\RolePermissionSeeder;
 use Modules\Auth\Enums\UserRole;
-use Modules\Branch\Models\Branch;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\Student\Models\StudentProfile;
 
@@ -150,7 +149,6 @@ it('rejects updating a student to a class from a different academic year', funct
     $year = AcademicYear::factory()->create(['is_active' => true]);
     $otherYear = AcademicYear::factory()->create(['is_active' => true]);
 
-    $branch = Branch::create(['name' => 'Main Branch', 'code' => 'MB-'.uniqid(), 'is_active' => true]);
     $gradeLevel = GradeLevel::create([
         'code' => 'G-'.uniqid(),
         'name' => ['en' => 'Grade 1', 'ar' => 'الصف الأول'],
@@ -158,7 +156,6 @@ it('rejects updating a student to a class from a different academic year', funct
     ]);
 
     $class = SchoolClass::create([
-        'branch_id' => $branch->id,
         'grade_level_id' => $gradeLevel->id,
         'academic_year_id' => $otherYear->id,
         'name' => 'Class 1',

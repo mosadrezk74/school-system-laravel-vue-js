@@ -3,7 +3,6 @@ import { computed, ref } from 'vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
-  branches: { type: Array, default: () => [] },
   roomTypes: { type: Array, default: () => [] },
   isEdit: { type: Boolean, default: false },
 })
@@ -11,7 +10,7 @@ const props = defineProps({
 const activeTab = ref('basic')
 
 const tabFields = {
-  basic: ['name', 'code', 'branch_id', 'room_type', 'capacity'],
+  basic: ['name', 'code', 'room_type', 'capacity'],
   location: ['building', 'floor'],
   facilities: ['has_projector', 'has_smartboard'],
   status: ['is_active'],
@@ -19,12 +18,6 @@ const tabFields = {
 
 const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[field])
 
-const branchOptions = computed(() =>
-  props.branches.map(b => ({
-    title: b.name,
-    value: b.id,
-  }))
-)
 </script>
 
 <template>
@@ -75,17 +68,6 @@ const branchOptions = computed(() =>
           />
         </VCol>
 
-        <VCol cols="12" md="6">
-          <VSelect
-            v-model="form.branch_id"
-            :items="branchOptions"
-            :label="$t('classroom.fields.branch_id')"
-            :hint="$t('classroom.hints.branch_id')"
-            persistent-hint
-            :error-messages="form.errors.branch_id"
-            required
-          />
-        </VCol>
 
         <VCol cols="12" md="6">
           <VSelect

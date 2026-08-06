@@ -8,14 +8,12 @@ const props = defineProps({
   meetings: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
   teachers: { type: Array, default: () => [] },
-  branches: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
 const search = ref(props.filters.search ?? '')
 const teacherId = ref(props.filters.teacher_id ?? null)
-const branchId = ref(props.filters.branch_id ?? null)
 const status = ref(props.filters.status ?? null)
 const date = ref(props.filters.date ?? null)
 
@@ -23,7 +21,6 @@ function buildQuery(extra = {}) {
   return {
     search: search.value,
     teacher_id: teacherId.value,
-    branch_id: branchId.value,
     status: status.value,
     date: date.value,
     ...extra,
@@ -44,7 +41,7 @@ watch(search, () => {
   searchTimer = setTimeout(applyFilters, 350)
 })
 
-watch([teacherId, branchId, status, date], applyFilters)
+watch([teacherId, status, date], applyFilters)
 
 function goToPage(page) {
   router.get('/meetings/meetings', buildQuery({ page }), {
@@ -85,23 +82,6 @@ function goToPage(page) {
         style="max-inline-size: 320px; flex: 1 1 240px;"
       />
 
-      <VSelect
-        v-model="teacherId"
-        :label="t('meetings.teacher')"
-        :items="teachers.map(u => ({ title: u.name, value: u.id }))"
-        density="compact"
-        clearable
-        style="max-inline-size: 200px;"
-      />
-
-      <VSelect
-        v-model="branchId"
-        :label="t('meetings.branch')"
-        :items="branches.map(b => ({ title: b.name, value: b.id }))"
-        density="compact"
-        clearable
-        style="max-inline-size: 200px;"
-      />
 
       <VSelect
         v-model="status"

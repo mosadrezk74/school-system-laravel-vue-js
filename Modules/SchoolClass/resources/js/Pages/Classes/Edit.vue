@@ -16,10 +16,6 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
-  branches: {
-    type: Array,
-    default: () => [],
-  },
   classrooms: {
     type: Array,
     default: () => [],
@@ -33,7 +29,6 @@ const props = defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  branch_id: props.class.branch_id,
   grade_level_id: props.class.grade_level_id,
   academic_year_id: props.class.academic_year_id,
   classroom_id: props.class.classroom_id,
@@ -72,7 +67,6 @@ function submit() {
           :form="form"
           :academic-years="academicYears"
           :grade-levels="gradeLevels"
-          :branches="branches"
           :classrooms="classrooms"
           :teachers="teachers"
           is-edit

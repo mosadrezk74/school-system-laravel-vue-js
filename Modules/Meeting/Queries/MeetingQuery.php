@@ -12,14 +12,14 @@ class MeetingQuery extends BaseQuery
     protected array $searchableFields = ['title', 'room_name'];
 
     /** @var array<int, string> */
-    protected array $filterableFields = ['teacher_id', 'branch_id', 'status'];
+    protected array $filterableFields = ['teacher_id', 'status'];
 
     /** @var array<int, string> */
     protected array $sortableFields = ['scheduled_at', 'title', 'created_at'];
 
     protected function baseQuery(): Builder
     {
-        return Meeting::query()->with(['teacher', 'branch', 'academicYear', 'semester', 'subject', 'schoolClass']);
+        return Meeting::query()->with(['teacher', 'academicYear', 'semester', 'subject', 'schoolClass']);
     }
 
     public function searchTerm(?string $term): self
@@ -40,14 +40,6 @@ class MeetingQuery extends BaseQuery
         return $this;
     }
 
-    public function branchId(?int $branchId): self
-    {
-        if ($branchId) {
-            $this->query->where('branch_id', $branchId);
-        }
-
-        return $this;
-    }
 
     public function status(?string $status): self
     {

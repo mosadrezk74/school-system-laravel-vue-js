@@ -22,7 +22,7 @@ class ClassroomRepository implements ClassroomRepositoryInterface
 
     public function findAll(array $filters = []): array
     {
-        $query = Classroom::query()->with(['branch']);
+        $query = Classroom::query();
         
         foreach ($filters as $field => $value) {
             if ($value !== null) {
@@ -35,7 +35,7 @@ class ClassroomRepository implements ClassroomRepositoryInterface
 
     public function findAllPaginated(int $perPage = 15, array $filters = [])
     {
-        $query = Classroom::query()->with(['branch']);
+        $query = Classroom::query();
         
         foreach ($filters as $field => $value) {
             if ($value !== null) {
@@ -173,11 +173,4 @@ class ClassroomRepository implements ClassroomRepositoryInterface
         return Classroom::query()->where('is_active', true)->get();
     }
 
-    public function getClassroomsByBranch(int $branchId): iterable
-    {
-        return Classroom::query()
-            ->where('branch_id', $branchId)
-            ->where('is_active', true)
-            ->get();
-    }
 }

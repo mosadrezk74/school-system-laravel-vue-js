@@ -6,7 +6,6 @@ const props = defineProps({
   targetType: { type: String, default: null },
   targetIds: { type: Array, default: () => [] },
   roles: { type: Array, default: () => [] },
-  branches: { type: Array, default: () => [] },
   academicYears: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   users: { type: Array, default: () => [] },
@@ -20,7 +19,6 @@ const { t } = useI18n()
 const targetTypeOptions = computed(() => [
   { title: t('communication.audience.all'), value: 'all' },
   { title: t('communication.audience.role'), value: 'role' },
-  { title: t('communication.audience.branch'), value: 'branch' },
   { title: t('communication.audience.academicYear'), value: 'academic_year' },
   { title: t('communication.audience.class'), value: 'class' },
   { title: t('communication.audience.section'), value: 'section' },
@@ -31,8 +29,6 @@ const idOptions = computed(() => {
   switch (props.targetType) {
     case 'role':
       return props.roles
-    case 'branch':
-      return props.branches.map(b => ({ title: b.name, value: b.id }))
     case 'academic_year':
       return props.academicYears.map(y => ({ title: y.name, value: y.id }))
     case 'class':

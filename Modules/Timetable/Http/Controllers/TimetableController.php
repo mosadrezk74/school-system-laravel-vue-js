@@ -69,7 +69,7 @@ class TimetableController extends BaseInertiaController
     {
         $this->authorize('view', $timetable);
 
-        $timetable->load(['class.gradeLevel', 'class.branch', 'academicYear', 'semester', 'entries.subject', 'entries.teacher', 'entries.classroom', 'entries.period']);
+        $timetable->load(['class.gradeLevel', 'academicYear', 'semester', 'entries.subject', 'entries.teacher', 'entries.classroom', 'entries.period']);
 
         return $this->render('Timetable::Timetables/Show', [
             'timetable' => new TimetableResource($timetable),
@@ -82,7 +82,7 @@ class TimetableController extends BaseInertiaController
     {
         $this->authorize('update', $timetable);
 
-        $timetable->load(['class.gradeLevel', 'class.branch', 'academicYear', 'semester', 'entries.subject', 'entries.teacher', 'entries.classroom', 'entries.period']);
+        $timetable->load(['class.gradeLevel', 'academicYear', 'semester', 'entries.subject', 'entries.teacher', 'entries.classroom', 'entries.period']);
 
         return $this->render('Timetable::Timetables/Edit', [
             'timetable' => new TimetableResource($timetable),
@@ -141,8 +141,8 @@ class TimetableController extends BaseInertiaController
     {
         return [
             'classes' => SchoolClass::query()->where('is_active', true)
-                ->with(['gradeLevel:id,name', 'branch:id,name'])
-                ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id', 'branch_id']),
+                ->with(['gradeLevel:id,name'])
+                ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id']),
             'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
         ];
     }

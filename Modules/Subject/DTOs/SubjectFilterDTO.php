@@ -10,7 +10,6 @@ final class SubjectFilterDTO extends BaseDTO
 {
     public function __construct(
         public ?string $search,
-        public ?int $branchId,
         public ?string $subjectType,
         public ?bool $isActive,
         public string $sortBy,
@@ -22,7 +21,6 @@ final class SubjectFilterDTO extends BaseDTO
     {
         return new self(
             search: $request->string(Pagination::SEARCH_PARAM)->toString() ?: null,
-            branchId: $request->filled('branch_id') ? (int) $request->input('branch_id') : null,
             subjectType: $request->string('subject_type')->toString() ?: null,
             isActive: $request->has('is_active') ? filter_var($request->input('is_active'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : null,
             sortBy: $request->string(Pagination::SORT_PARAM, 'name')->toString(),

@@ -45,7 +45,7 @@ function copyLink() {
       </template>
 
       <VCardTitle>{{ meeting.title }}</VCardTitle>
-      <VCardSubtitle>{{ meeting.teacher?.name ?? '—' }} · {{ meeting.branch?.name ?? '—' }}</VCardSubtitle>
+      <VCardSubtitle>{{ meeting.teacher?.name ?? '—' }}</VCardSubtitle>
 
       <template #append>
         <VChip :color="statusColor[meeting.status]" size="small">

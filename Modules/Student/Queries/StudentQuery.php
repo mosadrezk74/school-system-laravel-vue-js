@@ -82,16 +82,6 @@ class StudentQuery extends BaseQuery
         return $this;
     }
 
-    public function branchId(?int $branchId): self
-    {
-        if ($branchId) {
-            $this->query->whereHas('currentClass', function (Builder $query) use ($branchId) {
-                $query->where('branch_id', $branchId);
-            });
-        }
-
-        return $this;
-    }
 
     public function isActive(?bool $isActive): self
     {

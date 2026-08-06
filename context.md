@@ -40,7 +40,6 @@ We use **DBML (Database Markup Language)** for our schema design. The schema is 
 // Main Tables (72 total)
 Table users { ... }
 Table school_settings { ... }
-Table branches { ... }
 Table academic_years { ... }
 Table semesters { ... }
 Table grade_levels { ... }

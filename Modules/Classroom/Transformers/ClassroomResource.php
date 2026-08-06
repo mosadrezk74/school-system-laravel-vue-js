@@ -11,11 +11,6 @@ class ClassroomResource extends BaseResource
     {
         return [
             'id' => $this->id,
-            'branch_id' => $this->branch_id,
-            'branch' => $this->whenLoaded('branch', fn() => [
-                'id' => $this->branch->id,
-                'name' => $this->branch->name,
-            ]),
             'name' => $this->name,
             'code' => $this->code,
             'capacity' => $this->capacity,

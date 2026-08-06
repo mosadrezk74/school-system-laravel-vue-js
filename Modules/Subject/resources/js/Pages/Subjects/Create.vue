@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 import SubjectForm from './_Form.vue'
 
 defineProps({
-  branches: { type: Array, default: () => [] },
   subjectTypes: { type: Array, default: () => [] },
 })
 
@@ -15,7 +14,6 @@ const form = useForm({
   code: '',
   description: '',
   short_name: '',
-  branch_id: null,
   subject_type: 'core',
   pass_grade: 60,
   credit_hours: 1,
@@ -45,7 +43,6 @@ function submit() {
       <form @submit.prevent="submit">
         <SubjectForm
           :form="form"
-          :branches="branches"
           :subject-types="subjectTypes"
         />
       </form>

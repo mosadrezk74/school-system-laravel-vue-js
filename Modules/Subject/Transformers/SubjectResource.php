@@ -10,11 +10,6 @@ class SubjectResource extends BaseResource
     {
         return [
             'id' => $this->id,
-            'branch_id' => $this->branch_id,
-            'branch' => $this->whenLoaded('branch', fn () => [
-                'id' => $this->branch->id,
-                'name' => $this->branch->name,
-            ]),
             'code' => $this->code,
             'name' => $this->name,
             'name_translations' => $this->getTranslations('name'),

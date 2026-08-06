@@ -23,7 +23,6 @@ const roomTypeLabels = {
 const basicInfo = [
   { key: 'name', label: 'classroom.fields.name', value: props.classroom.name },
   { key: 'code', label: 'classroom.fields.code', value: props.classroom.code || '—' },
-  { key: 'branch', label: 'classroom.fields.branch_id', value: props.classroom.branch?.name || '—' },
   { key: 'room_type', label: 'classroom.fields.room_type', value: roomTypeLabels[props.classroom.room_type] || props.classroom.room_type || '—' },
   { key: 'capacity', label: 'classroom.fields.capacity', value: props.classroom.capacity || '—' },
 ]

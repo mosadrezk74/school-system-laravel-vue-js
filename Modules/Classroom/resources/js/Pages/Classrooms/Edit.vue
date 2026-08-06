@@ -5,7 +5,6 @@ import ClassroomForm from './_Form.vue'
 
 const props = defineProps({
   classroom: { type: Object, required: true },
-  branches: { type: Array, default: () => [] },
   roomTypes: { type: Array, default: () => [] },
 })
 
@@ -14,7 +13,6 @@ const { t } = useI18n()
 const form = useForm({
   name: props.classroom.name || '',
   code: props.classroom.code || '',
-  branch_id: props.classroom.branch_id || null,
   capacity: props.classroom.capacity || 30,
   floor: props.classroom.floor || null,
   building: props.classroom.building || '',
@@ -44,7 +42,6 @@ function submit() {
       <form @submit.prevent="submit">
         <ClassroomForm
           :form="form"
-          :branches="branches"
           :room-types="roomTypes"
           is-edit
         />

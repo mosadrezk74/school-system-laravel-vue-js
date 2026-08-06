@@ -9,7 +9,6 @@ class UpdateSubjectRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'branch_id' => ['nullable', 'integer', 'exists:branches,id'],
             'code' => ['nullable', 'string', 'max:50', 'unique:subjects,code,'.$this->route('subject').',id'],
             ...$this->translatableRules('name'),
             ...$this->translatableRules('description', required: false),

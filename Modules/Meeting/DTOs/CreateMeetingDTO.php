@@ -13,7 +13,6 @@ final readonly class CreateMeetingDTO
         public string $scheduledAt,
         public int $durationMinutes,
         public int $teacherId,
-        public ?int $branchId,
         public ?int $academicYearId,
         public ?int $semesterId,
         public ?int $subjectId = null,
@@ -30,7 +29,6 @@ final readonly class CreateMeetingDTO
             scheduledAt: $request->validated('scheduled_at'),
             durationMinutes: (int) $request->validated('duration_minutes'),
             teacherId: (int) $request->validated('teacher_id'),
-            branchId: $request->validated('branch_id') ? (int) $request->validated('branch_id') : null,
             academicYearId: $request->validated('academic_year_id') ? (int) $request->validated('academic_year_id') : null,
             semesterId: $request->validated('semester_id') ? (int) $request->validated('semester_id') : null,
         );
@@ -48,7 +46,6 @@ final readonly class CreateMeetingDTO
             'scheduled_at' => $this->scheduledAt,
             'duration_minutes' => $this->durationMinutes,
             'teacher_id' => $this->teacherId,
-            'branch_id' => $this->branchId,
             'academic_year_id' => $this->academicYearId,
             'semester_id' => $this->semesterId,
             'subject_id' => $this->subjectId,

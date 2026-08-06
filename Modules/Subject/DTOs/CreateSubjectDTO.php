@@ -8,7 +8,6 @@ use Modules\Core\Abstracts\BaseDTO;
 final class CreateSubjectDTO extends BaseDTO
 {
     public function __construct(
-        public ?int $branchId,
         public ?string $code,
         public array $name,
         public ?array $description,
@@ -25,7 +24,6 @@ final class CreateSubjectDTO extends BaseDTO
     public static function fromRequest(Request $request): self
     {
         return new self(
-            branchId: $request->validated('branch_id') ? (int) $request->validated('branch_id') : null,
             code: $request->validated('code'),
             name: $request->validated('name'),
             description: $request->validated('description'),
@@ -43,7 +41,6 @@ final class CreateSubjectDTO extends BaseDTO
     public function toArray(): array
     {
         return [
-            'branch_id' => $this->branchId,
             'code' => $this->code,
             'name' => $this->name,
             'description' => $this->description,
