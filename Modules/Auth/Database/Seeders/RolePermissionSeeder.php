@@ -49,6 +49,15 @@ class RolePermissionSeeder extends Seeder
     private const ABILITIES = ['view', 'create', 'update', 'delete'];
 
     /**
+     * Resources whose abilities are not the standard CRUD four.
+     *
+     * @var array<string, array<int, string>>
+     */
+    private const RESOURCE_ABILITIES = [
+        'report' => ['view', 'generate', 'manage'],
+    ];
+
+    /**
      * Which resources each role may touch. Owner is deliberately absent —
      * it is granted everything via a Gate::before rule instead, so a new
      * module never leaves the owner locked out.
@@ -120,7 +129,7 @@ class RolePermissionSeeder extends Seeder
     {
         foreach (self::RESOURCES as $module => $resources) {
             foreach ($resources as $resource) {
-                foreach (self::ABILITIES as $ability) {
+                foreach (self::RESOURCE_ABILITIES[$resource] ?? self::ABILITIES as $ability) {
                     Permission::query()->updateOrCreate(
                         ['name' => "{$resource}.{$ability}", 'guard_name' => $guard],
                         ['module' => $module],

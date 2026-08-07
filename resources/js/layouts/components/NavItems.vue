@@ -104,6 +104,14 @@ const sections = computed(() => [
     ],
   },
   {
+    key: 'reports',
+    heading: t('nav.reports'),
+    children: [
+      { title: t('nav.reports'), to: '/reports', icon: 'bx-bar-chart-alt-2', module: 'Report' },
+      { title: t('nav.reportTemplates'), to: '/reports/templates', icon: 'bx-file', module: 'Report' },
+    ],
+  },
+  {
     key: 'settings',
     heading: t('nav.settings'),
     children: [

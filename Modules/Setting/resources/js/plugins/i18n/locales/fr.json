@@ -27,7 +27,9 @@
     "feeDiscounts": "Remises",
     "studentFees": "Frais des élèves",
     "invoices": "Factures",
-    "payments": "Paiements"
+    "payments": "Paiements",
+    "reports": "Rapports",
+    "reportTemplates": "Modèles de rapport"
   },
   "navbar": {
     "search": "Rechercher",
@@ -684,5 +686,66 @@
     "yearTotal": "Year Total",
     "itemsCount": "Items",
     "share": "Share"
+  },
+  "report": {
+    "title": "Rapports",
+    "subtitle": "Run reports across every module from one place.",
+    "available": "Available Reports",
+    "selectPrompt": "Select a report on the left to choose filters and run it.",
+    "searchReports": "Search reports",
+    "searchTemplates": "Search templates",
+    "run": "Exécuter le rapport",
+    "noRows": "No records match these filters.",
+    "empty": "No reports available.",
+    "generationFailed": "The report could not be generated.",
+    "backToReports": "Back to Reports",
+    "confirmDelete": "Delete this report template?",
+    "inheritedMetadata": "This report provides {filters} filters and {columns} columns.",
+    "yes": "Yes",
+    "no": "No",
+    "fields": {
+      "name": "Name",
+      "code": "Report",
+      "category": "Category",
+      "is_active": "Active"
+    },
+    "sections": {
+      "details": "Details",
+      "detailsDesc": "Name the template and link it to a report."
+    },
+    "hints": {
+      "name": "Required. A short name for this template.",
+      "code": "Optional. Link the template to an existing report.",
+      "category": "Optional. Used to group templates.",
+      "isActive": "Inactive templates stay in the system but are hidden."
+    },
+    "options": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "templates": {
+      "title": "Modèles de rapport",
+      "subtitle": "Save report configurations for reuse.",
+      "addNew": "New Template",
+      "edit": "Edit Template",
+      "empty": "No templates yet. Create your first template to get started."
+    },
+    "summary": {
+      "students": "Students",
+      "records": "Records",
+      "average_percentage": "Average",
+      "total": "Total",
+      "active": "Active",
+      "inactive": "Inactive",
+      "invoices": "Invoices",
+      "total_billed": "Billed",
+      "total_paid": "Paid",
+      "total_outstanding": "Outstanding",
+      "meetings": "Meetings",
+      "total_minutes": "Minutes",
+      "teachers": "Teachers",
+      "resources": "Resources",
+      "total_downloads": "Downloads"
+    }
   }
 }

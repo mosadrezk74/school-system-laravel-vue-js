@@ -47,7 +47,9 @@
     "feeDiscounts": "الخصومات",
     "studentFees": "رسوم الطلاب",
     "invoices": "الفواتير",
-    "payments": "المدفوعات"
+    "payments": "المدفوعات",
+    "reports": "التقارير",
+    "reportTemplates": "قوالب التقارير"
   },
   "navbar": {
     "search": "بحث",
@@ -1419,5 +1421,66 @@
     "yearTotal": "إجمالي السنة",
     "itemsCount": "البنود",
     "share": "النسبة"
+  },
+  "report": {
+    "title": "التقارير",
+    "subtitle": "شغّل التقارير من كل الوحدات في مكان واحد.",
+    "available": "التقارير المتاحة",
+    "selectPrompt": "اختر تقريراً من القائمة لتحديد المرشحات وتشغيله.",
+    "searchReports": "البحث في التقارير",
+    "searchTemplates": "البحث في القوالب",
+    "run": "تشغيل التقرير",
+    "noRows": "لا توجد سجلات مطابقة لهذه المرشحات.",
+    "empty": "لا توجد تقارير متاحة.",
+    "generationFailed": "تعذّر توليد التقرير.",
+    "backToReports": "العودة إلى التقارير",
+    "confirmDelete": "حذف قالب التقرير هذا؟",
+    "inheritedMetadata": "يوفّر هذا التقرير {filters} مرشحات و {columns} أعمدة.",
+    "yes": "نعم",
+    "no": "لا",
+    "fields": {
+      "name": "الاسم",
+      "code": "التقرير",
+      "category": "التصنيف",
+      "is_active": "نشط"
+    },
+    "sections": {
+      "details": "التفاصيل",
+      "detailsDesc": "سمِّ القالب واربطه بتقرير."
+    },
+    "hints": {
+      "name": "مطلوب. اسم مختصر لهذا القالب.",
+      "code": "اختياري. اربط القالب بتقرير موجود.",
+      "category": "اختياري. يُستخدم لتجميع القوالب.",
+      "isActive": "القوالب غير النشطة تبقى في النظام لكنها تُخفى."
+    },
+    "options": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "templates": {
+      "title": "قوالب التقارير",
+      "subtitle": "احفظ إعدادات التقارير لإعادة استخدامها.",
+      "addNew": "قالب جديد",
+      "edit": "تعديل القالب",
+      "empty": "لا توجد قوالب بعد. أنشئ أول قالب للبدء."
+    },
+    "summary": {
+      "students": "الطلاب",
+      "records": "السجلات",
+      "average_percentage": "المتوسط",
+      "total": "الإجمالي",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "invoices": "الفواتير",
+      "total_billed": "المفوتر",
+      "total_paid": "المدفوع",
+      "total_outstanding": "المستحق",
+      "meetings": "الاجتماعات",
+      "total_minutes": "الدقائق",
+      "teachers": "المعلمون",
+      "resources": "المواد",
+      "total_downloads": "التنزيلات"
+    }
   }
 }

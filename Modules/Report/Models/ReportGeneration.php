@@ -5,6 +5,8 @@ namespace Modules\Report\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Report\Enums\ReportFormat;
+use Modules\Report\Enums\ReportGenerationStatus;
 
 class ReportGeneration extends Model
 {
@@ -19,6 +21,8 @@ class ReportGeneration extends Model
     {
         return [
             'filters_used' => 'array',
+            'format' => ReportFormat::class,
+            'status' => ReportGenerationStatus::class,
         ];
     }
 
