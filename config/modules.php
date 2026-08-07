@@ -148,4 +148,6 @@ return [
     'inertia' => [
         'frontend' => 'vue',
     ],
+
+    'foundational' => ['Core', 'Auth', 'Setting', 'Academic', 'Portal'],
 ];

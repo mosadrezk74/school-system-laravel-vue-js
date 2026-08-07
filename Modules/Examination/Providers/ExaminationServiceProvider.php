@@ -6,8 +6,10 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Modules\Examination\Models\Exam;
 use Modules\Examination\Models\ExamGrade;
+use Modules\Examination\Models\ExamResult;
 use Modules\Examination\Policies\ExamGradePolicy;
 use Modules\Examination\Policies\ExamPolicy;
+use Modules\Examination\Policies\ExamResultPolicy;
 use Modules\Examination\Repositories\ExamGradeRepository;
 use Modules\Examination\Repositories\ExamGradeRepositoryInterface;
 use Modules\Examination\Repositories\ExamRepository;
@@ -67,6 +69,7 @@ class ExaminationServiceProvider extends ModuleServiceProvider
 
         Gate::policy(Exam::class, ExamPolicy::class);
         Gate::policy(ExamGrade::class, ExamGradePolicy::class);
+        Gate::policy(ExamResult::class, ExamResultPolicy::class);
     }
 
     /**

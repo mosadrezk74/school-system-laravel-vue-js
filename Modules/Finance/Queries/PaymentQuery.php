@@ -61,6 +61,25 @@ class PaymentQuery extends BaseQuery
         return $this;
     }
 
+    /**
+     * Restricts to a fixed set of students. An empty array means "none",
+     * never "unfiltered", so a guardian with no linked children sees nothing.
+     *
+     * @param  array<int, int>|null  $studentIds
+     */
+    public function studentIds(?array $studentIds): self
+    {
+        if ($studentIds === null) {
+            return $this;
+        }
+
+        $studentIds === []
+            ? $this->query->whereRaw('1 = 0')
+            : $this->query->whereIn('student_id', $studentIds);
+
+        return $this;
+    }
+
     public function invoiceId(?int $invoiceId): self
     {
         if ($invoiceId) {

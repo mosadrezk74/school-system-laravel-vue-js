@@ -2,6 +2,7 @@
 
 namespace Modules\Subject\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Modules\Core\Abstracts\BaseRequest;
 
 class UpdateSubjectRequest extends BaseRequest
@@ -9,7 +10,7 @@ class UpdateSubjectRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'code' => ['nullable', 'string', 'max:50', 'unique:subjects,code,'.$this->route('subject').',id'],
+            'code' => ['nullable', 'string', 'max:50', Rule::unique('subjects', 'code')->ignore($this->route('subject')?->id)],
             ...$this->translatableRules('name'),
             ...$this->translatableRules('description', required: false),
             'short_name' => ['nullable', 'string', 'max:50'],

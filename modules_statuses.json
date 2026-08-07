@@ -19,5 +19,6 @@
     "Report": true,
     "Student": true,
     "Meeting": true,
-    "StudyMaterial": true
+    "StudyMaterial": true,
+    "Portal": true
 }

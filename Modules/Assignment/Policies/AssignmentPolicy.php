@@ -4,12 +4,15 @@ namespace Modules\Assignment\Policies;
 
 use App\Models\User;
 use Modules\Assignment\Models\Assignment;
+use Modules\Portal\Traits\ChecksPortalOwnership;
 
 class AssignmentPolicy
 {
+    use ChecksPortalOwnership;
+
     public function viewAny(User $user): bool
     {
-        return $user->can('assignment.view');
+        return $user->can('assignment.view') && $this->ownsClass($assignment->class_id);
     }
 
     public function view(User $user, Assignment $assignment): bool

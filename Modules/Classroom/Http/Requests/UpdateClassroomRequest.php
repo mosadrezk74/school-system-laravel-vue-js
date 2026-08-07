@@ -2,6 +2,7 @@
 
 namespace Modules\Classroom\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Modules\Core\Abstracts\BaseRequest;
 
 class UpdateClassroomRequest extends BaseRequest
@@ -10,7 +11,7 @@ class UpdateClassroomRequest extends BaseRequest
     {
         return [
             'name' => ['required', 'string', 'max:100'],
-            'code' => ['nullable', 'string', 'max:50', 'unique:classrooms,code,' . $this->route('classroom') . ',id'],
+            'code' => ['nullable', 'string', 'max:50', Rule::unique('classrooms', 'code')->ignore($this->route('classroom')?->id)],
             'capacity' => ['nullable', 'integer', 'min:1', 'max:999'],
             'floor' => ['nullable', 'integer', 'min:-5', 'max:50'],
             'building' => ['nullable', 'string', 'max:50'],

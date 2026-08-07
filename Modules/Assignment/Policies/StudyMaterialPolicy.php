@@ -4,12 +4,15 @@ namespace Modules\Assignment\Policies;
 
 use App\Models\User;
 use Modules\Assignment\Models\StudyMaterial;
+use Modules\Portal\Traits\ChecksPortalOwnership;
 
 class StudyMaterialPolicy
 {
+    use ChecksPortalOwnership;
+
     public function viewAny(User $user): bool
     {
-        return $user->can('studyMaterial.view');
+        return $user->can('studyMaterial.view') && $this->ownsClassOrSchoolWide($studyMaterial->class_id);
     }
 
     public function view(User $user, StudyMaterial $studyMaterial): bool

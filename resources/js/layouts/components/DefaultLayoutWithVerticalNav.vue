@@ -14,6 +14,14 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
 /*
+ * The sidebar contents are injected rather than hardcoded so each portal can
+ * supply navigation designed for its role while sharing this entire shell.
+ */
+defineProps({
+  navComponent: { type: Object, default: () => NavItems },
+})
+
+/*
  * Controllers flash messages with ->with('success', ...); the layout is the
  * one place that surfaces them, so no page has to handle its own toasts.
  */
@@ -105,7 +113,7 @@ watch(() => page.props.flash, flash => {
     </template>
 
     <template #vertical-nav-content>
-      <NavItems />
+      <component :is="navComponent" />
     </template>
 
     <!-- 👉 Pages -->

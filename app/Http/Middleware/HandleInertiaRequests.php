@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Modules\Core\Services\PortalRouter;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -40,6 +41,8 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user()?->only(['id', 'name', 'email']),
+                'role' => $request->user()?->role?->value,
+                'portal' => app(PortalRouter::class)->portalFor($request->user()),
             ],
 
             /*

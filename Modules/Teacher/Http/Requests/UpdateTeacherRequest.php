@@ -2,23 +2,28 @@
 
 namespace Modules\Teacher\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Modules\Core\Abstracts\BaseRequest;
+use Modules\Teacher\Models\TeacherProfile;
 
 class UpdateTeacherRequest extends BaseRequest
 {
     public function rules(): array
     {
+        /** @var TeacherProfile|null $teacher */
+        $teacher = $this->route('teacher');
+
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$this->route('teacher').',id'],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$this->route('teacher').',id'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($teacher?->user_id)],
+            'username' => ['required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($teacher?->user_id)],
             'password' => ['nullable', 'string', 'min:8'],
             'gender' => ['required', 'string', 'in:male,female'],
             'birth_date' => ['nullable', 'date', 'before:today'],
             'national_id' => ['nullable', 'string', 'max:20'],
             'phone' => ['nullable', 'string', 'max:20'],
             'is_active' => ['sometimes', 'boolean'],
-            'employee_id' => ['nullable', 'string', 'max:50', 'unique:teacher_profiles,employee_id,'.$this->route('teacher').',id'],
+            'employee_id' => ['nullable', 'string', 'max:50', Rule::unique('teacher_profiles', 'employee_id')->ignore($teacher?->id)],
             'qualification' => ['nullable', 'string', 'max:255'],
             'specialization' => ['nullable', 'string', 'max:255'],
             'experience_years' => ['nullable', 'integer', 'min:0', 'max:50'],

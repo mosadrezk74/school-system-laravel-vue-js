@@ -12,14 +12,16 @@ class ModuleRegistry
 {
     public const CACHE_KEY = 'modules.statuses';
 
-    private const FOUNDATIONAL = ['Core', 'Auth', 'Setting', 'Academic'];
-
     /** @var array<string, bool>|null */
     private ?array $statuses = null;
 
+    /**
+     * Modules the application cannot run without. Configured per project so
+     * this service stays reusable outside this codebase.
+     */
     public function isFoundational(string $name): bool
     {
-        return in_array($name, self::FOUNDATIONAL, true);
+        return in_array($name, config('modules.foundational', ['Core']), true);
     }
 
     /**

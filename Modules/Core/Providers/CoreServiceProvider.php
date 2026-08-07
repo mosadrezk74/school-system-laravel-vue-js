@@ -16,6 +16,7 @@ class CoreServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(TranslationProviderInterface::class, LibreTranslateProvider::class);
+
     }
 
     public function boot(): void

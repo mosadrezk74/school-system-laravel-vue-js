@@ -4,9 +4,12 @@ namespace Modules\Finance\Policies;
 
 use App\Models\User;
 use Modules\Finance\Models\Payment;
+use Modules\Portal\Traits\ChecksPortalOwnership;
 
 class PaymentPolicy
 {
+    use ChecksPortalOwnership;
+
     public function viewAny(User $user): bool
     {
         return $user->can('payment.view');
@@ -14,7 +17,7 @@ class PaymentPolicy
 
     public function view(User $user, Payment $payment): bool
     {
-        return $user->can('payment.view');
+        return $user->can('payment.view') && $this->ownsStudent($payment->student_id);
     }
 
     public function create(User $user): bool

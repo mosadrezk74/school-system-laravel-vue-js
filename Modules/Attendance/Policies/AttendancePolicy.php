@@ -4,12 +4,15 @@ namespace Modules\Attendance\Policies;
 
 use App\Models\User;
 use Modules\Attendance\Models\AttendanceRecord;
+use Modules\Portal\Traits\ChecksPortalOwnership;
 
 class AttendancePolicy
 {
+    use ChecksPortalOwnership;
+
     public function viewAny(User $user): bool
     {
-        return $user->can('attendance.view');
+        return $user->can('attendance.view') && $this->ownsClass($record->class_id);
     }
 
     public function view(User $user, AttendanceRecord $record): bool
