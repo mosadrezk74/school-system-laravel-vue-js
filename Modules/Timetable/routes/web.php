@@ -6,7 +6,7 @@ use Modules\Timetable\Http\Controllers\TimetableController;
 use Modules\Timetable\Http\Controllers\TimetableEntryController;
 use Modules\Timetable\Http\Controllers\WeekdaySettingController;
 
-Route::middleware(['web', 'auth'])->prefix('schedule')->group(function () {
+Route::middleware(['web', 'auth', 'module:Timetable'])->prefix('schedule')->group(function () {
     Route::resource('periods', PeriodController::class)->except(['show']);
     Route::patch('periods/{period}/restore', [PeriodController::class, 'restore'])->name('periods.restore');
     Route::patch('weekday-settings', [WeekdaySettingController::class, 'update'])->name('weekday-settings.update');

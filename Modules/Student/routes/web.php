@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Student\Http\Controllers\StudentController;
 
-Route::middleware(['web', 'auth'])->prefix('user-management')->group(function () {
+Route::middleware(['web', 'auth', 'module:Student'])->prefix('user-management')->group(function () {
     Route::resource('students', StudentController::class);
 
     // Not part of the resource: it must resolve soft-deleted profiles, which

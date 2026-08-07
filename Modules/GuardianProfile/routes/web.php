@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\GuardianProfile\Http\Controllers\GuardianController;
 
-Route::middleware(['web', 'auth'])->prefix('user-management')->group(function () {
+Route::middleware(['web', 'auth', 'module:GuardianProfile'])->prefix('user-management')->group(function () {
     Route::resource('guardians', GuardianController::class);
 
     // Not part of the resource: it must resolve soft-deleted profiles, which

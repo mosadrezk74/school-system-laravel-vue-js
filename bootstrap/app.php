@@ -7,6 +7,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
+use Modules\Core\Middlewares\EnsureModuleEnabled;
 use Modules\Core\Middlewares\SetLocaleMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -25,6 +26,10 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
             EnsureSetupIsComplete::class,
             AddLinkHeadersForPreloadedAssets::class,
+        ]);
+
+        $middleware->alias([
+            'module' => EnsureModuleEnabled::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

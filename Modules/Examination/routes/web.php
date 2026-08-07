@@ -5,7 +5,7 @@ use Modules\Examination\Http\Controllers\ExamController;
 use Modules\Examination\Http\Controllers\ExamGradeController;
 use Modules\Examination\Http\Controllers\ExamSubjectController;
 
-Route::middleware(['web', 'auth'])->prefix('examination')->group(function () {
+Route::middleware(['web', 'auth', 'module:Examination'])->prefix('examination')->group(function () {
     Route::resource('exams', ExamController::class);
 
     // Not part of the resource: it must resolve soft-deleted exams, which the

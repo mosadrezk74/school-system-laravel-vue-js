@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3'
+import { Head, Link, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -9,6 +9,11 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+const page = usePage()
+
+const enabledModules = computed(() => page.props.enabledModules ?? [])
+
+const isModuleEnabled = name => !name || enabledModules.value.includes(name)
 
 /*
  * A null stat means the owning module hasn't shipped yet. An em dash says
@@ -17,11 +22,13 @@ const { t } = useI18n()
 const format = value => (value === null || value === undefined ? '—' : value)
 
 const tiles = computed(() => [
-  { key: 'students', icon: 'bx-user-voice', value: props.stats.students, hint: t('dashboard.studentsHint') },
-  { key: 'teachers', icon: 'bx-chalkboard', value: props.stats.teachers, hint: null },
-  { key: 'attendanceToday', icon: 'bx-check-square', value: props.stats.attendance, hint: null },
-  { key: 'outstandingFees', icon: 'bx-receipt', value: props.stats.outstandingFees, hint: null },
-])
+  { key: 'students', icon: 'bx-user-voice', value: props.stats.students, hint: t('dashboard.studentsHint'), module: 'Student' },
+  { key: 'teachers', icon: 'bx-chalkboard', value: props.stats.teachers, hint: null, module: 'Teacher' },
+  { key: 'attendanceToday', icon: 'bx-check-square', value: props.stats.attendance, hint: null, module: 'Attendance' },
+  { key: 'outstandingFees', icon: 'bx-receipt', value: props.stats.outstandingFees, hint: null, module: 'Finance' },
+].filter(tile => isModuleEnabled(tile.module)))
+
+const tileWidth = computed(() => (tiles.value.length ? Math.max(3, Math.floor(12 / tiles.value.length)) : 3))
 </script>
 
 <template>
@@ -60,7 +67,7 @@ const tiles = computed(() => [
       :key="tile.key"
       cols="12"
       sm="6"
-      lg="3"
+      :lg="tileWidth"
     >
       <VCard>
         <VCardText>

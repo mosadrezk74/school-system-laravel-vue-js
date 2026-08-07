@@ -10,7 +10,7 @@ use Modules\Finance\Http\Controllers\InvoiceController;
 use Modules\Finance\Http\Controllers\PaymentController;
 use Modules\Finance\Http\Controllers\StudentFeeController;
 
-Route::middleware(['web', 'auth'])->prefix('finance')->group(function () {
+Route::middleware(['web', 'auth', 'module:Finance'])->prefix('finance')->group(function () {
     Route::get('dashboard', [FinanceDashboardController::class, 'index'])
         ->name('finance.dashboard');
 

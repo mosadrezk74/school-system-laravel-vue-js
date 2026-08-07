@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Meeting\Http\Controllers\MeetingController;
 
-Route::middleware(['web', 'auth'])->prefix('meetings')->group(function () {
+Route::middleware(['web', 'auth', 'module:Meeting'])->prefix('meetings')->group(function () {
     Route::resource('meetings', MeetingController::class);
 
     Route::patch('meetings/{meeting}/start', [MeetingController::class, 'start'])

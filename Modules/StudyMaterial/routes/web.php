@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\StudyMaterial\Http\Controllers\StudyResourceController;
 
-Route::middleware(['web', 'auth'])->prefix('academic')->group(function () {
+Route::middleware(['web', 'auth', 'module:StudyMaterial'])->prefix('academic')->group(function () {
     Route::get('study-resources/{studyResource}/download', [StudyResourceController::class, 'download'])
         ->name('study-resources.download');
 

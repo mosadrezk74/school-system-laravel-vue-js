@@ -5,7 +5,7 @@ use Modules\Assignment\Http\Controllers\AssignmentController;
 use Modules\Assignment\Http\Controllers\AssignmentSubmissionController;
 use Modules\Assignment\Http\Controllers\StudyMaterialController;
 
-Route::middleware(['web', 'auth'])->prefix('assignments')->group(function () {
+Route::middleware(['web', 'auth', 'module:Assignment'])->prefix('assignments')->group(function () {
     Route::resource('assignments', AssignmentController::class);
     Route::resource('study-materials', StudyMaterialController::class);
 

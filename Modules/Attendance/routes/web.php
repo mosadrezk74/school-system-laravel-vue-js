@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Attendance\Http\Controllers\AttendanceController;
 
-Route::middleware(['web', 'auth'])->prefix('attendance')->group(function () {
+Route::middleware(['web', 'auth', 'module:Attendance'])->prefix('attendance')->group(function () {
     Route::get('dashboard', [AttendanceController::class, 'dashboard'])->name('attendance.dashboard');
 
     Route::get('students/{student}', [AttendanceController::class, 'studentHistory'])->name('attendance.students.show');
