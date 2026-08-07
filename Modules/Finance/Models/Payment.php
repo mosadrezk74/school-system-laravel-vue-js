@@ -5,6 +5,7 @@ namespace Modules\Finance\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Abstracts\BaseModel;
+use Modules\Finance\Enums\PaymentMethod;
 use Modules\Student\Models\StudentProfile;
 
 class Payment extends BaseModel
@@ -18,8 +19,8 @@ class Payment extends BaseModel
     {
         return [
             'amount' => 'decimal:2',
-            'payment_date' => 'date',
-            'gateway_response' => 'array',
+            'payment_method' => PaymentMethod::class,
+            'paid_at' => 'datetime',
         ];
     }
 
@@ -31,11 +32,6 @@ class Payment extends BaseModel
     public function student(): BelongsTo
     {
         return $this->belongsTo(StudentProfile::class, 'student_id');
-    }
-
-    public function collectedBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'collected_by');
     }
 
     public function createdBy(): BelongsTo

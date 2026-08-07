@@ -1,0 +1,56 @@
+<?php
+
+namespace Modules\Finance\DTOs;
+
+use Modules\Finance\Http\Requests\UpdateFeeStructureRequest;
+
+final readonly class UpdateFeeStructureDTO
+{
+    public function __construct(
+        public int $feeCategoryId,
+        public ?int $gradeLevelId,
+        public ?int $classroomId,
+        public array $name,
+        public float $amount,
+        public string $frequency,
+        public bool $isOptional,
+        public ?int $dueDay,
+        public ?float $lateFeeAmount,
+        public ?int $lateFeeDays,
+    ) {}
+
+    public static function fromRequest(UpdateFeeStructureRequest $request): self
+    {
+        return new self(
+            feeCategoryId: (int) $request->validated('fee_category_id'),
+            gradeLevelId: $request->validated('grade_level_id') ? (int) $request->validated('grade_level_id') : null,
+            classroomId: $request->validated('classroom_id') ? (int) $request->validated('classroom_id') : null,
+            name: $request->validated('name'),
+            amount: (float) $request->validated('amount'),
+            frequency: $request->validated('frequency'),
+            isOptional: (bool) $request->validated('is_optional', false),
+            dueDay: $request->validated('due_day') !== null ? (int) $request->validated('due_day') : null,
+            lateFeeAmount: $request->validated('late_fee_amount') !== null ? (float) $request->validated('late_fee_amount') : null,
+            lateFeeDays: $request->validated('late_fee_days') !== null ? (int) $request->validated('late_fee_days') : null,
+        );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'fee_category_id' => $this->feeCategoryId,
+            'grade_level_id' => $this->gradeLevelId,
+            'classroom_id' => $this->classroomId,
+            'name' => $this->name,
+            'amount' => $this->amount,
+            'frequency' => $this->frequency,
+            'is_optional' => $this->isOptional,
+            'due_day' => $this->dueDay,
+            'late_fee_amount' => $this->lateFeeAmount,
+            'late_fee_days' => $this->lateFeeDays,
+        ];
+    }
+}

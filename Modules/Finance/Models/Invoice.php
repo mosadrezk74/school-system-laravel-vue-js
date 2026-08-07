@@ -4,8 +4,9 @@ namespace Modules\Finance\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Academic\Models\AcademicYear;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Abstracts\BaseModel;
+use Modules\Finance\Enums\InvoiceStatus;
 use Modules\Student\Models\StudentProfile;
 
 class Invoice extends BaseModel
@@ -25,6 +26,7 @@ class Invoice extends BaseModel
             'total_amount' => 'decimal:2',
             'paid_amount' => 'decimal:2',
             'balance_due' => 'decimal:2',
+            'status' => InvoiceStatus::class,
         ];
     }
 
@@ -33,9 +35,14 @@ class Invoice extends BaseModel
         return $this->belongsTo(StudentProfile::class, 'student_id');
     }
 
-    public function academicYear(): BelongsTo
+    public function items(): HasMany
     {
-        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
+        return $this->hasMany(InvoiceItem::class, 'invoice_id');
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'invoice_id');
     }
 
     public function createdBy(): BelongsTo

@@ -213,6 +213,60 @@ const isModuleEnabled = name => enabledModules.value.includes(name)
     />
   </template>
 
+  <!-- 👉 Finance -->
+  <template v-if="isModuleEnabled('Finance')">
+    <VerticalNavSectionTitle :item="{ heading: t('nav.finance') }" />
+    <VerticalNavLink
+      :item="{
+        title: t('nav.financeDashboard'),
+        to: '/finance/dashboard',
+        icon: 'bx-tachometer',
+      }"
+    />
+    <VerticalNavLink
+      :item="{
+        title: t('nav.invoices'),
+        to: '/finance/invoices',
+        icon: 'bx-receipt',
+      }"
+    />
+    <VerticalNavLink
+      :item="{
+        title: t('nav.payments'),
+        to: '/finance/payments',
+        icon: 'bx-credit-card',
+      }"
+    />
+    <VerticalNavLink
+      :item="{
+        title: t('nav.studentFees'),
+        to: '/finance/student-fees',
+        icon: 'bx-user-check',
+      }"
+    />
+    <VerticalNavLink
+      :item="{
+        title: t('nav.feeStructures'),
+        to: '/finance/fee-structures',
+        icon: 'bx-layer',
+      }"
+    />
+    <VerticalNavLink
+      :item="{
+        title: t('nav.feeCategories'),
+        to: '/finance/fee-categories',
+        icon: 'bx-purchase-tag',
+      }"
+    />
+    <VerticalNavLink
+      :item="{
+        title: t('nav.feeDiscounts'),
+        to: '/finance/fee-discounts',
+        icon: 'bx-gift',
+      }"
+    />
+  </template>
+
   <!-- 👉 Schedule -->
   <template v-if="isModuleEnabled('Timetable')">
     <VerticalNavSectionTitle :item="{ heading: t('nav.schedule') }" />
