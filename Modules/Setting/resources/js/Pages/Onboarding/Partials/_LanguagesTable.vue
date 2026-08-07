@@ -13,6 +13,9 @@ const { t } = useI18n()
 
 const enabledCount = computed(() => props.rows.filter(l => l.is_active).length)
 
+const tableKey = computed(() =>
+  props.rows.map(l => `${l.id}:${l.is_active ? 1 : 0}:${l.is_default ? 1 : 0}`).join('|'))
+
 const headers = computed(() => [
   { title: t('languages.name'), key: 'name' },
   { title: t('languages.locale'), key: 'locale' },
@@ -22,11 +25,17 @@ const headers = computed(() => [
 ])
 
 function toggle(language) {
-  router.patch(props.toggleRoute(language), {}, { preserveScroll: true })
+  router.patch(props.toggleRoute(language), {}, {
+    preserveScroll: true,
+    preserveState: false,
+  })
 }
 
 function makeDefault(language) {
-  router.patch(props.defaultRoute(language), {}, { preserveScroll: true })
+  router.patch(props.defaultRoute(language), {}, {
+    preserveScroll: true,
+    preserveState: false,
+  })
 }
 </script>
 
@@ -36,6 +45,7 @@ function makeDefault(language) {
   </VAlert>
 
   <VDataTable
+    :key="tableKey"
     :headers="headers"
     :items="rows"
     :items-per-page="-1"

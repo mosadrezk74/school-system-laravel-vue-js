@@ -54,6 +54,14 @@ const isModuleEnabled = name => enabledModules.value.includes(name)
       icon: 'bx-building',
     }"
   />
+  <VerticalNavLink
+    v-if="isModuleEnabled('StudyMaterial')"
+    :item="{
+      title: t('nav.studyResources'),
+      to: '/academic/study-resources',
+      icon: 'bx-folder-open',
+    }"
+  />
 
   <!-- 👉 User Management -->
   <template v-if="isModuleEnabled('Student') || isModuleEnabled('Teacher') || isModuleEnabled('GuardianProfile')">

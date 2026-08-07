@@ -1,0 +1,11 @@
+{
+    "name": "StudyMaterial",
+    "alias": "studymaterial",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\StudyMaterial\\Providers\\StudyMaterialServiceProvider"
+    ],
+    "files": []
+}
