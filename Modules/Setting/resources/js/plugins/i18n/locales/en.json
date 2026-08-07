@@ -82,7 +82,8 @@
     "noItems": "No items found",
     "confirmArchive": "Are you sure you want to archive this item?",
     "confirmRestore": "Are you sure you want to restore this item?",
-    "back": "Back"
+    "back": "Back",
+    "view": "View"
   },
   "academicYears": {
     "title": "Academic Years",
@@ -317,7 +318,11 @@
       "occupation": "Optional. The guardian's occupation, recorded for reference.",
       "active": "Controls sign-in access. Turn off to block the guardian from logging in without archiving their record.",
       "relationship": "Required. How this guardian is related to the selected student, e.g. father, mother, uncle."
-    }
+    },
+    "searchStudents": "Search students",
+    "searchStudentsHint": "{total} matching students",
+    "noStudentsFound": "No students match your search.",
+    "alreadyLinked": "This student is already linked to this guardian."
   },
   "classes": {
     "title": "Classes",
@@ -1509,7 +1514,10 @@
       "followUp": "Follow-up",
       "finance": "Finance",
       "fees": "Fees",
-      "payments": "Payments"
+      "payments": "Payments",
+      "materials": "Study Materials",
+      "live": "Live",
+      "notifications": "Notifications"
     },
     "teacher": {
       "title": "Teacher Portal",
@@ -1520,7 +1528,8 @@
         "homework_to_review": "Homework To Review",
         "my_classes": "My Classes",
         "my_students": "My Students",
-        "upcoming_meetings": "Upcoming Meetings"
+        "upcoming_meetings": "Upcoming Meetings",
+        "unread_notifications": "Unread Notifications"
       },
       "quickAttendance": "Quick Attendance",
       "attendanceSubtitle": "Mark today’s attendance for one of your classes.",
@@ -1586,7 +1595,9 @@
         "pending_homework": "Pending Homework",
         "attendance_rate": "Attendance",
         "recent_results": "Results",
-        "upcoming_meetings": "Upcoming Meetings"
+        "upcoming_meetings": "Upcoming Meetings",
+        "recent_files": "Study Materials",
+        "unread_notifications": "Unread Notifications"
       },
       "attendance": {
         "present": "Present",
@@ -1631,7 +1642,21 @@
       "day": "Day",
       "noSchedule": "No lessons scheduled.",
       "break": "Break",
-      "online": "Online"
+      "online": "Online",
+      "meetingsSubtitle": "Your online sessions.",
+      "materialsSubtitle": "Files shared with your class.",
+      "meetingTitle": "Title",
+      "scheduledAt": "Scheduled",
+      "duration": "Duration",
+      "join": "Join",
+      "searchMeetings": "Search meetings",
+      "noMeetings": "No meetings yet.",
+      "materialTitle": "Title",
+      "materialType": "Type",
+      "downloads": "Downloads",
+      "uploadedAt": "Uploaded",
+      "searchMaterials": "Search materials",
+      "noMaterials": "No materials yet."
     },
     "parent": {
       "title": "Parent Portal",
@@ -1641,7 +1666,9 @@
         "attendance_rate": "Attendance",
         "pending_homework": "Pending Homework",
         "outstanding_fees": "Outstanding Fees",
-        "upcoming_meetings": "Upcoming Meetings"
+        "upcoming_meetings": "Upcoming Meetings",
+        "recent_files": "Study Materials",
+        "unread_notifications": "Unread Notifications"
       },
       "attendance": {
         "present": "Present",
@@ -1688,7 +1715,21 @@
       "passed": "Passed",
       "failed": "Failed",
       "average": "Average",
-      "noResults": "No results yet."
+      "noResults": "No results yet.",
+      "meetingsSubtitle": "Your online sessions.",
+      "materialsSubtitle": "Files shared with your class.",
+      "meetingTitle": "Title",
+      "scheduledAt": "Scheduled",
+      "duration": "Duration",
+      "join": "Join",
+      "searchMeetings": "Search meetings",
+      "noMeetings": "No meetings yet.",
+      "materialTitle": "Title",
+      "materialType": "Type",
+      "downloads": "Downloads",
+      "uploadedAt": "Uploaded",
+      "searchMaterials": "Search materials",
+      "noMaterials": "No materials yet."
     }
   }
 }

@@ -202,6 +202,35 @@ class PortalScopeService
         return $this->guardianChildren()->pluck('id')->all();
     }
 
+    /**
+     * Grade levels reachable through the classes the user may see. Study
+     * material is filed against a grade level rather than a class, so this
+     * keeps that translation inside the ownership authority.
+     *
+     * @param  array<int, int>|null  $classIds
+     * @return array<int, int>|null
+     */
+    public function gradeLevelIdsFor(?array $classIds = null): ?array
+    {
+        $classIds ??= $this->accessibleClassIds();
+
+        if ($classIds === null) {
+            return null;
+        }
+
+        if ($classIds === []) {
+            return [];
+        }
+
+        return SchoolClass::query()
+            ->whereIn('id', $classIds)
+            ->pluck('grade_level_id')
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+    }
+
     public function hasChildren(): bool
     {
         return $this->guardianChildIds() !== [];
@@ -309,6 +338,21 @@ class PortalScopeService
         $accessible = $this->accessibleClassIds();
 
         return $accessible === null || in_array($classId, $accessible, true);
+    }
+
+    /**
+     * A null grade level means the resource is school-wide rather than filed
+     * against one grade, so it stays readable by anyone holding the permission.
+     */
+    public function canAccessGradeLevel(?int $gradeLevelId): bool
+    {
+        $accessible = $this->gradeLevelIdsFor();
+
+        if ($accessible === null || $gradeLevelId === null) {
+            return true;
+        }
+
+        return in_array($gradeLevelId, $accessible, true);
     }
 
     /**

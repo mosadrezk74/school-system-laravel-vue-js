@@ -5,8 +5,10 @@ namespace Modules\GuardianProfile\Repositories;
 use App\Models\User;
 use Modules\Auth\Enums\UserRole;
 use Modules\GuardianProfile\DTOs\CreateGuardianDTO;
+use Modules\GuardianProfile\DTOs\LinkGuardianStudentDTO;
 use Modules\GuardianProfile\DTOs\UpdateGuardianDTO;
 use Modules\GuardianProfile\Models\GuardianProfile;
+use Modules\GuardianProfile\Models\GuardianStudent;
 
 /**
  * Data access only: no validation, no business rules, no transactions.
@@ -74,5 +76,26 @@ class GuardianRepository implements GuardianRepositoryInterface
     public function restore(GuardianProfile $guardian): bool
     {
         return (bool) $guardian->restore();
+    }
+
+    public function isLinked(GuardianProfile $guardian, int $studentId): bool
+    {
+        return GuardianStudent::query()
+            ->where('parent_id', $guardian->id)
+            ->where('student_id', $studentId)
+            ->exists();
+    }
+
+    public function linkStudent(GuardianProfile $guardian, LinkGuardianStudentDTO $dto): GuardianStudent
+    {
+        return $guardian->students()->create($dto->toArray());
+    }
+
+    public function unlinkStudent(GuardianProfile $guardian, int $studentId): bool
+    {
+        return (bool) GuardianStudent::query()
+            ->where('parent_id', $guardian->id)
+            ->where('student_id', $studentId)
+            ->delete();
     }
 }

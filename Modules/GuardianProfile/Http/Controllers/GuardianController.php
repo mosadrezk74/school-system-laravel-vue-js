@@ -2,7 +2,6 @@
 
 namespace Modules\GuardianProfile\Http\Controllers;
 
-use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -10,18 +9,22 @@ use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
 use Modules\GuardianProfile\Actions\ArchiveGuardianAction;
 use Modules\GuardianProfile\Actions\CreateGuardianAction;
+use Modules\GuardianProfile\Actions\LinkStudentToGuardianAction;
 use Modules\GuardianProfile\Actions\RestoreGuardianAction;
+use Modules\GuardianProfile\Actions\UnlinkStudentFromGuardianAction;
 use Modules\GuardianProfile\Actions\UpdateGuardianAction;
 use Modules\GuardianProfile\DTOs\CreateGuardianDTO;
 use Modules\GuardianProfile\DTOs\GuardianFilterDTO;
+use Modules\GuardianProfile\DTOs\LinkGuardianStudentDTO;
 use Modules\GuardianProfile\DTOs\UpdateGuardianDTO;
+use Modules\GuardianProfile\Http\Requests\LinkStudentRequest;
 use Modules\GuardianProfile\Http\Requests\StoreGuardianRequest;
 use Modules\GuardianProfile\Http\Requests\UpdateGuardianRequest;
 use Modules\GuardianProfile\Models\GuardianProfile;
-use Modules\GuardianProfile\Models\GuardianStudent;
 use Modules\GuardianProfile\Queries\GuardianQuery;
 use Modules\GuardianProfile\Transformers\GuardianResource;
 use Modules\Student\Models\StudentProfile;
+use Modules\Student\Queries\StudentQuery;
 
 class GuardianController extends BaseInertiaController
 {
@@ -63,7 +66,7 @@ class GuardianController extends BaseInertiaController
         return $this->toRoute('guardians.index', [], __('guardian::guardian.created'));
     }
 
-    public function show(GuardianProfile $guardian): Response
+    public function show(Request $request, GuardianProfile $guardian): Response
     {
         $this->authorize('view', $guardian);
 
@@ -71,9 +74,7 @@ class GuardianController extends BaseInertiaController
 
         return $this->render('GuardianProfile::Guardians/Show', [
             'guardian' => new GuardianResource($guardian),
-            'students' => StudentProfile::query()
-                ->with('user:id,name')
-                ->get(['id', 'user_id', 'admission_number']),
+            'students' => $this->studentOptions($request),
         ]);
     }
 
@@ -122,46 +123,57 @@ class GuardianController extends BaseInertiaController
      * cross-cutting business rules beyond the unique (parent_id, student_id)
      * constraint, so it is handled inline rather than via an Action.
      */
-    public function linkStudent(Request $request, GuardianProfile $guardian): RedirectResponse
+    public function linkStudent(LinkStudentRequest $request, GuardianProfile $guardian, LinkStudentToGuardianAction $action): RedirectResponse
     {
         $this->authorize('update', $guardian);
 
-        $data = $request->validate([
-            'student_id' => ['required', 'integer', 'exists:student_profiles,id'],
-            'relationship' => ['required', 'string', 'max:50'],
-            'is_primary_contact' => ['sometimes', 'boolean'],
-            'can_pickup' => ['sometimes', 'boolean'],
-            'receives_notifications' => ['sometimes', 'boolean'],
+        $action->execute([
+            'guardian' => $guardian,
+            'dto' => LinkGuardianStudentDTO::fromRequest($request),
         ]);
-
-        try {
-            $guardian->students()->create([
-                'student_id' => $data['student_id'],
-                'relationship' => $data['relationship'],
-                'is_primary_contact' => $data['is_primary_contact'] ?? true,
-                'can_pickup' => $data['can_pickup'] ?? true,
-                'receives_notifications' => $data['receives_notifications'] ?? true,
-            ]);
-        } catch (QueryException $e) {
-            if ($e->getCode() === '23000') {
-                return $this->backWithError(__('guardian::guardian.student_already_linked'));
-            }
-
-            throw $e;
-        }
 
         return $this->backWithSuccess(__('guardian::guardian.student_linked'));
     }
 
-    public function unlinkStudent(GuardianProfile $guardian, int $student): RedirectResponse
+    public function unlinkStudent(GuardianProfile $guardian, int $student, UnlinkStudentFromGuardianAction $action): RedirectResponse
     {
         $this->authorize('update', $guardian);
 
-        GuardianStudent::query()
-            ->where('parent_id', $guardian->id)
-            ->where('student_id', $student)
-            ->delete();
+        $action->execute(['guardian' => $guardian, 'studentId' => $student]);
 
         return $this->backWithSuccess(__('guardian::guardian.student_unlinked'));
+    }
+
+    /**
+     * The picker is searchable and paginated: loading every student would ship
+     * the whole table into the page on a school of any real size.
+     *
+     * @return array<string, mixed>
+     */
+    private function studentOptions(Request $request): array
+    {
+        $students = (new StudentQuery)
+            ->searchUser($request->string('student_search')->toString() ?: null)
+            ->currentClassId($request->filled('class_id') ? (int) $request->input('class_id') : null)
+            ->gradeLevelId($request->filled('grade_level_id') ? (int) $request->input('grade_level_id') : null)
+            ->isActive(true)
+            ->paginate($request->integer('student_per_page', 15));
+
+        return [
+            'data' => $students->getCollection()
+                ->map(fn (StudentProfile $student): array => [
+                    'id' => $student->id,
+                    'name' => $student->user?->name,
+                    'admission_number' => $student->admission_number,
+                    'class_name' => $student->currentClass?->name,
+                ])
+                ->values()
+                ->all(),
+            'meta' => [
+                'current_page' => $students->currentPage(),
+                'last_page' => $students->lastPage(),
+                'total' => $students->total(),
+            ],
+        ];
     }
 }

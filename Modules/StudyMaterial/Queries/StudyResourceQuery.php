@@ -55,6 +55,25 @@ class StudyResourceQuery extends BaseQuery
         return $this;
     }
 
+    /**
+     * Restricts to a fixed set of grade levels. An empty array means "none",
+     * never "unfiltered", so a portal user with no classes sees nothing.
+     *
+     * @param  array<int, int>|null  $gradeLevelIds
+     */
+    public function gradeLevelIds(?array $gradeLevelIds): self
+    {
+        if ($gradeLevelIds === null) {
+            return $this;
+        }
+
+        $gradeLevelIds === []
+            ? $this->query->whereRaw('1 = 0')
+            : $this->query->whereIn('grade_level_id', $gradeLevelIds);
+
+        return $this;
+    }
+
     public function teacherId(?int $teacherId): self
     {
         if ($teacherId) {

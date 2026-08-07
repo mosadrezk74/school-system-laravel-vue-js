@@ -8,7 +8,15 @@ class Notification extends Model
 {
     protected $table = 'notifications';
 
-    protected $guarded = ['id'];
+    protected $guarded = [];
+
+    /**
+     * Laravel writes this table with a UUID primary key, so the model must not
+     * treat the key as an auto-incrementing integer.
+     */
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 
     /**
      * @return array<string, string>

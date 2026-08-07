@@ -54,6 +54,25 @@ class AssignmentQuery extends BaseQuery
         return $this;
     }
 
+    /**
+     * Restricts to a fixed set of classes. An empty array means "none",
+     * never "unfiltered", so a portal user with no classes sees nothing.
+     *
+     * @param  array<int, int>|null  $classIds
+     */
+    public function classIds(?array $classIds): self
+    {
+        if ($classIds === null) {
+            return $this;
+        }
+
+        $classIds === []
+            ? $this->query->whereRaw('1 = 0')
+            : $this->query->whereIn('class_id', $classIds);
+
+        return $this;
+    }
+
     public function subjectId(?int $subjectId): self
     {
         if ($subjectId) {

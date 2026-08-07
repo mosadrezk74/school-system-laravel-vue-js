@@ -109,6 +109,9 @@ class RolePermissionSeeder extends Seeder
             'invoice' => ['view'],
             'payment' => ['view'],
             'timetable' => ['view'],
+            'assignment' => ['view'],
+            'study-material' => ['view'],
+            'meeting' => ['view'],
             'message' => ['view', 'create'],
         ],
     ];

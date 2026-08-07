@@ -80,6 +80,12 @@ class BuildTeacherDashboardAction extends BaseAction
                 ->icon('bx-video')
                 ->route('/teacher/meetings')
                 ->priority(60),
+            DashboardWidget::make('unread_notifications', fn (): int => $this->unreadNotifications())
+                ->module('Notification')
+                ->icon('bx-bell')
+                ->color('error')
+                ->route('/notifications')
+                ->priority(70),
         ];
     }
 
@@ -116,5 +122,10 @@ class BuildTeacherDashboardAction extends BaseAction
             ->where('teacher_id', $this->scope->teacherUserId())
             ->where('scheduled_at', '>=', now())
             ->count();
+    }
+
+    private function unreadNotifications(): int
+    {
+        return (int) auth()->user()?->unreadNotifications()->count();
     }
 }

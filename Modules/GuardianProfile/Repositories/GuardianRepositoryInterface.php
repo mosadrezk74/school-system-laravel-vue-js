@@ -3,8 +3,10 @@
 namespace Modules\GuardianProfile\Repositories;
 
 use Modules\GuardianProfile\DTOs\CreateGuardianDTO;
+use Modules\GuardianProfile\DTOs\LinkGuardianStudentDTO;
 use Modules\GuardianProfile\DTOs\UpdateGuardianDTO;
 use Modules\GuardianProfile\Models\GuardianProfile;
+use Modules\GuardianProfile\Models\GuardianStudent;
 
 interface GuardianRepositoryInterface
 {
@@ -23,4 +25,10 @@ interface GuardianRepositoryInterface
     public function delete(GuardianProfile $guardian): bool;
 
     public function restore(GuardianProfile $guardian): bool;
+
+    public function isLinked(GuardianProfile $guardian, int $studentId): bool;
+
+    public function linkStudent(GuardianProfile $guardian, LinkGuardianStudentDTO $dto): GuardianStudent;
+
+    public function unlinkStudent(GuardianProfile $guardian, int $studentId): bool;
 }

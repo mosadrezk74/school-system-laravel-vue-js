@@ -82,7 +82,8 @@
     "noItems": "لا توجد عناصر",
     "confirmArchive": "هل أنت متأكد من أرشفة هذا العنصر؟",
     "confirmRestore": "هل أنت متأكد من استعادة هذا العنصر؟",
-    "back": "رجوع"
+    "back": "رجوع",
+    "view": "عرض"
   },
   "academicYears": {
     "title": "السنوات الدراسية",
@@ -317,7 +318,11 @@
       "occupation": "اختياري. مهنة ولي الأمر، تُسجَّل للرجوع إليها.",
       "active": "يتحكم في إمكانية تسجيل الدخول. عطّله لمنع ولي الأمر من الدخول دون أرشفة سجله.",
       "relationship": "مطلوب. صلة قرابة ولي الأمر بالطالب المحدد، مثل أب أو أم أو عم."
-    }
+    },
+    "searchStudents": "البحث عن طلاب",
+    "searchStudentsHint": "{total} طالب مطابق",
+    "noStudentsFound": "لا يوجد طلاب مطابقون لبحثك.",
+    "alreadyLinked": "هذا الطالب مرتبط بولي الأمر بالفعل."
   },
   "classes": {
     "title": "الفصول الدراسية",
@@ -1501,7 +1506,10 @@
       "followUp": "المتابعة",
       "finance": "المالية",
       "fees": "الرسوم",
-      "payments": "المدفوعات"
+      "payments": "المدفوعات",
+      "materials": "المواد الدراسية",
+      "live": "مباشر",
+      "notifications": "الإشعارات"
     },
     "teacher": {
       "title": "بوابة المعلم",
@@ -1512,7 +1520,8 @@
         "homework_to_review": "واجبات للمراجعة",
         "my_classes": "فصولي",
         "my_students": "طلابي",
-        "upcoming_meetings": "اجتماعات قادمة"
+        "upcoming_meetings": "اجتماعات قادمة",
+        "unread_notifications": "إشعارات غير مقروءة"
       },
       "quickAttendance": "تسجيل الحضور السريع",
       "attendanceSubtitle": "سجّل حضور اليوم لأحد فصولك.",
@@ -1578,7 +1587,9 @@
         "pending_homework": "واجبات معلقة",
         "attendance_rate": "نسبة الحضور",
         "recent_results": "النتائج",
-        "upcoming_meetings": "اجتماعات قادمة"
+        "upcoming_meetings": "اجتماعات قادمة",
+        "recent_files": "المواد الدراسية",
+        "unread_notifications": "إشعارات غير مقروءة"
       },
       "attendance": {
         "present": "حاضر",
@@ -1623,7 +1634,21 @@
       "day": "اليوم",
       "noSchedule": "لا توجد حصص مجدولة.",
       "break": "استراحة",
-      "online": "عن بُعد"
+      "online": "عن بُعد",
+      "meetingsSubtitle": "جلساتك الإلكترونية.",
+      "materialsSubtitle": "الملفات المشاركة مع فصلك.",
+      "meetingTitle": "العنوان",
+      "scheduledAt": "الموعد",
+      "duration": "المدة",
+      "join": "انضمام",
+      "searchMeetings": "البحث في الاجتماعات",
+      "noMeetings": "لا توجد اجتماعات بعد.",
+      "materialTitle": "العنوان",
+      "materialType": "النوع",
+      "downloads": "التنزيلات",
+      "uploadedAt": "تاريخ الرفع",
+      "searchMaterials": "البحث في المواد",
+      "noMaterials": "لا توجد مواد بعد."
     },
     "parent": {
       "title": "بوابة ولي الأمر",
@@ -1633,7 +1658,9 @@
         "attendance_rate": "نسبة الحضور",
         "pending_homework": "واجبات معلقة",
         "outstanding_fees": "رسوم مستحقة",
-        "upcoming_meetings": "اجتماعات قادمة"
+        "upcoming_meetings": "اجتماعات قادمة",
+        "recent_files": "المواد الدراسية",
+        "unread_notifications": "إشعارات غير مقروءة"
       },
       "attendance": {
         "present": "حاضر",
@@ -1680,7 +1707,21 @@
       "passed": "ناجح",
       "failed": "راسب",
       "average": "المتوسط",
-      "noResults": "لا توجد نتائج بعد."
+      "noResults": "لا توجد نتائج بعد.",
+      "meetingsSubtitle": "جلساتك الإلكترونية.",
+      "materialsSubtitle": "الملفات المشاركة مع فصلك.",
+      "meetingTitle": "العنوان",
+      "scheduledAt": "الموعد",
+      "duration": "المدة",
+      "join": "انضمام",
+      "searchMeetings": "البحث في الاجتماعات",
+      "noMeetings": "لا توجد اجتماعات بعد.",
+      "materialTitle": "العنوان",
+      "materialType": "النوع",
+      "downloads": "التنزيلات",
+      "uploadedAt": "تاريخ الرفع",
+      "searchMaterials": "البحث في المواد",
+      "noMaterials": "لا توجد مواد بعد."
     }
   }
 }

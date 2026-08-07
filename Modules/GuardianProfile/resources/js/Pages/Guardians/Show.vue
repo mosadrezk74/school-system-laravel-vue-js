@@ -1,18 +1,41 @@
 <script setup>
 import { Head, Link, router, useForm } from '@inertiajs/vue3'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   guardian: { type: Object, required: true },
-  students: { type: Array, default: () => [] },
+  students: { type: Object, default: () => ({ data: [], meta: {} }) },
 })
 
 const { t } = useI18n()
 
-const studentOptions = props.students.map(student => ({
-  title: [student.user?.name, student.admission_number].filter(Boolean).join(' · '),
+/*
+ * The picker queries the server as the admin types: the student table is far
+ * too large to ship into the page, so only one page of matches is loaded.
+ */
+const studentSearch = ref('')
+
+let searchTimer
+watch(studentSearch, value => {
+  clearTimeout(searchTimer)
+  searchTimer = setTimeout(() => {
+    router.get(`/user-management/guardians/${props.guardian.id}`, { student_search: value }, {
+      preserveState: true,
+      preserveScroll: true,
+      replace: true,
+      only: ['students'],
+    })
+  }, 350)
+})
+
+const linkedIds = computed(() => (props.guardian.students ?? []).map(row => row.student_id))
+
+const studentOptions = computed(() => (props.students.data ?? []).map(student => ({
+  title: [student.name, student.admission_number, student.class_name].filter(Boolean).join(' · '),
   value: student.id,
-}))
+  disabled: linkedIds.value.includes(student.id),
+})))
 
 const linkForm = useForm({
   student_id: null,
@@ -22,7 +45,13 @@ const linkForm = useForm({
   receives_notifications: true,
 })
 
+const isDuplicate = computed(() => linkForm.student_id !== null
+  && linkedIds.value.includes(linkForm.student_id))
+
 function submitLink() {
+  if (isDuplicate.value)
+    return
+
   linkForm.post(`/user-management/guardians/${props.guardian.id}/students`, {
     preserveScroll: true,
     onSuccess: () => linkForm.reset(),
@@ -239,12 +268,30 @@ const quickActions = [
           <form @submit.prevent="submitLink">
             <VRow>
               <VCol cols="12" md="6">
+                <VTextField
+                  v-model="studentSearch"
+                  :label="t('guardians.searchStudents')"
+                  prepend-inner-icon="bx-search"
+                  clearable
+                  :hint="t('guardians.searchStudentsHint', { total: students.meta?.total ?? 0 })"
+                  persistent-hint
+                />
+              </VCol>
+
+              <VCol cols="12" md="6">
                 <VSelect
                   v-model="linkForm.student_id"
                   :items="studentOptions"
                   :label="t('guardians.linkStudent')"
                   :error-messages="linkForm.errors.student_id"
+                  :no-data-text="t('guardians.noStudentsFound')"
                 />
+              </VCol>
+
+              <VCol v-if="isDuplicate" cols="12">
+                <VAlert type="warning" variant="tonal" density="compact">
+                  {{ t('guardians.alreadyLinked') }}
+                </VAlert>
               </VCol>
 
               <VCol cols="12" md="6">
@@ -275,7 +322,7 @@ const quickActions = [
               <VCol cols="12" class="d-flex justify-end">
                 <VBtn
                   :loading="linkForm.processing"
-                  :disabled="!linkForm.student_id || !linkForm.relationship"
+                  :disabled="!linkForm.student_id || !linkForm.relationship || isDuplicate"
                   @click="submitLink"
                 >
                   {{ t('guardians.linkStudent') }}

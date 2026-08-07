@@ -12,6 +12,7 @@ use Modules\Core\Support\DashboardWidget;
 use Modules\Examination\Models\ExamResult;
 use Modules\Meeting\Models\Meeting;
 use Modules\Portal\Services\PortalScopeService;
+use Modules\StudyMaterial\Models\StudyResource;
 
 class BuildStudentDashboardAction extends BaseAction
 {
@@ -68,6 +69,20 @@ class BuildStudentDashboardAction extends BaseAction
                 ->icon('bx-video')
                 ->route('/student/meetings')
                 ->priority(40),
+
+            DashboardWidget::make('recent_files', fn (): int => $this->recentFiles())
+                ->module('StudyMaterial')
+                ->permission('study-material.view')
+                ->icon('bx-folder-open')
+                ->color('secondary')
+                ->route('/student/materials')
+                ->priority(50),
+            DashboardWidget::make('unread_notifications', fn (): int => $this->unreadNotifications())
+                ->module('Notification')
+                ->icon('bx-bell')
+                ->color('error')
+                ->route('/notifications')
+                ->priority(60),
         ];
     }
 
@@ -116,6 +131,13 @@ class BuildStudentDashboardAction extends BaseAction
             ->count();
     }
 
+    private function recentFiles(): int
+    {
+        return StudyResource::query()
+            ->whereIn('grade_level_id', $this->scope->gradeLevelIdsFor() ?? [])
+            ->count();
+    }
+
     private function upcomingMeetings(): int
     {
         $classIds = $this->scope->accessibleClassIds() ?? [];
@@ -128,5 +150,10 @@ class BuildStudentDashboardAction extends BaseAction
             ->whereIn('school_class_id', $classIds)
             ->where('scheduled_at', '>=', now())
             ->count();
+    }
+
+    private function unreadNotifications(): int
+    {
+        return (int) auth()->user()?->unreadNotifications()->count();
     }
 }

@@ -13,6 +13,7 @@ use Modules\Finance\Enums\InvoiceStatus;
 use Modules\Finance\Models\Invoice;
 use Modules\Meeting\Models\Meeting;
 use Modules\Portal\Services\PortalScopeService;
+use Modules\StudyMaterial\Models\StudyResource;
 
 class BuildParentDashboardAction extends BaseAction
 {
@@ -75,6 +76,20 @@ class BuildParentDashboardAction extends BaseAction
                 ->icon('bx-video')
                 ->route('/parent/meetings')
                 ->priority(50),
+
+            DashboardWidget::make('recent_files', fn (): int => $this->recentFiles())
+                ->module('StudyMaterial')
+                ->permission('study-material.view')
+                ->icon('bx-folder-open')
+                ->color('secondary')
+                ->route('/parent/materials')
+                ->priority(60),
+            DashboardWidget::make('unread_notifications', fn (): int => $this->unreadNotifications())
+                ->module('Notification')
+                ->icon('bx-bell')
+                ->color('error')
+                ->route('/notifications')
+                ->priority(70),
         ];
     }
 
@@ -133,6 +148,13 @@ class BuildParentDashboardAction extends BaseAction
             ->sum('balance_due'), 2);
     }
 
+    private function recentFiles(): int
+    {
+        return StudyResource::query()
+            ->whereIn('grade_level_id', $this->scope->gradeLevelIdsFor() ?? [])
+            ->count();
+    }
+
     private function upcomingMeetings(): int
     {
         $classIds = $this->scope->accessibleClassIds() ?? [];
@@ -145,5 +167,10 @@ class BuildParentDashboardAction extends BaseAction
             ->whereIn('school_class_id', $classIds)
             ->where('scheduled_at', '>=', now())
             ->count();
+    }
+
+    private function unreadNotifications(): int
+    {
+        return (int) auth()->user()?->unreadNotifications()->count();
     }
 }

@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'fields' => [
+        'student_id' => 'Student',
+        'relationship' => 'Relationship',
+    ],
+
     'created' => 'Guardian created successfully.',
     'updated' => 'Guardian updated successfully.',
     'archived' => 'Guardian archived successfully.',

@@ -3,6 +3,8 @@
 namespace Modules\Notification\Providers;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Modules\Notification\Repositories\NotificationRepository;
+use Modules\Notification\Repositories\NotificationRepositoryInterface;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class NotificationServiceProvider extends ModuleServiceProvider
@@ -29,6 +31,20 @@ class NotificationServiceProvider extends ModuleServiceProvider
      *
      * @var string[]
      */
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->bind(NotificationRepositoryInterface::class, NotificationRepository::class);
+    }
+
+    public function boot(): void
+    {
+        parent::boot();
+
+        $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
+    }
+
     protected array $providers = [
         EventServiceProvider::class,
         RouteServiceProvider::class,

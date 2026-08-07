@@ -61,7 +61,8 @@
     "empty": "Keine Daten verfügbar",
     "noItems": "Keine Einträge gefunden",
     "confirmArchive": "Sind Sie sicher, dass Sie dieses Element archivieren möchten?",
-    "confirmRestore": "Sind Sie sicher, dass Sie dieses Element wiederherstellen möchten?"
+    "confirmRestore": "Sind Sie sicher, dass Sie dieses Element wiederherstellen möchten?",
+    "view": "Ansehen"
   },
   "academicYears": {
     "title": "Schuljahre",
@@ -766,7 +767,10 @@
       "followUp": "Verfolgung",
       "finance": "Finanzen",
       "fees": "Gebühren",
-      "payments": "Zahlungen"
+      "payments": "Zahlungen",
+      "materials": "Materialien",
+      "live": "Live",
+      "notifications": "Benachrichtigungen"
     },
     "teacher": {
       "title": "Lehrerportal",
@@ -777,7 +781,8 @@
         "homework_to_review": "Homework To Review",
         "my_classes": "My Classes",
         "my_students": "My Students",
-        "upcoming_meetings": "Upcoming Meetings"
+        "upcoming_meetings": "Upcoming Meetings",
+        "unread_notifications": "Ungelesene"
       },
       "quickAttendance": "Quick Attendance",
       "attendanceSubtitle": "Mark today’s attendance for one of your classes.",
@@ -843,7 +848,9 @@
         "pending_homework": "Pending Homework",
         "attendance_rate": "Attendance",
         "recent_results": "Results",
-        "upcoming_meetings": "Upcoming Meetings"
+        "upcoming_meetings": "Upcoming Meetings",
+        "recent_files": "Materialien",
+        "unread_notifications": "Ungelesene"
       },
       "attendance": {
         "present": "Present",
@@ -888,7 +895,21 @@
       "day": "Day",
       "noSchedule": "No lessons scheduled.",
       "break": "Break",
-      "online": "Online"
+      "online": "Online",
+      "meetingsSubtitle": "Your online sessions.",
+      "materialsSubtitle": "Files shared with your class.",
+      "meetingTitle": "Title",
+      "scheduledAt": "Scheduled",
+      "duration": "Duration",
+      "join": "Join",
+      "searchMeetings": "Search meetings",
+      "noMeetings": "No meetings yet.",
+      "materialTitle": "Title",
+      "materialType": "Type",
+      "downloads": "Downloads",
+      "uploadedAt": "Uploaded",
+      "searchMaterials": "Search materials",
+      "noMaterials": "No materials yet."
     },
     "parent": {
       "title": "Elternportal",
@@ -898,7 +919,9 @@
         "attendance_rate": "Attendance",
         "pending_homework": "Pending Homework",
         "outstanding_fees": "Outstanding Fees",
-        "upcoming_meetings": "Upcoming Meetings"
+        "upcoming_meetings": "Upcoming Meetings",
+        "recent_files": "Materialien",
+        "unread_notifications": "Ungelesene"
       },
       "attendance": {
         "present": "Present",
@@ -945,7 +968,27 @@
       "passed": "Passed",
       "failed": "Failed",
       "average": "Average",
-      "noResults": "No results yet."
+      "noResults": "No results yet.",
+      "meetingsSubtitle": "Your online sessions.",
+      "materialsSubtitle": "Files shared with your class.",
+      "meetingTitle": "Title",
+      "scheduledAt": "Scheduled",
+      "duration": "Duration",
+      "join": "Join",
+      "searchMeetings": "Search meetings",
+      "noMeetings": "No meetings yet.",
+      "materialTitle": "Title",
+      "materialType": "Type",
+      "downloads": "Downloads",
+      "uploadedAt": "Uploaded",
+      "searchMaterials": "Search materials",
+      "noMaterials": "No materials yet."
     }
+  },
+  "guardians": {
+    "searchStudents": "Search students",
+    "searchStudentsHint": "{total} matching students",
+    "noStudentsFound": "No students match your search.",
+    "alreadyLinked": "This student is already linked to this guardian."
   }
 }

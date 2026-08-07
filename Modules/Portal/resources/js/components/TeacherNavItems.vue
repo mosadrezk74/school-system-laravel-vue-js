@@ -25,6 +25,13 @@ const sections = computed(() => [
       { title: t('portal.nav.meetings'), to: '/teacher/meetings', icon: 'bx-video', module: 'Meeting' },
     ],
   },
+  {
+    key: 'account',
+    heading: null,
+    children: [
+      { title: t('portal.nav.notifications'), to: '/notifications', icon: 'bx-bell', module: 'Notification' },
+    ],
+  },
 ])
 </script>
 

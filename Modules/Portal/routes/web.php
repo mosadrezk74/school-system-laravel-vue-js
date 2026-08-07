@@ -7,10 +7,14 @@ use Modules\Portal\Http\Controllers\ParentDashboardController;
 use Modules\Portal\Http\Controllers\ParentFeeController;
 use Modules\Portal\Http\Controllers\ParentGradeController;
 use Modules\Portal\Http\Controllers\ParentHomeworkController;
+use Modules\Portal\Http\Controllers\ParentMaterialController;
+use Modules\Portal\Http\Controllers\ParentMeetingController;
 use Modules\Portal\Http\Controllers\StudentAttendanceController;
 use Modules\Portal\Http\Controllers\StudentDashboardController;
 use Modules\Portal\Http\Controllers\StudentGradeController;
 use Modules\Portal\Http\Controllers\StudentHomeworkController;
+use Modules\Portal\Http\Controllers\StudentMaterialController;
+use Modules\Portal\Http\Controllers\StudentMeetingController;
 use Modules\Portal\Http\Controllers\StudentScheduleController;
 use Modules\Portal\Http\Controllers\TeacherAttendanceController;
 use Modules\Portal\Http\Controllers\TeacherClassController;
@@ -78,6 +82,14 @@ Route::middleware(['web', 'auth'])->group(function () {
 
         Route::middleware('module:Attendance')
             ->get('attendance', [StudentAttendanceController::class, 'index'])->name('attendance');
+
+        Route::middleware('module:Meeting')
+            ->get('meetings', [StudentMeetingController::class, 'index'])->name('meetings');
+
+        Route::middleware('module:StudyMaterial')->group(function () {
+            Route::get('materials', [StudentMaterialController::class, 'index'])->name('materials');
+            Route::get('materials/{studyResource}/download', [StudentMaterialController::class, 'download'])->name('materials.download');
+        });
     });
 
     Route::middleware('portal:parent')->prefix('parent')->name('parent.')->group(function () {
@@ -98,6 +110,14 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::middleware('module:Finance')->group(function () {
             Route::get('fees', [ParentFeeController::class, 'index'])->name('fees');
             Route::get('payments', [ParentFeeController::class, 'payments'])->name('payments');
+        });
+
+        Route::middleware('module:Meeting')
+            ->get('meetings', [ParentMeetingController::class, 'index'])->name('meetings');
+
+        Route::middleware('module:StudyMaterial')->group(function () {
+            Route::get('materials', [ParentMaterialController::class, 'index'])->name('materials');
+            Route::get('materials/{studyResource}/download', [ParentMaterialController::class, 'download'])->name('materials.download');
         });
     });
 });
