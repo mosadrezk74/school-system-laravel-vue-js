@@ -6,13 +6,11 @@ import { useI18n } from 'vue-i18n'
 const props = defineProps({
   schoolSetting: { type: Object, default: null },
   languages: { type: Array, required: true },
-  modules: { type: Array, required: true },
 })
 
 const { t } = useI18n()
 
 const activeLanguages = computed(() => props.languages.filter(l => l.is_active))
-const enabledModules = computed(() => props.modules.filter(m => m.enabled))
 
 const processing = ref(false)
 
@@ -62,32 +60,6 @@ function finish() {
             :color="language.is_default ? 'primary' : undefined"
           >
             {{ language.name }}
-          </VChip>
-        </VCardText>
-      </VCard>
-    </VCol>
-
-    <VCol cols="12" md="6">
-      <VCard variant="outlined">
-        <VCardItem>
-          <VCardTitle>{{ t('onboarding.steps.organizationTitle') }}</VCardTitle>
-        </VCardItem>
-        <VCardText>
-          <div class="text-body-2">
-            {{ t('onboarding.fields.multiAcademicYear') }}: {{ schoolSetting?.settings?.multi_academic_year ? t('common.yes') : t('common.no') }}
-          </div>
-        </VCardText>
-      </VCard>
-    </VCol>
-
-    <VCol cols="12" md="6">
-      <VCard variant="outlined">
-        <VCardItem>
-          <VCardTitle>{{ t('onboarding.steps.modulesTitle') }}</VCardTitle>
-        </VCardItem>
-        <VCardText class="d-flex flex-wrap gap-2">
-          <VChip v-for="module in enabledModules" :key="module.name" size="small">
-            {{ module.name }}
           </VChip>
         </VCardText>
       </VCard>

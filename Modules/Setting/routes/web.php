@@ -39,7 +39,5 @@ Route::middleware(['auth'])
         Route::post('school-info', [OnboardingController::class, 'updateSchoolInfo'])->name('school-info');
         Route::patch('languages/{language}/toggle', [OnboardingController::class, 'toggleLanguage'])->name('languages.toggle');
         Route::patch('languages/{language}/default', [OnboardingController::class, 'setDefaultLanguage'])->name('languages.default');
-        Route::post('organization', [OnboardingController::class, 'updateOrganization'])->name('organization');
-        Route::patch('modules/{module}/toggle', [OnboardingController::class, 'toggleModule'])->name('modules.toggle');
         Route::post('finish', [OnboardingController::class, 'finish'])->name('finish');
     });

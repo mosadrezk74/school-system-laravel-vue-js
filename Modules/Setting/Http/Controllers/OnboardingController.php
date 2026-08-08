@@ -5,16 +5,11 @@ namespace Modules\Setting\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
-use Modules\Core\Services\ModuleRegistry;
 use Modules\Setting\Actions\CompleteSetupAction;
 use Modules\Setting\Actions\SetDefaultLanguageAction;
 use Modules\Setting\Actions\ToggleLanguageAction;
-use Modules\Setting\Actions\ToggleModuleAction;
-use Modules\Setting\Actions\UpdateOrganizationSettingsAction;
 use Modules\Setting\Actions\UpdateSchoolInfoAction;
-use Modules\Setting\DTOs\UpdateOrganizationSettingsDTO;
 use Modules\Setting\DTOs\UpdateSchoolInfoDTO;
-use Modules\Setting\Http\Requests\UpdateOrganizationSettingsRequest;
 use Modules\Setting\Http\Requests\UpdateSchoolInfoRequest;
 use Modules\Setting\Models\Language;
 use Modules\Setting\Models\SchoolSetting;
@@ -26,7 +21,6 @@ use Modules\Setting\Transformers\SchoolSettingResource;
 class OnboardingController extends BaseInertiaController
 {
     public function __construct(
-        private readonly ModuleRegistry $registry,
         private readonly LanguageService $languages,
         private readonly SettingsService $settings,
     ) {}
@@ -44,7 +38,6 @@ class OnboardingController extends BaseInertiaController
             // reads for the locale switcher), and a page prop of the same
             // name silently overwrites it.
             'rows' => LanguageResource::collection($this->languages->all()),
-            'modules' => $this->registry->all(),
         ]);
     }
 
@@ -75,27 +68,6 @@ class OnboardingController extends BaseInertiaController
         $action->execute($language);
 
         return $this->backWithSuccess(__('setting::languages.default_set'));
-    }
-
-    public function updateOrganization(UpdateOrganizationSettingsRequest $request, UpdateOrganizationSettingsAction $action): RedirectResponse
-    {
-        $this->authorize('update', SchoolSetting::class);
-
-        $action->execute(UpdateOrganizationSettingsDTO::fromRequest($request));
-
-        return $this->backWithSuccess(__('setting::onboarding.organization_saved'));
-    }
-
-    public function toggleModule(string $module, ToggleModuleAction $action): RedirectResponse
-    {
-        $this->authorize('update', SchoolSetting::class);
-
-        $action->execute([
-            'name' => $module,
-            'enable' => ! $this->registry->isEnabled($module),
-        ]);
-
-        return $this->backWithSuccess(__('setting::onboarding.module_toggled'));
     }
 
     public function finish(CompleteSetupAction $action): RedirectResponse
