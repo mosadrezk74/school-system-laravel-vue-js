@@ -8,8 +8,8 @@ use Modules\Core\Abstracts\BaseDTO;
 final class CreateClassroomDTO extends BaseDTO
 {
     public function __construct(
-        public string $name,
-        public ?string $code,
+        /** @var array<string, string|null> */
+        public array $name,
         public int $capacity,
         public ?int $floor,
         public ?string $building,
@@ -23,7 +23,6 @@ final class CreateClassroomDTO extends BaseDTO
     {
         return new self(
             name: $request->validated('name'),
-            code: $request->validated('code'),
             capacity: (int) $request->validated('capacity', 30),
             floor: $request->validated('floor') ? (int) $request->validated('floor') : null,
             building: $request->validated('building'),
@@ -38,7 +37,6 @@ final class CreateClassroomDTO extends BaseDTO
     {
         return [
             'name' => $this->name,
-            'code' => $this->code,
             'capacity' => $this->capacity,
             'floor' => $this->floor,
             'building' => $this->building,

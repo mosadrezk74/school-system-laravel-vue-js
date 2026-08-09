@@ -1,5 +1,6 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3'
+import { Head, Link, usePage } from '@inertiajs/vue3'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -7,6 +8,15 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+const page = usePage()
+
+// The enabled languages are shared globally, so stored translations are listed
+// in the school's own language order rather than JSON key order.
+const languages = computed(() => page.props.languages ?? [])
+
+const nameTranslations = computed(() => languages.value
+  .map(language => ({ language, value: props.classroom.name_translations?.[language.locale] }))
+  .filter(entry => entry.value))
 
 const roomTypeLabels = {
   classroom: t('classroom.types.classroom'),
@@ -21,8 +31,6 @@ const roomTypeLabels = {
 }
 
 const basicInfo = [
-  { key: 'name', label: 'classroom.fields.name', value: props.classroom.name },
-  { key: 'code', label: 'classroom.fields.code', value: props.classroom.code || '—' },
   { key: 'room_type', label: 'classroom.fields.room_type', value: roomTypeLabels[props.classroom.room_type] || props.classroom.room_type || '—' },
   { key: 'capacity', label: 'classroom.fields.capacity', value: props.classroom.capacity || '—' },
 ]
@@ -68,6 +76,16 @@ const facilitiesInfo = [
         </VCardItem>
         <VCardText>
           <VRow>
+            <VCol
+              v-for="entry in nameTranslations"
+              :key="entry.language.locale"
+              :cols="12"
+              :md="6"
+            >
+              <strong>{{ t('classroom.fields.name') }} ({{ entry.language.name }}):</strong>
+              {{ entry.value }}
+            </VCol>
+
             <VCol v-for="info in basicInfo" :key="info.key" :cols="12" :md="6">
               <strong>{{ t(info.label) }}:</strong> {{ info.value }}
             </VCol>

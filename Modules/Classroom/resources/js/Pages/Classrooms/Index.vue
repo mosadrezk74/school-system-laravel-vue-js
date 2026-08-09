@@ -41,8 +41,7 @@ function applyFilters() {
 }
 
 const headers = computed(() => [
-  { title: t('classroom.fields.name'), key: 'name' },
-  { title: t('classroom.fields.code'), key: 'code' },
+  { title: t('classroom.fields.name'), key: 'name', sortable: false },
   { title: t('classroom.fields.room_type'), key: 'room_type' },
   { title: t('classroom.fields.capacity'), key: 'capacity' },
   { title: t('classroom.fields.is_active'), key: 'is_active', sortable: false },

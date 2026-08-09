@@ -9,8 +9,14 @@ class StoreClassroomRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:100'],
-            'code' => ['nullable', 'string', 'max:50', 'unique:classrooms,code'],
+            /*
+             * The form submits one plain string; its language is detected and
+             * the remaining active locales are filled in by BaseRequest once
+             * validation passes, so `name` reaches the DTO already keyed by
+             * locale. On update the typed value is merged over the row's
+             * stored translations, preserving untouched locales.
+             */
+            ...$this->translatableRules('name'),
             'capacity' => ['nullable', 'integer', 'min:1', 'max:999'],
             'floor' => ['nullable', 'integer', 'min:-5', 'max:50'],
             'building' => ['nullable', 'string', 'max:50'],
@@ -25,7 +31,6 @@ class StoreClassroomRequest extends BaseRequest
     {
         return [
             'name' => __('classroom::classroom.fields.name'),
-            'code' => __('classroom::classroom.fields.code'),
         ];
     }
 }

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('classrooms', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
+            $table->json('name');
             $table->smallInteger('capacity')->default(30);
             $table->tinyInteger('floor')->nullable();
             $table->string('building', 50)->nullable();

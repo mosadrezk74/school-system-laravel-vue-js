@@ -9,11 +9,9 @@ return [
     'updated' => 'Classroom updated successfully.',
     'archived' => 'Classroom archived successfully.',
     'restored' => 'Classroom restored successfully.',
-    'code_already_exists' => 'A classroom with this code already exists.',
     'classroom_not_found' => 'Classroom not found.',
     'fields' => [
         'name' => 'Name',
-        'code' => 'Code',
         'capacity' => 'Capacity',
         'floor' => 'Floor',
         'building' => 'Building',
@@ -24,7 +22,6 @@ return [
     ],
     'hints' => [
         'name' => 'Required. Classroom name or identifier.',
-        'code' => 'Optional. Unique classroom code (e.g., R101).',
         'capacity' => 'Optional. Maximum number of students. Default: 30.',
         'floor' => 'Optional. Floor number (e.g., 1, 2, 3).',
         'building' => 'Optional. Building name or number.',
@@ -51,7 +48,7 @@ return [
         'science_lab' => 'Science Lab',
     ],
     'confirmArchive' => 'Archive this classroom? An administrator can restore it later.',
-    'search' => 'Search by name or code',
+    'search' => 'Search by name or building',
     'empty' => 'No classrooms yet. Add your first classroom to get started.',
     'view' => 'View',
 ];

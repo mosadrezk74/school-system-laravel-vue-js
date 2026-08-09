@@ -12,7 +12,6 @@ const { t } = useI18n()
 
 const form = useForm({
   name: props.classroom.name || '',
-  code: props.classroom.code || '',
   capacity: props.classroom.capacity || 30,
   floor: props.classroom.floor || null,
   building: props.classroom.building || '',

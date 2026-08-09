@@ -23,26 +23,26 @@ class ClassroomRepository implements ClassroomRepositoryInterface
     public function findAll(array $filters = []): array
     {
         $query = Classroom::query();
-        
+
         foreach ($filters as $field => $value) {
             if ($value !== null) {
                 $query->where($field, $value);
             }
         }
-        
+
         return $query->get()->all();
     }
 
     public function findAllPaginated(int $perPage = 15, array $filters = [])
     {
         $query = Classroom::query();
-        
+
         foreach ($filters as $field => $value) {
             if ($value !== null) {
                 $query->where($field, $value);
             }
         }
-        
+
         return $query->paginate($perPage);
     }
 
@@ -54,24 +54,24 @@ class ClassroomRepository implements ClassroomRepositoryInterface
     public function update(int $id, array $data): ?Classroom
     {
         $classroom = $this->findById($id);
-        
-        if (!$classroom) {
+
+        if (! $classroom) {
             return null;
         }
-        
+
         $classroom->update($data);
-        
+
         return $classroom->refresh();
     }
 
     public function delete(int $id): bool
     {
         $classroom = $this->findById($id);
-        
-        if (!$classroom) {
+
+        if (! $classroom) {
             return false;
         }
-        
+
         return (bool) $classroom->delete();
     }
 
@@ -113,36 +113,23 @@ class ClassroomRepository implements ClassroomRepositoryInterface
     public function restore(int $id): bool
     {
         $classroom = $this->withTrashed($id);
-        
-        if (!$classroom) {
+
+        if (! $classroom) {
             return false;
         }
-        
+
         return (bool) $classroom->restore();
     }
 
     public function forceDelete(int $id): bool
     {
         $classroom = $this->withTrashed($id);
-        
-        if (!$classroom) {
+
+        if (! $classroom) {
             return false;
         }
-        
+
         return (bool) $classroom->forceDelete();
-    }
-
-    public function findByCode(string $code): ?Classroom
-    {
-        return Classroom::query()->where('code', $code)->first();
-    }
-
-    public function existsByCode(string $code, ?int $excludeId = null): bool
-    {
-        return Classroom::query()
-            ->where('code', $code)
-            ->when($excludeId, fn ($query) => $query->whereKeyNot($excludeId))
-            ->exists();
     }
 
     public function createFromDTO(CreateClassroomDTO $dto, ?int $actorId = null): Classroom
@@ -160,11 +147,11 @@ class ClassroomRepository implements ClassroomRepositoryInterface
         $data['updated_by'] = $actorId;
 
         $classroom = $this->update($id, $data);
-        
-        if (!$classroom) {
+
+        if (! $classroom) {
             throw new \RuntimeException("Classroom with ID {$id} not found");
         }
-        
+
         return $classroom;
     }
 
@@ -172,5 +159,4 @@ class ClassroomRepository implements ClassroomRepositoryInterface
     {
         return Classroom::query()->where('is_active', true)->get();
     }
-
 }

@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
+import TranslatableTextInput from '@/components/TranslatableTextInput.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -10,7 +11,7 @@ const props = defineProps({
 const activeTab = ref('basic')
 
 const tabFields = {
-  basic: ['name', 'code', 'room_type', 'capacity'],
+  basic: ['name', 'room_type', 'capacity'],
   location: ['building', 'floor'],
   facilities: ['has_projector', 'has_smartboard'],
   status: ['is_active'],
@@ -48,26 +49,15 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
     <VWindowItem value="basic">
       <VRow>
         <VCol cols="12" md="6">
-          <VTextField
+  
+          <TranslatableTextInput
             v-model="form.name"
+            field="name"
             :label="$t('classroom.fields.name')"
-            :hint="$t('classroom.hints.name')"
-            persistent-hint
-            :error-messages="form.errors.name"
+            :errors="form.errors"
             required
           />
         </VCol>
-
-        <VCol cols="12" md="6">
-          <VTextField
-            v-model="form.code"
-            :label="$t('classroom.fields.code')"
-            :hint="$t('classroom.hints.code')"
-            persistent-hint
-            :error-messages="form.errors.code"
-          />
-        </VCol>
-
 
         <VCol cols="12" md="6">
           <VSelect

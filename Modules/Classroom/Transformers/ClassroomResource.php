@@ -2,7 +2,6 @@
 
 namespace Modules\Classroom\Transformers;
 
-use Modules\Classroom\Models\Classroom;
 use Modules\Core\Abstracts\BaseResource;
 
 class ClassroomResource extends BaseResource
@@ -12,7 +11,7 @@ class ClassroomResource extends BaseResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'code' => $this->code,
+            'name_translations' => $this->getTranslations('name'),
             'capacity' => $this->capacity,
             'floor' => $this->floor,
             'building' => $this->building,

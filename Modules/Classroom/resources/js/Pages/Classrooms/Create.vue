@@ -11,7 +11,6 @@ const { t } = useI18n()
 
 const form = useForm({
   name: '',
-  code: '',
   capacity: 30,
   floor: null,
   building: '',
