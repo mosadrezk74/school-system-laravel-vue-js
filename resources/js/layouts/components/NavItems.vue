@@ -18,6 +18,8 @@ const sections = computed(() => [
     heading: t('nav.academic'),
     children: [
       { title: t('nav.academicYears'), to: '/academic/academic-years', icon: 'bx-calendar' },
+      { title: t('nav.semesters'), to: '/academic/semesters', icon: 'bx-calendar-event' },
+      { title: t('nav.gradeLevels'), to: '/academic/grade-levels', icon: 'bx-layer' },
       { title: t('nav.classes'), to: '/academic/classes', icon: 'bx-chalkboard', module: 'SchoolClass' },
       { title: t('nav.subjects'), to: '/academic/subjects', icon: 'bx-book-open', module: 'Subject' },
       { title: t('nav.classrooms'), to: '/academic/classrooms', icon: 'bx-building', module: 'Classroom' },

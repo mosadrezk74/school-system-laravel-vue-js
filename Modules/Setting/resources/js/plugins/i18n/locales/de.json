@@ -29,7 +29,9 @@
     "invoices": "Rechnungen",
     "payments": "Zahlungen",
     "reports": "Berichte",
-    "reportTemplates": "Berichtsvorlagen"
+    "reportTemplates": "Berichtsvorlagen",
+    "semesters": "Semester",
+    "gradeLevels": "Klassenstufen"
   },
   "navbar": {
     "search": "Suche",
@@ -62,7 +64,8 @@
     "noItems": "Keine Einträge gefunden",
     "confirmArchive": "Sind Sie sicher, dass Sie dieses Element archivieren möchten?",
     "confirmRestore": "Sind Sie sicher, dass Sie dieses Element wiederherstellen möchten?",
-    "view": "Ansehen"
+    "view": "Ansehen",
+    "archived": "Archiviert"
   },
   "academicYears": {
     "title": "Schuljahre",
@@ -991,5 +994,61 @@
     "searchStudentsHint": "{total} matching students",
     "noStudentsFound": "No students match your search.",
     "alreadyLinked": "This student is already linked to this guardian."
+  },
+  "semesters": {
+    "title": "Semester",
+    "subtitle": "Schulhalbjahre und ihre Prüfungszeiträume verwalten.",
+    "addNew": "Neues Semester",
+    "edit": "Semester bearbeiten",
+    "search": "Nach Namen suchen",
+    "empty": "Noch keine Semester. Fügen Sie Ihr erstes Semester hinzu.",
+    "confirmArchive": "Dieses Semester archivieren? Ein Administrator kann es später wiederherstellen.",
+    "fields": {
+      "academicYear": "Schuljahr",
+      "name": "Name",
+      "sequence": "Reihenfolge",
+      "startDate": "Startdatum",
+      "endDate": "Enddatum",
+      "examStartDate": "Prüfungsbeginn",
+      "examEndDate": "Prüfungsende",
+      "isActive": "Aktiv"
+    },
+    "hints": {
+      "academicYear": "Erforderlich. Das Schuljahr, zu dem dieses Semester gehört.",
+      "name": "Erforderlich. Der Name des Semesters, z. B. „Erstes Halbjahr“.",
+      "sequence": "Erforderlich. Reihenfolge innerhalb des Schuljahres. Muss für das gewählte Jahr eindeutig sein.",
+      "startDate": "Erforderlich. Der erste Tag des Semesters.",
+      "endDate": "Erforderlich. Der letzte Tag des Semesters. Darf nicht vor dem Startdatum liegen.",
+      "examStartDate": "Optional. Der erste Tag des Prüfungszeitraums.",
+      "examEndDate": "Optional. Der letzte Tag des Prüfungszeitraums.",
+      "isActive": "Legt fest, ob das Semester verfügbar ist. Deaktivieren, um es ohne Archivierung auszublenden."
+    },
+    "sections": {
+      "details": "Semesterdetails",
+      "detailsDesc": "Termine, Reihenfolge und Prüfungszeitraum."
+    }
+  },
+  "gradeLevels": {
+    "title": "Klassenstufen",
+    "subtitle": "Die an der Schule unterrichteten Klassenstufen verwalten.",
+    "addNew": "Neue Klassenstufe",
+    "edit": "Klassenstufe bearbeiten",
+    "search": "Nach Name oder Beschreibung suchen",
+    "empty": "Noch keine Klassenstufen. Fügen Sie Ihre erste Klassenstufe hinzu.",
+    "confirmArchive": "Diese Klassenstufe archivieren? Ein Administrator kann sie später wiederherstellen.",
+    "fields": {
+      "name": "Name",
+      "description": "Beschreibung",
+      "displayOrder": "Anzeigereihenfolge",
+      "isActive": "Aktiv"
+    },
+    "hints": {
+      "displayOrder": "Legt die Anzeigereihenfolge fest. Kleinere Zahlen erscheinen zuerst.",
+      "isActive": "Legt fest, ob die Klassenstufe verfügbar ist. Deaktivieren, um sie ohne Archivierung auszublenden."
+    },
+    "sections": {
+      "details": "Details der Klassenstufe",
+      "detailsDesc": "Name, Beschreibung und Anzeigereihenfolge."
+    }
   }
 }

@@ -49,7 +49,9 @@
     "invoices": "Invoices",
     "payments": "Payments",
     "reports": "Reports",
-    "reportTemplates": "Report Templates"
+    "reportTemplates": "Report Templates",
+    "semesters": "Semesters",
+    "gradeLevels": "Grade Levels"
   },
   "navbar": {
     "search": "Search",
@@ -83,7 +85,8 @@
     "confirmArchive": "Are you sure you want to archive this item?",
     "confirmRestore": "Are you sure you want to restore this item?",
     "back": "Back",
-    "view": "View"
+    "view": "View",
+    "archived": "Archived"
   },
   "academicYears": {
     "title": "Academic Years",
@@ -1731,6 +1734,62 @@
       "uploadedAt": "Uploaded",
       "searchMaterials": "Search materials",
       "noMaterials": "No materials yet."
+    }
+  },
+  "semesters": {
+    "title": "Semesters",
+    "subtitle": "Manage academic terms and their exam windows.",
+    "addNew": "New Semester",
+    "edit": "Edit Semester",
+    "search": "Search by name",
+    "empty": "No semesters yet. Add your first semester to get started.",
+    "confirmArchive": "Archive this semester? An administrator can restore it later.",
+    "fields": {
+      "academicYear": "Academic Year",
+      "name": "Name",
+      "sequence": "Sequence",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "examStartDate": "Exam Start Date",
+      "examEndDate": "Exam End Date",
+      "isActive": "Active"
+    },
+    "hints": {
+      "academicYear": "Required. The academic year this semester belongs to.",
+      "name": "Required. The display name of the semester, e.g. \"First Term\".",
+      "sequence": "Required. Order within the academic year. Must be unique for the selected year.",
+      "startDate": "Required. The first day of the semester.",
+      "endDate": "Required. The last day of the semester. Cannot be before the start date.",
+      "examStartDate": "Optional. The first day of the exam period.",
+      "examEndDate": "Optional. The last day of the exam period. Cannot be before the exam start date.",
+      "isActive": "Controls whether the semester is available for use. Deactivate to hide it without archiving."
+    },
+    "sections": {
+      "details": "Semester Details",
+      "detailsDesc": "Term dates, ordering and exam window."
+    }
+  },
+  "gradeLevels": {
+    "title": "Grade Levels",
+    "subtitle": "Manage the grade levels taught at the school.",
+    "addNew": "New Grade Level",
+    "edit": "Edit Grade Level",
+    "search": "Search by name or description",
+    "empty": "No grade levels yet. Add your first grade level to get started.",
+    "confirmArchive": "Archive this grade level? An administrator can restore it later.",
+    "fields": {
+      "name": "Name",
+      "description": "Description",
+      "displayOrder": "Display Order",
+      "isActive": "Active"
+    },
+    "hints": {
+      "displayOrder": "Controls the order grade levels appear in. Lower numbers come first.",
+      "isActive": "Controls whether the grade level is available for use. Deactivate to hide it without archiving."
+    },
+    "sections": {
+      "details": "Grade Level Details",
+      "detailsDesc": "Name, description and display order."
     }
   }
 }

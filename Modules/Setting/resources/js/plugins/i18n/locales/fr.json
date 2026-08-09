@@ -29,7 +29,9 @@
     "invoices": "Factures",
     "payments": "Paiements",
     "reports": "Rapports",
-    "reportTemplates": "Modèles de rapport"
+    "reportTemplates": "Modèles de rapport",
+    "semesters": "Semestres",
+    "gradeLevels": "Niveaux scolaires"
   },
   "navbar": {
     "search": "Rechercher",
@@ -62,7 +64,8 @@
     "noItems": "Aucun élément trouvé",
     "confirmArchive": "Êtes-vous sûr de vouloir archiver cet élément ?",
     "confirmRestore": "Êtes-vous sûr de vouloir restaurer cet élément ?",
-    "view": "Voir"
+    "view": "Voir",
+    "archived": "Archivé"
   },
   "academicYears": {
     "title": "Années scolaires",
@@ -991,5 +994,61 @@
     "searchStudentsHint": "{total} matching students",
     "noStudentsFound": "No students match your search.",
     "alreadyLinked": "This student is already linked to this guardian."
+  },
+  "semesters": {
+    "title": "Semestres",
+    "subtitle": "Gérer les périodes scolaires et leurs sessions d'examens.",
+    "addNew": "Nouveau semestre",
+    "edit": "Modifier le semestre",
+    "search": "Rechercher par nom",
+    "empty": "Aucun semestre pour le moment. Ajoutez votre premier semestre pour commencer.",
+    "confirmArchive": "Archiver ce semestre ? Un administrateur pourra le restaurer plus tard.",
+    "fields": {
+      "academicYear": "Année scolaire",
+      "name": "Nom",
+      "sequence": "Ordre",
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "examStartDate": "Début des examens",
+      "examEndDate": "Fin des examens",
+      "isActive": "Actif"
+    },
+    "hints": {
+      "academicYear": "Obligatoire. L'année scolaire à laquelle appartient ce semestre.",
+      "name": "Obligatoire. Le nom du semestre, par ex. « Premier trimestre ».",
+      "sequence": "Obligatoire. Ordre dans l'année scolaire. Doit être unique pour l'année choisie.",
+      "startDate": "Obligatoire. Le premier jour du semestre.",
+      "endDate": "Obligatoire. Le dernier jour du semestre. Ne peut précéder la date de début.",
+      "examStartDate": "Facultatif. Le premier jour de la période d'examens.",
+      "examEndDate": "Facultatif. Le dernier jour de la période d'examens.",
+      "isActive": "Détermine si le semestre est disponible. Désactivez-le pour le masquer sans l'archiver."
+    },
+    "sections": {
+      "details": "Détails du semestre",
+      "detailsDesc": "Dates, ordre et période d'examens."
+    }
+  },
+  "gradeLevels": {
+    "title": "Niveaux scolaires",
+    "subtitle": "Gérer les niveaux scolaires enseignés dans l'école.",
+    "addNew": "Nouveau niveau scolaire",
+    "edit": "Modifier le niveau scolaire",
+    "search": "Rechercher par nom ou description",
+    "empty": "Aucun niveau scolaire pour le moment. Ajoutez votre premier niveau pour commencer.",
+    "confirmArchive": "Archiver ce niveau scolaire ? Un administrateur pourra le restaurer plus tard.",
+    "fields": {
+      "name": "Nom",
+      "description": "Description",
+      "displayOrder": "Ordre d'affichage",
+      "isActive": "Actif"
+    },
+    "hints": {
+      "displayOrder": "Détermine l'ordre d'affichage des niveaux. Les plus petits nombres apparaissent en premier.",
+      "isActive": "Détermine si le niveau est disponible. Désactivez-le pour le masquer sans l'archiver."
+    },
+    "sections": {
+      "details": "Détails du niveau scolaire",
+      "detailsDesc": "Nom, description et ordre d'affichage."
+    }
   }
 }

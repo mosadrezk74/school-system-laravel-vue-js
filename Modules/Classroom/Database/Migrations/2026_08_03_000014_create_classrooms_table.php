@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::create('classrooms', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->string('code', 50)->nullable();
             $table->smallInteger('capacity')->default(30);
             $table->tinyInteger('floor')->nullable();
             $table->string('building', 50)->nullable();
@@ -21,7 +20,6 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();
-            $table->unique('code');
         });
     }
 

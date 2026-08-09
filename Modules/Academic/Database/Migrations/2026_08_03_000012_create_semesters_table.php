@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('semesters', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('academic_year_id');
-            $table->string('name', 100);
+            $table->json('name');
             $table->tinyInteger('sequence');
             $table->date('start_date');
             $table->date('end_date');
