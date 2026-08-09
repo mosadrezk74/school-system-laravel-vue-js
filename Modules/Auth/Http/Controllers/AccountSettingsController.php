@@ -2,7 +2,6 @@
 
 namespace Modules\Auth\Http\Controllers;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -59,7 +58,6 @@ class AccountSettingsController extends BaseInertiaController
     {
         return $this->render('Auth::AccountSettings/Index', [
             'account' => new AccountResource($request->user()),
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'passwordRules' => Password::default()->toPasswordRulesString(),
             // Not `languages`: HandleInertiaRequests/SettingServiceProvider
             // already shares a `languages` prop (the enabled list every page

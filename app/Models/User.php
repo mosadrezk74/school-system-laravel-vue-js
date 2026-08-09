@@ -29,8 +29,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $language
  * @property string $theme
  * @property string $timezone
- * @property Carbon|null $email_verified_at
- * @property Carbon|null $phone_verified_at
  * @property string $password
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
@@ -73,8 +71,6 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'phone_verified_at' => 'datetime',
             'two_factor_confirmed_at' => 'datetime',
             'birth_date' => 'date',
             'is_active' => 'boolean',

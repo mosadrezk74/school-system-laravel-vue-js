@@ -9,7 +9,7 @@ use Modules\Core\Abstracts\BaseQuery;
 class AcademicYearQuery extends BaseQuery
 {
     /** @var array<int, string> */
-    protected array $searchableFields = ['name', 'code'];
+    protected array $searchableFields = ['name'];
 
     /** @var array<int, string> */
     protected array $filterableFields = ['is_current', 'is_active'];
@@ -17,7 +17,6 @@ class AcademicYearQuery extends BaseQuery
     /** @var array<int, string> */
     protected array $sortableFields = [
         'name',
-        'code',
         'start_date',
         'end_date',
         'is_current',

@@ -13,7 +13,6 @@ class StoreAcademicYearRequest extends BaseRequest
     {
         return [
             'name' => ['required', 'string', 'max:100'],
-            'code' => ['nullable', 'string', 'max:50', 'unique:academic_years,code'],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after:start_date'],
             'is_current' => ['sometimes', 'boolean'],
@@ -28,7 +27,6 @@ class StoreAcademicYearRequest extends BaseRequest
     {
         return [
             'name' => __('academic::academic_years.name'),
-            'code' => __('academic::academic_years.code'),
             'start_date' => __('academic::academic_years.start_date'),
             'end_date' => __('academic::academic_years.end_date'),
         ];

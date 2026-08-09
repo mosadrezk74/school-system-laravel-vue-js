@@ -18,7 +18,7 @@ const quickActions = [
 </script>
 
 <template>
-  <Head :title="`${$props.class.name} ${$props.class.section_code}`" />
+  <Head :title="$props.class.name" />
 
   <VRow>
     <!-- 👉 Header banner -->
@@ -32,7 +32,7 @@ const quickActions = [
           <div class="flex-grow-1">
             <div class="d-flex align-center gap-3 flex-wrap">
               <h5 class="text-h5 mb-0">
-                {{ $props.class.name }} {{ $props.class.section_code }}
+                {{ $props.class.name }}
               </h5>
               <VChip :color="$props.class.is_active ? 'success' : 'secondary'" size="small">
                 {{ $props.class.is_active ? t('classes.active') : t('classes.inactive') }}
@@ -101,43 +101,7 @@ const quickActions = [
                   {{ t('classes.capacity') }}
                 </VListItemTitle>
                 <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ $props.class.current_enrollment }} / {{ $props.class.capacity }}
-                </VListItemSubtitle>
-              </VListItem>
-            </VCol>
-          </VRow>
-        </VCardText>
-      </VCard>
-    </VCol>
-
-    <!-- 👉 Staffing -->
-    <VCol cols="12" md="6">
-      <VCard>
-        <VCardItem>
-          <template #prepend>
-            <VIcon icon="bx-user-voice" />
-          </template>
-          <VCardTitle>{{ t('classes.sections.staffing') }}</VCardTitle>
-        </VCardItem>
-        <VCardText>
-          <VRow no-gutters>
-            <VCol cols="6">
-              <VListItem>
-                <VListItemTitle class="text-medium-emphasis text-caption">
-                  {{ t('classes.classTeacher') }}
-                </VListItemTitle>
-                <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ $props.class.class_teacher?.name ?? '—' }}
-                </VListItemSubtitle>
-              </VListItem>
-            </VCol>
-            <VCol cols="6">
-              <VListItem>
-                <VListItemTitle class="text-medium-emphasis text-caption">
-                  {{ t('classes.assistantTeacher') }}
-                </VListItemTitle>
-                <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ $props.class.assistant_teacher?.name ?? '—' }}
+                  {{ $props.class.capacity }}
                 </VListItemSubtitle>
               </VListItem>
             </VCol>

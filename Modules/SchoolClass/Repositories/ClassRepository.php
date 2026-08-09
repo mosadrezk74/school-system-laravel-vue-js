@@ -22,12 +22,11 @@ class ClassRepository implements ClassRepositoryInterface
         return SchoolClass::query()->findOrFail($id);
     }
 
-    public function existsBySection(int $academicYearId, int $gradeLevelId, string $sectionCode, ?int $excludeId = null): bool
+    public function existsForGradeLevel(int $academicYearId, int $gradeLevelId, ?int $excludeId = null): bool
     {
         return SchoolClass::query()
             ->where('academic_year_id', $academicYearId)
             ->where('grade_level_id', $gradeLevelId)
-            ->where('section_code', $sectionCode)
             ->when($excludeId, fn ($query) => $query->whereKeyNot($excludeId))
             ->exists();
     }

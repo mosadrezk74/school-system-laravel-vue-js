@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->ulid('ulid')->nullable()->after('id');
             $table->string('username', 100)->nullable()->after('ulid');
-
+            $table->string('phone', 20)->nullable()->after('username');
             $table->string('gender', 10)->nullable()->after('name');
             $table->date('birth_date')->nullable()->after('gender');
             $table->string('national_id', 20)->nullable()->after('birth_date');
@@ -28,7 +28,6 @@ return new class extends Migration
             $table->string('language', 10)->default('ar')->after('is_active');
             $table->string('theme', 20)->default('light')->after('language');
             $table->string('timezone', 50)->default('Asia/Riyadh')->after('theme');
-
 
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
@@ -51,9 +50,9 @@ return new class extends Migration
             $table->dropIndex(['role', 'is_active']);
 
             $table->dropColumn([
-                'ulid', 'username', 'phone', 'phone_verified_at',
+                'ulid', 'username', 'phone',
                 'gender', 'birth_date', 'national_id', 'role', 'is_active',
-                'language', 'theme', 'timezone','fcm_token',
+                'language', 'theme', 'timezone', 'fcm_token',
                 'created_by', 'updated_by', 'deleted_by', 'deleted_at',
             ]);
         });

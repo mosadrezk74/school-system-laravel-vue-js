@@ -19,7 +19,6 @@ class AcademicYearResource extends BaseResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'code' => $this->code,
             'start_date' => $this->start_date?->toDateString(),
             'end_date' => $this->end_date?->toDateString(),
             'is_current' => $this->is_current,

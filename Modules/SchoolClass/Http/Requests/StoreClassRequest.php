@@ -14,20 +14,14 @@ class StoreClassRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'grade_level_id' => ['required', 'integer', 'exists:grade_levels,id'],
+            'grade_level_id' => [
+                'required', 'integer', 'exists:grade_levels,id',
+                Rule::unique('classes', 'grade_level_id')
+                    ->where(fn ($query) => $query->where('academic_year_id', AcademicYearService::id())),
+            ],
             'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
             'name' => ['required', 'string', 'max:100'],
-            'section_code' => [
-                'required', 'string', 'max:10',
-                Rule::unique('classes', 'section_code')->where(function ($query) {
-                    return $query
-                        ->where('academic_year_id', AcademicYearService::id())
-                        ->where('grade_level_id', $this->input('grade_level_id'));
-                }),
-            ],
             'capacity' => ['required', 'integer', 'min:1'],
-            'class_teacher_id' => ['nullable', 'integer', 'exists:users,id'],
-            'assistant_teacher_id' => ['nullable', 'integer', 'exists:users,id'],
             'is_active' => ['sometimes', 'boolean'],
         ];
     }
@@ -41,10 +35,7 @@ class StoreClassRequest extends BaseRequest
             'grade_level_id' => __('school-class::class.fields.grade_level_id'),
             'classroom_id' => __('school-class::class.fields.classroom_id'),
             'name' => __('school-class::class.fields.name'),
-            'section_code' => __('school-class::class.fields.section_code'),
             'capacity' => __('school-class::class.fields.capacity'),
-            'class_teacher_id' => __('school-class::class.fields.class_teacher_id'),
-            'assistant_teacher_id' => __('school-class::class.fields.assistant_teacher_id'),
         ];
     }
 }

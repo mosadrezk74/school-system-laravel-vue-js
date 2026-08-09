@@ -6,7 +6,6 @@ import ClassForm from './_Form.vue'
 defineProps({
   gradeLevels: { type: Array, default: () => [] },
   classrooms: { type: Array, default: () => [] },
-  teachers: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -15,10 +14,7 @@ const form = useForm({
   grade_level_id: null,
   classroom_id: null,
   name: '',
-  section_code: '',
   capacity: 30,
-  class_teacher_id: null,
-  assistant_teacher_id: null,
   is_active: true,
 })
 
@@ -44,7 +40,6 @@ function submit() {
           :form="form"
           :grade-levels="gradeLevels"
           :classrooms="classrooms"
-          :teachers="teachers"
         />
       </form>
     </VCardText>

@@ -22,11 +22,7 @@ class ClassResource extends BaseResource
             'academic_year_id' => $this->academic_year_id,
             'classroom_id' => $this->classroom_id,
             'name' => $this->name,
-            'section_code' => $this->section_code,
             'capacity' => $this->capacity,
-            'current_enrollment' => $this->current_enrollment,
-            'class_teacher_id' => $this->class_teacher_id,
-            'assistant_teacher_id' => $this->assistant_teacher_id,
             'is_active' => $this->is_active,
 
             'created_at' => $this->created_at?->toIso8601String(),
@@ -44,16 +40,6 @@ class ClassResource extends BaseResource
             'classroom' => $this->whenLoaded('classroom', fn () => $this->classroom ? [
                 'id' => $this->classroom->id,
                 'name' => $this->classroom->name,
-            ] : null),
-
-            'class_teacher' => $this->whenLoaded('classTeacher', fn () => $this->classTeacher ? [
-                'id' => $this->classTeacher->id,
-                'name' => $this->classTeacher->name,
-            ] : null),
-
-            'assistant_teacher' => $this->whenLoaded('assistantTeacher', fn () => $this->assistantTeacher ? [
-                'id' => $this->assistantTeacher->id,
-                'name' => $this->assistantTeacher->name,
             ] : null),
         ];
     }

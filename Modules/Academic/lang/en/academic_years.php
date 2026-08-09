@@ -2,7 +2,6 @@
 
 return [
     'name' => 'Name',
-    'code' => 'Code',
     'start_date' => 'Start date',
     'end_date' => 'End date',
     'is_current' => 'Current',

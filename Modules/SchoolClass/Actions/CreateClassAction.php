@@ -28,8 +28,8 @@ class CreateClassAction extends BaseAction
                 throw ClassOperationException::invalidCapacity();
             }
 
-            if ($this->repository->existsBySection($dto->academicYearId, $dto->gradeLevelId, $dto->sectionCode)) {
-                throw ClassOperationException::sectionAlreadyExists();
+            if ($this->repository->existsForGradeLevel($dto->academicYearId, $dto->gradeLevelId)) {
+                throw ClassOperationException::classAlreadyExists();
             }
 
             if ($dto->classroomId) {

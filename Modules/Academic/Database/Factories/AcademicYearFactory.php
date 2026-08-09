@@ -29,7 +29,6 @@ class AcademicYearFactory extends Factory
 
         return [
             'name' => \sprintf('%d/%d', $startYear, $startYear + 1),
-            'code' => \sprintf('AY%d-%d', $startYear, ($startYear + 1) % 100),
             'start_date' => \sprintf('%d-09-01', $startYear),
             'end_date' => \sprintf('%d-06-30', $startYear + 1),
             'is_current' => false,

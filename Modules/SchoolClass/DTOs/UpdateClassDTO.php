@@ -12,10 +12,7 @@ final readonly class UpdateClassDTO
         public int $academicYearId,
         public ?int $classroomId,
         public string $name,
-        public string $sectionCode,
         public int $capacity,
-        public ?int $classTeacherId,
-        public ?int $assistantTeacherId,
         public bool $isActive,
     ) {}
 
@@ -26,10 +23,7 @@ final readonly class UpdateClassDTO
             academicYearId: AcademicYearService::requiredId(),
             classroomId: $request->validated('classroom_id') ? (int) $request->validated('classroom_id') : null,
             name: $request->validated('name'),
-            sectionCode: $request->validated('section_code'),
             capacity: (int) $request->validated('capacity'),
-            classTeacherId: $request->validated('class_teacher_id') ? (int) $request->validated('class_teacher_id') : null,
-            assistantTeacherId: $request->validated('assistant_teacher_id') ? (int) $request->validated('assistant_teacher_id') : null,
             isActive: (bool) $request->validated('is_active', true),
         );
     }
@@ -44,10 +38,7 @@ final readonly class UpdateClassDTO
             'academic_year_id' => $this->academicYearId,
             'classroom_id' => $this->classroomId,
             'name' => $this->name,
-            'section_code' => $this->sectionCode,
             'capacity' => $this->capacity,
-            'class_teacher_id' => $this->classTeacherId,
-            'assistant_teacher_id' => $this->assistantTeacherId,
             'is_active' => $this->isActive,
         ];
     }

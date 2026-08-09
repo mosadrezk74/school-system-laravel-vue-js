@@ -23,19 +23,6 @@ class UpdateProfileAction extends BaseAction
         /** @var UpdateProfileDTO $dto */
         $dto = $input['dto'];
 
-        return $this->executeWithTransaction(function () use ($user, $dto): User {
-            $emailChanged = $dto->email !== $user->email;
-
-            $user = $this->repository->updateProfile($user, $dto);
-
-            // A changed email is unverified until proven again: the old
-            // verification only attested ownership of the previous address.
-            if ($emailChanged) {
-                $user->email_verified_at = null;
-                $user->save();
-            }
-
-            return $user;
-        });
+        return $this->executeWithTransaction(fn (): User => $this->repository->updateProfile($user, $dto));
     }
 }

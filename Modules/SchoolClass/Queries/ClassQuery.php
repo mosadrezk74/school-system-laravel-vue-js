@@ -9,7 +9,7 @@ use Modules\SchoolClass\Models\SchoolClass;
 class ClassQuery extends BaseQuery
 {
     /** @var array<int, string> */
-    protected array $searchableFields = ['name', 'section_code'];
+    protected array $searchableFields = ['name'];
 
     /** @var array<int, string> */
     protected array $filterableFields = ['academic_year_id', 'grade_level_id', 'is_active'];
@@ -17,16 +17,14 @@ class ClassQuery extends BaseQuery
     /** @var array<int, string> */
     protected array $sortableFields = [
         'name',
-        'section_code',
         'capacity',
-        'current_enrollment',
         'is_active',
         'created_at',
     ];
 
     protected function baseQuery(): Builder
     {
-        return SchoolClass::query()->with(['gradeLevel', 'academicYear', 'classroom', 'classTeacher']);
+        return SchoolClass::query()->with(['gradeLevel', 'academicYear', 'classroom']);
     }
 
     public function academicYearId(?int $academicYearId): self
@@ -46,7 +44,6 @@ class ClassQuery extends BaseQuery
 
         return $this;
     }
-
 
     public function isActive(?bool $isActive): self
     {

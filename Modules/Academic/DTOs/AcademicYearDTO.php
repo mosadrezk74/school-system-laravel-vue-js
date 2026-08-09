@@ -13,8 +13,6 @@ class AcademicYearDTO extends BaseDTO
      */
     public ?string $name = null;
 
-    public ?string $code = null;
-
     public ?string $start_date = null;
 
     public ?string $end_date = null;
@@ -26,7 +24,6 @@ class AcademicYearDTO extends BaseDTO
     /** @var array<int, string> */
     protected static array $fillable = [
         'name',
-        'code',
         'start_date',
         'end_date',
         'is_current',
@@ -59,7 +56,6 @@ class AcademicYearDTO extends BaseDTO
     {
         return [
             'name' => $this->name,
-            'code' => $this->code,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'is_current' => $this->is_current,
@@ -78,7 +74,6 @@ class AcademicYearDTO extends BaseDTO
         return array_intersect_key(
             [
                 'name' => $this->name,
-                'code' => $this->code,
                 'start_date' => $this->start_date,
                 'end_date' => $this->end_date,
                 'is_current' => $this->is_current,

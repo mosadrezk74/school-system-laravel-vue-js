@@ -26,7 +26,6 @@ class UserSeeder extends Seeder
                 'language' => 'ar',
                 'theme' => 'light',
                 'timezone' => 'Asia/Riyadh',
-                'email_verified_at' => now(),
                 'password' => Hash::make('123456789'),
             ]
         );

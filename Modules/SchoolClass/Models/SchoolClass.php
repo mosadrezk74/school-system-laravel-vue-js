@@ -2,7 +2,6 @@
 
 namespace Modules\SchoolClass\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
@@ -36,15 +35,5 @@ class SchoolClass extends BaseModel
     public function classroom(): BelongsTo
     {
         return $this->belongsTo(Classroom::class, 'classroom_id');
-    }
-
-    public function classTeacher(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'class_teacher_id');
-    }
-
-    public function assistantTeacher(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'assistant_teacher_id');
     }
 }

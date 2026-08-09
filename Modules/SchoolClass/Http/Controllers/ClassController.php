@@ -22,7 +22,6 @@ use Modules\SchoolClass\Models\SchoolClass;
 use Modules\SchoolClass\Queries\ClassQuery;
 use Modules\SchoolClass\Transformers\ClassResource;
 use Modules\Student\Models\StudentProfile;
-use Modules\Teacher\Models\TeacherProfile;
 
 class ClassController extends BaseInertiaController
 {
@@ -71,7 +70,7 @@ class ClassController extends BaseInertiaController
     {
         $this->authorize('view', $class);
 
-        $class->load(['gradeLevel', 'academicYear', 'classroom', 'classTeacher', 'assistantTeacher']);
+        $class->load(['gradeLevel', 'academicYear', 'classroom']);
 
         $roster = StudentProfile::query()
             ->where('current_class_id', $class->id)
@@ -137,15 +136,6 @@ class ClassController extends BaseInertiaController
                 ->map(fn (GradeLevel $gradeLevel) => ['id' => $gradeLevel->id, 'name' => $gradeLevel->name])
                 ->values(),
             'classrooms' => Classroom::query()->where('is_active', true)->get(['id', 'name']),
-            'teachers' => TeacherProfile::query()
-                ->where('is_active', true)
-                ->with('user:id,name')
-                ->get()
-                ->map(fn (TeacherProfile $teacher) => [
-                    'id' => $teacher->user_id,
-                    'name' => $teacher->user->name,
-                ])
-                ->values(),
         ];
     }
 }

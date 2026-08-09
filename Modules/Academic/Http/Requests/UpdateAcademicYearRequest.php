@@ -2,7 +2,6 @@
 
 namespace Modules\Academic\Http\Requests;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use Modules\Core\Abstracts\BaseRequest;
 
@@ -13,18 +12,8 @@ class UpdateAcademicYearRequest extends BaseRequest
      */
     public function rules(): array
     {
-        $year = $this->route('academic_year');
-        $id = $year?->getKey();
-
         return [
             'name' => ['sometimes', 'required', 'string', 'max:100'],
-            'code' => [
-                'nullable',
-                'string',
-                'max:50',
-                // Ignore this row, or saving an unchanged code fails as a duplicate.
-                Rule::unique('academic_years', 'code')->ignore($id),
-            ],
             'start_date' => ['sometimes', 'required', 'date'],
             'end_date' => ['sometimes', 'required', 'date'],
             'is_current' => ['sometimes', 'boolean'],
@@ -67,7 +56,6 @@ class UpdateAcademicYearRequest extends BaseRequest
     {
         return [
             'name' => __('academic::academic_years.name'),
-            'code' => __('academic::academic_years.code'),
             'start_date' => __('academic::academic_years.start_date'),
             'end_date' => __('academic::academic_years.end_date'),
         ];

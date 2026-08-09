@@ -43,7 +43,6 @@ watch(status, applyFilters)
 
 const headers = computed(() => [
   { title: t('classes.name'), key: 'name' },
-  { title: t('classes.sectionCode'), key: 'section_code' },
   { title: t('classes.academicYear'), key: 'academic_year' },
   { title: t('classes.gradeLevel'), key: 'grade_level' },
   { title: t('classes.capacity'), key: 'capacity', sortable: false },
@@ -126,9 +125,8 @@ function goToPage(page) {
         {{ item.grade_level?.name }}
       </template>
 
-
       <template #item.capacity="{ item }">
-        {{ item.current_enrollment }} / {{ item.capacity }}
+        {{ item.capacity }}
       </template>
 
       <template #item.status="{ item }">

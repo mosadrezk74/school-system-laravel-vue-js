@@ -19,7 +19,6 @@ return new class extends Migration
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->unique('code');
             $table->index(['is_current']);
             $table->index(['start_date', 'end_date']);
         });

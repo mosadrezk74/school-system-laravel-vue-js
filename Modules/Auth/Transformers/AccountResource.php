@@ -28,7 +28,6 @@ class AccountResource extends BaseResource
             'language' => $this->language,
             'theme' => $this->theme,
             'timezone' => $this->timezone,
-            'email_verified_at' => $this->email_verified_at,
         ];
     }
 }

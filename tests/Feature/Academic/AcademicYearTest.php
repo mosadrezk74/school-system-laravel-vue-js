@@ -28,13 +28,12 @@ it('requires authentication', function (): void {
 it('creates an academic year', function (): void {
     $this->post(route('academic.academic-years.store'), [
         'name' => '2025/2026',
-        'code' => 'AY25',
         'start_date' => '2025-09-01',
         'end_date' => '2026-06-30',
     ])->assertRedirect();
 
     // Flags must fall back to their defaults, not NULL, when omitted.
-    $year = AcademicYear::firstWhere('code', 'AY25');
+    $year = AcademicYear::firstWhere('name', '2025/2026');
     expect($year->is_active)->toBeTrue()
         ->and($year->is_current)->toBeFalse();
 });
@@ -45,17 +44,6 @@ it('rejects an end date on or before the start date', function (): void {
         'start_date' => '2026-06-30',
         'end_date' => '2025-09-01',
     ])->assertSessionHasErrors('end_date');
-});
-
-it('rejects a duplicate code', function (): void {
-    AcademicYear::factory()->create(['code' => 'AY25']);
-
-    $this->post(route('academic.academic-years.store'), [
-        'name' => 'Another',
-        'code' => 'AY25',
-        'start_date' => '2025-09-01',
-        'end_date' => '2026-06-30',
-    ])->assertSessionHasErrors('code');
 });
 
 it('keeps exactly one year current when switching', function (): void {
@@ -90,12 +78,11 @@ it('preserves untouched fields on a partial update', function (): void {
         ->and($year->is_active)->toBeTrue();
 });
 
-it('allows a year to keep its own code on update', function (): void {
-    $year = AcademicYear::factory()->create(['code' => 'AY25']);
+it('allows a year to be renamed on update', function (): void {
+    $year = AcademicYear::factory()->create();
 
     $this->put(route('academic.academic-years.update', $year), [
         'name' => 'Renamed',
-        'code' => 'AY25',
     ])->assertRedirect()->assertSessionHasNoErrors();
 });
 
@@ -118,9 +105,9 @@ it('soft deletes a non-current year', function (): void {
         ->and(AcademicYear::withTrashed()->whereKey($year->getKey())->exists())->toBeTrue();
 });
 
-it('searches by name and code', function (): void {
-    AcademicYear::factory()->create(['name' => 'Findable', 'code' => 'XYZ']);
-    AcademicYear::factory()->create(['name' => 'Other', 'code' => 'ABC']);
+it('searches by name', function (): void {
+    AcademicYear::factory()->create(['name' => 'Findable']);
+    AcademicYear::factory()->create(['name' => 'Other']);
 
     $this->get(route('academic.academic-years.index', ['search' => 'Findable']))
         ->assertOk()

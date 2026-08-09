@@ -12,7 +12,7 @@ interface ClassRepositoryInterface
 
     public function findByIdOrFail(int $id): SchoolClass;
 
-    public function existsBySection(int $academicYearId, int $gradeLevelId, string $sectionCode, ?int $excludeId = null): bool;
+    public function existsForGradeLevel(int $academicYearId, int $gradeLevelId, ?int $excludeId = null): bool;
 
     public function create(CreateClassDTO $dto, ?int $actorId = null): SchoolClass;
 
