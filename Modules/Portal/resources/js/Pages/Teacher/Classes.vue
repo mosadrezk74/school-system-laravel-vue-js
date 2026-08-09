@@ -41,7 +41,6 @@ const { t } = useI18n()
           <VCardTitle>{{ item.name }}</VCardTitle>
           <VCardSubtitle>
             {{ item.grade_level ?? '—' }}
-            <span v-if="item.section_code"> · {{ item.section_code }}</span>
           </VCardSubtitle>
 
           <template #append>

@@ -45,7 +45,7 @@ function destroy() {
               </VChip>
             </div>
             <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
-              {{ record.class ? `${record.class.name} ${record.class.section_code}` : '—' }}
+              {{ record.class ? record.class.name : '—' }}
               <template v-if="record.subject">
                 · {{ record.subject.name }}
               </template>

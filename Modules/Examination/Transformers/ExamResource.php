@@ -46,7 +46,6 @@ class ExamResource extends BaseResource
             'class' => $this->whenLoaded('class', fn () => $this->class ? [
                 'id' => $this->class->id,
                 'name' => $this->class->name,
-                'section_code' => $this->class->section_code,
             ] : null),
 
             'exam_subjects' => $this->whenLoaded('examSubjects', fn () => $this->examSubjects->map(fn ($examSubject) => [
@@ -54,7 +53,7 @@ class ExamResource extends BaseResource
                 'subject_id' => $examSubject->subject_id,
                 'class_id' => $examSubject->class_id,
                 'subject_name' => $examSubject->subject?->name,
-                'class_name' => $examSubject->class ? trim($examSubject->class->name.' '.$examSubject->class->section_code) : null,
+                'class_name' => $examSubject->class?->name,
                 'total_marks' => $examSubject->total_marks,
                 'passing_marks' => $examSubject->passing_marks,
                 'exam_date' => $examSubject->exam_date?->toDateString(),

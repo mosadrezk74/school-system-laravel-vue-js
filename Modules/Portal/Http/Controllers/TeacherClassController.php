@@ -21,7 +21,6 @@ class TeacherClassController extends BaseInertiaController
                 ->map(fn (SchoolClass $class): array => [
                     'id' => $class->id,
                     'name' => $class->name,
-                    'section_code' => $class->section_code,
                     'grade_level' => $class->gradeLevel?->name,
                     'students_count' => $students->get($class->id)?->count() ?? 0,
                     'students' => ($students->get($class->id) ?? collect())

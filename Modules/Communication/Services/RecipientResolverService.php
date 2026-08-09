@@ -13,12 +13,9 @@ class RecipientResolverService
 
     public const TYPE_ROLE = 'role';
 
-
     public const TYPE_ACADEMIC_YEAR = 'academic_year';
 
     public const TYPE_CLASS = 'class';
-
-    public const TYPE_SECTION = 'section';
 
     public const TYPE_USERS = 'users';
 
@@ -28,7 +25,6 @@ class RecipientResolverService
         self::TYPE_ROLE,
         self::TYPE_ACADEMIC_YEAR,
         self::TYPE_CLASS,
-        self::TYPE_SECTION,
         self::TYPE_USERS,
     ];
 
@@ -42,7 +38,6 @@ class RecipientResolverService
             self::TYPE_ROLE => $this->byRole($targetIds ?? []),
             self::TYPE_ACADEMIC_YEAR => $this->byAcademicYear($targetIds ?? []),
             self::TYPE_CLASS => $this->byClass($targetIds ?? []),
-            self::TYPE_SECTION => $this->bySection($targetIds ?? []),
             self::TYPE_USERS => User::query()->whereIn('id', $targetIds ?? []),
             default => User::query()->whereRaw('1 = 0'),
         };
@@ -55,7 +50,6 @@ class RecipientResolverService
     {
         return User::query()->whereIn('role', $roles);
     }
-
 
     /**
      * @param  array<int, int>  $academicYearIds
@@ -76,18 +70,6 @@ class RecipientResolverService
     {
         $studentUserIds = StudentProfile::query()
             ->whereIn('current_class_id', $classIds)
-            ->pluck('user_id');
-
-        return User::query()->whereIn('id', $studentUserIds);
-    }
-
-    /**
-     * @param  array<int, string>  $sectionCodes
-     */
-    private function bySection(array $sectionCodes): Builder
-    {
-        $studentUserIds = StudentProfile::query()
-            ->whereHas('currentClass', fn (Builder $query) => $query->whereIn('section_code', $sectionCodes))
             ->pluck('user_id');
 
         return User::query()->whereIn('id', $studentUserIds);

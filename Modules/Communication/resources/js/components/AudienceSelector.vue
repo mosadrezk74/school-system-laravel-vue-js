@@ -21,7 +21,6 @@ const targetTypeOptions = computed(() => [
   { title: t('communication.audience.role'), value: 'role' },
   { title: t('communication.audience.academicYear'), value: 'academic_year' },
   { title: t('communication.audience.class'), value: 'class' },
-  { title: t('communication.audience.section'), value: 'section' },
   { title: t('communication.audience.users'), value: 'users' },
 ])
 
@@ -32,9 +31,7 @@ const idOptions = computed(() => {
     case 'academic_year':
       return props.academicYears.map(y => ({ title: y.name, value: y.id }))
     case 'class':
-      return props.classes.map(c => ({ title: [c.name, c.section_code].filter(Boolean).join(' · '), value: c.id }))
-    case 'section':
-      return [...new Set(props.classes.map(c => c.section_code).filter(Boolean))].map(code => ({ title: code, value: code }))
+      return props.classes.map(c => ({ title: c.name, value: c.id }))
     case 'users':
       return props.users.map(u => ({ title: u.name, value: u.id }))
     default:

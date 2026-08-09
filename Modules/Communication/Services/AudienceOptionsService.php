@@ -20,7 +20,7 @@ class AudienceOptionsService
                 'value' => $role->value,
             ])->values(),
             'academicYears' => AcademicYear::query()->where('is_active', true)->get(['id', 'name']),
-            'classes' => SchoolClass::query()->where('is_active', true)->get(['id', 'name', 'section_code']),
+            'classes' => SchoolClass::query()->where('is_active', true)->get(['id', 'name']),
             'users' => User::query()->get(['id', 'name']),
         ];
     }

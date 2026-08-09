@@ -123,7 +123,7 @@ function goToPage(page) {
       </template>
 
       <template #item.current_class="{ item }">
-        {{ item.current_class ? `${item.current_class.name} ${item.current_class.section_code}` : '—' }}
+        {{ item.current_class ? item.current_class.name : '—' }}
       </template>
 
       <template #item.status="{ item }">

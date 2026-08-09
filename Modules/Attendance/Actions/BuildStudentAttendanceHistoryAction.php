@@ -24,7 +24,7 @@ class BuildStudentAttendanceHistoryAction extends BaseAction
         $filter = $input;
 
         $student = StudentProfile::query()
-            ->with(['user:id,name,email', 'currentClass:id,name,section_code', 'academicYear:id,name'])
+            ->with(['user:id,name,email', 'currentClass:id,name', 'academicYear:id,name'])
             ->findOrFail($filter->studentId);
 
         $counts = $this->repository->statusCountsForStudent($filter);

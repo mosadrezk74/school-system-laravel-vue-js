@@ -3,7 +3,6 @@
 namespace Modules\Subject\Actions;
 
 use Modules\Core\Abstracts\BaseAction;
-use Modules\Subject\Exceptions\SubjectOperationException;
 use Modules\Subject\Interfaces\Repositories\SubjectRepositoryInterface;
 use Modules\Subject\Models\Subject;
 
@@ -18,12 +17,8 @@ class UpdateSubjectAction extends BaseAction
         $subject = $input['subject'];
         $dto = $input['dto'];
 
-        return $this->executeWithTransaction(function () use ($subject, $dto): Subject {
-            if ($dto->code && $this->repository->existsByCode($dto->code, $subject->id)) {
-                throw SubjectOperationException::codeAlreadyExists();
-            }
-
-            return $this->repository->updateFromDTO($subject->id, $dto, auth()->id());
-        });
+        return $this->executeWithTransaction(
+            fn (): Subject => $this->repository->updateFromDTO($subject->id, $dto, auth()->id()),
+        );
     }
 }

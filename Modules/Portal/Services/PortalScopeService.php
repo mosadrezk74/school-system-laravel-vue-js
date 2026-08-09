@@ -132,16 +132,18 @@ class PortalScopeService
                 return collect();
             }
 
+            /*
+             * Ownership now comes solely from the class_subjects pivot: the
+             * classes table no longer carries class_teacher_id /
+             * assistant_teacher_id, so a teacher reaches a class by being
+             * assigned to teach a subject in it.
+             */
             return SchoolClass::query()
                 ->with('gradeLevel')
                 ->where('academic_year_id', AcademicYearService::id())
-                ->where(function (Builder $query) use ($teacherId) {
-                    $query->where('class_teacher_id', $teacherId)
-                        ->orWhere('assistant_teacher_id', $teacherId)
-                        ->orWhereIn('id', ClassSubject::query()
-                            ->where('teacher_id', $teacherId)
-                            ->select('class_id'));
-                })
+                ->whereIn('id', ClassSubject::query()
+                    ->where('teacher_id', $teacherId)
+                    ->select('class_id'))
                 ->get();
         });
     }

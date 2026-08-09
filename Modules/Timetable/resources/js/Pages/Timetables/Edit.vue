@@ -94,7 +94,7 @@ const conflictMessages = computed(() => {
       <VCard>
         <VCardItem>
           <VCardTitle>
-            {{ timetable.class?.name }} {{ timetable.class?.section_code }}
+            {{ timetable.class?.name }}
           </VCardTitle>
           <VCardSubtitle>
             {{ timetable.academic_year?.name }}

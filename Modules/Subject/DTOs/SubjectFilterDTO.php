@@ -10,7 +10,6 @@ final class SubjectFilterDTO extends BaseDTO
 {
     public function __construct(
         public ?string $search,
-        public ?string $subjectType,
         public ?bool $isActive,
         public string $sortBy,
         public string $sortOrder,
@@ -21,9 +20,11 @@ final class SubjectFilterDTO extends BaseDTO
     {
         return new self(
             search: $request->string(Pagination::SEARCH_PARAM)->toString() ?: null,
-            subjectType: $request->string('subject_type')->toString() ?: null,
-            isActive: $request->has('is_active') ? filter_var($request->input('is_active'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : null,
-            sortBy: $request->string(Pagination::SORT_PARAM, 'name')->toString(),
+            isActive: $request->has('is_active')
+                ? filter_var($request->input('is_active'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)
+                : null,
+            // `name` is a JSON column, so it cannot be ordered by directly.
+            sortBy: $request->string(Pagination::SORT_PARAM, Pagination::DEFAULT_SORT)->toString(),
             sortOrder: $request->string(Pagination::ORDER_PARAM, Pagination::DEFAULT_ORDER)->toString(),
             perPage: $request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE),
         );

@@ -31,7 +31,6 @@ class SubjectController extends BaseInertiaController
 
         $query = (new SubjectQuery)
             ->search($filters->search)
-            ->subjectType($filters->subjectType)
             ->isActive($filters->isActive)
             ->sort($filters->sortBy, $filters->sortOrder);
 
@@ -41,7 +40,6 @@ class SubjectController extends BaseInertiaController
             'subjects' => SubjectResource::collection($subjects),
             'filters' => $request->only([
                 Pagination::SEARCH_PARAM,
-                'subject_type',
                 'is_active',
             ]),
         ]);
@@ -51,13 +49,7 @@ class SubjectController extends BaseInertiaController
     {
         $this->authorize('create', Subject::class);
 
-        return Inertia::render('Subject::Subjects/Create', [
-            'subjectTypes' => [
-                ['title' => __('subject::subject.types.core'), 'value' => 'core'],
-                ['title' => __('subject::subject.types.elective'), 'value' => 'elective'],
-                ['title' => __('subject::subject.types.extracurricular'), 'value' => 'extracurricular'],
-            ],
-        ]);
+        return Inertia::render('Subject::Subjects/Create');
     }
 
     public function store(StoreSubjectRequest $request, CreateSubjectAction $action): RedirectResponse
@@ -73,7 +65,6 @@ class SubjectController extends BaseInertiaController
     {
         $this->authorize('view', $subject);
 
-        
         return Inertia::render('Subject::Subjects/Show', [
             'subject' => new SubjectResource($subject),
         ]);
@@ -83,14 +74,8 @@ class SubjectController extends BaseInertiaController
     {
         $this->authorize('update', $subject);
 
-        
         return Inertia::render('Subject::Subjects/Edit', [
             'subject' => new SubjectResource($subject),
-            'subjectTypes' => [
-                ['title' => __('subject::subject.types.core'), 'value' => 'core'],
-                ['title' => __('subject::subject.types.elective'), 'value' => 'elective'],
-                ['title' => __('subject::subject.types.extracurricular'), 'value' => 'extracurricular'],
-            ],
         ]);
     }
 

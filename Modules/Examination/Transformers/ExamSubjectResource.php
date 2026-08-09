@@ -35,7 +35,6 @@ class ExamSubjectResource extends BaseResource
             'class' => $this->whenLoaded('class', fn () => $this->class ? [
                 'id' => $this->class->id,
                 'name' => $this->class->name,
-                'section_code' => $this->class->section_code,
             ] : null),
         ];
     }

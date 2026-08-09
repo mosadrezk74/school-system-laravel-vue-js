@@ -142,7 +142,7 @@ class TimetableController extends BaseInertiaController
         return [
             'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
                 ->with(['gradeLevel:id,name'])
-                ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id']),
+                ->get(['id', 'name', 'grade_level_id', 'academic_year_id']),
         ];
     }
 

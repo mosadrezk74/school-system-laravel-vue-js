@@ -61,7 +61,7 @@ class StudentController extends BaseInertiaController
         return $this->render('Student::Students/Create', [
             'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
                 ->with(['gradeLevel:id,name'])
-                ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id']),
+                ->get(['id', 'name', 'grade_level_id', 'academic_year_id']),
         ]);
     }
 
@@ -109,7 +109,7 @@ class StudentController extends BaseInertiaController
             'student' => new StudentResource($student),
             'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
                 ->with(['gradeLevel:id,name'])
-                ->get(['id', 'name', 'section_code', 'grade_level_id', 'academic_year_id']),
+                ->get(['id', 'name', 'grade_level_id', 'academic_year_id']),
         ]);
     }
 

@@ -51,7 +51,7 @@ const quickActions = [
             <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
               {{ student.admission_number ?? '—' }} · {{ student.academic_year?.name ?? '—' }}
               <template v-if="student.current_class">
-                · {{ student.current_class.name }} {{ student.current_class.section_code }}
+                · {{ student.current_class.name }}
               </template>
             </p>
           </div>
@@ -172,7 +172,7 @@ const quickActions = [
                     v-if="student.current_class"
                     :href="`/academic/classes/${student.current_class.id}`"
                   >
-                    {{ student.current_class.name }} {{ student.current_class.section_code }}
+                    {{ student.current_class.name }}
                   </Link>
                   <span v-else>—</span>
                 </VListItemSubtitle>

@@ -37,7 +37,7 @@ const quickActions = [
             <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
               {{ studyMaterial.subject?.name ?? '—' }}
               <template v-if="studyMaterial.class">
-                · {{ studyMaterial.class.name }} {{ studyMaterial.class.section_code }}
+                · {{ studyMaterial.class.name }}
               </template>
               · {{ studyMaterial.teacher?.name ?? '—' }}
             </p>

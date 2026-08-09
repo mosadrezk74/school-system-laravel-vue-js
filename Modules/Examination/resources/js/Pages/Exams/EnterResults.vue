@@ -35,7 +35,7 @@ function submit() {
     <VCardItem>
       <VCardTitle>{{ t('exams.enterResults') }}</VCardTitle>
       <VCardSubtitle>
-        {{ exam.name }} · {{ examSubject.subject?.name }} · {{ examSubject.class?.name }} {{ examSubject.class?.section_code }}
+        {{ exam.name }} · {{ examSubject.subject?.name }} · {{ examSubject.class?.name }}
       </VCardSubtitle>
     </VCardItem>
 

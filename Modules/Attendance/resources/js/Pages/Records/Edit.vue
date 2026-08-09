@@ -34,7 +34,7 @@ function submit() {
     <VCardItem>
       <VCardTitle>{{ t('attendanceRecords.edit') }}</VCardTitle>
       <VCardSubtitle>
-        {{ record.class ? `${record.class.name} ${record.class.section_code}` : '—' }} · {{ record.date }}
+        {{ record.class ? record.class.name : '—' }} · {{ record.date }}
       </VCardSubtitle>
     </VCardItem>
 

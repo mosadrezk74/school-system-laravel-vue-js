@@ -61,7 +61,7 @@ function goToPage(page) {
       hide-default-footer
     >
       <template #item.class="{ item }">
-        {{ item.class?.name }} {{ item.class?.section_code }}
+        {{ item.class?.name }}
       </template>
 
       <template #item.academic_year="{ item }">

@@ -42,7 +42,7 @@ const quickActions = [
                 · {{ exam.semester.name }}
               </template>
               <template v-if="exam.class">
-                · {{ exam.class.name }} {{ exam.class.section_code }}
+                · {{ exam.class.name }}
               </template>
             </p>
           </div>

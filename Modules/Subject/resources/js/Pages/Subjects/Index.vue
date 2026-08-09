@@ -11,49 +11,52 @@ const props = defineProps({
 const { t } = useI18n()
 
 const search = ref(props.filters.search ?? '')
-const subjectTypeFilter = ref(props.filters.subject_type ?? null)
 const isActiveFilter = ref(props.filters.is_active ?? null)
 
+// Debounced so typing does not fire a request per keystroke.
 let searchTimer
-watch(search, value => {
+watch(search, () => {
   clearTimeout(searchTimer)
-  searchTimer = setTimeout(() => {
-    applyFilters()
-  }, 350)
+  searchTimer = setTimeout(applyFilters, 350)
 })
 
-watch([subjectTypeFilter, isActiveFilter], () => {
-  applyFilters()
-})
+watch(isActiveFilter, applyFilters)
+
+function currentParams(extra = {}) {
+  return {
+    search: search.value || undefined,
+    is_active: isActiveFilter.value !== null ? isActiveFilter.value : undefined,
+    ...extra,
+  }
+}
 
 function applyFilters() {
-  const params = {
-    search: search.value || undefined,
-    subject_type: subjectTypeFilter.value || undefined,
-    is_active: isActiveFilter.value !== null ? isActiveFilter.value : undefined,
-  }
-
-  router.get('/academic/subjects', params, {
+  router.get('/academic/subjects', currentParams(), {
     preserveState: true,
     preserveScroll: true,
     replace: true,
   })
 }
 
+function goToPage(page) {
+  router.get('/academic/subjects', currentParams({ page }), {
+    preserveState: true,
+    preserveScroll: true,
+  })
+}
+
 const headers = computed(() => [
-  { title: t('subject.fields.name'), key: 'name' },
-  { title: t('subject.fields.code'), key: 'code' },
-  { title: t('subject.fields.short_name'), key: 'short_name' },
-  { title: t('subject.fields.subject_type'), key: 'subject_type' },
+  { title: t('subject.fields.name'), key: 'name', sortable: false },
+  { title: t('subject.fields.description'), key: 'description', sortable: false },
   { title: t('subject.fields.is_active'), key: 'is_active', sortable: false },
   { title: '', key: 'actions', sortable: false, align: 'end' },
 ])
 
-const typeLabels = {
-  core: t('subject.types.core'),
-  elective: t('subject.types.elective'),
-  extracurricular: t('subject.types.extracurricular'),
-}
+const activeOptions = computed(() => [
+  { title: t('common.all'), value: null },
+  { title: t('common.yes'), value: true },
+  { title: t('common.no'), value: false },
+])
 
 function archive(item) {
   if (!confirm(t('subject.confirmArchive'))) return
@@ -63,28 +66,6 @@ function archive(item) {
 function restore(item) {
   if (!confirm(t('common.confirmRestore'))) return
   router.patch(`/academic/subjects/${item.id}/restore`, {}, { preserveScroll: true })
-}
-
-function goToPage(page) {
-  const params = {
-    page,
-    search: search.value || undefined,
-    subject_type: subjectTypeFilter.value || undefined,
-    is_active: isActiveFilter.value !== null ? isActiveFilter.value : undefined,
-  }
-
-  router.get('/academic/subjects', params, {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
-
-const filterOptions = {
-  active: [
-    { title: t('common.all'), value: null },
-    { title: t('common.yes'), value: true },
-    { title: t('common.no'), value: false },
-  ],
 }
 </script>
 
@@ -99,7 +80,7 @@ const filterOptions = {
       <template #append>
         <VBtn
           prepend-icon="bx-plus"
-          :href="'/academic/subjects/create'"
+          href="/academic/subjects/create"
           :as="Link"
           color="primary"
         >
@@ -110,35 +91,25 @@ const filterOptions = {
 
     <VCardText>
       <VRow>
-        <VCol cols="12" md="3">
+        <VCol cols="12" md="6">
           <VTextField
             v-model="search"
             :label="t('subject.search')"
             prepend-inner-icon="bx-search"
             clearable
             density="compact"
+            hide-details
           />
         </VCol>
 
-        <VCol cols="12" md="2">
+        <VCol cols="12" md="4">
           <VSelect
             v-model="isActiveFilter"
-            :items="filterOptions.active"
+            :items="activeOptions"
             :label="t('subject.fields.is_active')"
             density="compact"
-            clearable
+            hide-details
           />
-        </VCol>
-
-        <VCol cols="12" md="2">
-          <VBtn
-            variant="tonal"
-            color="secondary"
-            size="small"
-            @click="applyFilters"
-          >
-            {{ t('common.filter') }}
-          </VBtn>
         </VCol>
       </VRow>
     </VCardText>
@@ -150,26 +121,17 @@ const filterOptions = {
       hide-default-footer
     >
       <template #item.name="{ item }">
-        <div class="d-flex align-center">
-          <div
-            :style="{
-              width: '12px',
-              height: '12px',
-              borderRadius: '50%',
-              backgroundColor: item.color || '#2563eb',
-              marginRight: '8px'
-            }"
-          />
-          <span>{{ item.name || '-' }}</span>
+        <div class="d-flex align-center gap-2">
+          <span>{{ item.name || '—' }}</span>
+          <VChip v-if="item.deleted_at" size="x-small" color="warning">
+            {{ t('common.archived') }}
+          </VChip>
         </div>
       </template>
 
-      <template #item.subject_type="{ item }">
-        <VChip size="small">
-          {{ typeLabels[item.subject_type] || item.subject_type }}
-        </VChip>
+      <template #item.description="{ item }">
+        {{ item.description || '—' }}
       </template>
-
 
       <template #item.is_active="{ item }">
         <VChip

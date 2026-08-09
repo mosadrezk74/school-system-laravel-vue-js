@@ -159,7 +159,6 @@ it('rejects updating a student to a class from a different academic year', funct
         'grade_level_id' => $gradeLevel->id,
         'academic_year_id' => $otherYear->id,
         'name' => 'Class 1',
-        'section_code' => 'A',
         'is_active' => true,
     ]);
 

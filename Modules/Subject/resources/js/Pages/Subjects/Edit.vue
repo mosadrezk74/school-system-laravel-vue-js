@@ -5,23 +5,22 @@ import SubjectForm from './_Form.vue'
 
 const props = defineProps({
   subject: { type: Object, required: true },
-  subjectTypes: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
+/*
+ * Seeded straight from the server prop, one key per validated field.
+ *
+ * `name`/`description` take the resolved single-locale string, not the
+ * *_translations map: the form is one plain-text input, and the server merges
+ * the typed value over the row's stored translations, so locales the user did
+ * not touch are preserved.
+ */
 const form = useForm({
-  name: props.subject.name || '',
-  code: props.subject.code || '',
-  description: props.subject.description || '',
-  short_name: props.subject.short_name || '',
-  subject_type: props.subject.subject_type || 'core',
-  pass_grade: props.subject.pass_grade || 60,
-  credit_hours: props.subject.credit_hours || 1,
-  max_marks: props.subject.max_marks || 100,
-  color: props.subject.color || '#2563eb',
-  icon: props.subject.icon || '',
-  is_active: props.subject.is_active !== undefined ? props.subject.is_active : true,
+  name: props.subject.name ?? '',
+  description: props.subject.description ?? '',
+  is_active: props.subject.is_active,
 })
 
 function submit() {
@@ -35,7 +34,7 @@ function submit() {
   <VCard>
     <VCardItem>
       <VCardTitle>{{ t('subject.edit') }}</VCardTitle>
-      <VCardSubtitle>{{ subject.name || subject.code }}</VCardSubtitle>
+      <VCardSubtitle>{{ subject.name }}</VCardSubtitle>
     </VCardItem>
 
     <VDivider />
@@ -44,7 +43,6 @@ function submit() {
       <form @submit.prevent="submit">
         <SubjectForm
           :form="form"
-          :subject-types="subjectTypes"
           is-edit
         />
       </form>
@@ -56,14 +54,14 @@ function submit() {
       <VBtn
         variant="tonal"
         color="secondary"
-        :href="'/academic/subjects'"
+        href="/academic/subjects"
         :as="Link"
       >
         {{ t('common.cancel') }}
       </VBtn>
       <VBtn
-        type="submit"
         :loading="form.processing"
+        :disabled="form.processing"
         color="primary"
         @click="submit"
       >

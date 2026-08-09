@@ -28,7 +28,6 @@ class StudentAttendanceProfileResource extends BaseResource
             'current_class' => $this->currentClass ? [
                 'id' => $this->currentClass->id,
                 'name' => $this->currentClass->name,
-                'section_code' => $this->currentClass->section_code,
             ] : null,
         ];
     }

@@ -188,7 +188,7 @@ class ExamController extends BaseInertiaController
                 ])
                 ->values(),
             'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
-                ->get(['id', 'name', 'section_code', 'academic_year_id']),
+                ->get(['id', 'name', 'academic_year_id']),
             'subjects' => Subject::query()->get()->map(fn (Subject $subject) => ['id' => $subject->id, 'name' => $subject->name])->values(),
         ];
     }

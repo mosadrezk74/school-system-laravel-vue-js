@@ -67,7 +67,7 @@ function submitGrade() {
             <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
               {{ assignment.subject?.name ?? '—' }}
               <template v-if="assignment.class">
-                · {{ assignment.class.name }} {{ assignment.class.section_code }}
+                · {{ assignment.class.name }}
               </template>
               · {{ assignment.teacher?.name ?? '—' }}
             </p>

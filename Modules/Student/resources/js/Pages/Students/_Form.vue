@@ -16,7 +16,7 @@ const { t } = useI18n()
 const required = label => `${label} *`
 
 const classOptions = computed(() => props.classes.map(c => ({
-  title: [c.name, c.section_code, c.grade_level?.name]
+  title: [c.name, c.grade_level?.name]
     .filter(Boolean)
     .join(' · '),
   value: c.id,

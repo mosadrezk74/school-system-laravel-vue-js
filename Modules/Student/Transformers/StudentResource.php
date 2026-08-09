@@ -69,7 +69,6 @@ class StudentResource extends BaseResource
             'current_class' => $this->whenLoaded('currentClass', fn () => $this->currentClass ? [
                 'id' => $this->currentClass->id,
                 'name' => $this->currentClass->name,
-                'section_code' => $this->currentClass->section_code,
                 'grade_level' => $this->currentClass->relationLoaded('gradeLevel') ? [
                     'id' => $this->currentClass->gradeLevel?->id,
                     'name' => $this->currentClass->gradeLevel?->name,

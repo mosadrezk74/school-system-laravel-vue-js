@@ -3,7 +3,6 @@
 namespace Modules\Subject\Actions;
 
 use Modules\Core\Abstracts\BaseAction;
-use Modules\Subject\Exceptions\SubjectOperationException;
 use Modules\Subject\Interfaces\Repositories\SubjectRepositoryInterface;
 use Modules\Subject\Models\Subject;
 
@@ -17,12 +16,8 @@ class CreateSubjectAction extends BaseAction
     {
         $dto = $input;
 
-        return $this->executeWithTransaction(function () use ($dto): Subject {
-            if ($dto->code && $this->repository->existsByCode($dto->code)) {
-                throw SubjectOperationException::codeAlreadyExists();
-            }
-
-            return $this->repository->createFromDTO($dto, auth()->id());
-        });
+        return $this->executeWithTransaction(
+            fn (): Subject => $this->repository->createFromDTO($dto, auth()->id()),
+        );
     }
 }

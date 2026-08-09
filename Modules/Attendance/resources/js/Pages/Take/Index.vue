@@ -27,7 +27,7 @@ const selectedClass = computed(() =>
 
 const classOptions = computed(() =>
   props.classes.map(c => ({
-    title: [c.name, c.section_code].filter(Boolean).join(' · '),
+    title: c.name,
     value: c.id,
   })))
 

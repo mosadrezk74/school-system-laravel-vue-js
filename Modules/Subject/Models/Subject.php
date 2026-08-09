@@ -2,7 +2,6 @@
 
 namespace Modules\Subject\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Abstracts\BaseModel;
 use Spatie\Translatable\HasTranslations;
 
@@ -26,8 +25,6 @@ class Subject extends BaseModel
     protected function casts(): array
     {
         return [
-            'pass_grade' => 'decimal:2',
-            'max_marks' => 'decimal:2',
             'is_active' => 'boolean',
         ];
     }

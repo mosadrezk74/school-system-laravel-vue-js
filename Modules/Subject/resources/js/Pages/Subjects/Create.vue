@@ -3,23 +3,11 @@ import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import SubjectForm from './_Form.vue'
 
-defineProps({
-  subjectTypes: { type: Array, default: () => [] },
-})
-
 const { t } = useI18n()
 
 const form = useForm({
   name: '',
-  code: '',
   description: '',
-  short_name: '',
-  subject_type: 'core',
-  pass_grade: 60,
-  credit_hours: 1,
-  max_marks: 100,
-  color: '#2563eb',
-  icon: '',
   is_active: true,
 })
 
@@ -41,10 +29,7 @@ function submit() {
 
     <VCardText>
       <form @submit.prevent="submit">
-        <SubjectForm
-          :form="form"
-          :subject-types="subjectTypes"
-        />
+        <SubjectForm :form="form" />
       </form>
     </VCardText>
 
@@ -54,14 +39,14 @@ function submit() {
       <VBtn
         variant="tonal"
         color="secondary"
-        :href="'/academic/subjects'"
+        href="/academic/subjects"
         :as="Link"
       >
         {{ t('common.cancel') }}
       </VBtn>
       <VBtn
-        type="submit"
         :loading="form.processing"
+        :disabled="form.processing"
         color="primary"
         @click="submit"
       >

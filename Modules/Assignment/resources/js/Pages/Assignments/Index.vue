@@ -120,7 +120,7 @@ function goToPage(page) {
       hide-default-footer
     >
       <template #item.class="{ item }">
-        {{ item.class ? `${item.class.name} ${item.class.section_code}` : '—' }}
+        {{ item.class ? item.class.name : '—' }}
       </template>
 
       <template #item.subject="{ item }">

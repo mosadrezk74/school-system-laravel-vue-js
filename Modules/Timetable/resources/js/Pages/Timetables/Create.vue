@@ -38,7 +38,7 @@ function submit() {
           <VCol cols="12" md="6">
             <VSelect
               v-model="form.class_id"
-              :items="classes.map(c => ({ title: `${c.name} ${c.section_code}`, value: c.id }))"
+              :items="classes.map(c => ({ title: c.name, value: c.id }))"
               :label="required(t('timetables.class'))"
               :error-messages="form.errors.class_id"
               required

@@ -89,7 +89,7 @@ const statusColor = status => ({
             <p class="text-body-2 text-medium-emphasis mb-0">
               {{ student.admission_number ?? '—' }}
               <template v-if="student.current_class">
-                · {{ [student.current_class.name, student.current_class.section_code].filter(Boolean).join(' ') }}
+                · {{ student.current_class.name }}
               </template>
               <template v-if="student.academic_year">
                 · {{ student.academic_year.name }}
