@@ -4,9 +4,12 @@ import { usePage } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import VerticalNavSectionTitle from '@/@layouts/components/VerticalNavSectionTitle.vue'
 import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
+import { isNavLinkActive } from '@layouts/utils'
 
 const { t } = useI18n()
 const page = usePage()
+
+const DASHBOARD_LINK = { to: '/dashboard', icon: 'bx-home-smile' }
 
 const enabledModules = computed(() => page.props.enabledModules ?? [])
 
@@ -139,15 +142,34 @@ const visibleSections = computed(() => sections.value
     children: section.children.filter(child => isModuleEnabled(child.module)),
   }))
   .filter(section => section.children.length > 0))
+
+/*
+ * Some destinations are prefixes of others — `/reports` and
+ * `/reports/templates`, for example — so a plain prefix test would light up
+ * both entries on the child page. Resolving the single longest match here,
+ * where every destination is visible at once, keeps exactly one item active
+ * without any per-route special casing.
+ */
+const activePath = computed(() => {
+  const candidates = [
+    DASHBOARD_LINK.to,
+    ...visibleSections.value.flatMap(section => section.children.map(child => child.to)),
+  ]
+
+  return candidates
+    .filter(to => isNavLinkActive(to, page.url))
+    .sort((a, b) => b.length - a.length)[0] ?? null
+})
 </script>
 
 <template>
   <VerticalNavLink
     :item="{
       title: t('nav.dashboards'),
-      to: '/dashboard',
-      icon: 'bx-home-smile',
+      to: DASHBOARD_LINK.to,
+      icon: DASHBOARD_LINK.icon,
     }"
+    :is-active="activePath === DASHBOARD_LINK.to"
   />
 
   <template
@@ -159,6 +181,7 @@ const visibleSections = computed(() => sections.value
       v-for="child in section.children"
       :key="child.to"
       :item="{ title: child.title, to: child.to, icon: child.icon }"
+      :is-active="activePath === child.to"
     />
   </template>
 </template>
