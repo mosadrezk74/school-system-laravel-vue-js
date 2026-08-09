@@ -4,6 +4,8 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import StudentLayout from '@modules/Portal/resources/js/layouts/student.vue'
 import PortalHeader from '@modules/Portal/resources/js/components/PortalHeader.vue'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
 
 defineOptions({ layout: StudentLayout })
 
@@ -135,26 +137,18 @@ function goToPage(page) {
             </IconBtn>
           </template>
 
-          <template #no-data>
-            <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-              <VIcon icon="bx-folder-open" size="40" class="mb-2" />
-              {{ t('portal.student.noMaterials') }}
-            </div>
-          </template>
+      <template #no-data>
+        <AppEmptyState
+          icon="bx-folder-open"
+          :title="t('portal.student.noMaterials')"
+        />
+      </template>
         </VDataTable>
 
-        <template v-if="resources.meta && resources.meta.last_page > 1">
-          <VDivider />
-          <div class="d-flex justify-end pa-4">
-            <VPagination
-              :model-value="resources.meta.current_page"
-              :length="resources.meta.last_page"
-              :total-visible="5"
-              density="compact"
-              @update:model-value="goToPage"
-            />
-          </div>
-        </template>
+    <AppPagination
+      :meta="resources.meta"
+      @change="goToPage"
+    />
       </VCard>
     </VCol>
   </VRow>

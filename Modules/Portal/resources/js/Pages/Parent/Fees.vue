@@ -4,6 +4,8 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ParentLayout from '@modules/Portal/resources/js/layouts/parent.vue'
 import PortalHeader from '@modules/Portal/resources/js/components/PortalHeader.vue'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
 
 defineOptions({ layout: ParentLayout })
 
@@ -103,26 +105,18 @@ function goToPage(page) {
             </VChip>
           </template>
 
-          <template #no-data>
-            <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-              <VIcon icon="bx-receipt" size="40" class="mb-2" />
-              {{ t('portal.parent.noInvoices') }}
-            </div>
-          </template>
+      <template #no-data>
+        <AppEmptyState
+          icon="bx-receipt"
+          :title="t('portal.parent.noInvoices')"
+        />
+      </template>
         </VDataTable>
 
-        <template v-if="invoices.meta && invoices.meta.last_page > 1">
-          <VDivider />
-          <div class="d-flex justify-end pa-4">
-            <VPagination
-              :model-value="invoices.meta.current_page"
-              :length="invoices.meta.last_page"
-              :total-visible="5"
-              density="compact"
-              @update:model-value="goToPage"
-            />
-          </div>
-        </template>
+    <AppPagination
+      :meta="invoices.meta"
+      @change="goToPage"
+    />
       </VCard>
     </VCol>
   </VRow>

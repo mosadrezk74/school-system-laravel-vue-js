@@ -2,6 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   timetables: { type: Object, required: true },
@@ -9,6 +14,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const headers = computed(() => [
   { title: t('timetables.class'), key: 'class' },
@@ -19,10 +26,13 @@ const headers = computed(() => [
 ])
 
 function archive(item) {
-  if (!confirm(t('timetables.confirmArchive')))
-    return
-
-  router.delete(`/schedule/timetables/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('timetables.confirmArchive'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/schedule/timetables/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 
 function goToPage(page) {
@@ -36,21 +46,22 @@ function goToPage(page) {
 <template>
   <Head :title="t('timetables.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('timetables.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('timetables.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('timetables.title')"
+    :subtitle="t('timetables.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        prepend-icon="bx-plus"
+        :href="'/schedule/timetables/create'"
+        :as="Link"
+      >
+        {{ t('timetables.addNew') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <VBtn
-          prepend-icon="bx-plus"
-          :href="'/schedule/timetables/create'"
-          :as="Link"
-        >
-          {{ t('timetables.addNew') }}
-        </VBtn>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VDivider />
 
@@ -88,24 +99,25 @@ function goToPage(page) {
       </template>
 
       <template #no-data>
-        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-calendar-week" size="40" class="mb-2" />
-          {{ t('timetables.empty') }}
-        </div>
+        <AppEmptyState
+          icon="bx-calendar-week"
+          :title="t('timetables.empty')"
+        />
       </template>
     </VDataTable>
 
-    <template v-if="timetables.meta && timetables.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="timetables.meta.current_page"
-          :length="timetables.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="timetables.meta"
+      @change="goToPage"
+    />
   </VCard>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

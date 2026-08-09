@@ -1,6 +1,8 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
 
 const props = defineProps({
   meeting: { type: Object, required: true },
@@ -8,6 +10,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const statusColor = {
   scheduled: 'secondary',
@@ -21,17 +25,23 @@ function start() {
 }
 
 function finish() {
-  if (!confirm(t('meetings.confirmFinish')))
-    return
-
-  router.patch(`/meetings/meetings/${props.meeting.id}/finish`, {}, { preserveScroll: true })
+  askConfirm({
+    message: t('meetings.confirmFinish'),
+    color: 'error',
+    onConfirm: () => {
+      router.patch(`/meetings/meetings/${props.meeting.id}/finish`, {}, { preserveScroll: true })
+    },
+  })
 }
 
 function cancel() {
-  if (!confirm(t('meetings.confirmCancel')))
-    return
-
-  router.patch(`/meetings/meetings/${props.meeting.id}/cancel`, {}, { preserveScroll: true })
+  askConfirm({
+    message: t('meetings.confirmCancel'),
+    color: 'error',
+    onConfirm: () => {
+      router.patch(`/meetings/meetings/${props.meeting.id}/cancel`, {}, { preserveScroll: true })
+    },
+  })
 }
 
 function join() {
@@ -240,4 +250,13 @@ function copyLink() {
       </VCard>
     </VCol>
   </VRow>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

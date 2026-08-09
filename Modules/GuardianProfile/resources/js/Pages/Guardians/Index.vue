@@ -2,6 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   guardians: { type: Object, required: true },
@@ -9,6 +14,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const search = ref(props.filters.search ?? '')
 const status = ref(props.filters.is_active ?? null)
@@ -51,10 +58,13 @@ const headers = computed(() => [
 ])
 
 function archive(item) {
-  if (!confirm(t('guardians.confirmArchive')))
-    return
-
-  router.delete(`/user-management/guardians/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('guardians.confirmArchive'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/user-management/guardians/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 
 function goToPage(page) {
@@ -68,22 +78,23 @@ function goToPage(page) {
 <template>
   <Head :title="t('guardians.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('guardians.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('guardians.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('guardians.title')"
+    :subtitle="t('guardians.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        prepend-icon="bx-plus"
+        :to="'/user-management/guardians/create'"
+        :href="'/user-management/guardians/create'"
+        :as="Link"
+      >
+        {{ t('guardians.addNew') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <VBtn
-          prepend-icon="bx-plus"
-          :to="'/user-management/guardians/create'"
-          :href="'/user-management/guardians/create'"
-          :as="Link"
-        >
-          {{ t('guardians.addNew') }}
-        </VBtn>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VDivider />
 
@@ -139,24 +150,25 @@ function goToPage(page) {
       </template>
 
       <template #no-data>
-        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-user" size="40" class="mb-2" />
-          {{ t('guardians.empty') }}
-        </div>
+        <AppEmptyState
+          icon="bx-user"
+          :title="t('guardians.empty')"
+        />
       </template>
     </VDataTable>
 
-    <template v-if="guardians.meta && guardians.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="guardians.meta.current_page"
-          :length="guardians.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="guardians.meta"
+      @change="goToPage"
+    />
   </VCard>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

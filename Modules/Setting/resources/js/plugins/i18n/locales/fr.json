@@ -65,7 +65,20 @@
     "confirmArchive": "Êtes-vous sûr de vouloir archiver cet élément ?",
     "confirmRestore": "Êtes-vous sûr de vouloir restaurer cet élément ?",
     "view": "Voir",
-    "archived": "Archivé"
+    "archived": "Archivé",
+    "confirm": "Confirmer",
+    "showingResults": "Affichage de {from} à {to} sur {total}",
+    "loading": "Chargement…",
+    "filters": "Filtres",
+    "actions": "Actions",
+    "noResultsTitle": "Aucun résultat",
+    "noResultsHint": "Essayez de modifier votre recherche ou vos filtres.",
+    "archive": "Archiver",
+    "restore": "Restaurer",
+    "delete": "Supprimer",
+    "create": "Créer",
+    "required": "Requis",
+    "madeBy": "Réalisé par"
   },
   "academicYears": {
     "title": "Années scolaires",

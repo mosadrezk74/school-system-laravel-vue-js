@@ -3,6 +3,7 @@ import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
+import AppEmptyState from '@/components/AppEmptyState.vue'
 
 const props = defineProps({
   rows: { type: Array, default: () => [] },
@@ -149,10 +150,10 @@ const headers = computed(() => [
       </template>
 
       <template #no-data>
-        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-pie-chart-alt-2" size="40" class="mb-2" />
-          {{ t('finance.reports.empty') }}
-        </div>
+        <AppEmptyState
+          icon="bx-pie-chart-alt-2"
+          :title="t('finance.reports.empty')"
+        />
       </template>
     </VDataTable>
   </VCard>

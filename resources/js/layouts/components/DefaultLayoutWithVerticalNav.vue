@@ -9,9 +9,6 @@ import NavbarPaletteSwitcher from '@/layouts/components/NavbarPaletteSwitcher.vu
 import UserProfile from '@/layouts/components/UserProfile.vue'
 import { Link, usePage } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
 
 /*
  * The sidebar contents are injected rather than hardcoded so each portal can
@@ -55,27 +52,17 @@ watch(() => page.props.flash, flash => {
           <VIcon icon="bx-menu" />
         </IconBtn>
 
-        <!-- 👉 Search -->
-        <div
-          class="d-flex align-center cursor-pointer ms-lg-n3"
-          style="user-select: none;"
-        >
-          <!-- 👉 Search Trigger button -->
-          <IconBtn>
-            <VIcon icon="bx-search" />
-          </IconBtn>
-
-          <span class="d-none d-md-flex align-center text-disabled ms-2">
-            <span class="me-2">{{ t('navbar.search') }}</span>
-            <span class="meta-key">&#8984;K</span>
-          </span>
-        </div>
+        <!--
+          The page title lives in the navbar on mobile, where the sidebar is
+          hidden and there is otherwise nothing telling the user where they
+          are. On desktop the page's own AppPageHeader carries it, so this
+          would be a duplicate.
+        -->
+        <span class="text-body-1 font-weight-medium text-truncate d-lg-none ms-2">
+          {{ $page.props.name }}
+        </span>
 
         <VSpacer />
-
-        <IconBtn>
-          <VIcon icon="bx-bell" />
-        </IconBtn>
 
         <NavbarPaletteSwitcher />
 
@@ -136,25 +123,21 @@ watch(() => page.props.flash, flash => {
 </template>
 
 <style lang="scss" scoped>
-.meta-key {
-  border: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
-  border-radius: 6px;
-  block-size: 1.5625rem;
-  line-height: 1.3125rem;
-  padding-block: 0.125rem;
-  padding-inline: 0.25rem;
-}
-
 .app-logo {
   display: flex;
   align-items: center;
   column-gap: 0.75rem;
 
   .app-logo-title {
-    font-size: 1.25rem;
-    font-weight: 500;
-    line-height: 1.75rem;
-    text-transform: uppercase;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+
+    /*
+      Not uppercased: Arabic has no letter case, so `text-transform` shouted
+      the English name while leaving the Arabic one untouched — the two
+      locales rendered the same brand at different visual weights.
+    */
   }
 }
 </style>

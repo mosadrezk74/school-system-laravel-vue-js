@@ -2,6 +2,7 @@
 import { Head, router, useForm } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   classes: { type: Array, default: () => [] },
@@ -82,11 +83,12 @@ function submit() {
 <template>
   <Head :title="t('attendanceTake.title')" />
 
+  <AppPageHeader
+    :title="t('attendanceTake.title')"
+    :subtitle="t('attendanceTake.subtitle')"
+  />
+
   <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('attendanceTake.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('attendanceTake.subtitle') }}</VCardSubtitle>
-    </VCardItem>
 
     <VDivider />
 

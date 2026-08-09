@@ -1,4 +1,8 @@
 <script setup>
+import { computed, ref, watch } from 'vue'
+import { usePage } from '@inertiajs/vue3'
+import { isNavLinkActive } from '@layouts/utils'
+
 const props = defineProps({
   item: {
     type: Object,
@@ -6,17 +10,53 @@ const props = defineProps({
   },
 })
 
-const isOpen = ref(false)
+const page = usePage()
+
+/**
+ * Destinations owned by this group, including nested groups, so a match at any
+ * depth counts as "my subtree is active".
+ *
+ * @param {object} item
+ * @returns {string[]}
+ */
+const collectPaths = item => (item.children ?? []).flatMap(child =>
+  (child.children ? collectPaths(child) : (child.to ? [child.to] : [])))
+
+/** True when the current URL lives anywhere inside this group. */
+const isGroupActive = computed(() =>
+  collectPaths(props.item).some(to => isNavLinkActive(to, page.url)))
+
+/*
+ * Opened by default when it owns the current page. Previously this was a bare
+ * `ref(false)`, so landing on a nested route — a direct link, a refresh, a
+ * back button — left the parent collapsed and the active child invisible.
+ */
+const isOpen = ref(isGroupActive.value)
+
+/*
+ * Re-open on navigation into the subtree, but never force it *closed*: a user
+ * who deliberately expanded a group should keep it open while they browse
+ * elsewhere.
+ */
+watch(isGroupActive, active => {
+  if (active)
+    isOpen.value = true
+})
 </script>
 
 <template>
   <li
     class="nav-group"
-    :class="isOpen && 'open'"
+    :class="[isOpen && 'open', isGroupActive && 'active']"
   >
     <div
       class="nav-group-label"
+      role="button"
+      tabindex="0"
+      :aria-expanded="isOpen"
       @click="isOpen = !isOpen"
+      @keydown.enter.prevent="isOpen = !isOpen"
+      @keydown.space.prevent="isOpen = !isOpen"
     >
       <VIcon
         :icon="item.icon || 'bxs-circle'"

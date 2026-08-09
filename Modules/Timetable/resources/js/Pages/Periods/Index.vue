@@ -2,6 +2,10 @@
 import { Head, Link, router, useForm } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   periods: { type: Object, required: true },
@@ -10,6 +14,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const weekdayForm = useForm({
   active_weekdays: [...props.activeWeekdays],
@@ -29,10 +35,13 @@ const headers = computed(() => [
 ])
 
 function archive(item) {
-  if (!confirm(t('timetables.periods.confirmArchive')))
-    return
-
-  router.delete(`/schedule/periods/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('timetables.periods.confirmArchive'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/schedule/periods/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 </script>
 
@@ -41,11 +50,12 @@ function archive(item) {
 
   <VRow>
     <VCol cols="12">
-      <VCard>
-        <VCardItem>
-          <VCardTitle>{{ t('timetables.periods.weekdaysTitle') }}</VCardTitle>
-          <VCardSubtitle>{{ t('timetables.periods.weekdaysSubtitle') }}</VCardSubtitle>
-        </VCardItem>
+  <AppPageHeader
+    :title="t('timetables.periods.weekdaysTitle')"
+    :subtitle="t('timetables.periods.weekdaysSubtitle')"
+  />
+
+  <VCard>
 
         <VDivider />
 
@@ -129,14 +139,23 @@ function archive(item) {
             </IconBtn>
           </template>
 
-          <template #no-data>
-            <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-              <VIcon icon="bx-time-five" size="40" class="mb-2" />
-              {{ t('timetables.periods.empty') }}
-            </div>
-          </template>
+      <template #no-data>
+        <AppEmptyState
+          icon="bx-time-five"
+          :title="t('timetables.periods.empty')"
+        />
+      </template>
         </VDataTable>
       </VCard>
     </VCol>
   </VRow>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

@@ -2,6 +2,7 @@
 import { Head, useForm } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   classes: { type: Array, default: () => [] },
@@ -70,11 +71,12 @@ function generate() {
 
   <VRow>
     <VCol cols="12">
-      <VCard>
-        <VCardItem>
-          <VCardTitle>{{ t('attendanceReport.title') }}</VCardTitle>
-          <VCardSubtitle>{{ t('attendanceReport.subtitle') }}</VCardSubtitle>
-        </VCardItem>
+  <AppPageHeader
+    :title="t('attendanceReport.title')"
+    :subtitle="t('attendanceReport.subtitle')"
+  />
+
+  <VCard>
 
         <VDivider />
 

@@ -2,6 +2,9 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   messages: { type: Object, required: true },
@@ -48,21 +51,22 @@ function goToPage(page) {
 <template>
   <Head :title="t('communication.messages.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('communication.messages.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('communication.messages.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('communication.messages.title')"
+    :subtitle="t('communication.messages.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        prepend-icon="bx-plus"
+        :href="'/communication/messages/create'"
+        :as="Link"
+      >
+        {{ t('communication.messages.addNew') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <VBtn
-          prepend-icon="bx-plus"
-          :href="'/communication/messages/create'"
-          :as="Link"
-        >
-          {{ t('communication.messages.addNew') }}
-        </VBtn>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VDivider />
 
@@ -116,24 +120,16 @@ function goToPage(page) {
       </template>
 
       <template #no-data>
-        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-message-detail" size="40" class="mb-2" />
-          {{ t('communication.messages.empty') }}
-        </div>
+        <AppEmptyState
+          icon="bx-message-detail"
+          :title="t('communication.messages.empty')"
+        />
       </template>
     </VDataTable>
 
-    <template v-if="messages.meta && messages.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="messages.meta.current_page"
-          :length="messages.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="messages.meta"
+      @change="goToPage"
+    />
   </VCard>
 </template>

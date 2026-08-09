@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DynamicFilters from '@modules/Report/resources/js/components/DynamicFilters.vue'
 import DynamicTable from '@modules/Report/resources/js/components/DynamicTable.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   reports: { type: Array, default: () => [] },
@@ -111,23 +112,24 @@ async function run() {
 
   <VRow>
     <VCol cols="12">
-      <VCard>
-        <VCardItem>
-          <VCardTitle>{{ t('report.title') }}</VCardTitle>
-          <VCardSubtitle>{{ t('report.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('report.title')"
+    :subtitle="t('report.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        variant="tonal"
+        color="secondary"
+        prepend-icon="bx-cog"
+        href="/reports/templates"
+        :as="Link"
+      >
+        {{ t('report.templates.title') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-          <template #append>
-            <VBtn
-              variant="tonal"
-              color="secondary"
-              prepend-icon="bx-cog"
-              href="/reports/templates"
-              :as="Link"
-            >
-              {{ t('report.templates.title') }}
-            </VBtn>
-          </template>
-        </VCardItem>
+  <VCard>
 
         <VDivider />
 

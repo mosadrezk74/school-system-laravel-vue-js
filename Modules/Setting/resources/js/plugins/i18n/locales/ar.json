@@ -86,7 +86,20 @@
     "confirmRestore": "هل أنت متأكد من استعادة هذا العنصر؟",
     "back": "رجوع",
     "view": "عرض",
-    "archived": "مؤرشف"
+    "archived": "مؤرشف",
+    "confirm": "تأكيد",
+    "showingResults": "عرض {from}–{to} من {total}",
+    "loading": "جارٍ التحميل…",
+    "filters": "عوامل التصفية",
+    "actions": "الإجراءات",
+    "noResultsTitle": "لا توجد نتائج",
+    "noResultsHint": "حاول تعديل البحث أو عوامل التصفية.",
+    "archive": "أرشفة",
+    "restore": "استعادة",
+    "delete": "حذف",
+    "create": "إنشاء",
+    "required": "مطلوب",
+    "madeBy": "صُنع بواسطة"
   },
   "academicYears": {
     "title": "السنوات الدراسية",

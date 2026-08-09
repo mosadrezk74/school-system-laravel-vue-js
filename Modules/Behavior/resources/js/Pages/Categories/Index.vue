@@ -3,6 +3,11 @@ import { Head, router, useForm } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TranslatableTextInput from '@/components/TranslatableTextInput.vue'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   categories: { type: Object, required: true },
@@ -10,6 +15,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 // A trailing "*" on the label is the one cue every field needs, required or
 // not — leaving it off already reads as optional, so there's no separate
@@ -94,10 +101,13 @@ function save() {
 }
 
 function remove(item) {
-  if (!confirm(t('behaviorCategories.confirmDelete', { name: item.name })))
-    return
-
-  router.delete(`/behavior/categories/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('behaviorCategories.confirmDelete', { name: item.name }),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/behavior/categories/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 
 function goToPage(page) {
@@ -111,20 +121,21 @@ function goToPage(page) {
 <template>
   <Head :title="t('behaviorCategories.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('behaviorCategories.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('behaviorCategories.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('behaviorCategories.title')"
+    :subtitle="t('behaviorCategories.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        prepend-icon="bx-plus"
+        @click="openCreate"
+      >
+        {{ t('behaviorCategories.create') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <VBtn
-          prepend-icon="bx-plus"
-          @click="openCreate"
-        >
-          {{ t('behaviorCategories.create') }}
-        </VBtn>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VCardText>
       <VTextField
@@ -171,25 +182,17 @@ function goToPage(page) {
       </template>
 
       <template #no-data>
-        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-shield-quarter" size="40" class="mb-2" />
-          {{ t('behaviorCategories.empty') }}
-        </div>
+        <AppEmptyState
+          icon="bx-shield-quarter"
+          :title="t('behaviorCategories.empty')"
+        />
       </template>
     </VDataTable>
 
-    <template v-if="categories.meta && categories.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="categories.meta.current_page"
-          :length="categories.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="categories.meta"
+      @change="goToPage"
+    />
   </VCard>
 
   <VDialog
@@ -277,4 +280,13 @@ function goToPage(page) {
       </VCardText>
     </VCard>
   </VDialog>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

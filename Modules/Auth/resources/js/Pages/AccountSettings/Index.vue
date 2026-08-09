@@ -2,6 +2,7 @@
 import { Head, useForm } from '@inertiajs/vue3'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   account: { type: Object, required: true },
@@ -67,11 +68,12 @@ const tabHasError = (form, fields) => fields.some(field => !!form.errors[field])
 <template>
   <Head :title="t('accountSettings.title')" />
 
+  <AppPageHeader
+    :title="t('accountSettings.title')"
+    :subtitle="t('accountSettings.subtitle')"
+  />
+
   <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('accountSettings.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('accountSettings.subtitle') }}</VCardSubtitle>
-    </VCardItem>
 
     <VDivider />
 

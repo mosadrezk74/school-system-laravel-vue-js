@@ -4,6 +4,10 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TeacherLayout from '@modules/Portal/resources/js/layouts/teacher.vue'
 import PortalHeader from '@modules/Portal/resources/js/components/PortalHeader.vue'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
 
 defineOptions({ layout: TeacherLayout })
 
@@ -14,6 +18,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const search = ref(props.filters.search ?? '')
 const type = ref(props.filters.type ?? null)
@@ -54,10 +60,13 @@ const headers = computed(() => [
 ])
 
 function archive(item) {
-  if (!confirm(t('portal.teacher.confirmArchive')))
-    return
-
-  router.delete(`/teacher/study-materials/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('portal.teacher.confirmArchive'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/teacher/study-materials/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 
 function formatDate(value) {
@@ -142,27 +151,28 @@ function goToPage(page) {
             </IconBtn>
           </template>
 
-          <template #no-data>
-            <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-              <VIcon icon="bx-folder-open" size="40" class="mb-2" />
-              {{ t('portal.teacher.noMaterials') }}
-            </div>
-          </template>
+      <template #no-data>
+        <AppEmptyState
+          icon="bx-folder-open"
+          :title="t('portal.teacher.noMaterials')"
+        />
+      </template>
         </VDataTable>
 
-        <template v-if="resources.meta && resources.meta.last_page > 1">
-          <VDivider />
-          <div class="d-flex justify-end pa-4">
-            <VPagination
-              :model-value="resources.meta.current_page"
-              :length="resources.meta.last_page"
-              :total-visible="5"
-              density="compact"
-              @update:model-value="goToPage"
-            />
-          </div>
-        </template>
+    <AppPagination
+      :meta="resources.meta"
+      @change="goToPage"
+    />
       </VCard>
     </VCol>
   </VRow>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

@@ -2,12 +2,16 @@
 import { Link, router } from '@inertiajs/vue3'
 import { Head } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
 
 const props = defineProps({
   record: { type: Object, required: true },
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const statusColors = {
   present: 'success',
@@ -17,10 +21,13 @@ const statusColors = {
 }
 
 function destroy() {
-  if (!confirm(t('attendanceRecords.confirmDelete')))
-    return
-
-  router.delete(`/attendance/records/${props.record.id}`)
+  askConfirm({
+    message: t('attendanceRecords.confirmDelete'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/attendance/records/${props.record.id}`)
+    },
+  })
 }
 </script>
 
@@ -164,4 +171,13 @@ function destroy() {
       </VCard>
     </VCol>
   </VRow>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

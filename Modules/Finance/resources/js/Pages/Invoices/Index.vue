@@ -3,6 +3,11 @@ import { Head, Link, router, useForm } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   invoices: { type: Object, required: true },
@@ -12,6 +17,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 const { formatMoney, formatDate } = useMoney()
 
 const search = ref(props.filters.search ?? '')
@@ -82,10 +89,13 @@ const headers = computed(() => [
 ])
 
 function archive(item) {
-  if (!confirm(t('finance.confirmArchive')))
-    return
-
-  router.delete(`/finance/invoices/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('finance.confirmArchive'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/finance/invoices/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 
 const generateDialog = ref(false)
@@ -125,31 +135,32 @@ function goToPage(page) {
 <template>
   <Head :title="t('finance.invoices.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('finance.invoices.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('finance.invoices.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('finance.invoices.title')"
+    :subtitle="t('finance.invoices.subtitle')"
+  >
+    <template #actions>
+      <div class="d-flex gap-3">
+        <VBtn
+          variant="tonal"
+          color="secondary"
+          prepend-icon="bx-receipt"
+          @click="openGenerate"
+        >
+          {{ t('finance.invoices.generate') }}
+        </VBtn>
+        <VBtn
+          prepend-icon="bx-plus"
+          href="/finance/invoices/create"
+          :as="Link"
+        >
+          {{ t('finance.invoices.addNew') }}
+        </VBtn>
+      </div>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <div class="d-flex gap-3">
-          <VBtn
-            variant="tonal"
-            color="secondary"
-            prepend-icon="bx-receipt"
-            @click="openGenerate"
-          >
-            {{ t('finance.invoices.generate') }}
-          </VBtn>
-          <VBtn
-            prepend-icon="bx-plus"
-            href="/finance/invoices/create"
-            :as="Link"
-          >
-            {{ t('finance.invoices.addNew') }}
-          </VBtn>
-        </div>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VDivider />
 
@@ -253,25 +264,17 @@ function goToPage(page) {
       </template>
 
       <template #no-data>
-        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-receipt" size="40" class="mb-2" />
-          {{ t('finance.invoices.empty') }}
-        </div>
+        <AppEmptyState
+          icon="bx-receipt"
+          :title="t('finance.invoices.empty')"
+        />
       </template>
     </VDataTable>
 
-    <template v-if="invoices.meta && invoices.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="invoices.meta.current_page"
-          :length="invoices.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="invoices.meta"
+      @change="goToPage"
+    />
   </VCard>
 
   <VDialog v-model="generateDialog" max-width="560">
@@ -339,4 +342,13 @@ function goToPage(page) {
       </VCardText>
     </VCard>
   </VDialog>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

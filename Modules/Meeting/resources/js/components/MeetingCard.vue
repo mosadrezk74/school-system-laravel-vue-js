@@ -1,12 +1,16 @@
 <script setup>
 import { Link, router } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
 
 const props = defineProps({
   meeting: { type: Object, required: true },
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const statusColor = {
   scheduled: 'secondary',
@@ -20,10 +24,13 @@ function start() {
 }
 
 function finish() {
-  if (!confirm(t('meetings.confirmFinish')))
-    return
-
-  router.patch(`/meetings/meetings/${props.meeting.id}/finish`, {}, { preserveScroll: true })
+  askConfirm({
+    message: t('meetings.confirmFinish'),
+    color: 'error',
+    onConfirm: () => {
+      router.patch(`/meetings/meetings/${props.meeting.id}/finish`, {}, { preserveScroll: true })
+    },
+  })
 }
 
 function join() {
@@ -111,4 +118,12 @@ function copyLink() {
       </IconBtn>
     </VCardText>
   </VCard>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

@@ -2,6 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   classes: { type: Object, required: true },
@@ -9,6 +14,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const search = ref(props.filters.search ?? '')
 const status = ref(props.filters.is_active ?? null)
@@ -51,10 +58,13 @@ const headers = computed(() => [
 ])
 
 function archive(item) {
-  if (!confirm(t('classes.confirmArchive')))
-    return
-
-  router.delete(`/academic/classes/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('classes.confirmArchive'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/academic/classes/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 
 function goToPage(page) {
@@ -68,22 +78,23 @@ function goToPage(page) {
 <template>
   <Head :title="t('classes.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('classes.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('classes.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('classes.title')"
+    :subtitle="t('classes.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        prepend-icon="bx-plus"
+        :to="'/academic/classes/create'"
+        :href="'/academic/classes/create'"
+        :as="Link"
+      >
+        {{ t('classes.addNew') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <VBtn
-          prepend-icon="bx-plus"
-          :to="'/academic/classes/create'"
-          :href="'/academic/classes/create'"
-          :as="Link"
-        >
-          {{ t('classes.addNew') }}
-        </VBtn>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VDivider />
 
@@ -151,24 +162,25 @@ function goToPage(page) {
       </template>
 
       <template #no-data>
-        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-chalkboard" size="40" class="mb-2" />
-          {{ t('classes.empty') }}
-        </div>
+        <AppEmptyState
+          icon="bx-chalkboard"
+          :title="t('classes.empty')"
+        />
       </template>
     </VDataTable>
 
-    <template v-if="classes.meta && classes.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="classes.meta.current_page"
-          :length="classes.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="classes.meta"
+      @change="goToPage"
+    />
   </VCard>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

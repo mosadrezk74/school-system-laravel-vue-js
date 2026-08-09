@@ -3,6 +3,8 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import MeetingCard from '../../components/MeetingCard.vue'
+import AppPagination from '@/components/AppPagination.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   meetings: { type: Object, required: true },
@@ -54,21 +56,22 @@ function goToPage(page) {
 <template>
   <Head :title="t('meetings.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('meetings.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('meetings.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('meetings.title')"
+    :subtitle="t('meetings.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        prepend-icon="bx-plus"
+        :href="'/meetings/meetings/create'"
+        :as="Link"
+      >
+        {{ t('meetings.addNew') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <VBtn
-          prepend-icon="bx-plus"
-          :href="'/meetings/meetings/create'"
-          :as="Link"
-        >
-          {{ t('meetings.addNew') }}
-        </VBtn>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VDivider />
 
@@ -128,17 +131,9 @@ function goToPage(page) {
       </div>
     </VCardText>
 
-    <template v-if="meetings.meta && meetings.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="meetings.meta.current_page"
-          :length="meetings.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="meetings.meta"
+      @change="goToPage"
+    />
   </VCard>
 </template>

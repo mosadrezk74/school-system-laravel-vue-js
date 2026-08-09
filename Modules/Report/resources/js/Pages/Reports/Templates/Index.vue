@@ -2,6 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   templates: { type: Object, required: true },
@@ -11,6 +16,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const search = ref(props.filters.search ?? '')
 const category = ref(props.filters.category ?? null)
@@ -67,10 +74,13 @@ function categoryLabel(value) {
 }
 
 function remove(item) {
-  if (!confirm(t('report.confirmDelete')))
-    return
-
-  router.delete(`/reports/templates/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('report.confirmDelete'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/reports/templates/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 
 function goToPage(page) {
@@ -84,32 +94,33 @@ function goToPage(page) {
 <template>
   <Head :title="t('report.templates.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('report.templates.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('report.templates.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('report.templates.title')"
+    :subtitle="t('report.templates.subtitle')"
+  >
+    <template #actions>
+      <div class="d-flex gap-3">
+        <VBtn
+          variant="tonal"
+          color="secondary"
+          prepend-icon="bx-arrow-back"
+          href="/reports"
+          :as="Link"
+        >
+          {{ t('report.backToReports') }}
+        </VBtn>
+        <VBtn
+          prepend-icon="bx-plus"
+          href="/reports/templates/create"
+          :as="Link"
+        >
+          {{ t('report.templates.addNew') }}
+        </VBtn>
+      </div>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <div class="d-flex gap-3">
-          <VBtn
-            variant="tonal"
-            color="secondary"
-            prepend-icon="bx-arrow-back"
-            href="/reports"
-            :as="Link"
-          >
-            {{ t('report.backToReports') }}
-          </VBtn>
-          <VBtn
-            prepend-icon="bx-plus"
-            href="/reports/templates/create"
-            :as="Link"
-          >
-            {{ t('report.templates.addNew') }}
-          </VBtn>
-        </div>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VDivider />
 
@@ -178,24 +189,25 @@ function goToPage(page) {
       </template>
 
       <template #no-data>
-        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-file" size="40" class="mb-2" />
-          {{ t('report.templates.empty') }}
-        </div>
+        <AppEmptyState
+          icon="bx-file"
+          :title="t('report.templates.empty')"
+        />
       </template>
     </VDataTable>
 
-    <template v-if="templates.meta && templates.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="templates.meta.current_page"
-          :length="templates.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="templates.meta"
+      @change="goToPage"
+    />
   </VCard>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

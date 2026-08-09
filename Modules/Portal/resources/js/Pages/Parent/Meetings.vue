@@ -5,6 +5,8 @@ import { useI18n } from 'vue-i18n'
 import ParentLayout from '@modules/Portal/resources/js/layouts/parent.vue'
 import PortalHeader from '@modules/Portal/resources/js/components/PortalHeader.vue'
 import ChildSelector from '@modules/Portal/resources/js/components/ChildSelector.vue'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
 
 defineOptions({ layout: ParentLayout })
 
@@ -97,26 +99,18 @@ function goToPage(page) {
             </VBtn>
           </template>
 
-          <template #no-data>
-            <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-              <VIcon icon="bx-video" size="40" class="mb-2" />
-              {{ t('portal.parent.noMeetings') }}
-            </div>
-          </template>
+      <template #no-data>
+        <AppEmptyState
+          icon="bx-video"
+          :title="t('portal.parent.noMeetings')"
+        />
+      </template>
         </VDataTable>
 
-        <template v-if="meetings.meta && meetings.meta.last_page > 1">
-          <VDivider />
-          <div class="d-flex justify-end pa-4">
-            <VPagination
-              :model-value="meetings.meta.current_page"
-              :length="meetings.meta.last_page"
-              :total-visible="5"
-              density="compact"
-              @update:model-value="goToPage"
-            />
-          </div>
-        </template>
+    <AppPagination
+      :meta="meetings.meta"
+      @change="goToPage"
+    />
       </VCard>
     </VCol>
   </VRow>

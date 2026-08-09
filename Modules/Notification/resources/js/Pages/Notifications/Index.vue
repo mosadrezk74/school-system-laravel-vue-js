@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PortalHeader from '@modules/Portal/resources/js/components/PortalHeader.vue'
+import AppPagination from '@/components/AppPagination.vue'
 
 const props = defineProps({
   notifications: { type: Object, required: true },
@@ -129,18 +130,10 @@ function goToPage(page) {
           {{ t('notification.empty') }}
         </VCardText>
 
-        <template v-if="notifications.meta && notifications.meta.last_page > 1">
-          <VDivider />
-          <div class="d-flex justify-end pa-4">
-            <VPagination
-              :model-value="notifications.meta.current_page"
-              :length="notifications.meta.last_page"
-              :total-visible="5"
-              density="compact"
-              @update:model-value="goToPage"
-            />
-          </div>
-        </template>
+    <AppPagination
+      :meta="notifications.meta"
+      @change="goToPage"
+    />
       </VCard>
     </VCol>
   </VRow>

@@ -2,6 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   classrooms: { type: Object, required: true },
@@ -9,6 +14,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const search = ref(props.filters.search ?? '')
 const roomTypeFilter = ref(props.filters.room_type ?? null)
@@ -61,13 +68,23 @@ const roomTypeLabels = {
 }
 
 function archive(item) {
-  if (!confirm(t('classroom.confirmArchive'))) return
-  router.delete(`/academic/classrooms/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('classroom.confirmArchive'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/academic/classrooms/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 
 function restore(item) {
-  if (!confirm(t('common.confirmRestore'))) return
-  router.patch(`/academic/classrooms/${item.id}/restore`, {}, { preserveScroll: true })
+  askConfirm({
+    message: t('common.confirmRestore'),
+    color: 'primary',
+    onConfirm: () => {
+      router.patch(`/academic/classrooms/${item.id}/restore`, {}, { preserveScroll: true })
+    },
+  })
 }
 
 function goToPage(page) {
@@ -96,22 +113,23 @@ const filterOptions = {
 <template>
   <Head :title="t('classroom.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('classroom.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('classroom.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('classroom.title')"
+    :subtitle="t('classroom.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        prepend-icon="bx-plus"
+        :href="'/academic/classrooms/create'"
+        :as="Link"
+        color="primary"
+      >
+        {{ t('classroom.addNew') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <VBtn
-          prepend-icon="bx-plus"
-          :href="'/academic/classrooms/create'"
-          :as="Link"
-          color="primary"
-        >
-          {{ t('classroom.addNew') }}
-        </VBtn>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VCardText>
       <VRow>
@@ -186,23 +204,22 @@ const filterOptions = {
       </template>
 
       <template #no-data>
-        <div class="pa-8 text-center text-disabled">
-          {{ t('classroom.empty') }}
-        </div>
+        <AppEmptyState :title="t('classroom.empty')" />
       </template>
     </VDataTable>
 
-    <template v-if="classrooms.meta && classrooms.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="classrooms.meta.current_page"
-          :length="classrooms.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="classrooms.meta"
+      @change="goToPage"
+    />
   </VCard>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

@@ -2,6 +2,8 @@
 import { Link, router, useForm } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
 
 const props = defineProps({
   exam: { type: Object, required: true },
@@ -10,6 +12,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const dialog = ref(false)
 const editingSubject = ref(null)
@@ -69,10 +73,13 @@ function submit() {
 }
 
 function remove(examSubject) {
-  if (!confirm(t('exams.confirmRemoveSubject')))
-    return
-
-  router.delete(`/examination/exams/${props.exam.id}/subjects/${examSubject.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('exams.confirmRemoveSubject'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/examination/exams/${props.exam.id}/subjects/${examSubject.id}`, { preserveScroll: true })
+    },
+  })
 }
 </script>
 
@@ -210,4 +217,13 @@ function remove(examSubject) {
       </VCardText>
     </VCard>
   </VDialog>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

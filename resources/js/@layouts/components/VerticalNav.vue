@@ -34,9 +34,63 @@ watch(() => page.url, () => {
 const isVerticalNavScrolled = ref(false)
 const updateIsVerticalNavScrolled = val => isVerticalNavScrolled.value = val
 
+/*
+ * Sidebar scroll survives a full page load.
+ *
+ * Inertia visits keep the sidebar mounted, so its scrollTop is naturally
+ * preserved; a hard reload (F5, a direct URL, a redirect after a form post)
+ * rebuilds it from scratch and would otherwise snap back to the top —
+ * stranding someone working in Finance or Settings, which sit near the
+ * bottom of a long nav.
+ *
+ * sessionStorage rather than localStorage: this is per-tab UI state, and it
+ * should not follow the user into a new session weeks later.
+ */
+const SCROLL_KEY = 'vertical-nav-scroll'
+
+const scrollContainer = ref(null)
+
 const handleNavScroll = evt => {
   isVerticalNavScrolled.value = evt.target.scrollTop > 0
+
+  try {
+    sessionStorage.setItem(SCROLL_KEY, String(evt.target.scrollTop))
+  } catch {
+    // Private browsing / storage disabled — scroll memory is a nicety, so
+    // failing to persist it must never break the nav.
+  }
 }
+
+onMounted(async () => {
+  await nextTick()
+
+  const container = refNav.value?.querySelector?.('.nav-items')
+
+  if (!container)
+    return
+
+  scrollContainer.value = container
+
+  let saved = null
+
+  try {
+    saved = sessionStorage.getItem(SCROLL_KEY)
+  } catch {
+    return
+  }
+
+  if (saved === null)
+    return
+
+  /*
+   * Restored before the active link's own scroll-into-view runs. That handler
+   * is a no-op whenever the item is already visible, so the two cooperate:
+   * the saved position wins when it already shows the active item, and the
+   * link corrects it when it does not.
+   */
+  container.scrollTop = Number(saved)
+  isVerticalNavScrolled.value = container.scrollTop > 0
+})
 </script>
 
 <template>

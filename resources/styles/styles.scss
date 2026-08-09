@@ -1,1 +1,548 @@
-// Write your overrides
+/*
+  Application design system.
+  ---------------------------------------------------------------------------
+  This file is the single place that decides how the product *feels*: type
+  scale, spacing rhythm, radii, elevation and control density. It loads after
+  Vuetify and the Sneat template stylesheets (see resources/js/main.js), so it
+  is the last word on anything it touches.
+
+  Everything here is expressed as custom properties first and applied second,
+  so a module page never needs to hardcode a size to look consistent.
+*/
+
+@use "sass:map";
+
+/* ===========================================================================
+   1. Tokens
+   ===========================================================================
+   One scale, used everywhere. Values are in rem so a user's browser font-size
+   preference still scales the interface.
+*/
+:root {
+  /* Spacing — a 4px base, which is what every `pa-*`/`gap-*` utility already
+     rounds to, so the token scale and Vuetify's utilities never disagree. */
+  --app-space-1: 0.25rem;
+  --app-space-2: 0.5rem;
+  --app-space-3: 0.75rem;
+  --app-space-4: 1rem;
+  --app-space-5: 1.25rem;
+  --app-space-6: 1.5rem;
+  --app-space-8: 2rem;
+  --app-space-10: 2.5rem;
+  --app-space-12: 3rem;
+
+  /* The gutter between the page edge and its content. Steps up with the
+     viewport so a phone is not wasting a third of its width on margin. */
+  --app-page-gutter: var(--app-space-4);
+
+  /* Radii — restrained. Large pills read as consumer software; this is an
+     administrative tool that people use for hours. */
+  --app-radius-sm: 6px;
+  --app-radius-md: 8px;
+  --app-radius-lg: 12px;
+
+  /* Control geometry. Vuetify's `comfortable` density gives a 48px input;
+     40px is the size that modern SaaS tools converge on — still a comfortable
+     touch target, but it lets a form show more of itself at once. */
+  --app-control-height: 40px;
+  --app-control-height-sm: 32px;
+  --app-control-height-lg: 48px;
+
+  /* Elevation. Two shadows, both soft. A border carries most of the
+     separation work; the shadow only lifts things that genuinely float. */
+  --app-shadow-sm: 0 1px 2px rgba(var(--v-shadow-key-umbra-color), 0.06);
+  --app-shadow-md:
+    0 4px 12px rgba(var(--v-shadow-key-umbra-color), 0.08),
+    0 1px 3px rgba(var(--v-shadow-key-umbra-color), 0.04);
+  --app-shadow-lg:
+    0 12px 32px rgba(var(--v-shadow-key-umbra-color), 0.12),
+    0 2px 8px rgba(var(--v-shadow-key-umbra-color), 0.06);
+
+  /* A hairline that reads as a border in both themes without ever going
+     black-on-dark or grey-on-grey. */
+  --app-border: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
+}
+
+@media (min-width: 600px) {
+  :root { --app-page-gutter: var(--app-space-6); }
+}
+
+@media (min-width: 1280px) {
+  :root { --app-page-gutter: var(--app-space-8); }
+}
+
+/* ===========================================================================
+   2. Typography
+   ===========================================================================
+   Alexandria (loaded in plugins/webfontloader.js) covers Arabic and Latin in
+   one family. Material's default scale is tuned for Latin and clips Arabic
+   ascenders/descenders, so line-heights here are deliberately looser than
+   Vuetify's defaults and the display sizes are pulled down — a 2.125rem `h4`
+   as a page title is a 2014 dashboard, not a 2026 one.
+*/
+
+$app-font-family: "Alexandria", "Segoe UI", roboto, "Helvetica Neue", arial, sans-serif;
+
+:root {
+  --app-font-family: #{$app-font-family};
+
+  /* Arabic needs more leading than Latin at the same size. Applying the
+     looser value globally costs Latin nothing and keeps a single scale. */
+  --app-line-height-tight: 1.35;
+  --app-line-height-base: 1.6;
+}
+
+html,
+body,
+.v-application {
+  font-family: var(--app-font-family) !important;
+}
+
+.v-application {
+  /* Vuetify sets this on the root; matching it here means body copy inherits
+     the Arabic-safe leading instead of Material's 1.5. */
+  line-height: var(--app-line-height-base);
+  letter-spacing: normal;
+}
+
+/*
+  The type scale. Vuetify's `text-*` classes are redefined rather than
+  replaced with bespoke names, so all 200+ existing usages across the modules
+  inherit the new scale without touching a single page.
+
+  `letter-spacing: normal` on every step is load-bearing: Material's positive
+  tracking on small text and negative tracking on headings both damage Arabic,
+  which is a connected script — letters are not meant to be pushed apart.
+*/
+.v-application {
+  .text-h1,
+  .text-h2,
+  .text-h3,
+  .text-h4,
+  .text-h5,
+  .text-h6 {
+    font-family: var(--app-font-family) !important;
+    letter-spacing: normal !important;
+    line-height: var(--app-line-height-tight) !important;
+  }
+
+  .text-h1 { font-size: 2.5rem !important;   font-weight: 600 !important; }
+  .text-h2 { font-size: 2rem !important;     font-weight: 600 !important; }
+  .text-h3 { font-size: 1.625rem !important; font-weight: 600 !important; }
+
+  /* h4 is the page-title step. Pages across the app already reach for
+     `text-h4` for their heading, so this is the size that decides whether the
+     product reads as modern. 1.375rem is the Linear/Stripe register. */
+  .text-h4 { font-size: 1.375rem !important; font-weight: 600 !important; }
+  .text-h5 { font-size: 1.125rem !important; font-weight: 600 !important; }
+  .text-h6 { font-size: 1rem !important;     font-weight: 600 !important; }
+
+  .text-body-1 {
+    font-size: 0.9375rem !important;
+    line-height: var(--app-line-height-base) !important;
+    letter-spacing: normal !important;
+  }
+
+  .text-body-2 {
+    font-size: 0.875rem !important;
+    line-height: var(--app-line-height-base) !important;
+    letter-spacing: normal !important;
+  }
+
+  .text-caption {
+    font-size: 0.8125rem !important;
+    line-height: 1.5 !important;
+    letter-spacing: normal !important;
+  }
+
+  .text-overline {
+    font-size: 0.6875rem !important;
+    font-weight: 600 !important;
+    line-height: 1.5 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase;
+  }
+}
+
+/*
+  Arabic never uses capitalisation, so Material's uppercasing of buttons and
+  overlines produces nothing in Arabic while shouting in English. Sentence
+  case in both keeps the two languages visually equivalent.
+*/
+[dir="rtl"] .text-overline {
+  letter-spacing: normal !important;
+  text-transform: none;
+}
+
+/*
+  Tabular figures for anything numeric. Without this, proportional digits make
+  a column of money or counts ripple as values change — the single most
+  common "this looks unprofessional" tell in an admin table.
+*/
+.v-data-table,
+.v-table,
+.app-numeric {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* ===========================================================================
+   3. Layout shell
+   =========================================================================== */
+
+/* Page content breathes with the viewport rather than a fixed 1.5rem. */
+.layout-page-content .page-content-container {
+  padding-block: var(--app-space-6);
+  padding-inline: var(--app-page-gutter);
+}
+
+.layout-navbar .navbar-content-container {
+  padding-inline: var(--app-page-gutter);
+}
+
+.layout-footer .footer-content-container {
+  padding-inline: var(--app-page-gutter);
+}
+
+/* ===========================================================================
+   4. Cards
+   ===========================================================================
+   Subtle border + minimal shadow, which is what separates a 2026 surface from
+   a 2016 one. The border does the work in both themes.
+*/
+.v-application {
+  .v-card {
+    border: var(--app-border);
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow-sm) !important;
+  }
+
+  /* An explicitly elevated card (dialogs, menus) still gets a real shadow. */
+  .v-card.v-card--variant-elevated.app-card-floating {
+    box-shadow: var(--app-shadow-lg) !important;
+  }
+
+  .v-card-item {
+    padding: var(--app-space-5);
+  }
+
+  .v-card-text {
+    padding: var(--app-space-5);
+    font-size: 0.9375rem;
+    line-height: var(--app-line-height-base);
+  }
+
+  /* A card whose header is immediately followed by text should not pay for
+     the padding twice. */
+  .v-card-item + .v-card-text {
+    padding-block-start: 0;
+  }
+
+  .v-card-title {
+    font-size: 1.0625rem !important;
+    font-weight: 600 !important;
+    letter-spacing: normal !important;
+    line-height: 1.4 !important;
+  }
+
+  .v-card-subtitle {
+    font-size: 0.875rem !important;
+    letter-spacing: normal !important;
+    line-height: 1.5 !important;
+    opacity: 1;
+    color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
+  }
+}
+
+/* ===========================================================================
+   5. Controls — buttons, inputs
+   =========================================================================== */
+.v-application {
+  .v-btn {
+    border-radius: var(--app-radius-md);
+    font-weight: 500;
+    letter-spacing: normal !important;
+
+    /* Arabic button labels are frequently longer than their English
+       counterparts; sentence case plus normal tracking keeps them from
+       overflowing a compact button. */
+    text-transform: none;
+  }
+
+  .v-btn--size-default { min-block-size: var(--app-control-height); }
+  .v-btn--size-small   { min-block-size: var(--app-control-height-sm); }
+  .v-btn--size-large   { min-block-size: var(--app-control-height-lg); }
+
+  /* Inputs: one height, everywhere. Vuetify's `comfortable` density varies
+     the height per component family, which is why the app currently has
+     selects and text fields that do not line up in the same row. */
+  .v-field {
+    border-radius: var(--app-radius-md);
+    font-size: 0.9375rem;
+  }
+
+  .v-input--density-comfortable .v-field--variant-outlined .v-field__input,
+  .v-input--density-comfortable .v-field--variant-solo .v-field__input {
+    min-block-size: var(--app-control-height);
+    padding-block: 0;
+  }
+
+  .v-label,
+  .v-field-label {
+    font-size: 0.875rem;
+    letter-spacing: normal !important;
+    opacity: 1;
+  }
+
+  .v-messages__message {
+    font-size: 0.8125rem;
+    letter-spacing: normal !important;
+    line-height: 1.4;
+    padding-block-start: var(--app-space-1);
+  }
+
+  /* Focus must be visible for keyboard users in every theme. Vuetify's
+     default relies on the field's own outline, which disappears on
+     `variant="plain"` and on non-input controls. */
+  .v-btn:focus-visible,
+  .v-list-item:focus-visible,
+  a:focus-visible {
+    outline: 2px solid rgb(var(--v-theme-primary));
+    outline-offset: 2px;
+  }
+}
+
+/* ===========================================================================
+   6. Tables
+   ===========================================================================
+   Dense but readable: a shorter row, a quieter header, and a hover state that
+   actually reads. Row separators only — vertical rules add noise without
+   adding information.
+*/
+.v-application {
+  .v-data-table,
+  .v-table {
+    .v-table__wrapper > table > thead > tr > th {
+      padding-block: var(--app-space-3);
+      padding-inline: var(--app-space-4);
+      border-block-end: var(--app-border);
+      background: rgba(var(--v-theme-on-surface), 0.02);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      line-height: 1.4;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
+    }
+
+    .v-table__wrapper > table > tbody > tr > td {
+      padding-block: var(--app-space-3);
+      padding-inline: var(--app-space-4);
+      font-size: 0.875rem;
+      block-size: auto;
+    }
+
+    .v-table__wrapper > table > tbody > tr:hover > td {
+      background: rgba(var(--v-theme-on-surface), 0.03);
+    }
+
+    /* The last row's separator duplicates the card border beneath it. */
+    .v-table__wrapper > table > tbody > tr:last-child > td {
+      border-block-end: none;
+    }
+  }
+
+  /* Arabic column headers are not uppercase-able; drop the tracking so they
+     are not artificially stretched. */
+  [dir="rtl"] & .v-table__wrapper > table > thead > tr > th {
+    letter-spacing: normal;
+    text-transform: none;
+  }
+}
+
+/* ===========================================================================
+   7. Sidebar
+   ===========================================================================
+   The active item must be unmistakable at a glance without a heavy border.
+   A tonal fill plus a short inset indicator reads instantly and mirrors
+   correctly in RTL because it is positioned with logical properties.
+*/
+.layout-vertical-nav {
+  border-inline-end: var(--app-border);
+
+  .nav-link a,
+  .nav-group-label {
+    position: relative;
+    padding-block: 0.5rem;
+    padding-inline: 0.875rem;
+    border-radius: var(--app-radius-md);
+    margin-block-end: 0.125rem;
+    margin-inline: var(--app-space-3);
+    font-size: 0.9375rem;
+    font-weight: 450;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .nav-item-icon {
+    font-size: 1.375rem;
+    margin-inline-end: 0.75rem;
+  }
+
+  .nav-link a:hover,
+  .nav-group-label:hover {
+    background: rgba(var(--v-theme-on-surface), 0.05);
+  }
+
+  /* Active state: tonal fill, primary text, weight bump, inset bar. */
+  .nav-link a.router-link-exact-active {
+    background: rgba(var(--v-theme-primary), 0.12);
+    color: rgb(var(--v-theme-primary));
+    font-weight: 600;
+
+    .nav-item-icon { color: rgb(var(--v-theme-primary)); }
+
+    &::before {
+      position: absolute;
+      border-radius: 0 var(--app-radius-sm) var(--app-radius-sm) 0;
+      background: rgb(var(--v-theme-primary));
+      block-size: 1.25rem;
+      content: "";
+      inline-size: 3px;
+
+      /* Logical inset: sits on the left edge in LTR and the right in RTL
+         without a separate [dir] rule. */
+      inset-inline-start: 0;
+    }
+  }
+
+  /* A parent whose child is active stays visibly "current" while collapsed. */
+  .nav-group.active > .nav-group-label {
+    color: rgb(var(--v-theme-primary));
+    font-weight: 600;
+  }
+
+  /* The disclosure chevron points along the reading direction. */
+  .nav-group-arrow {
+    font-size: 1.25rem;
+    margin-inline-start: auto;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  [dir="rtl"] & .nav-group-arrow,
+  &[dir="rtl"] .nav-group-arrow {
+    transform: rotate(180deg);
+  }
+
+  .nav-group.open > .nav-group-label .nav-group-arrow {
+    transform: rotate(90deg);
+  }
+
+  .nav-section-title {
+    padding-block: var(--app-space-4) var(--app-space-2);
+    padding-inline: calc(var(--app-space-3) + 0.875rem);
+
+    .title-text {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(var(--v-theme-on-surface), 0.5);
+    }
+  }
+
+  [dir="rtl"] & .nav-section-title .title-text {
+    letter-spacing: normal;
+    text-transform: none;
+  }
+}
+
+/* ===========================================================================
+   8. Navbar
+   =========================================================================== */
+.layout-navbar {
+  border-block-end: var(--app-border);
+
+  .navbar-content-container {
+    background: rgb(var(--v-theme-surface));
+  }
+}
+
+/* ===========================================================================
+   9. Dialogs, menus, chips, alerts
+   =========================================================================== */
+.v-application {
+  .v-overlay__content > .v-card {
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow-lg) !important;
+  }
+
+  .v-menu > .v-overlay__content {
+    border: var(--app-border);
+    border-radius: var(--app-radius-md);
+    box-shadow: var(--app-shadow-md) !important;
+  }
+
+  .v-chip {
+    border-radius: var(--app-radius-sm);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: normal !important;
+  }
+
+  .v-alert {
+    border-radius: var(--app-radius-md);
+    font-size: 0.9375rem;
+  }
+
+  .v-tooltip > .v-overlay__content {
+    font-size: 0.8125rem;
+    letter-spacing: normal;
+  }
+}
+
+/* ===========================================================================
+   10. RTL corrections
+   ===========================================================================
+   Most of the app is already direction-agnostic because the template uses
+   logical properties. What does *not* mirror automatically is an icon that
+   encodes direction — a chevron, an arrow, a back button. Flipping those is
+   opt-in via a class so non-directional icons (a clock, a search glass) are
+   never mirrored by accident.
+*/
+[dir="rtl"] {
+  .app-icon-directional {
+    transform: scaleX(-1);
+  }
+
+  /* Vuetify's pagination arrows are directional and it does not mirror them
+     itself when direction is driven by the document rather than a prop. */
+  .v-pagination__prev .v-icon,
+  .v-pagination__next .v-icon,
+  .v-pagination__first .v-icon,
+  .v-pagination__last .v-icon {
+    transform: scaleX(-1);
+  }
+}
+
+/* ===========================================================================
+   11. Utilities
+   =========================================================================== */
+
+/* No page may scroll sideways. Long content scrolls inside its own container
+   (see .app-table-scroll), never by dragging the whole layout. */
+html,
+body {
+  overflow-x: hidden;
+}
+
+.app-table-scroll {
+  overflow-x: auto;
+}
+
+/* Consistent gap helper used by the shared components below. */
+.app-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+}

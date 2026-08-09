@@ -2,6 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   records: { type: Object, required: true },
@@ -9,6 +14,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const statusFilter = ref(props.filters.status ?? null)
 const typeFilter = ref(props.filters.type ?? null)
@@ -62,10 +69,13 @@ const typeOptions = computed(() => [
 ])
 
 function remove(item) {
-  if (!confirm(t('behaviorRecords.confirmDelete')))
-    return
-
-  router.delete(`/behavior/records/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('behaviorRecords.confirmDelete'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/behavior/records/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 
 function goToPage(page) {
@@ -79,21 +89,22 @@ function goToPage(page) {
 <template>
   <Head :title="t('behaviorRecords.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('behaviorRecords.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('behaviorRecords.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('behaviorRecords.title')"
+    :subtitle="t('behaviorRecords.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        prepend-icon="bx-plus"
+        :href="'/behavior/records/create'"
+        :as="Link"
+      >
+        {{ t('behaviorRecords.addNew') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <VBtn
-          prepend-icon="bx-plus"
-          :href="'/behavior/records/create'"
-          :as="Link"
-        >
-          {{ t('behaviorRecords.addNew') }}
-        </VBtn>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VDivider />
 
@@ -163,24 +174,25 @@ function goToPage(page) {
       </template>
 
       <template #no-data>
-        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-shield-quarter" size="40" class="mb-2" />
-          {{ t('behaviorRecords.empty') }}
-        </div>
+        <AppEmptyState
+          icon="bx-shield-quarter"
+          :title="t('behaviorRecords.empty')"
+        />
       </template>
     </VDataTable>
 
-    <template v-if="records.meta && records.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="records.meta.current_page"
-          :length="records.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="records.meta"
+      @change="goToPage"
+    />
   </VCard>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

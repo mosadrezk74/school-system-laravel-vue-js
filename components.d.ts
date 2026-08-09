@@ -7,6 +7,13 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AppConfirmDialog: typeof import('./resources/js/components/AppConfirmDialog.vue')['default']
+    AppDataTable: typeof import('./resources/js/components/AppDataTable.vue')['default']
+    AppEmptyState: typeof import('./resources/js/components/AppEmptyState.vue')['default']
+    AppFormSection: typeof import('./resources/js/components/AppFormSection.vue')['default']
+    AppPageHeader: typeof import('./resources/js/components/AppPageHeader.vue')['default']
+    AppPagination: typeof import('./resources/js/components/AppPagination.vue')['default']
+    AppStatCard: typeof import('./resources/js/components/AppStatCard.vue')['default']
     CardStatisticsHorizontal: typeof import('./resources/js/@core/components/cards/CardStatisticsHorizontal.vue')['default']
     CardStatisticsVertical: typeof import('./resources/js/@core/components/cards/CardStatisticsVertical.vue')['default']
     CardStatisticsWithImages: typeof import('./resources/js/@core/components/cards/CardStatisticsWithImages.vue')['default']

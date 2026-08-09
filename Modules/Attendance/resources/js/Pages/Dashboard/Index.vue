@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useTheme } from 'vuetify'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   classes: { type: Array, default: () => [] },
@@ -89,11 +90,12 @@ const hasDistribution = computed(() =>
 
   <VRow>
     <VCol cols="12">
-      <VCard>
-        <VCardItem>
-          <VCardTitle>{{ t('attendanceDashboard.title') }}</VCardTitle>
-          <VCardSubtitle>{{ t('attendanceDashboard.subtitle') }}</VCardSubtitle>
-        </VCardItem>
+  <AppPageHeader
+    :title="t('attendanceDashboard.title')"
+    :subtitle="t('attendanceDashboard.subtitle')"
+  />
+
+  <VCard>
 
         <VDivider />
 

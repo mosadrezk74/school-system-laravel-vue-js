@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   statistics: { type: Object, required: true },
@@ -70,11 +71,12 @@ const reports = computed(() => [
 
   <VRow>
     <VCol cols="12">
-      <VCard>
-        <VCardItem>
-          <VCardTitle>{{ t('finance.dashboard.title') }}</VCardTitle>
-          <VCardSubtitle>{{ t('finance.dashboard.subtitle') }}</VCardSubtitle>
-        </VCardItem>
+  <AppPageHeader
+    :title="t('finance.dashboard.title')"
+    :subtitle="t('finance.dashboard.subtitle')"
+  />
+
+  <VCard>
       </VCard>
     </VCol>
 

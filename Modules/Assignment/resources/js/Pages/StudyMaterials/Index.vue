@@ -2,6 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   studyMaterials: { type: Object, required: true },
@@ -9,6 +14,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const search = ref(props.filters.search ?? '')
 const published = ref(props.filters.is_published ?? null)
@@ -48,10 +55,13 @@ const headers = computed(() => [
 ])
 
 function archive(item) {
-  if (!confirm(t('studyMaterials.confirmArchive')))
-    return
-
-  router.delete(`/assignments/study-materials/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('studyMaterials.confirmArchive'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/assignments/study-materials/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 
 function goToPage(page) {
@@ -65,22 +75,23 @@ function goToPage(page) {
 <template>
   <Head :title="t('studyMaterials.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('studyMaterials.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('studyMaterials.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('studyMaterials.title')"
+    :subtitle="t('studyMaterials.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        prepend-icon="bx-plus"
+        :to="'/assignments/study-materials/create'"
+        :href="'/assignments/study-materials/create'"
+        :as="Link"
+      >
+        {{ t('studyMaterials.addNew') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <VBtn
-          prepend-icon="bx-plus"
-          :to="'/assignments/study-materials/create'"
-          :href="'/assignments/study-materials/create'"
-          :as="Link"
-        >
-          {{ t('studyMaterials.addNew') }}
-        </VBtn>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VDivider />
 
@@ -148,24 +159,25 @@ function goToPage(page) {
       </template>
 
       <template #no-data>
-        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-book-content" size="40" class="mb-2" />
-          {{ t('studyMaterials.empty') }}
-        </div>
+        <AppEmptyState
+          icon="bx-book-content"
+          :title="t('studyMaterials.empty')"
+        />
       </template>
     </VDataTable>
 
-    <template v-if="studyMaterials.meta && studyMaterials.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="studyMaterials.meta.current_page"
-          :length="studyMaterials.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="studyMaterials.meta"
+      @change="goToPage"
+    />
   </VCard>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

@@ -2,6 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   subjects: { type: Object, required: true },
@@ -9,6 +14,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const search = ref(props.filters.search ?? '')
 const isActiveFilter = ref(props.filters.is_active ?? null)
@@ -59,35 +66,46 @@ const activeOptions = computed(() => [
 ])
 
 function archive(item) {
-  if (!confirm(t('subject.confirmArchive'))) return
-  router.delete(`/academic/subjects/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('subject.confirmArchive'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/academic/subjects/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 
 function restore(item) {
-  if (!confirm(t('common.confirmRestore'))) return
-  router.patch(`/academic/subjects/${item.id}/restore`, {}, { preserveScroll: true })
+  askConfirm({
+    message: t('common.confirmRestore'),
+    color: 'primary',
+    onConfirm: () => {
+      router.patch(`/academic/subjects/${item.id}/restore`, {}, { preserveScroll: true })
+    },
+  })
 }
 </script>
 
 <template>
   <Head :title="t('subject.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('subject.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('subject.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('subject.title')"
+    :subtitle="t('subject.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        prepend-icon="bx-plus"
+        href="/academic/subjects/create"
+        :as="Link"
+        color="primary"
+      >
+        {{ t('subject.addNew') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <VBtn
-          prepend-icon="bx-plus"
-          href="/academic/subjects/create"
-          :as="Link"
-          color="primary"
-        >
-          {{ t('subject.addNew') }}
-        </VBtn>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VCardText>
       <VRow>
@@ -158,23 +176,22 @@ function restore(item) {
       </template>
 
       <template #no-data>
-        <div class="pa-8 text-center text-disabled">
-          {{ t('subject.empty') }}
-        </div>
+        <AppEmptyState :title="t('subject.empty')" />
       </template>
     </VDataTable>
 
-    <template v-if="subjects.meta && subjects.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="subjects.meta.current_page"
-          :length="subjects.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="subjects.meta"
+      @change="goToPage"
+    />
   </VCard>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

@@ -3,12 +3,17 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
 
 const props = defineProps({
   invoice: { type: Object, required: true },
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 const { formatMoney, formatDate, formatDateTime } = useMoney()
 
 const statusColors = {
@@ -40,10 +45,13 @@ const paymentHeaders = computed(() => [
 ])
 
 function cancelInvoice() {
-  if (!confirm(t('finance.confirmCancel')))
-    return
-
-  router.patch(`/finance/invoices/${props.invoice.id}/cancel`, {}, { preserveScroll: true })
+  askConfirm({
+    message: t('finance.confirmCancel'),
+    color: 'error',
+    onConfirm: () => {
+      router.patch(`/finance/invoices/${props.invoice.id}/cancel`, {}, { preserveScroll: true })
+    },
+  })
 }
 </script>
 
@@ -195,12 +203,12 @@ function cancelInvoice() {
             <strong>{{ formatMoney(item.total, currency) }}</strong>
           </template>
 
-          <template #no-data>
-            <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-              <VIcon icon="bx-list-ul" size="40" class="mb-2" />
-              {{ t('finance.invoices.noItems') }}
-            </div>
-          </template>
+      <template #no-data>
+        <AppEmptyState
+          icon="bx-list-ul"
+          :title="t('finance.invoices.noItems')"
+        />
+      </template>
         </VDataTable>
 
         <VDivider />
@@ -269,12 +277,12 @@ function cancelInvoice() {
             <strong>{{ formatMoney(item.amount, currency) }}</strong>
           </template>
 
-          <template #no-data>
-            <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-              <VIcon icon="bx-credit-card" size="40" class="mb-2" />
-              {{ t('finance.payments.empty') }}
-            </div>
-          </template>
+      <template #no-data>
+        <AppEmptyState
+          icon="bx-credit-card"
+          :title="t('finance.payments.empty')"
+        />
+      </template>
         </VDataTable>
       </VCard>
     </VCol>
@@ -293,4 +301,13 @@ function cancelInvoice() {
       </VCard>
     </VCol>
   </VRow>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

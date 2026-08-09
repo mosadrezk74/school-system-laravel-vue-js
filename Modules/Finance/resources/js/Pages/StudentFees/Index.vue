@@ -3,6 +3,11 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   studentFees: { type: Object, required: true },
@@ -13,6 +18,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 const { formatMoney } = useMoney()
 
 const studentId = ref(props.filters.student_id ?? null)
@@ -70,10 +77,13 @@ const headers = computed(() => [
 ])
 
 function archive(item) {
-  if (!confirm(t('finance.confirmArchive')))
-    return
-
-  router.delete(`/finance/student-fees/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('finance.confirmArchive'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/finance/student-fees/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 
 function goToPage(page) {
@@ -87,21 +97,22 @@ function goToPage(page) {
 <template>
   <Head :title="t('finance.studentFees.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('finance.studentFees.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('finance.studentFees.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('finance.studentFees.title')"
+    :subtitle="t('finance.studentFees.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        prepend-icon="bx-plus"
+        href="/finance/student-fees/create"
+        :as="Link"
+      >
+        {{ t('finance.studentFees.addNew') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <VBtn
-          prepend-icon="bx-plus"
-          href="/finance/student-fees/create"
-          :as="Link"
-        >
-          {{ t('finance.studentFees.addNew') }}
-        </VBtn>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VDivider />
 
@@ -183,24 +194,25 @@ function goToPage(page) {
       </template>
 
       <template #no-data>
-        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-user-check" size="40" class="mb-2" />
-          {{ t('finance.studentFees.empty') }}
-        </div>
+        <AppEmptyState
+          icon="bx-user-check"
+          :title="t('finance.studentFees.empty')"
+        />
       </template>
     </VDataTable>
 
-    <template v-if="studentFees.meta && studentFees.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="studentFees.meta.current_page"
-          :length="studentFees.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="studentFees.meta"
+      @change="goToPage"
+    />
   </VCard>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

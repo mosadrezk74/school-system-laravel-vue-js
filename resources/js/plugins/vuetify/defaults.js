@@ -1,3 +1,13 @@
+/*
+ * Component-level half of the design system; the other half lives in
+ * resources/styles/styles.scss.
+ *
+ * Anything that can be expressed as a Vuetify default belongs here rather
+ * than as a CSS override, so pages inherit the decision instead of having to
+ * repeat a prop. In particular `flat` cards + a border from the stylesheet
+ * replace the template's default drop shadows, and tables default to the
+ * `compact` density the brief asks for.
+ */
 export default {
   IconBtn: {
     icon: true,
@@ -6,9 +16,21 @@ export default {
   },
   VAlert: {
     density: 'comfortable',
+    variant: 'tonal',
+    border: 'start',
     VBtn: {
       color: undefined,
     },
+  },
+  VCard: {
+    // The border and soft shadow come from the stylesheet; Vuetify's own
+    // elevation would stack on top of them and re-create the heavy card look.
+    flat: true,
+  },
+  VDialog: {
+    // Focused content, not a full-bleed sheet.
+    maxWidth: 560,
+    scrollable: true,
   },
   VAvatar: {
     // ℹ️ Remove after next release
@@ -31,6 +53,8 @@ export default {
     label: true,
   },
   VDataTable: {
+    density: 'compact',
+    hover: true,
     VPagination: {
       showFirstLastPage: true,
       firstIcon: 'bx-chevrons-left',
@@ -43,6 +67,8 @@ export default {
     },
   },
   VDataTableServer: {
+    density: 'compact',
+    hover: true,
     VPagination: {
       showFirstLastPage: true,
       firstIcon: 'bx-chevrons-left',

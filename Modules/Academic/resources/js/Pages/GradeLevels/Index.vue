@@ -1,7 +1,11 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   gradeLevels: { type: Object, required: true },
@@ -10,40 +14,13 @@ const props = defineProps({
 
 const { t } = useI18n()
 
-const search = ref(props.filters.search ?? '')
-const isActiveFilter = ref(props.filters.is_active ?? null)
-
-// Debounced so typing does not fire a request per keystroke.
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
+const { filters, goToPage } = useIndexFilters({
+  url: '/academic/grade-levels',
+  initial: {
+    search: props.filters.search ?? null,
+    is_active: props.filters.is_active ?? null,
+  },
 })
-
-watch(isActiveFilter, applyFilters)
-
-function currentParams(extra = {}) {
-  return {
-    search: search.value || undefined,
-    is_active: isActiveFilter.value !== null ? isActiveFilter.value : undefined,
-    ...extra,
-  }
-}
-
-function applyFilters() {
-  router.get('/academic/grade-levels', currentParams(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-function goToPage(page) {
-  router.get('/academic/grade-levels', currentParams({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 
 const headers = computed(() => [
   { title: t('gradeLevels.fields.displayOrder'), key: 'display_order' },
@@ -59,120 +36,164 @@ const activeOptions = computed(() => [
   { title: t('common.no'), value: false },
 ])
 
-function archive(item) {
-  if (!confirm(t('gradeLevels.confirmArchive'))) return
-  router.delete(`/academic/grade-levels/${item.id}`, { preserveScroll: true })
+/*
+ * Archive and restore share one dialog: the pending row and the action to run
+ * are captured together, so the confirm button never has to work out which of
+ * the two it is committing to.
+ */
+const pending = ref(null)
+
+const askArchive = item => {
+  pending.value = {
+    item,
+    message: t('gradeLevels.confirmArchive'),
+    confirmText: t('common.archive'),
+    color: 'error',
+    run: () => router.delete(`/academic/grade-levels/${item.id}`, { preserveScroll: true }),
+  }
 }
 
-function restore(item) {
-  if (!confirm(t('common.confirmRestore'))) return
-  router.patch(`/academic/grade-levels/${item.id}/restore`, {}, { preserveScroll: true })
+const askRestore = item => {
+  pending.value = {
+    item,
+    message: t('common.confirmRestore'),
+    confirmText: t('common.restore'),
+    color: 'primary',
+    run: () => router.patch(`/academic/grade-levels/${item.id}/restore`, {}, { preserveScroll: true }),
+  }
 }
+
+const isConfirmOpen = computed({
+  get: () => pending.value !== null,
+  set: value => { if (!value) pending.value = null },
+})
 </script>
 
 <template>
   <Head :title="t('gradeLevels.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('gradeLevels.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('gradeLevels.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('gradeLevels.title')"
+    :subtitle="t('gradeLevels.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        prepend-icon="bx-plus"
+        href="/academic/grade-levels/create"
+        :as="Link"
+        color="primary"
+      >
+        {{ t('gradeLevels.addNew') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <VBtn
-          prepend-icon="bx-plus"
-          href="/academic/grade-levels/create"
-          :as="Link"
-          color="primary"
+  <AppDataTable
+    :headers="headers"
+    :items="gradeLevels.data"
+    :meta="gradeLevels.meta"
+    mobile-title-key="name"
+    :empty-title="t('gradeLevels.empty')"
+    empty-icon="bx-layer"
+    @page="goToPage"
+  >
+    <template #filters>
+      <VRow dense>
+        <VCol
+          cols="12"
+          md="6"
         >
-          {{ t('gradeLevels.addNew') }}
-        </VBtn>
-      </template>
-    </VCardItem>
-
-    <VCardText>
-      <VRow>
-        <VCol cols="12" md="6">
           <VTextField
-            v-model="search"
+            v-model="filters.search.value"
             :label="t('gradeLevels.search')"
             prepend-inner-icon="bx-search"
             clearable
-            density="compact"
-            hide-details
           />
         </VCol>
 
-        <VCol cols="12" md="4">
+        <VCol
+          cols="12"
+          md="4"
+        >
           <VSelect
-            v-model="isActiveFilter"
+            v-model="filters.is_active.value"
             :items="activeOptions"
             :label="t('gradeLevels.fields.isActive')"
-            density="compact"
-            hide-details
           />
         </VCol>
       </VRow>
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="gradeLevels.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
-      <template #item.name="{ item }">
-        <div class="d-flex align-center gap-2">
-          <span>{{ item.name || '—' }}</span>
-          <VChip v-if="item.deleted_at" size="x-small" color="warning">
-            {{ t('common.archived') }}
-          </VChip>
-        </div>
-      </template>
-
-      <template #item.description="{ item }">
-        {{ item.description || '—' }}
-      </template>
-
-      <template #item.is_active="{ item }">
-        <VChip :color="item.is_active ? 'success' : 'secondary'" size="small">
-          {{ item.is_active ? t('common.active') : t('common.inactive') }}
+    <template #item.name="{ item }">
+      <div class="d-flex align-center gap-2">
+        <span>{{ item.name || '—' }}</span>
+        <VChip
+          v-if="item.deleted_at"
+          size="x-small"
+          color="warning"
+        >
+          {{ t('common.archived') }}
         </VChip>
-      </template>
-
-      <template #item.actions="{ item }">
-        <IconBtn :href="`/academic/grade-levels/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
-        <IconBtn :href="`/academic/grade-levels/${item.id}/edit`" :as="Link">
-          <VIcon icon="bx-edit" />
-        </IconBtn>
-        <IconBtn v-if="!item.deleted_at" @click="archive(item)">
-          <VIcon icon="bx-archive" />
-        </IconBtn>
-        <IconBtn v-else @click="restore(item)">
-          <VIcon icon="bx-refresh" />
-        </IconBtn>
-      </template>
-
-      <template #no-data>
-        <div class="pa-8 text-center text-disabled">
-          {{ t('gradeLevels.empty') }}
-        </div>
-      </template>
-    </VDataTable>
-
-    <template v-if="gradeLevels.meta && gradeLevels.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="gradeLevels.meta.current_page"
-          :length="gradeLevels.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
       </div>
     </template>
-  </VCard>
+
+    <template #item.description="{ item }">
+      {{ item.description || '—' }}
+    </template>
+
+    <template #item.is_active="{ item }">
+      <VChip
+        :color="item.is_active ? 'success' : 'secondary'"
+        size="small"
+      >
+        {{ item.is_active ? t('common.active') : t('common.inactive') }}
+      </VChip>
+    </template>
+
+    <template #item.actions="{ item }">
+      <IconBtn
+        :href="`/academic/grade-levels/${item.id}`"
+        :as="Link"
+      >
+        <VIcon icon="bx-show" />
+      </IconBtn>
+      <IconBtn
+        :href="`/academic/grade-levels/${item.id}/edit`"
+        :as="Link"
+      >
+        <VIcon icon="bx-edit" />
+      </IconBtn>
+      <IconBtn
+        v-if="!item.deleted_at"
+        @click="askArchive(item)"
+      >
+        <VIcon icon="bx-archive" />
+      </IconBtn>
+      <IconBtn
+        v-else
+        @click="askRestore(item)"
+      >
+        <VIcon icon="bx-refresh" />
+      </IconBtn>
+    </template>
+
+    <template #empty-action>
+      <VBtn
+        prepend-icon="bx-plus"
+        href="/academic/grade-levels/create"
+        :as="Link"
+        color="primary"
+      >
+        {{ t('gradeLevels.addNew') }}
+      </VBtn>
+    </template>
+  </AppDataTable>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :message="pending?.message"
+    :confirm-text="pending?.confirmText"
+    :color="pending?.color ?? 'error'"
+    @confirm="pending?.run()"
+  />
 </template>

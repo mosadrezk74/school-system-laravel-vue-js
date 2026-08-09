@@ -86,7 +86,20 @@
     "confirmRestore": "Are you sure you want to restore this item?",
     "back": "Back",
     "view": "View",
-    "archived": "Archived"
+    "archived": "Archived",
+    "confirm": "Confirm",
+    "showingResults": "Showing {from}–{to} of {total}",
+    "loading": "Loading…",
+    "filters": "Filters",
+    "actions": "Actions",
+    "noResultsTitle": "No results",
+    "noResultsHint": "Try adjusting your search or filters.",
+    "archive": "Archive",
+    "restore": "Restore",
+    "delete": "Delete",
+    "create": "Create",
+    "required": "Required",
+    "madeBy": "Made by"
   },
   "academicYears": {
     "title": "Academic Years",

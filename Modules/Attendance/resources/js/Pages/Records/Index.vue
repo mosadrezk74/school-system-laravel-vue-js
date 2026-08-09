@@ -2,6 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPagination from '@/components/AppPagination.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   records: { type: Object, required: true },
@@ -11,6 +16,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const classId = ref(props.filters.class_id ?? null)
 const subjectId = ref(props.filters.subject_id ?? null)
@@ -60,10 +67,13 @@ const headers = computed(() => [
 ])
 
 function destroy(item) {
-  if (!confirm(t('attendanceRecords.confirmDelete')))
-    return
-
-  router.delete(`/attendance/records/${item.id}`, { preserveScroll: true })
+  askConfirm({
+    message: t('attendanceRecords.confirmDelete'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/attendance/records/${item.id}`, { preserveScroll: true })
+    },
+  })
 }
 
 function goToPage(page) {
@@ -77,22 +87,23 @@ function goToPage(page) {
 <template>
   <Head :title="t('attendanceRecords.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('attendanceRecords.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('attendanceRecords.subtitle') }}</VCardSubtitle>
+  <AppPageHeader
+    :title="t('attendanceRecords.title')"
+    :subtitle="t('attendanceRecords.subtitle')"
+  >
+    <template #actions>
+      <VBtn
+        prepend-icon="bx-plus"
+        :to="'/attendance/records/create'"
+        :href="'/attendance/records/create'"
+        :as="Link"
+      >
+        {{ t('attendanceRecords.addNew') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
-      <template #append>
-        <VBtn
-          prepend-icon="bx-plus"
-          :to="'/attendance/records/create'"
-          :href="'/attendance/records/create'"
-          :as="Link"
-        >
-          {{ t('attendanceRecords.addNew') }}
-        </VBtn>
-      </template>
-    </VCardItem>
+  <VCard>
 
     <VDivider />
 
@@ -186,24 +197,25 @@ function goToPage(page) {
       </template>
 
       <template #no-data>
-        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-calendar-check" size="40" class="mb-2" />
-          {{ t('attendanceRecords.empty') }}
-        </div>
+        <AppEmptyState
+          icon="bx-calendar-check"
+          :title="t('attendanceRecords.empty')"
+        />
       </template>
     </VDataTable>
 
-    <template v-if="records.meta && records.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="records.meta.current_page"
-          :length="records.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="goToPage"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="records.meta"
+      @change="goToPage"
+    />
   </VCard>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>

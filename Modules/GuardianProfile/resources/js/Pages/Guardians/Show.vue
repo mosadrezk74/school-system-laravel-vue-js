@@ -2,6 +2,8 @@
 import { Head, Link, router, useForm } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
 
 const props = defineProps({
   guardian: { type: Object, required: true },
@@ -9,6 +11,8 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 /*
  * The picker queries the server as the admin types: the student table is far
@@ -59,11 +63,14 @@ function submitLink() {
 }
 
 function unlink(student) {
-  if (!confirm(t('guardians.unlinkConfirm')))
-    return
-
-  router.delete(`/user-management/guardians/${props.guardian.id}/students/${student.student_id}`, {
-    preserveScroll: true,
+  askConfirm({
+    message: t('guardians.unlinkConfirm'),
+    color: 'error',
+    onConfirm: () => {
+      router.delete(`/user-management/guardians/${props.guardian.id}/students/${student.student_id}`, {
+        preserveScroll: true,
+      })
+    },
   })
 }
 
@@ -334,4 +341,13 @@ const quickActions = [
       </VCard>
     </VCol>
   </VRow>
+
+  <AppConfirmDialog
+    v-model="isConfirmOpen"
+    :title="confirmDialog.title"
+    :message="confirmDialog.message"
+    :confirm-text="confirmDialog.confirmText"
+    :color="confirmDialog.color ?? 'error'"
+    @confirm="runConfirm"
+  />
 </template>
