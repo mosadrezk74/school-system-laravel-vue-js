@@ -159,7 +159,9 @@ class StudyResourceController extends BaseInertiaController
                     'id' => $gradeLevel->id,
                     'name' => $gradeLevel->name,
                 ])->values(),
-            'classrooms' => Classroom::query()->where('is_active', true)->get(['id', 'name']),
+            'classrooms' => Classroom::query()->where('is_active', true)->get()
+                ->map(fn (Classroom $classroom) => ['id' => $classroom->id, 'name' => $classroom->name])
+                ->values(),
             'teachers' => User::query()->where('role', UserRole::Teacher->value)->get(['id', 'name']),
             'types' => StudyResourceType::options(),
         ];

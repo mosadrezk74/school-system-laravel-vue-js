@@ -162,7 +162,13 @@ class MeetingController extends BaseInertiaController
     {
         return [
             'teachers' => User::query()->where('role', UserRole::Teacher->value)->get(['id', 'name']),
-            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get()
+                ->map(fn (Semester $semester) => [
+                    'id' => $semester->id,
+                    'name' => $semester->name,
+                    'academic_year_id' => $semester->academic_year_id,
+                ])
+                ->values(),
         ];
     }
 }

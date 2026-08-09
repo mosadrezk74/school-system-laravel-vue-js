@@ -153,7 +153,9 @@ class TimetableController extends BaseInertiaController
     {
         return [
             'subjects' => Subject::query()->get()->map(fn (Subject $subject) => ['id' => $subject->id, 'name' => $subject->name])->values(),
-            'classrooms' => Classroom::query()->where('is_active', true)->get(['id', 'name']),
+            'classrooms' => Classroom::query()->where('is_active', true)->get()
+                ->map(fn (Classroom $classroom) => ['id' => $classroom->id, 'name' => $classroom->name])
+                ->values(),
             'teachers' => TeacherProfile::query()
                 ->where('is_active', true)
                 ->with('user:id,name')

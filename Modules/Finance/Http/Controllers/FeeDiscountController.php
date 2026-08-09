@@ -132,7 +132,9 @@ class FeeDiscountController extends BaseInertiaController
                     'id' => $gradeLevel->id,
                     'name' => $gradeLevel->name,
                 ])->values(),
-            'classrooms' => Classroom::query()->where('is_active', true)->get(['id', 'name']),
+            'classrooms' => Classroom::query()->where('is_active', true)->get()
+                ->map(fn (Classroom $classroom) => ['id' => $classroom->id, 'name' => $classroom->name])
+                ->values(),
             'discountTypes' => DiscountType::options(),
         ];
     }

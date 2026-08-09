@@ -54,7 +54,13 @@ class AttendanceController extends BaseInertiaController
         $history = $action->execute(StudentAttendanceFilterDTO::fromRequest($request, $student->id));
 
         return $this->render('Attendance::Students/Show', [
-            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get()
+                ->map(fn (Semester $semester) => [
+                    'id' => $semester->id,
+                    'name' => $semester->name,
+                    'academic_year_id' => $semester->academic_year_id,
+                ])
+                ->values(),
             'filters' => $request->only(['semester_id', 'date_from', 'date_to']),
             'student' => new StudentAttendanceProfileResource($history['student']),
             'summary' => $history['summary']->toArray(),
@@ -97,7 +103,13 @@ class AttendanceController extends BaseInertiaController
     {
         return [
             'classes' => $this->activeClasses(),
-            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get()
+                ->map(fn (Semester $semester) => [
+                    'id' => $semester->id,
+                    'name' => $semester->name,
+                    'academic_year_id' => $semester->academic_year_id,
+                ])
+                ->values(),
         ];
     }
 
@@ -152,7 +164,13 @@ class AttendanceController extends BaseInertiaController
             ]),
             'classes' => $this->activeClasses(),
             'subjects' => $this->subjectOptions(),
-            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get()
+                ->map(fn (Semester $semester) => [
+                    'id' => $semester->id,
+                    'name' => $semester->name,
+                    'academic_year_id' => $semester->academic_year_id,
+                ])
+                ->values(),
         ]);
     }
 
@@ -163,7 +181,13 @@ class AttendanceController extends BaseInertiaController
         return $this->render('Attendance::Records/Create', [
             'classes' => $this->activeClasses(),
             'subjects' => $this->subjectOptions(),
-            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get()
+                ->map(fn (Semester $semester) => [
+                    'id' => $semester->id,
+                    'name' => $semester->name,
+                    'academic_year_id' => $semester->academic_year_id,
+                ])
+                ->values(),
             'roster' => $request->filled('class_id') ? $this->rosterForClass((int) $request->input('class_id')) : [],
         ]);
     }
@@ -216,7 +240,13 @@ class AttendanceController extends BaseInertiaController
             'roster' => $roster,
             'classes' => $this->activeClasses(),
             'subjects' => $this->subjectOptions(),
-            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get()
+                ->map(fn (Semester $semester) => [
+                    'id' => $semester->id,
+                    'name' => $semester->name,
+                    'academic_year_id' => $semester->academic_year_id,
+                ])
+                ->values(),
         ]);
     }
 

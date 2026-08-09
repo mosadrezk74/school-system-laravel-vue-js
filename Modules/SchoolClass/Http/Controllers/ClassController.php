@@ -135,7 +135,15 @@ class ClassController extends BaseInertiaController
             'gradeLevels' => GradeLevel::query()->where('is_active', true)->get()
                 ->map(fn (GradeLevel $gradeLevel) => ['id' => $gradeLevel->id, 'name' => $gradeLevel->name])
                 ->values(),
-            'classrooms' => Classroom::query()->where('is_active', true)->get(['id', 'name']),
+            /*
+             * Mapped rather than selected straight: `name` is a translatable
+             * JSON column, and returning the model as-is serialises the whole
+             * {locale => text} map, which renders as "[object Object]" in the
+             * select. Reading the attribute resolves the active locale first.
+             */
+            'classrooms' => Classroom::query()->where('is_active', true)->get()
+                ->map(fn (Classroom $classroom) => ['id' => $classroom->id, 'name' => $classroom->name])
+                ->values(),
         ];
     }
 }

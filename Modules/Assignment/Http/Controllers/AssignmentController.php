@@ -131,7 +131,13 @@ class AssignmentController extends BaseInertiaController
     protected function formOptions(): array
     {
         return [
-            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get(['id', 'name', 'academic_year_id']),
+            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get()
+                ->map(fn (Semester $semester) => [
+                    'id' => $semester->id,
+                    'name' => $semester->name,
+                    'academic_year_id' => $semester->academic_year_id,
+                ])
+                ->values(),
             'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
                 ->get(['id', 'name', 'section_code', 'academic_year_id']),
             'subjects' => Subject::query()->get()->map(fn (Subject $subject) => ['id' => $subject->id, 'name' => $subject->name])->values(),
