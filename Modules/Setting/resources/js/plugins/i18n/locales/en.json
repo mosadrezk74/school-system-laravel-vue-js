@@ -109,6 +109,7 @@
     "register": "Create Account",
     "registerTitle": "Create Your Account",
     "welcome": "Welcome to {app}",
+    "welcomeBack": "Welcome back",
     "loginSubtitle": "Sign in to continue to your dashboard",
     "email": "Email",
     "password": "Password",

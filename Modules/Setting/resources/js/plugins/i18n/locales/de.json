@@ -86,6 +86,7 @@
     "register": "Konto erstellen",
     "registerTitle": "Ihr Konto erstellen",
     "welcome": "Willkommen bei {app}",
+    "welcomeBack": "Willkommen zurück",
     "loginSubtitle": "Melden Sie sich an, um zum Dashboard zu gelangen",
     "email": "E-Mail",
     "password": "Passwort",

@@ -109,6 +109,7 @@
     "register": "إنشاء حساب",
     "registerTitle": "أنشئ حسابك",
     "welcome": "مرحبًا بك في {app}",
+    "welcomeBack": "أهلاً بعودتك",
     "loginSubtitle": "سجّل الدخول للمتابعة إلى لوحة التحكم",
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور",

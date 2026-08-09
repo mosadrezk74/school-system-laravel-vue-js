@@ -33,9 +33,21 @@
   */
   min-block-size: 100%;
 
+  /*
+    VImg renders a `.v-img` root, and Vuetify's own stylesheet sets
+    `position: relative` on it — loaded after page-auth.scss, so the decorative
+    shapes stayed in normal flow and pushed the auth card down the page.
+    Re-assert absolute positioning with enough specificity to win.
+  */
+  .auth-v1-top-shape.v-img,
+  .auth-v1-bottom-shape.v-img {
+    position: absolute;
+  }
+
   .auth-wrapper {
     flex: 1 1 auto;
     min-block-size: 100%;
+    align-items: center;
   }
 }
 </style>

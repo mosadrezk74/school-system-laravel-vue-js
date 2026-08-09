@@ -11,10 +11,9 @@ return new class extends Migration
         Schema::create('academic_years', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->string('code', 50)->nullable();
             $table->date('start_date');
             $table->date('end_date');
-            $table->boolean('is_current')->default(false);
+            $table->boolean('is_current')->default(true);
             $table->boolean('is_active')->default(true);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();

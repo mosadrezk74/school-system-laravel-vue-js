@@ -36,7 +36,6 @@ const editing = ref(null)
 
 const form = useForm({
   name: '',
-  code: '',
   start_date: '',
   end_date: '',
   is_active: true,
@@ -47,7 +46,6 @@ const form = useForm({
 // whichever language was active when the page first mounted.
 const headers = computed(() => [
   { title: t('academicYears.name'), key: 'name' },
-  { title: t('academicYears.code'), key: 'code' },
   { title: t('academicYears.startDate'), key: 'start_date' },
   { title: t('academicYears.endDate'), key: 'end_date' },
   { title: t('academicYears.status'), key: 'status', sortable: false },
@@ -57,7 +55,7 @@ const headers = computed(() => [
 function openCreate() {
   editing.value = null
   form.defaults({
-    name: '', code: '', start_date: '', end_date: '',
+    name: '', start_date: '', end_date: '',
     is_active: true, is_current: false,
   })
   form.reset()
@@ -69,7 +67,6 @@ function openEdit(item) {
   editing.value = item
   form.defaults({
     name: item.name ?? '',
-    code: item.code ?? '',
     start_date: item.start_date ?? '',
     end_date: item.end_date ?? '',
     is_active: item.is_active,
@@ -222,23 +219,15 @@ function goToPage(page) {
         <VRow>
           <VCol
             cols="12"
-            md="6"
+            md="12"
           >
             <VTextField
               v-model="form.name"
               :label="required(t('academicYears.name'))"
               :error-messages="form.errors.name"
+              maxlength="20"
+              counter="20"
               required
-            />
-          </VCol>
-          <VCol
-            cols="12"
-            md="6"
-          >
-            <VTextField
-              v-model="form.code"
-              :label="t('academicYears.code')"
-              :error-messages="form.errors.code"
             />
           </VCol>
           <VCol
@@ -285,7 +274,6 @@ function goToPage(page) {
           </VCol>
         </VRow>
       </VCardText>
-
       <VCardText class="d-flex justify-end gap-3">
         <VBtn
           variant="tonal"
