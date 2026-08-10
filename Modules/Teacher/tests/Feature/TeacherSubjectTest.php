@@ -259,3 +259,50 @@ test('editing a teacher without touching the employee id keeps it', function () 
 
     expect($teacher->fresh()->employee_id)->toBe('7654321');
 });
+
+test('an out of range salary is a validation error, not a database crash', function () {
+    $this->actingAs($this->admin)
+        ->post(route('teachers.store'), [
+            'name' => 'Rich Teacher',
+            'email' => 'rich@example.com',
+            'username' => 'richteacher',
+            'password' => 'password123',
+            'gender' => 'male',
+            'is_active' => true,
+            'salary_base' => '2.5666666666667E+32',
+        ])
+        ->assertSessionHasErrors('salary_base');
+
+    expect(TeacherProfile::query()->where('employee_id', '!=', null)->whereHas('user', fn ($q) => $q->where('email', 'rich@example.com'))->exists())->toBeFalse();
+});
+
+test('a salary of five hundred thousand is accepted', function () {
+    $this->actingAs($this->admin)
+        ->post(route('teachers.store'), [
+            'name' => 'Paid Teacher',
+            'email' => 'paid@example.com',
+            'username' => 'paidteacher',
+            'password' => 'password123',
+            'gender' => 'male',
+            'is_active' => true,
+            'salary_base' => 500000,
+        ])
+        ->assertRedirect(route('teachers.index'))
+        ->assertSessionHasNoErrors();
+
+    expect((float) TeacherProfile::query()->latest('id')->first()->salary_base)->toBe(500000.0);
+});
+
+test('a non numeric salary is rejected', function () {
+    $this->actingAs($this->admin)
+        ->post(route('teachers.store'), [
+            'name' => 'Text Salary',
+            'email' => 'text@example.com',
+            'username' => 'textsalary',
+            'password' => 'password123',
+            'gender' => 'male',
+            'is_active' => true,
+            'salary_base' => 'not-a-number',
+        ])
+        ->assertSessionHasErrors('salary_base');
+});

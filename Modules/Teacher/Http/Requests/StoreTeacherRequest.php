@@ -27,7 +27,7 @@ class StoreTeacherRequest extends BaseRequest
             'subject_ids.*' => ['integer', 'exists:subjects,id'],
             'position' => ['nullable', 'string', 'max:100'],
             'salary_type' => ['nullable', 'string', 'in:fixed,hourly,contract'],
-            'salary_base' => ['nullable', 'numeric', 'min:0'],
+            'salary_base' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],
             'primary_subjects' => ['nullable', 'array'],
         ];
     }

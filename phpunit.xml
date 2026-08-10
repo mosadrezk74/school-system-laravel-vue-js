@@ -11,6 +11,14 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
+        <!--
+            Modules keep their tests beside their code. Without this suite the
+            default `php artisan test` run silently skipped every one of them.
+        -->
+        <testsuite name="Modules">
+            <directory>Modules/*/tests/Feature</directory>
+            <directory>Modules/*/tests/Unit</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>

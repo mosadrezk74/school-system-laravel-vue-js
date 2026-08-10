@@ -51,7 +51,8 @@
     "reports": "Reports",
     "reportTemplates": "Report Templates",
     "semesters": "Semesters",
-    "gradeLevels": "Grade Levels"
+    "gradeLevels": "Grade Levels",
+    "systemErrors": "System Errors"
   },
   "navbar": {
     "search": "Search",
@@ -1906,6 +1907,83 @@
     "sections": {
       "details": "Grade Level Details",
       "detailsDesc": "Name, description and display order."
+    }
+  },
+  "errors": {
+    "status": {
+      "401": {
+        "title": "Sign in required",
+        "description": "You need to sign in before you can view this page."
+      },
+      "403": {
+        "title": "Access denied",
+        "description": "You do not have permission to view this page."
+      },
+      "404": {
+        "title": "Page not found",
+        "description": "The page you are looking for does not exist or has been moved."
+      },
+      "419": {
+        "title": "Session expired",
+        "description": "Your session expired for security reasons. Please refresh and try again."
+      },
+      "429": {
+        "title": "Too many requests",
+        "description": "You have made too many requests. Please wait a moment and try again."
+      },
+      "500": {
+        "title": "Something went wrong",
+        "description": "A problem occurred while completing the operation. Try again, and contact the administration if it continues."
+      },
+      "503": {
+        "title": "Service unavailable",
+        "description": "The system is temporarily unavailable for maintenance. Please try again shortly."
+      }
+    },
+    "actions": {
+      "home": "Back to home",
+      "back": "Go back"
+    }
+  },
+  "systemErrors": {
+    "title": "System Errors",
+    "subtitle": "Application errors recorded for review.",
+    "empty": "No errors recorded. Everything looks healthy.",
+    "search": "Search errors",
+    "details": "Error details",
+    "request": "Request information",
+    "userInfo": "User information",
+    "exception": "Exception",
+    "trace": "Stack trace",
+    "traceHidden": "You do not have permission to view stack traces.",
+    "occurrences": "Occurrences",
+    "firstSeen": "First seen",
+    "lastSeen": "Last seen",
+    "markResolved": "Mark as resolved",
+    "markReviewed": "Mark as reviewed",
+    "markNew": "Reopen",
+    "resolvedBy": "Resolved by",
+    "guest": "Guest",
+    "fields": {
+      "status": "Status",
+      "level": "Level",
+      "error": "Error",
+      "route": "Route",
+      "method": "Method",
+      "user": "User",
+      "occurredAt": "Occurred at",
+      "requestId": "Request ID",
+      "url": "URL",
+      "ip": "IP address",
+      "userAgent": "User agent",
+      "file": "File",
+      "line": "Line",
+      "errorCode": "Error code"
+    },
+    "statuses": {
+      "new": "New",
+      "reviewed": "Reviewed",
+      "resolved": "Resolved"
     }
   }
 }

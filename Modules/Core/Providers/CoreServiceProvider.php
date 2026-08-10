@@ -2,8 +2,12 @@
 
 namespace Modules\Core\Providers;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
 use Modules\Core\Contracts\TranslationProviderInterface;
+use Modules\Core\Models\ErrorReport;
+use Modules\Core\Policies\ErrorReportPolicy;
 use Modules\Core\Services\Translation\LibreTranslateProvider;
 
 class CoreServiceProvider extends ServiceProvider
@@ -23,6 +27,25 @@ class CoreServiceProvider extends ServiceProvider
     {
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'core');
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+
+        Gate::policy(ErrorReport::class, ErrorReportPolicy::class);
+
+        /*
+         * Lets the sidebar hide an entry the user could not open anyway. The
+         * route's policy check is what actually protects it — this only keeps
+         * a dead link out of the menu.
+         */
+        Inertia::share([
+            'can' => fn () => [
+                'viewErrorReports' => auth()->user()?->can('error-report.view') ?? false,
+            ],
+        ]);
+
+        /*
+         * Reading a stack trace is not tied to a single report, so it is a
+         * class-level ability rather than a per-model one.
+         */
+        Gate::define('viewTrace', [ErrorReportPolicy::class, 'viewTrace']);
 
         $this->registerModulePageNamespaces();
     }

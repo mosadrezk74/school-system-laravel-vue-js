@@ -20,7 +20,7 @@ function actingAdmin(): User
     return $admin;
 }
 
-function studentPayload(AcademicYear $year, ?SchoolClass $class = null, array $overrides = []): array
+function studentManagementPayload(AcademicYear $year, ?SchoolClass $class = null, array $overrides = []): array
 {
     return array_merge([
         'name' => 'Sara Ahmed',
@@ -69,7 +69,7 @@ it('creates both a user and a student profile', function (): void {
     $year = AcademicYear::factory()->create(['is_active' => true]);
 
     $this->actingAs($admin)
-        ->post('/user-management/students', studentPayload($year))
+        ->post('/user-management/students', studentManagementPayload($year))
         ->assertRedirect();
 
     $user = User::where('email', 'sara.ahmed@example.com')->first();
@@ -91,7 +91,7 @@ it('cannot create two students with the same email', function (): void {
     User::factory()->create(['email' => 'sara.ahmed@example.com']);
 
     $this->actingAs($admin)
-        ->post('/user-management/students', studentPayload($year))
+        ->post('/user-management/students', studentManagementPayload($year))
         ->assertSessionHasErrors('email');
 
     expect(StudentProfile::count())->toBe(0);
@@ -104,7 +104,7 @@ it('cannot create two students with the same admission number', function (): voi
     StudentProfile::factory()->create(['admission_number' => 'AD-0001', 'academic_year_id' => $year->id]);
 
     $this->actingAs($admin)
-        ->post('/user-management/students', studentPayload($year, null, [
+        ->post('/user-management/students', studentManagementPayload($year, null, [
             'email' => 'other@example.com',
             'username' => 'other',
             'admission_number' => 'AD-0001',
@@ -117,7 +117,7 @@ it('rolls back user creation when the academic year is inactive', function (): v
     $year = AcademicYear::factory()->create(['is_active' => false]);
 
     $this->actingAs($admin)
-        ->post('/user-management/students', studentPayload($year));
+        ->post('/user-management/students', studentManagementPayload($year));
 
     expect(User::where('email', 'sara.ahmed@example.com')->exists())->toBeFalse();
 });
@@ -128,7 +128,7 @@ it('updates a student and persists the changes', function (): void {
     $student = StudentProfile::factory()->create(['academic_year_id' => $year->id]);
     $student->load('user');
 
-    $payload = studentPayload($year, null, [
+    $payload = studentManagementPayload($year, null, [
         'email' => $student->user->email,
         'username' => $student->user->username,
         'name' => 'Updated Name',
@@ -163,7 +163,7 @@ it('rejects updating a student to a class from a different academic year', funct
     $student = StudentProfile::factory()->create(['academic_year_id' => $year->id]);
     $student->load('user');
 
-    $payload = studentPayload($year, null, [
+    $payload = studentManagementPayload($year, null, [
         'email' => $student->user->email,
         'username' => $student->user->username,
         'admission_number' => $student->admission_number,

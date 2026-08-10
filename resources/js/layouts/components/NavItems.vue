@@ -15,6 +15,14 @@ const enabledModules = computed(() => page.props.enabledModules ?? [])
 
 const isModuleEnabled = name => !name || enabledModules.value.includes(name)
 
+/*
+ * Keeps entries the user cannot open out of the menu. Server-side policies
+ * remain the actual guard — this is only to avoid showing a dead link.
+ */
+const abilities = computed(() => page.props.can ?? {})
+
+const isPermitted = permission => !permission || abilities.value[permission] === true
+
 const sections = computed(() => [
   {
     key: 'academic',
@@ -125,6 +133,7 @@ const sections = computed(() => [
       { title: t('nav.organizationSettings'), to: '/settings/organization', icon: 'bx-sitemap' },
       { title: t('nav.moduleSettings'), to: '/settings/modules', icon: 'bx-grid-alt' },
       { title: t('nav.aiTranslationSettings'), to: '/settings/ai-translation', icon: 'bx-globe' },
+      { title: t('nav.systemErrors'), to: '/system/errors', icon: 'bx-bug', permission: 'viewErrorReports' },
     ],
   },
   {
@@ -139,7 +148,7 @@ const sections = computed(() => [
 const visibleSections = computed(() => sections.value
   .map(section => ({
     ...section,
-    children: section.children.filter(child => isModuleEnabled(child.module)),
+    children: section.children.filter(child => isModuleEnabled(child.module) && isPermitted(child.permission)),
   }))
   .filter(section => section.children.length > 0))
 

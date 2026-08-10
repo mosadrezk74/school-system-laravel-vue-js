@@ -20,6 +20,7 @@ class RolePermissionSeeder extends Seeder
      */
     private const RESOURCES = [
         'Auth' => ['user', 'role'],
+        'Core' => ['error-report'],
         'Setting' => ['setting', 'language'],
         'Academic' => ['academic-year', 'semester', 'grade-level'],
         'Classroom' => ['classroom'],
@@ -54,6 +55,12 @@ class RolePermissionSeeder extends Seeder
      */
     private const RESOURCE_ABILITIES = [
         'report' => ['view', 'generate', 'manage'],
+
+        /*
+         * Stack traces name internal files and classes, so reading them is a
+         * separate grant from seeing that an error happened at all.
+         */
+        'error-report' => ['view', 'update', 'view-trace'],
     ];
 
     /**

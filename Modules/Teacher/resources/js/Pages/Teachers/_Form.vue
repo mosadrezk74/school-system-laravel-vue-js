@@ -310,6 +310,7 @@ const subjectsOptions = computed(() =>
             type="number"
             step="0.01"
             min="0"
+            max="99999999.99"
             :label="$t('teacher.fields.salary_base')"
             :hint="$t('teacher.hints.salary_base')"
             persistent-hint
