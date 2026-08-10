@@ -30,7 +30,7 @@ class UpdateClassAction extends BaseAction
                 throw ClassOperationException::invalidCapacity();
             }
 
-            if ($this->repository->existsForGradeLevel($dto->academicYearId, $dto->gradeLevelId, $class->id)) {
+            if ($this->repository->existsForGradeLevel($dto->academicYearId, $dto->gradeLevelId, $dto->name, $class->id)) {
                 throw ClassOperationException::classAlreadyExists();
             }
 

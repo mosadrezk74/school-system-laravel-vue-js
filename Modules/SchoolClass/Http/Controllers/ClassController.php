@@ -11,12 +11,15 @@ use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
 use Modules\SchoolClass\Actions\ArchiveClassAction;
 use Modules\SchoolClass\Actions\CreateClassAction;
+use Modules\SchoolClass\Actions\CreateClassesForGradeLevelAction;
 use Modules\SchoolClass\Actions\RestoreClassAction;
 use Modules\SchoolClass\Actions\UpdateClassAction;
 use Modules\SchoolClass\DTOs\ClassFilterDTO;
 use Modules\SchoolClass\DTOs\CreateClassDTO;
+use Modules\SchoolClass\DTOs\CreateClassSectionsDTO;
 use Modules\SchoolClass\DTOs\UpdateClassDTO;
 use Modules\SchoolClass\Http\Requests\StoreClassRequest;
+use Modules\SchoolClass\Http\Requests\StoreClassSectionsRequest;
 use Modules\SchoolClass\Http\Requests\UpdateClassRequest;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\SchoolClass\Queries\ClassQuery;
@@ -64,6 +67,20 @@ class ClassController extends BaseInertiaController
         $action->execute(CreateClassDTO::fromRequest($request));
 
         return $this->toRoute('classes.index', [], __('school-class::class.created'));
+    }
+
+    /**
+     * Creates every section of a grade level at once. Guarded by the same
+     * `create` ability as the single-class flow, so the batch route grants
+     * nobody access they did not already have.
+     */
+    public function storeSections(StoreClassSectionsRequest $request, CreateClassesForGradeLevelAction $action): RedirectResponse
+    {
+        $this->authorize('create', SchoolClass::class);
+
+        $action->execute(CreateClassSectionsDTO::fromRequest($request));
+
+        return $this->toRoute('classes.index', [], __('school-class::class.sections_created'));
     }
 
     public function show(SchoolClass $class): Response

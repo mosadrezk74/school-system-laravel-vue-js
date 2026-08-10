@@ -16,14 +16,23 @@ class UpdateClassRequest extends BaseRequest
         $class = $this->route('class');
 
         return [
-            'grade_level_id' => [
-                'required', 'integer', 'exists:grade_levels,id',
-                Rule::unique('classes', 'grade_level_id')
-                    ->where(fn ($query) => $query->where('academic_year_id', AcademicYearService::id()))
+            'grade_level_id' => ['required', 'integer', 'exists:grade_levels,id'],
+            'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
+
+            /*
+             * Unique within its year and grade, ignoring the row being edited
+             * so saving a class without renaming it does not collide with
+             * itself.
+             */
+            'name' => [
+                'required', 'string', 'max:100',
+                Rule::unique('classes', 'name')
+                    ->where(fn ($query) => $query
+                        ->where('academic_year_id', AcademicYearService::id())
+                        ->where('grade_level_id', $this->input('grade_level_id'))
+                        ->whereNull('deleted_at'))
                     ->ignore($class?->id),
             ],
-            'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
-            'name' => ['required', 'string', 'max:100'],
             'capacity' => ['required', 'integer', 'min:1'],
             'is_active' => ['sometimes', 'boolean'],
         ];

@@ -14,13 +14,23 @@ class StoreClassRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'grade_level_id' => [
-                'required', 'integer', 'exists:grade_levels,id',
-                Rule::unique('classes', 'grade_level_id')
-                    ->where(fn ($query) => $query->where('academic_year_id', AcademicYearService::id())),
-            ],
+            'grade_level_id' => ['required', 'integer', 'exists:grade_levels,id'],
             'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
-            'name' => ['required', 'string', 'max:100'],
+
+            /*
+             * A grade level holds many sections, so the name is what makes a
+             * class unique inside its year and grade — not the grade level on
+             * its own, which is what the previous rule checked and which
+             * capped every grade at a single class.
+             */
+            'name' => [
+                'required', 'string', 'max:100',
+                Rule::unique('classes', 'name')
+                    ->where(fn ($query) => $query
+                        ->where('academic_year_id', AcademicYearService::id())
+                        ->where('grade_level_id', $this->input('grade_level_id'))
+                        ->whereNull('deleted_at')),
+            ],
             'capacity' => ['required', 'integer', 'min:1'],
             'is_active' => ['sometimes', 'boolean'],
         ];

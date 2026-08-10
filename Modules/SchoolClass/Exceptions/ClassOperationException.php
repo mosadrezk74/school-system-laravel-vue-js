@@ -26,4 +26,14 @@ class ClassOperationException extends BaseException
     {
         return new static($message ?: __('school-class::class.class_not_found'), HttpStatus::NOT_FOUND);
     }
+
+    public static function noSectionsProvided(string $message = ''): static
+    {
+        return new static($message ?: __('school-class::class.no_sections_provided'), HttpStatus::UNPROCESSABLE_ENTITY);
+    }
+
+    public static function duplicateSectionName(string $message = ''): static
+    {
+        return new static($message ?: __('school-class::class.duplicate_section_name'), HttpStatus::UNPROCESSABLE_ENTITY);
+    }
 }

@@ -290,6 +290,16 @@
       "classTeacher": "Facultatif. L'enseignant principalement responsable de cette classe.",
       "assistantTeacher": "Facultatif. Un enseignant assistant qui aide l'enseignant principal.",
       "active": "Contrôle si la classe est disponible pour les nouvelles inscriptions. Désactivez pour la masquer sans l'archiver."
+    },
+    "sectionsTitle": "Sections",
+    "sectionName": "Nom de la section",
+    "addSection": "Ajouter une section",
+    "removeSection": "Supprimer la section",
+    "createClasses": "Créer les classes",
+    "duplicateSectionName": "Ce nom de section est en double.",
+    "sectionsHint": "Choisissez le niveau une seule fois, puis ajoutez une section par classe.",
+    "sections": {
+      "details": "Détails"
     }
   },
   "teachers": {

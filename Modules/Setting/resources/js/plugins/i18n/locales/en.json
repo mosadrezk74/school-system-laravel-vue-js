@@ -386,7 +386,14 @@
       "classTeacher": "Optional. The teacher primarily responsible for this class.",
       "assistantTeacher": "Optional. A supporting teacher who assists the class teacher.",
       "active": "Controls whether the class is available for new enrollments. Deactivate to hide it without archiving."
-    }
+    },
+    "sectionsTitle": "Sections",
+    "sectionName": "Section Name",
+    "addSection": "Add Section",
+    "removeSection": "Remove Section",
+    "createClasses": "Create Classes",
+    "duplicateSectionName": "This section name is repeated.",
+    "sectionsHint": "Choose the grade level once, then add a section for each class."
   },
   "teachers": {
     "title": "Teachers",

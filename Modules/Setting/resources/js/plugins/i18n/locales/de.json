@@ -290,6 +290,16 @@
       "classTeacher": "Optional. Der Lehrer, der hauptsächlich für diese Klasse verantwortlich ist.",
       "assistantTeacher": "Optional. Ein unterstützender Lehrer, der den Klassenlehrer unterstützt.",
       "active": "Steuert, ob die Klasse für neue Einschreibungen verfügbar ist. Deaktivieren, um sie ohne Archivierung auszublenden."
+    },
+    "sectionsTitle": "Klassen",
+    "sectionName": "Klassenname",
+    "addSection": "Klasse hinzufügen",
+    "removeSection": "Klasse entfernen",
+    "createClasses": "Klassen erstellen",
+    "duplicateSectionName": "Dieser Klassenname ist doppelt.",
+    "sectionsHint": "Wählen Sie die Klassenstufe einmal und fügen Sie dann je eine Klasse hinzu.",
+    "sections": {
+      "details": "Details"
     }
   },
   "teachers": {

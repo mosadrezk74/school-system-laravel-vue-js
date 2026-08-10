@@ -28,7 +28,7 @@ class CreateClassAction extends BaseAction
                 throw ClassOperationException::invalidCapacity();
             }
 
-            if ($this->repository->existsForGradeLevel($dto->academicYearId, $dto->gradeLevelId)) {
+            if ($this->repository->existsForGradeLevel($dto->academicYearId, $dto->gradeLevelId, $dto->name)) {
                 throw ClassOperationException::classAlreadyExists();
             }
 
