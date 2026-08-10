@@ -189,7 +189,6 @@ const subjectsOptions = [
           <VTextField
             v-model="form.phone"
             :label="$t('students.phone')"
-            :hint="$t('students.hints.phone')"
             persistent-hint
             :error-messages="form.errors.phone"
             maxlength="20"
@@ -268,18 +267,6 @@ const subjectsOptions = [
             :hint="$t('teacher.hints.experience_years')"
             persistent-hint
             :error-messages="form.errors.experience_years"
-          />
-        </VCol>
-
-        <VCol cols="12" md="8">
-          <VSelect
-            v-model="form.department_id"
-            clearable
-            :items="departmentOptions"
-            :label="$t('teacher.fields.department_id')"
-            :hint="$t('teacher.hints.department_id')"
-            persistent-hint
-            :error-messages="form.errors.department_id"
           />
         </VCol>
       </VRow>

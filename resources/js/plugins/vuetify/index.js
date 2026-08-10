@@ -2,7 +2,7 @@ import { createVuetify } from 'vuetify'
 import { VBtn } from 'vuetify/components/VBtn'
 import defaults from './defaults'
 import { icons } from './icons'
-import { themes } from './theme'
+import { resolveInitialTheme, themes } from './theme'
 import { findPalette, resolveInitialPalette } from './palettes'
 import { resolveInitialLocale, SUPPORTED_LOCALES } from '@modules/Setting/resources/js/plugins/i18n'
 
@@ -33,7 +33,7 @@ export default function (app) {
     defaults,
     icons,
     theme: {
-      defaultTheme: 'light',
+      defaultTheme: resolveInitialTheme(),
       themes,
     },
 

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Setting\Http\Controllers\LanguageController;
 use Modules\Setting\Http\Controllers\OnboardingController;
+use Modules\Setting\Http\Controllers\PreferenceController;
 use Modules\Setting\Http\Controllers\SchoolSettingController;
 
 Route::middleware(['auth'])
@@ -17,6 +18,8 @@ Route::middleware(['auth'])
 
         Route::patch('languages/{language}/default', [LanguageController::class, 'setDefault'])
             ->name('languages.default');
+
+        Route::patch('theme', [PreferenceController::class, 'updateTheme'])->name('theme.update');
 
         Route::get('general', [SchoolSettingController::class, 'general'])->name('general');
         Route::post('general', [SchoolSettingController::class, 'updateGeneral'])->name('general.update');

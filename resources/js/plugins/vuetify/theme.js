@@ -1,5 +1,21 @@
 export const staticPrimaryColor = '#696CFF'
 export const staticPrimaryDarkenColor = '#5E61E6'
+
+export const DEFAULT_THEME = 'light'
+export const THEME_STORAGE_KEY = 'app-theme'
+
+/**
+ * Reads the theme chosen on a previous visit so the first paint already uses
+ * it, instead of always starting from light and losing the choice on reload.
+ */
+export const resolveInitialTheme = () => {
+  if (typeof localStorage === 'undefined')
+    return DEFAULT_THEME
+
+  const stored = localStorage.getItem(THEME_STORAGE_KEY)
+
+  return stored === 'light' || stored === 'dark' ? stored : DEFAULT_THEME
+}
 export const themes = {
   light: {
     dark: false,

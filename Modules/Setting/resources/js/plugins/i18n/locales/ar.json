@@ -163,7 +163,55 @@
     "awaitingReview": "في انتظار المراجعة",
     "needsAttention": "يحتاج انتباهك",
     "quickActions": "إجراءات سريعة",
-    "noData": "لا توجد بيانات بعد. ستظهر هنا فور بدء العام الدراسي."
+    "noData": "لا توجد بيانات بعد. ستظهر هنا فور بدء العام الدراسي.",
+    "welcomeUser": "مرحبًا، {name}",
+    "classes": "الفصول",
+    "newStudentsHint": "{count} التحقوا خلال آخر 30 يومًا",
+    "noInvoicesYet": "لم تُصدر فواتير بعد",
+    "noInvoicesYetHint": "ستظهر الأرقام المالية هنا فور إصدار الفواتير.",
+    "financeOverview": "نظرة مالية",
+    "overdueAmount": "متأخرة",
+    "collectedThisMonth": "المحصّل هذا الشهر",
+    "pendingPayments": "مدفوعات بانتظار التأكيد",
+    "pendingNotCounted": "المدفوعات بانتظار التأكيد لا تُحتسب ضمن المحصّل.",
+    "attendanceNotTaken": "لم يُرصد الحضور بعد اليوم",
+    "attendanceNotTakenHint": "ستظهر الأرقام فور رصد أحد الفصول للحضور.",
+    "attendanceClassesTaken": "رُصد في {count} حصة اليوم",
+    "nothingNeedsAttention": "لا شيء يحتاج انتباهك حاليًا",
+    "classCapacity": "سعة الفصول",
+    "studentsByGender": "الطلاب حسب الجنس",
+    "gender": {
+      "male": "ذكور",
+      "female": "إناث"
+    },
+    "attendance": {
+      "present": "حاضر",
+      "absent": "غائب",
+      "late": "متأخر",
+      "excused": "بعذر"
+    },
+    "attention": {
+      "overdueInvoices": "فواتير متأخرة",
+      "pendingPayments": "مدفوعات بانتظار التأكيد",
+      "studentsWithoutClass": "طلاب بلا فصل",
+      "classesWithoutStudents": "فصول بلا طلاب"
+    },
+    "attentionCount": {
+      "overdueInvoices": "{count} فاتورة تجاوزت تاريخ الاستحقاق",
+      "pendingPayments": "{count} طلب دفع بحاجة إلى مراجعة",
+      "studentsWithoutClass": "{count} طالب غير مُسند إلى فصل",
+      "classesWithoutStudents": "{count} فصل نشط بلا طلاب مقيّدين"
+    },
+    "actions": {
+      "addStudent": "إضافة طالب",
+      "addTeacher": "إضافة معلم",
+      "createClass": "إنشاء فصل",
+      "createInvoice": "إنشاء فاتورة"
+    },
+    "guardians": "أولياء الأمور",
+    "guardiansHint": "أُسر مسجّلة",
+    "classrooms": "القاعات",
+    "classroomsHint": "قاعات متاحة"
   },
   "languages": {
     "title": "اللغات",
@@ -439,6 +487,11 @@
       "salary_base": "اختياري. قيمة الراتب الأساسي.",
       "primary_subjects": "اختياري. المواد الرئيسية التي يدرسها المعلم.",
       "is_active": "يمكن للمعلم تسجيل الدخول إلى النظام عند التفعيل."
+    },
+    "salaryTypes": {
+      "fixed": "ثابت",
+      "hourly": "بالساعة",
+      "contract": "عقد"
     },
     "sections": {
       "account": "بيانات الحساب",

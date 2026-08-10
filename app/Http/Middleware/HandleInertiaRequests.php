@@ -40,7 +40,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'auth' => [
-                'user' => $request->user()?->only(['id', 'name', 'email']),
+                'user' => $request->user()?->only(['id', 'name', 'email', 'theme']),
                 'role' => $request->user()?->role?->value,
                 'portal' => app(PortalRouter::class)->portalFor($request->user()),
             ],

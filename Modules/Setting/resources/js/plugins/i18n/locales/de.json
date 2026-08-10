@@ -142,7 +142,55 @@
     "awaitingReview": "Wartet auf Prüfung",
     "needsAttention": "Benötigt Ihre Aufmerksamkeit",
     "quickActions": "Schnellaktionen",
-    "noData": "Noch keine Daten. Diese erscheinen hier, sobald das Schuljahr beginnt."
+    "noData": "Noch keine Daten. Diese erscheinen hier, sobald das Schuljahr beginnt.",
+    "welcomeUser": "Willkommen, {name}",
+    "classes": "Klassen",
+    "newStudentsHint": "{count} in den letzten 30 Tagen aufgenommen",
+    "noInvoicesYet": "Noch keine Rechnungen erstellt",
+    "noInvoicesYetHint": "Beträge erscheinen hier, sobald Rechnungen erstellt wurden.",
+    "financeOverview": "Finanzübersicht",
+    "overdueAmount": "Überfällig",
+    "collectedThisMonth": "Diesen Monat eingenommen",
+    "pendingPayments": "Zahlungen zur Bestätigung",
+    "pendingNotCounted": "Zahlungen zur Bestätigung zählen nicht als eingenommen.",
+    "attendanceNotTaken": "Anwesenheit heute noch nicht erfasst",
+    "attendanceNotTakenHint": "Die Zahlen erscheinen, sobald eine Klasse die Anwesenheit erfasst.",
+    "attendanceClassesTaken": "Heute in {count} Unterrichtsstunden erfasst",
+    "nothingNeedsAttention": "Derzeit erfordert nichts Ihre Aufmerksamkeit",
+    "classCapacity": "Klassenkapazität",
+    "studentsByGender": "Schüler nach Geschlecht",
+    "gender": {
+      "male": "Männlich",
+      "female": "Weiblich"
+    },
+    "attendance": {
+      "present": "Anwesend",
+      "absent": "Abwesend",
+      "late": "Verspätet",
+      "excused": "Entschuldigt"
+    },
+    "attention": {
+      "overdueInvoices": "Überfällige Rechnungen",
+      "pendingPayments": "Zahlungen zur Bestätigung",
+      "studentsWithoutClass": "Schüler ohne Klasse",
+      "classesWithoutStudents": "Klassen ohne Schüler"
+    },
+    "attentionCount": {
+      "overdueInvoices": "{count} Rechnungen sind überfällig",
+      "pendingPayments": "{count} Zahlungsanfragen zu prüfen",
+      "studentsWithoutClass": "{count} Schüler sind keiner Klasse zugeordnet",
+      "classesWithoutStudents": "{count} aktive Klassen haben keine Schüler"
+    },
+    "actions": {
+      "addStudent": "Schüler hinzufügen",
+      "addTeacher": "Lehrer hinzufügen",
+      "createClass": "Klasse erstellen",
+      "createInvoice": "Rechnung erstellen"
+    },
+    "guardians": "Erziehungsberechtigte",
+    "guardiansHint": "Erfasste Familien",
+    "classrooms": "Klassenräume",
+    "classroomsHint": "Verfügbare Räume"
   },
   "languages": {
     "title": "Sprachen",
@@ -398,6 +446,11 @@
       "salary_base": "Optional. Der Grundgehaltsbetrag.",
       "primary_subjects": "Optional. Die Hauptfächer, die der Lehrer unterrichtet.",
       "is_active": "Der Lehrer kann sich bei Aktivierung am System anmelden."
+    },
+    "salaryTypes": {
+      "fixed": "Fest",
+      "hourly": "Stündlich",
+      "contract": "Vertrag"
     },
     "sections": {
       "account": "Kontodetails",

@@ -70,10 +70,7 @@ const headers = computed(() => [
   { title: t('studyResources.titleField'), key: 'title' },
   { title: t('studyResources.subject'), key: 'subject' },
   { title: t('studyResources.gradeLevel'), key: 'grade_level' },
-  { title: t('studyResources.teacher'), key: 'teacher' },
   { title: t('studyResources.type'), key: 'type' },
-  { title: t('studyResources.fileSize'), key: 'file_size' },
-  { title: t('studyResources.downloadsCount'), key: 'downloads_count' },
   { title: t('studyResources.createdAt'), key: 'created_at' },
   { title: '', key: 'actions', sortable: false, align: 'end' },
 ])

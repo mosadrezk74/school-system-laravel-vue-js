@@ -163,7 +163,55 @@
     "awaitingReview": "Awaiting Review",
     "needsAttention": "Needs Your Attention",
     "quickActions": "Quick Actions",
-    "noData": "No data yet. It will appear here once the academic year starts."
+    "noData": "No data yet. It will appear here once the academic year starts.",
+    "welcomeUser": "Welcome, {name}",
+    "classes": "Classes",
+    "newStudentsHint": "{count} admitted in the last 30 days",
+    "noInvoicesYet": "No invoices issued yet",
+    "noInvoicesYetHint": "Fee figures will appear here once invoices are issued.",
+    "financeOverview": "Finance Overview",
+    "overdueAmount": "Overdue",
+    "collectedThisMonth": "Collected this month",
+    "pendingPayments": "Payments awaiting confirmation",
+    "pendingNotCounted": "Payments awaiting confirmation are not counted as collected.",
+    "attendanceNotTaken": "Attendance not taken yet today",
+    "attendanceNotTakenHint": "Figures will appear once a class records attendance.",
+    "attendanceClassesTaken": "Recorded by {count} class sessions today",
+    "nothingNeedsAttention": "Nothing needs your attention right now",
+    "classCapacity": "Class Capacity",
+    "studentsByGender": "Students by Gender",
+    "gender": {
+      "male": "Male",
+      "female": "Female"
+    },
+    "attendance": {
+      "present": "Present",
+      "absent": "Absent",
+      "late": "Late",
+      "excused": "Excused"
+    },
+    "attention": {
+      "overdueInvoices": "Overdue invoices",
+      "pendingPayments": "Payments awaiting confirmation",
+      "studentsWithoutClass": "Students without a class",
+      "classesWithoutStudents": "Classes with no students"
+    },
+    "attentionCount": {
+      "overdueInvoices": "{count} invoices past their due date",
+      "pendingPayments": "{count} payment requests to review",
+      "studentsWithoutClass": "{count} students are not assigned to a class",
+      "classesWithoutStudents": "{count} active classes have no students enrolled"
+    },
+    "actions": {
+      "addStudent": "Add Student",
+      "addTeacher": "Add Teacher",
+      "createClass": "Create Class",
+      "createInvoice": "Create Invoice"
+    },
+    "guardians": "Guardians",
+    "guardiansHint": "Families on file",
+    "classrooms": "Classrooms",
+    "classroomsHint": "Rooms available"
   },
   "languages": {
     "title": "Languages",
@@ -499,6 +547,11 @@
       "salary_base": "Optional. The base salary amount.",
       "primary_subjects": "Optional. The main subjects taught by the teacher.",
       "is_active": "The teacher can log in to the system when activated."
+    },
+    "salaryTypes": {
+      "fixed": "Fixed",
+      "hourly": "Hourly",
+      "contract": "Contract"
     },
     "sections": {
       "account": "Account Details",

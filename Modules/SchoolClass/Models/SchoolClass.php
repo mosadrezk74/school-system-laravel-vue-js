@@ -3,10 +3,12 @@
 namespace Modules\SchoolClass\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
 use Modules\Classroom\Models\Classroom;
 use Modules\Core\Abstracts\BaseModel;
+use Modules\Student\Models\StudentProfile;
 
 class SchoolClass extends BaseModel
 {
@@ -35,5 +37,14 @@ class SchoolClass extends BaseModel
     public function classroom(): BelongsTo
     {
         return $this->belongsTo(Classroom::class, 'classroom_id');
+    }
+
+    /**
+     * Students whose current class is this one — the inverse of
+     * StudentProfile::currentClass().
+     */
+    public function students(): HasMany
+    {
+        return $this->hasMany(StudentProfile::class, 'current_class_id');
     }
 }
