@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import SubjectForm from './_Form.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   subject: { type: Object, required: true },
@@ -31,13 +32,12 @@ function submit() {
 <template>
   <Head :title="t('subject.edit')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('subject.edit') }}</VCardTitle>
-      <VCardSubtitle>{{ subject.name }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('subject.edit')"
+    :subtitle="subject.name"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -48,9 +48,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -67,6 +66,6 @@ function submit() {
       >
         {{ t('common.update') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

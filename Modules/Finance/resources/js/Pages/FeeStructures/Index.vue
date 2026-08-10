@@ -3,11 +3,11 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   feeStructures: { type: Object, required: true },
@@ -124,63 +124,58 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VCardText class="d-flex flex-wrap gap-4">
+  <AppDataTable
+    :headers="headers"
+    :items="feeStructures.data"
+    mobile-title-key="name"
+    :meta="feeStructures.meta"
+    empty-icon="bx-layer"
+    :empty-title="t('finance.feeStructures.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VTextField
         v-model="search"
         :label="t('finance.searchByName')"
         prepend-inner-icon="bx-search"
         clearable
-        density="compact"
-        style="max-inline-size: 320px; flex: 1 1 240px;"
       />
 
       <VSelect
         v-model="feeCategoryId"
         :label="t('finance.fields.fee_category_id')"
         :items="feeCategoryOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
 
       <VSelect
         v-model="gradeLevelId"
         :label="t('finance.fields.grade_level_id')"
         :items="gradeLevelOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
 
       <VSelect
         v-model="classroomId"
         :label="t('finance.fields.classroom_id')"
         :items="classroomOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
 
       <VSelect
         v-model="frequency"
         :label="t('finance.fields.frequency')"
         :items="frequencyOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="feeStructures.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
+      <template #item.name="{ item }">
+        <AppTableLink :href="`/finance/fee-structures/${item.id}`">
+          {{ item.name ?? '—' }}
+        </AppTableLink>
+      </template>
+
       <template #item.fee_category="{ item }">
         {{ item.fee_category?.name ?? '—' }}
       </template>
@@ -212,9 +207,6 @@ function goToPage(page) {
       </template>
 
       <template #item.actions="{ item }">
-        <IconBtn :href="`/finance/fee-structures/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
         <IconBtn :href="`/finance/fee-structures/${item.id}/edit`" :as="Link">
           <VIcon icon="bx-edit" />
         </IconBtn>
@@ -222,20 +214,7 @@ function goToPage(page) {
           <VIcon icon="bx-archive" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-layer"
-          :title="t('finance.feeStructures.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="feeStructures.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

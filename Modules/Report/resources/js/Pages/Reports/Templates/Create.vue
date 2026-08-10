@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import ReportTemplateForm from './_Form.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 defineProps({
   categories: { type: Array, default: () => [] },
@@ -28,13 +29,12 @@ function submit() {
 <template>
   <Head :title="t('report.templates.addNew')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('report.templates.addNew') }}</VCardTitle>
-      <VCardSubtitle>{{ t('report.templates.subtitle') }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('report.templates.addNew')"
+    :subtitle="t('report.templates.subtitle')"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -46,9 +46,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -60,6 +59,6 @@ function submit() {
       <VBtn :loading="form.processing" @click="submit">
         {{ t('common.save') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

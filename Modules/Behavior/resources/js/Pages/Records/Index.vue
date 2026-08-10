@@ -2,11 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   records: { type: Object, required: true },
@@ -104,11 +104,16 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VCardText>
+  <AppDataTable
+    :headers="headers"
+    :items="records.data"
+    mobile-title-key="student"
+    :meta="records.meta"
+    empty-icon="bx-shield-quarter"
+    :empty-title="t('behaviorRecords.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VRow>
         <VCol cols="12" md="4">
           <VSelect
@@ -116,7 +121,6 @@ function goToPage(page) {
             :items="statusOptions"
             :label="t('behaviorRecords.status')"
             clearable
-            density="compact"
           />
         </VCol>
         <VCol cols="12" md="4">
@@ -125,20 +129,15 @@ function goToPage(page) {
             :items="typeOptions"
             :label="t('behaviorCategories.type')"
             clearable
-            density="compact"
           />
         </VCol>
       </VRow>
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="records.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
       <template #item.student="{ item }">
-        {{ item.student?.name }}
+        <AppTableLink :href="`/behavior/records/${item.id}`">
+          {{ item.student?.name }}
+        </AppTableLink>
       </template>
 
       <template #item.category="{ item }">
@@ -162,9 +161,6 @@ function goToPage(page) {
       </template>
 
       <template #item.actions="{ item }">
-        <IconBtn :href="`/behavior/records/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
         <IconBtn :href="`/behavior/records/${item.id}/edit`" :as="Link">
           <VIcon icon="bx-edit" />
         </IconBtn>
@@ -172,20 +168,7 @@ function goToPage(page) {
           <VIcon icon="bx-trash" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-shield-quarter"
-          :title="t('behaviorRecords.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="records.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

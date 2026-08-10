@@ -208,16 +208,6 @@ const quickActions = [
                 </VListItemSubtitle>
               </VListItem>
             </VCol>
-            <VCol cols="6">
-              <VListItem>
-                <VListItemTitle class="text-medium-emphasis text-caption">
-                  {{ t('students.scholarshipPercentage') }}
-                </VListItemTitle>
-                <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ student.scholarship_percentage }}%
-                </VListItemSubtitle>
-              </VListItem>
-            </VCol>
           </VRow>
         </VCardText>
       </VCard>

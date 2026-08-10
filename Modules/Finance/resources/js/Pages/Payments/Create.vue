@@ -3,6 +3,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3'
 import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   invoices: { type: Array, default: () => [] },
@@ -49,13 +50,12 @@ function submit() {
 <template>
   <Head :title="t('finance.payments.addNew')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('finance.payments.addNew') }}</VCardTitle>
-      <VCardSubtitle>{{ t('finance.payments.subtitle') }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('finance.payments.addNew')"
+    :subtitle="t('finance.payments.subtitle')"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -161,9 +161,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -175,6 +174,6 @@ function submit() {
       <VBtn :loading="form.processing" @click="submit">
         {{ t('common.save') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

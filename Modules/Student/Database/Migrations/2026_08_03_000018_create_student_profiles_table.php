@@ -36,13 +36,8 @@ return new class extends Migration
             $table->text('allergies')->nullable();
             $table->text('medical_conditions')->nullable();
 
-            $table->string('previous_school', 255)->nullable();
-            $table->decimal('scholarship_percentage', 5, 2)->default(0);
-
             $table->boolean('is_graduated')->default(false);
             $table->boolean('is_active')->default(true);
-
-            $table->json('extra_fields')->nullable();
 
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
@@ -54,8 +49,6 @@ return new class extends Migration
             $table->index('current_class_id');
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-            // Not-null column: cascading keeps every profile pointing at a real
-            // year instead of leaving an orphaned row a nullOnDelete would need.
             $table->foreign('academic_year_id')->references('id')->on('academic_years')->cascadeOnDelete();
             $table->foreign('current_class_id')->references('id')->on('classes')->nullOnDelete();
             $table->foreign('created_by')->references('id')->on('users')->nullOnDelete();

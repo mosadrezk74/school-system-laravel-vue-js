@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import ClassroomForm from './_Form.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 defineProps({
   roomTypes: { type: Array, default: () => [] },
@@ -28,13 +29,12 @@ function submit() {
 <template>
   <Head :title="t('classroom.addNew')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('classroom.addNew') }}</VCardTitle>
-      <VCardSubtitle>{{ t('classroom.subtitle') }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('classroom.addNew')"
+    :subtitle="t('classroom.subtitle')"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -45,9 +45,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -64,6 +63,6 @@ function submit() {
       >
         {{ t('common.save') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

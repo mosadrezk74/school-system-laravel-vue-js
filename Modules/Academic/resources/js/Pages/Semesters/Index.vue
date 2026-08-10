@@ -2,11 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   semesters: { type: Object, required: true },
@@ -116,9 +116,14 @@ function restore(item) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VCardText>
+  <AppDataTable
+    :headers="headers"
+    :items="semesters.data"
+    mobile-title-key="name"
+    :meta="semesters.meta"
+    @page="goToPage"
+  >
+    <template #filters>
       <VRow>
         <VCol cols="12" md="4">
           <VTextField
@@ -126,8 +131,6 @@ function restore(item) {
             :label="t('semesters.search')"
             prepend-inner-icon="bx-search"
             clearable
-            density="compact"
-            hide-details
           />
         </VCol>
 
@@ -136,9 +139,7 @@ function restore(item) {
             v-model="academicYearFilter"
             :items="academicYearOptions"
             :label="t('semesters.fields.academicYear')"
-            density="compact"
             clearable
-            hide-details
           />
         </VCol>
 
@@ -147,22 +148,16 @@ function restore(item) {
             v-model="isActiveFilter"
             :items="activeOptions"
             :label="t('semesters.fields.isActive')"
-            density="compact"
-            hide-details
           />
         </VCol>
       </VRow>
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="semesters.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
       <template #item.name="{ item }">
         <div class="d-flex align-center gap-2">
-          <span>{{ item.name }}</span>
+          <AppTableLink :href="`/academic/semesters/${item.id}`">
+            {{ item.name }}
+          </AppTableLink>
           <VChip v-if="item.deleted_at" size="x-small" color="warning">
             {{ t('common.archived') }}
           </VChip>
@@ -188,9 +183,6 @@ function restore(item) {
       </template>
 
       <template #item.actions="{ item }">
-        <IconBtn :href="`/academic/semesters/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
         <IconBtn :href="`/academic/semesters/${item.id}/edit`" :as="Link">
           <VIcon icon="bx-edit" />
         </IconBtn>
@@ -201,17 +193,7 @@ function restore(item) {
           <VIcon icon="bx-refresh" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState :title="t('semesters.empty')" />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="semesters.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

@@ -3,11 +3,11 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   studentFees: { type: Object, required: true },
@@ -112,47 +112,42 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VCardText class="d-flex flex-wrap gap-4">
+  <AppDataTable
+    :headers="headers"
+    :items="studentFees.data"
+    mobile-title-key="student"
+    :meta="studentFees.meta"
+    empty-icon="bx-user-check"
+    :empty-title="t('finance.studentFees.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VSelect
         v-model="studentId"
         :label="t('finance.fields.student_id')"
         :items="studentOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 280px; flex: 1 1 240px;"
       />
 
       <VSelect
         v-model="feeStructureId"
         :label="t('finance.fields.fee_structure_id')"
         :items="feeStructureOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 240px;"
       />
 
       <VSelect
         v-model="status"
         :label="t('finance.fields.status')"
         :items="statusOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="studentFees.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
       <template #item.student="{ item }">
-        {{ item.student?.name ?? '—' }}
+        <AppTableLink :href="`/finance/student-fees/${item.id}`">
+          {{ item.student?.name ?? '—' }}
+        </AppTableLink>
       </template>
 
       <template #item.fee_structure="{ item }">
@@ -182,9 +177,6 @@ function goToPage(page) {
       </template>
 
       <template #item.actions="{ item }">
-        <IconBtn :href="`/finance/student-fees/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
         <IconBtn :href="`/finance/student-fees/${item.id}/edit`" :as="Link">
           <VIcon icon="bx-edit" />
         </IconBtn>
@@ -192,20 +184,7 @@ function goToPage(page) {
           <VIcon icon="bx-archive" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-user-check"
-          :title="t('finance.studentFees.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="studentFees.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

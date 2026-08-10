@@ -2,6 +2,7 @@
 import { Head, Link } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 defineProps({
   payment: { type: Object, required: true },
@@ -14,41 +15,28 @@ const { formatMoney, formatDateTime } = useMoney()
 <template>
   <Head :title="t('finance.payments.title')" />
 
+  <AppPageHeader
+    :title="formatMoney(payment.amount)"
+    :subtitle="`${payment.student?.name ?? '—'} · ${formatDateTime(payment.paid_at)}`"
+  >
+    <template #actions>
+      <VChip color="primary" variant="tonal" size="small">
+        {{ payment.payment_method_label ?? '—' }}
+      </VChip>
+      <VBtn
+        v-if="payment.invoice"
+        variant="tonal"
+        color="secondary"
+        prepend-icon="bx-receipt"
+        :href="`/finance/invoices/${payment.invoice_id}`"
+        :as="Link"
+      >
+        {{ t('finance.viewInvoice') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
+
   <VRow>
-    <VCol cols="12">
-      <VCard>
-        <VCardText class="d-flex flex-wrap align-center gap-4">
-          <VAvatar color="success" variant="tonal" size="56">
-            <VIcon icon="bx-credit-card" size="32" />
-          </VAvatar>
-
-          <div class="flex-grow-1">
-            <div class="d-flex align-center gap-3 flex-wrap">
-              <h5 class="text-h5 mb-0">
-                {{ formatMoney(payment.amount) }}
-              </h5>
-              <VChip color="primary" variant="tonal" size="small">
-                {{ payment.payment_method_label ?? '—' }}
-              </VChip>
-            </div>
-            <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
-              {{ payment.student?.name ?? '—' }} · {{ formatDateTime(payment.paid_at) }}
-            </p>
-          </div>
-
-          <VBtn
-            v-if="payment.invoice"
-            variant="tonal"
-            color="secondary"
-            prepend-icon="bx-receipt"
-            :href="`/finance/invoices/${payment.invoice_id}`"
-            :as="Link"
-          >
-            {{ t('finance.viewInvoice') }}
-          </VBtn>
-        </VCardText>
-      </VCard>
-    </VCol>
 
     <VCol cols="12" md="6">
       <VCard>

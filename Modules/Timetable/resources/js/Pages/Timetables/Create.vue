@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   classes: { type: Array, default: () => [] },
@@ -24,13 +25,12 @@ function submit() {
 <template>
   <Head :title="t('timetables.addNew')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('timetables.addNew') }}</VCardTitle>
-      <VCardSubtitle>{{ t('timetables.subtitle') }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('timetables.addNew')"
+    :subtitle="t('timetables.subtitle')"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -48,9 +48,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -65,6 +64,6 @@ function submit() {
       >
         {{ t('common.save') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

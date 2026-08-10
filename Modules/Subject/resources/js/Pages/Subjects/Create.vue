@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import SubjectForm from './_Form.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const { t } = useI18n()
 
@@ -19,13 +20,12 @@ function submit() {
 <template>
   <Head :title="t('subject.addNew')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('subject.addNew') }}</VCardTitle>
-      <VCardSubtitle>{{ t('subject.subtitle') }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('subject.addNew')"
+    :subtitle="t('subject.subtitle')"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -33,9 +33,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -52,6 +51,6 @@ function submit() {
       >
         {{ t('common.save') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

@@ -2,11 +2,10 @@
 import { Head, router, useForm } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
 
 const props = defineProps({
   years: { type: Object, required: true },
@@ -135,25 +134,23 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VCardText>
+  <AppDataTable
+    :headers="headers"
+    :items="years.data"
+    :meta="years.meta"
+    empty-icon="bx-calendar"
+    :empty-title="t('academicYears.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VTextField
         v-model="search"
         :label="t('academicYears.search')"
         prepend-inner-icon="bx-search"
         clearable
-        density="compact"
-        style="max-inline-size: 320px;"
       />
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="years.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
       <template #item.status="{ item }">
         <VChip
           v-if="item.is_current"
@@ -189,20 +186,7 @@ function goToPage(page) {
           <VIcon icon="bx-trash" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-calendar"
-          :title="t('academicYears.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="years.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <VDialog
     v-model="dialog"

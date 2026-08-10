@@ -3,11 +3,11 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   payments: { type: Object, required: true },
@@ -105,60 +105,53 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VCardText class="d-flex flex-wrap gap-4">
+  <AppDataTable
+    :headers="headers"
+    :items="payments.data"
+    mobile-title-key="student"
+    :meta="payments.meta"
+    empty-icon="bx-credit-card"
+    :empty-title="t('finance.payments.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VTextField
         v-model="search"
         :label="t('finance.searchPayment')"
         prepend-inner-icon="bx-search"
         clearable
-        density="compact"
-        style="max-inline-size: 300px; flex: 1 1 240px;"
       />
 
       <VSelect
         v-model="paymentMethod"
         :label="t('finance.fields.payment_method')"
         :items="paymentMethodOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
 
       <VTextField
         v-model="paidFrom"
         type="date"
         :label="t('finance.paidFrom')"
-        density="compact"
         clearable
-        style="max-inline-size: 180px;"
       />
 
       <VTextField
         v-model="paidTo"
         type="date"
         :label="t('finance.paidTo')"
-        density="compact"
         clearable
-        style="max-inline-size: 180px;"
       />
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="payments.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
       <template #item.paid_at="{ item }">
         {{ formatDateTime(item.paid_at) }}
       </template>
 
       <template #item.student="{ item }">
-        {{ item.student?.name ?? '—' }}
+        <AppTableLink :href="`/finance/payments/${item.id}`">
+          {{ item.student?.name ?? '—' }}
+        </AppTableLink>
       </template>
 
       <template #item.invoice="{ item }">
@@ -186,27 +179,11 @@ function goToPage(page) {
       </template>
 
       <template #item.actions="{ item }">
-        <IconBtn :href="`/finance/payments/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
         <IconBtn @click="archive(item)">
           <VIcon icon="bx-archive" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-credit-card"
-          :title="t('finance.payments.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="payments.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

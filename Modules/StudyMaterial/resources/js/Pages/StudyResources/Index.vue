@@ -2,11 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   studyResources: { type: Object, required: true },
@@ -134,63 +134,58 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VCardText class="d-flex flex-wrap gap-4">
+  <AppDataTable
+    :headers="headers"
+    :items="studyResources.data"
+    mobile-title-key="title"
+    :meta="studyResources.meta"
+    empty-icon="bx-folder-open"
+    :empty-title="t('studyResources.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VTextField
         v-model="search"
         :label="t('studyResources.search')"
         prepend-inner-icon="bx-search"
         clearable
-        density="compact"
-        style="max-inline-size: 320px; flex: 1 1 240px;"
       />
 
       <VSelect
         v-model="subjectId"
         :label="t('studyResources.subject')"
         :items="subjectOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
 
       <VSelect
         v-model="gradeLevelId"
         :label="t('studyResources.gradeLevel')"
         :items="gradeLevelOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
 
       <VSelect
         v-model="teacherId"
         :label="t('studyResources.teacher')"
         :items="teacherOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
 
       <VSelect
         v-model="type"
         :label="t('studyResources.type')"
         :items="typeOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="studyResources.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
+      <template #item.title="{ item }">
+        <AppTableLink :href="`/academic/study-resources/${item.id}`">
+          {{ item.title ?? '—' }}
+        </AppTableLink>
+      </template>
+
       <template #item.subject="{ item }">
         {{ item.subject?.name ?? '—' }}
       </template>
@@ -218,9 +213,6 @@ function goToPage(page) {
       </template>
 
       <template #item.actions="{ item }">
-        <IconBtn :href="`/academic/study-resources/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
         <IconBtn :href="`/academic/study-resources/${item.id}/edit`" :as="Link">
           <VIcon icon="bx-edit" />
         </IconBtn>
@@ -228,20 +220,7 @@ function goToPage(page) {
           <VIcon icon="bx-archive" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-folder-open"
-          :title="t('studyResources.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="studyResources.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

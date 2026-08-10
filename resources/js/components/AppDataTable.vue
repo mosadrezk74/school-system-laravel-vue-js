@@ -208,8 +208,28 @@ const hasSlot = name => Boolean(slots[name])
 
 <style lang="scss" scoped>
 .app-data-table {
+  /*
+    Filters are laid out by the shell rather than by each page, so a search
+    box and a couple of selects line up the same way everywhere and wrap onto
+    their own rows on a phone instead of overflowing.
+  */
   &__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     padding: var(--app-space-4);
+    gap: var(--app-space-3);
+
+    /* Direct children size themselves; the search field takes the slack. */
+    > * {
+      flex: 0 1 auto;
+      min-inline-size: 12rem;
+    }
+
+    :deep(.v-input:first-child) {
+      flex: 1 1 16rem;
+      max-inline-size: 24rem;
+    }
   }
 
   &__cards {

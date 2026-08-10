@@ -2,6 +2,7 @@
 import { Head, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   student: { type: Object, required: true },
@@ -152,12 +153,11 @@ const statusColor = status => ({
     </VCol>
 
     <VCol cols="12">
-      <VCard>
-        <VCardItem>
-          <VCardTitle>{{ t('attendanceStudent.timelineTitle') }}</VCardTitle>
-        </VCardItem>
+  <AppPageHeader
+    :title="t('attendanceStudent.timelineTitle')"
+  />
 
-        <VDivider />
+  <VCard>
 
         <VCardText
           v-if="!rows.length"

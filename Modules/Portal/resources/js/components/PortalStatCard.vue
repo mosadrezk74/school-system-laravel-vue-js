@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * Thin wrapper over the application-wide <AppStatCard>.
+ *
+ * Kept as its own component so the three portals' existing call sites — and
+ * their `title`/`value`/`icon`/`color`/`hint` props — continue to work
+ * unchanged, while the visual definition of "a metric tile" now lives in one
+ * place shared with the admin dashboards.
+ */
+import AppStatCard from '@/components/AppStatCard.vue'
+
 defineProps({
   title: { type: String, required: true },
   value: { type: [String, Number], default: null },
@@ -6,34 +16,14 @@ defineProps({
   color: { type: String, default: 'primary' },
   hint: { type: String, default: null },
 })
-
-const format = value => (value === null || value === undefined ? '—' : value)
 </script>
 
 <template>
-  <VCard>
-    <VCardText class="d-flex align-center gap-4">
-      <VAvatar
-        :color="color"
-        variant="tonal"
-        size="48"
-      >
-        <VIcon :icon="icon" size="26" />
-      </VAvatar>
-      <div>
-        <p class="text-caption text-medium-emphasis mb-1">
-          {{ title }}
-        </p>
-        <h5 class="text-h5 mb-0">
-          {{ format(value) }}
-        </h5>
-        <p
-          v-if="hint"
-          class="text-caption text-medium-emphasis mb-0 mt-1"
-        >
-          {{ hint }}
-        </p>
-      </div>
-    </VCardText>
-  </VCard>
+  <AppStatCard
+    :title="title"
+    :value="value"
+    :icon="icon"
+    :color="color"
+    :hint="hint"
+  />
 </template>

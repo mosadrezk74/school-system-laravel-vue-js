@@ -95,10 +95,7 @@ class CreateStudentAction extends BaseAction
                     bloodGroup: $dto->bloodGroup,
                     allergies: $dto->allergies,
                     medicalConditions: $dto->medicalConditions,
-                    previousSchool: $dto->previousSchool,
-                    scholarshipPercentage: $dto->scholarshipPercentage,
                     isGraduated: $dto->isGraduated,
-                    extraFields: $dto->extraFields,
                 );
             }
 

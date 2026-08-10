@@ -26,7 +26,6 @@ class StudentProfileFactory extends Factory
             'current_class_id' => null,
             'admission_number' => fake()->unique()->numerify('AD-#####'),
             'admission_date' => now()->toDateString(),
-            'scholarship_percentage' => 0,
             'is_graduated' => false,
             'is_active' => true,
         ];

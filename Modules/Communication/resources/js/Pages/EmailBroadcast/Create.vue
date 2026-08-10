@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import TranslatableTextarea from '@/components/TranslatableTextarea.vue'
 import TranslatableTextInput from '@/components/TranslatableTextInput.vue'
 import AudienceSelector from '../../components/AudienceSelector.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 defineProps({
   roles: { type: Array, default: () => [] },
@@ -31,13 +32,12 @@ function submit() {
 <template>
   <Head :title="t('communication.emailBroadcast.title')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('communication.emailBroadcast.title') }}</VCardTitle>
-      <VCardSubtitle>{{ t('communication.emailBroadcast.subtitle') }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('communication.emailBroadcast.title')"
+    :subtitle="t('communication.emailBroadcast.subtitle')"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -71,9 +71,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         type="submit"
         :loading="form.processing"
@@ -82,6 +81,6 @@ function submit() {
       >
         {{ t('communication.emailBroadcast.send') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

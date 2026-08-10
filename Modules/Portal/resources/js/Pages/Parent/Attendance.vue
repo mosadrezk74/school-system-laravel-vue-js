@@ -6,6 +6,7 @@ import ParentLayout from '@modules/Portal/resources/js/layouts/parent.vue'
 import PortalHeader from '@modules/Portal/resources/js/components/PortalHeader.vue'
 import PortalStatCard from '@modules/Portal/resources/js/components/PortalStatCard.vue'
 import ChildSelector from '@modules/Portal/resources/js/components/ChildSelector.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
 
 defineOptions({ layout: ParentLayout })
 
@@ -111,10 +112,10 @@ function formatDate(value) {
           </VListItem>
         </VList>
 
-        <VCardText v-else class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-calendar-x" size="40" class="mb-2" />
-          {{ t('portal.parent.noAttendance') }}
-        </VCardText>
+        <AppEmptyState v-else
+          icon="bx-calendar-x"
+          :title="t('portal.parent.noAttendance')"
+        />
       </VCard>
     </VCol>
   </VRow>

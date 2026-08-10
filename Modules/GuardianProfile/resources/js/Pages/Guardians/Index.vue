@@ -2,11 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   guardians: { type: Object, required: true },
@@ -94,18 +94,21 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VCardText class="d-flex flex-wrap gap-4">
+  <AppDataTable
+    :headers="headers"
+    :items="guardians.data"
+    mobile-title-key="name"
+    :meta="guardians.meta"
+    empty-icon="bx-user"
+    :empty-title="t('guardians.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VTextField
         v-model="search"
         :label="t('guardians.search')"
         prepend-inner-icon="bx-search"
         clearable
-        density="compact"
-        style="max-inline-size: 360px; flex: 1 1 260px;"
       />
 
       <VSelect
@@ -116,18 +119,16 @@ function goToPage(page) {
           { title: t('guardians.active'), value: true },
           { title: t('guardians.inactive'), value: false },
         ]"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="guardians.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
+      <template #item.name="{ item }">
+        <AppTableLink :href="`/user-management/guardians/${item.id}`">
+          {{ item.name ?? '—' }}
+        </AppTableLink>
+      </template>
+
       <template #item.status="{ item }">
         <VChip
           :color="item.is_active ? 'success' : 'secondary'"
@@ -138,9 +139,6 @@ function goToPage(page) {
       </template>
 
       <template #item.actions="{ item }">
-        <IconBtn :href="`/user-management/guardians/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
         <IconBtn :href="`/user-management/guardians/${item.id}/edit`" :as="Link">
           <VIcon icon="bx-edit" />
         </IconBtn>
@@ -148,20 +146,7 @@ function goToPage(page) {
           <VIcon icon="bx-archive" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-user"
-          :title="t('guardians.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="guardians.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

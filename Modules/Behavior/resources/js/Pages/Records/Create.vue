@@ -2,6 +2,7 @@
 import { Head, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import BehaviorRecordForm from './_Form.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   students: { type: Array, default: () => [] },
@@ -26,13 +27,12 @@ function submit() {
 <template>
   <Head :title="t('behaviorRecords.addNew')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('behaviorRecords.addNew') }}</VCardTitle>
-      <VCardSubtitle>{{ t('behaviorRecords.subtitle') }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('behaviorRecords.addNew')"
+    :subtitle="t('behaviorRecords.subtitle')"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <BehaviorRecordForm
@@ -42,9 +42,8 @@ function submit() {
       />
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -58,6 +57,6 @@ function submit() {
       >
         {{ t('common.save') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

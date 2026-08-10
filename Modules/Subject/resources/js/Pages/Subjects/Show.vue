@@ -2,6 +2,7 @@
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   subject: { type: Object, required: true },
@@ -26,30 +27,27 @@ const descriptionTranslations = computed(() => languages.value
 <template>
   <Head :title="subject.name" />
 
+  <AppPageHeader
+    :title="subject.name"
+    :subtitle="t('subject.subtitle')"
+  >
+    <template #actions>
+      <VChip :color="subject.is_active ? 'success' : 'secondary'" size="small">
+        {{ subject.is_active ? t('common.active') : t('common.inactive') }}
+      </VChip>
+      <VBtn
+        prepend-icon="bx-edit"
+        :href="`/academic/subjects/${subject.id}/edit`"
+        :as="Link"
+        color="primary"
+        variant="tonal"
+      >
+        {{ t('common.edit') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
+
   <VCard>
-    <VCardItem>
-      <VCardTitle class="d-flex align-center gap-2">
-        {{ subject.name }}
-        <VChip :color="subject.is_active ? 'success' : 'secondary'" size="small">
-          {{ subject.is_active ? t('common.active') : t('common.inactive') }}
-        </VChip>
-      </VCardTitle>
-      <VCardSubtitle>{{ t('subject.subtitle') }}</VCardSubtitle>
-
-      <template #append>
-        <VBtn
-          prepend-icon="bx-edit"
-          :href="`/academic/subjects/${subject.id}/edit`"
-          :as="Link"
-          color="primary"
-          variant="tonal"
-        >
-          {{ t('common.edit') }}
-        </VBtn>
-      </template>
-    </VCardItem>
-
-    <VDivider />
 
     <VCardText>
       <h6 class="text-h6 mb-3">

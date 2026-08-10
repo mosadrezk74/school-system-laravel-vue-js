@@ -2,11 +2,10 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
 
 const props = defineProps({
   templates: { type: Object, required: true },
@@ -120,45 +119,37 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VCardText class="d-flex flex-wrap gap-4">
+  <AppDataTable
+    :headers="headers"
+    :items="templates.data"
+    :meta="templates.meta"
+    empty-icon="bx-file"
+    :empty-title="t('report.templates.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VTextField
         v-model="search"
         :label="t('report.searchTemplates')"
         prepend-inner-icon="bx-search"
         clearable
-        density="compact"
-        style="max-inline-size: 320px; flex: 1 1 240px;"
       />
 
       <VSelect
         v-model="category"
         :label="t('report.fields.category')"
         :items="categoryOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
 
       <VSelect
         v-model="isActive"
         :label="t('report.fields.is_active')"
         :items="statusOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="templates.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
       <template #item.code="{ item }">
         {{ item.code ?? '—' }}
       </template>
@@ -187,20 +178,7 @@ function goToPage(page) {
           <VIcon icon="bx-trash" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-file"
-          :title="t('report.templates.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="templates.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

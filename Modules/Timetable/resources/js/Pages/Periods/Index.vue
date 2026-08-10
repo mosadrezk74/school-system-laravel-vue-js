@@ -2,7 +2,7 @@
 import { Head, Link, router, useForm } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
@@ -86,30 +86,32 @@ function archive(item) {
     </VCol>
 
     <VCol cols="12">
-      <VCard>
-        <VCardItem>
-          <VCardTitle>{{ t('timetables.periods.title') }}</VCardTitle>
-          <VCardSubtitle>{{ t('timetables.periods.subtitle') }}</VCardSubtitle>
+      <div class="d-flex flex-wrap align-center justify-space-between gap-4 mb-4">
+        <div>
+          <h2 class="text-h5 mb-0">
+            {{ t('timetables.periods.title') }}
+          </h2>
+          <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
+            {{ t('timetables.periods.subtitle') }}
+          </p>
+        </div>
 
-          <template #append>
-            <VBtn
-              prepend-icon="bx-plus"
-              :href="'/schedule/periods/create'"
-              :as="Link"
-            >
-              {{ t('timetables.periods.addNew') }}
-            </VBtn>
-          </template>
-        </VCardItem>
-
-        <VDivider />
-
-        <VDataTable
-          :headers="headers"
-          :items="periods.data"
-          :items-per-page="-1"
-          hide-default-footer
+        <VBtn
+          prepend-icon="bx-plus"
+          :href="'/schedule/periods/create'"
+          :as="Link"
         >
+          {{ t('timetables.periods.addNew') }}
+        </VBtn>
+      </div>
+
+      <AppDataTable
+        :headers="headers"
+        :items="periods.data"
+        mobile-title-key="name"
+        empty-icon="bx-time-five"
+        :empty-title="t('timetables.periods.empty')"
+      >
           <template #item.name="{ item }">
             {{ item.name }}
           </template>
@@ -139,14 +141,7 @@ function archive(item) {
             </IconBtn>
           </template>
 
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-time-five"
-          :title="t('timetables.periods.empty')"
-        />
-      </template>
-        </VDataTable>
-      </VCard>
+      </AppDataTable>
     </VCol>
   </VRow>
 

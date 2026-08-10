@@ -3,11 +3,11 @@ import { Head, Link, router, useForm } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   invoices: { type: Object, required: true },
@@ -160,63 +160,58 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VCardText class="d-flex flex-wrap gap-4">
+  <AppDataTable
+    :headers="headers"
+    :items="invoices.data"
+    mobile-title-key="invoice_number"
+    :meta="invoices.meta"
+    empty-icon="bx-receipt"
+    :empty-title="t('finance.invoices.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VTextField
         v-model="search"
         :label="t('finance.searchInvoice')"
         prepend-inner-icon="bx-search"
         clearable
-        density="compact"
-        style="max-inline-size: 280px; flex: 1 1 240px;"
       />
 
       <VSelect
         v-model="studentId"
         :label="t('finance.fields.student_id')"
         :items="studentOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 240px;"
       />
 
       <VSelect
         v-model="status"
         :label="t('finance.fields.status')"
         :items="statusOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 180px;"
       />
 
       <VTextField
         v-model="issuedFrom"
         type="date"
         :label="t('finance.issuedFrom')"
-        density="compact"
         clearable
-        style="max-inline-size: 180px;"
       />
 
       <VTextField
         v-model="issuedTo"
         type="date"
         :label="t('finance.issuedTo')"
-        density="compact"
         clearable
-        style="max-inline-size: 180px;"
       />
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="invoices.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
+      <template #item.invoice_number="{ item }">
+        <AppTableLink :href="`/finance/invoices/${item.id}`">
+          {{ item.invoice_number ?? '—' }}
+        </AppTableLink>
+      </template>
+
       <template #item.student="{ item }">
         {{ item.student?.name ?? '—' }}
       </template>
@@ -252,9 +247,6 @@ function goToPage(page) {
       </template>
 
       <template #item.actions="{ item }">
-        <IconBtn :href="`/finance/invoices/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
         <IconBtn :href="`/finance/invoices/${item.id}/edit`" :as="Link">
           <VIcon icon="bx-edit" />
         </IconBtn>
@@ -262,20 +254,7 @@ function goToPage(page) {
           <VIcon icon="bx-archive" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-receipt"
-          :title="t('finance.invoices.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="invoices.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <VDialog v-model="generateDialog" max-width="560">
     <VCard>

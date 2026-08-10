@@ -2,6 +2,7 @@
 import { usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppEmptyState from '@/components/AppEmptyState.vue'
 
 const props = defineProps({
   columns: { type: Array, default: () => [] },
@@ -97,10 +98,10 @@ function isBadge(column) {
       </template>
 
       <template #no-data>
-        <div class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-bar-chart-alt-2" size="40" class="mb-2" />
-          {{ t('report.noRows') }}
-        </div>
+        <AppEmptyState
+          icon="bx-bar-chart-alt-2"
+          :title="t('report.noRows')"
+        />
       </template>
     </VDataTable>
   </div>

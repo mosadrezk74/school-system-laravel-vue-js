@@ -54,8 +54,6 @@ class StudentResource extends BaseResource
             'allergies' => $this->allergies,
             'medical_conditions' => $this->medical_conditions,
 
-            'previous_school' => $this->previous_school,
-            'scholarship_percentage' => $this->scholarship_percentage,
             'is_graduated' => $this->is_graduated,
             'is_active' => $this->is_active,
 

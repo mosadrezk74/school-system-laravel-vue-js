@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   assignment: { type: Object, required: true },
@@ -260,10 +261,11 @@ function submitGrade() {
   </VRow>
 
   <VDialog v-model="gradeDialog" max-width="480">
-    <VCard>
-      <VCardItem>
-        <VCardTitle>{{ t('assignments.gradeAction') }}</VCardTitle>
-      </VCardItem>
+  <AppPageHeader
+    :title="t('assignments.gradeAction')"
+  />
+
+  <VCard>
       <VCardText>
         <VRow>
           <VCol cols="12">

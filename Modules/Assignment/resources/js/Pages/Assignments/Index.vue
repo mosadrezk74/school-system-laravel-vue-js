@@ -2,11 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   assignments: { type: Object, required: true },
@@ -96,18 +96,21 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VCardText class="d-flex flex-wrap gap-4">
+  <AppDataTable
+    :headers="headers"
+    :items="assignments.data"
+    mobile-title-key="title"
+    :meta="assignments.meta"
+    empty-icon="bx-task"
+    :empty-title="t('assignments.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VTextField
         v-model="search"
         :label="t('assignments.search')"
         prepend-inner-icon="bx-search"
         clearable
-        density="compact"
-        style="max-inline-size: 360px; flex: 1 1 260px;"
       />
 
       <VSelect
@@ -118,18 +121,16 @@ function goToPage(page) {
           { title: t('assignments.published'), value: true },
           { title: t('assignments.unpublished'), value: false },
         ]"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="assignments.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
+      <template #item.title="{ item }">
+        <AppTableLink :href="`/assignments/assignments/${item.id}`">
+          {{ item.title ?? '—' }}
+        </AppTableLink>
+      </template>
+
       <template #item.class="{ item }">
         {{ item.class ? item.class.name : '—' }}
       </template>
@@ -156,9 +157,6 @@ function goToPage(page) {
       </template>
 
       <template #item.actions="{ item }">
-        <IconBtn :href="`/assignments/assignments/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
         <IconBtn :href="`/assignments/assignments/${item.id}/edit`" :as="Link">
           <VIcon icon="bx-edit" />
         </IconBtn>
@@ -166,20 +164,7 @@ function goToPage(page) {
           <VIcon icon="bx-archive" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-task"
-          :title="t('assignments.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="assignments.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

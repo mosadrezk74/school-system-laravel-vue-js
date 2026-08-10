@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
+import AppEmptyState from '@/components/AppEmptyState.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -285,10 +286,10 @@ const tabHasError = tab => tabFields[tab].some(field =>
         </VCardText>
       </VCard>
 
-      <div v-if="!form.items.length" class="d-flex flex-column align-center pa-8 text-center text-disabled">
-        <VIcon icon="bx-list-ul" size="40" class="mb-2" />
-        {{ t('finance.invoices.noItems') }}
-      </div>
+      <AppEmptyState v-if="!form.items.length"
+          icon="bx-list-ul"
+          :title="t('finance.invoices.noItems')"
+        />
 
       <VCard v-else variant="tonal" color="primary">
         <VCardText>

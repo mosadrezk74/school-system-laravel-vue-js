@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import StudentForm from './_Form.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 defineProps({
   classes: { type: Array, default: () => [] },
@@ -14,6 +15,7 @@ const form = useForm({
   email: '',
   username: '',
   password: '',
+  password_confirmation: '',
   gender: 'male',
   birth_date: null,
   national_id: '',
@@ -23,7 +25,6 @@ const form = useForm({
   admission_number: '',
   roll_number: '',
   admission_date: null,
-  scholarship_percentage: 0,
   is_graduated: false,
   father_name: '',
   father_phone: '',
@@ -37,7 +38,6 @@ const form = useForm({
   blood_group: '',
   allergies: '',
   medical_conditions: '',
-  previous_school: '',
   emergency_contact_name: '',
   emergency_contact_phone: '',
   emergency_contact_relation: '',
@@ -51,13 +51,12 @@ function submit() {
 <template>
   <Head :title="t('students.addNew')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('students.addNew') }}</VCardTitle>
-      <VCardSubtitle>{{ t('students.subtitle') }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('students.addNew')"
+    :subtitle="t('students.subtitle')"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -68,9 +67,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -85,6 +83,6 @@ function submit() {
       >
         {{ t('common.save') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

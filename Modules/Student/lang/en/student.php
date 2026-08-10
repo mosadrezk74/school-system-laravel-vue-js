@@ -19,6 +19,7 @@ return [
         'email' => 'Email',
         'username' => 'Username',
         'password' => 'Password',
+        'passwordConfirmation' => 'Confirm Password',
         'gender' => 'Gender',
         'academic_year_id' => 'Academic Year',
         'current_class_id' => 'Class',
@@ -36,15 +37,14 @@ return [
         'nationalId' => 'Optional. National ID or identity card number.',
         'phone' => 'Optional. Phone number for contacting the student.',
         'active' => 'Student can log in to the system when active.',
-        
+
         'academicYear' => 'Required. The academic year the student belongs to.',
         'currentClass' => 'Optional. The student\'s current class.',
         'admissionDate' => 'Required. Date the student was admitted to the school.',
         'admissionNumber' => 'Optional. Leave empty for automatic generation.',
         'rollNumber' => 'Optional. Seat number or serial number in the class.',
-        'scholarshipPercentage' => 'Optional. From 0% to 100%. Discount percentage on tuition fees.',
         'isGraduated' => 'Check if the student has graduated from this academic stage.',
-        
+
         'fatherName' => 'Optional. Student\'s father\'s name.',
         'fatherPhone' => 'Optional. Student\'s father\'s phone number.',
         'motherName' => 'Optional. Student\'s mother\'s name.',
@@ -54,13 +54,20 @@ return [
         'guardianRelation' => 'Optional. Relationship between the guardian and the student.',
         'address' => 'Optional. Student\'s residential address.',
         'city' => 'Optional. Student\'s city of residence.',
-        
+
         'bloodGroup' => 'Optional. Student\'s blood type (A+, A-, B+, B-, AB+, AB-, O+, O-).',
         'allergies' => 'Optional. Any allergies the student suffers from.',
         'medicalConditions' => 'Optional. Any medical conditions the student suffers from.',
-        'previousSchool' => 'Optional. The previous school where the student studied.',
         'emergencyContactName' => 'Optional. Emergency contact person\'s name.',
         'emergencyContactPhone' => 'Optional. Emergency contact person\'s phone number.',
         'emergencyContactRelation' => 'Optional. Relationship with the emergency contact.',
+    ],
+    'validation' => [
+        'username_format' => 'The username may only contain letters, numbers, dots, hyphens and underscores.',
+        'national_id_format' => 'The national ID must be 8 to 20 digits.',
+        'phone_format' => 'Enter a valid phone number (digits, optionally starting with +).',
+        'birth_date_too_recent' => 'The student must be at least 2 years old.',
+        'birth_date_too_old' => 'Please enter a realistic birth date.',
+        'admission_before_birth' => 'The admission date must be after the birth date.',
     ],
 ];

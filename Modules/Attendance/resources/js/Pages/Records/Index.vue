@@ -2,11 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   records: { type: Object, required: true },
@@ -103,27 +103,28 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VCardText class="d-flex flex-wrap gap-4">
+  <AppDataTable
+    :headers="headers"
+    :items="records.data"
+    mobile-title-key="date"
+    :meta="records.meta"
+    empty-icon="bx-calendar-check"
+    :empty-title="t('attendanceRecords.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VSelect
         v-model="classId"
         :label="t('attendanceRecords.class')"
         :items="classes.map(c => ({ title: c.name, value: c.id }))"
-        density="compact"
         clearable
-        style="max-inline-size: 220px;"
       />
 
       <VSelect
         v-model="subjectId"
         :label="t('attendanceRecords.subject')"
         :items="subjects.map(s => ({ title: s.name, value: s.id }))"
-        density="compact"
         clearable
-        style="max-inline-size: 220px;"
       />
 
 
@@ -131,27 +132,27 @@ function goToPage(page) {
         v-model="dateFrom"
         type="date"
         :label="t('attendanceRecords.dateFrom')"
-        density="compact"
         clearable
-        style="max-inline-size: 180px;"
       />
 
       <VTextField
         v-model="dateTo"
         type="date"
         :label="t('attendanceRecords.dateTo')"
-        density="compact"
         clearable
-        style="max-inline-size: 180px;"
       />
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="records.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
+      <!--
+        An attendance record is a per-session register, so the date is what
+        identifies the row — there is no name or code to click.
+      -->
+      <template #item.date="{ item }">
+        <AppTableLink :href="`/attendance/records/${item.id}`">
+          {{ item.date ?? '—' }}
+        </AppTableLink>
+      </template>
+
       <template #item.class="{ item }">
         {{ item.class ? item.class.name : '—' }}
       </template>
@@ -185,9 +186,6 @@ function goToPage(page) {
       </template>
 
       <template #item.actions="{ item }">
-        <IconBtn :href="`/attendance/records/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
         <IconBtn :href="`/attendance/records/${item.id}/edit`" :as="Link">
           <VIcon icon="bx-edit" />
         </IconBtn>
@@ -195,20 +193,7 @@ function goToPage(page) {
           <VIcon icon="bx-trash" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-calendar-check"
-          :title="t('attendanceRecords.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="records.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

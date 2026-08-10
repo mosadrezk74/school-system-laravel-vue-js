@@ -3,6 +3,7 @@ import { Head, router, useForm } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppPagination from '@/components/AppPagination.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
@@ -25,6 +26,18 @@ function applyFilters() {
     preserveState: true,
     preserveScroll: true,
     replace: true,
+  })
+}
+
+/*
+ * Paging keeps the active search so moving to page 2 of a filtered list does
+ * not silently drop the filter. Previously this was an inline arrow in the
+ * template, which put routing logic in the markup.
+ */
+function goToPage(page) {
+  router.get('/examination/grades', { search: search.value, page }, {
+    preserveState: true,
+    preserveScroll: true,
   })
 }
 
@@ -177,18 +190,10 @@ function remove(grade) {
       </template>
     </VDataTable>
 
-    <template v-if="rows.meta && rows.meta.last_page > 1">
-      <VDivider />
-      <div class="d-flex justify-end pa-4">
-        <VPagination
-          :model-value="rows.meta.current_page"
-          :length="rows.meta.last_page"
-          :total-visible="5"
-          density="compact"
-          @update:model-value="page => router.get('/examination/grades', { search: search, page }, { preserveState: true, preserveScroll: true })"
-        />
-      </div>
-    </template>
+    <AppPagination
+      :meta="rows.meta"
+      @change="goToPage"
+    />
   </VCard>
 
   <VDialog v-model="dialog" max-width="560">

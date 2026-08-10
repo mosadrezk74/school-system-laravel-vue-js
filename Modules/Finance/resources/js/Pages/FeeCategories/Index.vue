@@ -3,11 +3,11 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   feeCategories: { type: Object, required: true },
@@ -97,36 +97,37 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VCardText class="d-flex flex-wrap gap-4">
+  <AppDataTable
+    :headers="headers"
+    :items="feeCategories.data"
+    mobile-title-key="name"
+    :meta="feeCategories.meta"
+    empty-icon="bx-purchase-tag"
+    :empty-title="t('finance.feeCategories.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VTextField
         v-model="search"
         :label="t('finance.searchByName')"
         prepend-inner-icon="bx-search"
         clearable
-        density="compact"
-        style="max-inline-size: 320px; flex: 1 1 240px;"
       />
 
       <VSelect
         v-model="isActive"
         :label="t('finance.fields.is_active')"
         :items="statusOptions"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="feeCategories.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
+      <template #item.name="{ item }">
+        <AppTableLink :href="`/finance/fee-categories/${item.id}`">
+          {{ item.name ?? '—' }}
+        </AppTableLink>
+      </template>
+
       <template #item.code="{ item }">
         {{ item.code ?? '—' }}
       </template>
@@ -150,9 +151,6 @@ function goToPage(page) {
       </template>
 
       <template #item.actions="{ item }">
-        <IconBtn :href="`/finance/fee-categories/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
         <IconBtn :href="`/finance/fee-categories/${item.id}/edit`" :as="Link">
           <VIcon icon="bx-edit" />
         </IconBtn>
@@ -160,20 +158,7 @@ function goToPage(page) {
           <VIcon icon="bx-archive" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-purchase-tag"
-          :title="t('finance.feeCategories.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="feeCategories.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

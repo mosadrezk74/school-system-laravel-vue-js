@@ -6,6 +6,7 @@ import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
 import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   invoice: { type: Object, required: true },
@@ -58,65 +59,50 @@ function cancelInvoice() {
 <template>
   <Head :title="invoice.invoice_number" />
 
+  <AppPageHeader
+    :title="invoice.invoice_number"
+    :subtitle="`${invoice.student?.name ?? '—'}`
+      + ` · ${t('finance.fields.issue_date')}: ${formatDate(invoice.issue_date)}`
+      + ` · ${t('finance.fields.due_date')}: ${formatDate(invoice.due_date)}`"
+  >
+    <template #actions>
+      <VChip
+        :color="statusColors[invoice.status] ?? 'secondary'"
+        variant="tonal"
+        size="small"
+      >
+        {{ invoice.status_label ?? '—' }}
+      </VChip>
+      <div class="text-end">
+        <p class="text-caption text-medium-emphasis mb-0">
+          {{ t('finance.fields.balance_due') }}
+        </p>
+        <h5 class="text-h5 mb-0">
+          {{ formatMoney(invoice.balance_due, currency) }}
+        </h5>
+      </div>
+      <VBtn
+        v-if="canCancel"
+        variant="tonal"
+        color="error"
+        prepend-icon="bx-x-circle"
+        @click="cancelInvoice"
+      >
+        {{ t('finance.cancelInvoice') }}
+      </VBtn>
+      <VBtn
+        variant="tonal"
+        color="secondary"
+        prepend-icon="bx-edit"
+        :href="`/finance/invoices/${invoice.id}/edit`"
+        :as="Link"
+      >
+        {{ t('common.edit') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
+
   <VRow>
-    <VCol cols="12">
-      <VCard>
-        <VCardText class="d-flex flex-wrap align-center gap-4">
-          <VAvatar color="primary" variant="tonal" size="56">
-            <VIcon icon="bx-receipt" size="32" />
-          </VAvatar>
-
-          <div class="flex-grow-1">
-            <div class="d-flex align-center gap-3 flex-wrap">
-              <h5 class="text-h5 mb-0">
-                {{ invoice.invoice_number }}
-              </h5>
-              <VChip
-                :color="statusColors[invoice.status] ?? 'secondary'"
-                variant="tonal"
-                size="small"
-              >
-                {{ invoice.status_label ?? '—' }}
-              </VChip>
-            </div>
-            <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
-              {{ invoice.student?.name ?? '—' }}
-              · {{ t('finance.fields.issue_date') }}: {{ formatDate(invoice.issue_date) }}
-              · {{ t('finance.fields.due_date') }}: {{ formatDate(invoice.due_date) }}
-            </p>
-          </div>
-
-          <div class="text-end">
-            <p class="text-caption text-medium-emphasis mb-0">
-              {{ t('finance.fields.balance_due') }}
-            </p>
-            <h5 class="text-h5 mb-0">
-              {{ formatMoney(invoice.balance_due, currency) }}
-            </h5>
-          </div>
-
-          <VBtn
-            v-if="canCancel"
-            variant="tonal"
-            color="error"
-            prepend-icon="bx-x-circle"
-            @click="cancelInvoice"
-          >
-            {{ t('finance.cancelInvoice') }}
-          </VBtn>
-
-          <VBtn
-            variant="tonal"
-            color="secondary"
-            prepend-icon="bx-edit"
-            :href="`/finance/invoices/${invoice.id}/edit`"
-            :as="Link"
-          >
-            {{ t('common.edit') }}
-          </VBtn>
-        </VCardText>
-      </VCard>
-    </VCol>
 
     <VCol cols="12" md="4">
       <VCard>

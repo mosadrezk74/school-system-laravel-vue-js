@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import DynamicFilters from '@modules/Report/resources/js/components/DynamicFilters.vue'
 import DynamicTable from '@modules/Report/resources/js/components/DynamicTable.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
 
 const props = defineProps({
   reports: { type: Array, default: () => [] },
@@ -178,10 +179,10 @@ async function run() {
           </VListItem>
         </VList>
 
-        <VCardText v-else class="d-flex flex-column align-center pa-8 text-center text-disabled">
-          <VIcon icon="bx-bar-chart-alt-2" size="40" class="mb-2" />
-          {{ t('report.empty') }}
-        </VCardText>
+        <AppEmptyState v-else
+          icon="bx-bar-chart-alt-2"
+          :title="t('report.empty')"
+        />
       </VCard>
     </VCol>
 

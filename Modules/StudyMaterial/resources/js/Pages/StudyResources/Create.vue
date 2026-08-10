@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import StudyResourceForm from './_Form.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 defineProps({
   subjects: { type: Array, default: () => [] },
@@ -33,13 +34,12 @@ function submit() {
 <template>
   <Head :title="t('studyResources.addNew')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('studyResources.addNew') }}</VCardTitle>
-      <VCardSubtitle>{{ t('studyResources.subtitle') }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('studyResources.addNew')"
+    :subtitle="t('studyResources.subtitle')"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -54,9 +54,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -71,6 +70,6 @@ function submit() {
       >
         {{ t('common.save') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

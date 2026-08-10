@@ -3,11 +3,10 @@ import { Head, router, useForm } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TranslatableTextInput from '@/components/TranslatableTextInput.vue'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
 
 const props = defineProps({
   categories: { type: Object, required: true },
@@ -135,25 +134,23 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VCardText>
+  <AppDataTable
+    :headers="headers"
+    :items="categories.data"
+    :meta="categories.meta"
+    empty-icon="bx-shield-quarter"
+    :empty-title="t('behaviorCategories.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VTextField
         v-model="search"
         :label="t('behaviorCategories.search')"
         prepend-inner-icon="bx-search"
         clearable
-        density="compact"
-        style="max-inline-size: 320px;"
       />
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="categories.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
       <template #item.type="{ item }">
         <VChip
           :color="item.type === 'merit' ? 'success' : 'error'"
@@ -180,20 +177,7 @@ function goToPage(page) {
           <VIcon icon="bx-trash" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-shield-quarter"
-          :title="t('behaviorCategories.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="categories.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <VDialog
     v-model="dialog"

@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import FeeStructureForm from './_Form.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 defineProps({
   feeCategories: { type: Array, default: () => [] },
@@ -33,13 +34,12 @@ function submit() {
 <template>
   <Head :title="t('finance.feeStructures.addNew')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('finance.feeStructures.addNew') }}</VCardTitle>
-      <VCardSubtitle>{{ t('finance.feeStructures.subtitle') }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('finance.feeStructures.addNew')"
+    :subtitle="t('finance.feeStructures.subtitle')"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -53,9 +53,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -67,6 +66,6 @@ function submit() {
       <VBtn :loading="form.processing" @click="submit">
         {{ t('common.save') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

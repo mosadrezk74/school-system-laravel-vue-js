@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import MeetingCard from '../../components/MeetingCard.vue'
 import AppPagination from '@/components/AppPagination.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppEmptyState from '@/components/AppEmptyState.vue'
 
 const props = defineProps({
   meetings: { type: Object, required: true },
@@ -125,10 +126,10 @@ function goToPage(page) {
         </VCol>
       </VRow>
 
-      <div v-else class="d-flex flex-column align-center pa-8 text-center text-disabled">
-        <VIcon icon="bx-video" size="40" class="mb-2" />
-        {{ t('meetings.empty') }}
-      </div>
+      <AppEmptyState v-else
+          icon="bx-video"
+          :title="t('meetings.empty')"
+        />
     </VCardText>
 
     <AppPagination

@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import MeetingForm from './_Form.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   meeting: { type: Object, required: true },
@@ -29,13 +30,12 @@ function submit() {
 <template>
   <Head :title="t('meetings.edit')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('meetings.edit') }}</VCardTitle>
-      <VCardSubtitle>{{ meeting.title }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('meetings.edit')"
+    :subtitle="meeting.title"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -47,9 +47,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -66,6 +65,6 @@ function submit() {
       >
         {{ t('common.update') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

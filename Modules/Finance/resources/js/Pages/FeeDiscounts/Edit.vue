@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import FeeDiscountForm from './_Form.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   feeDiscount: { type: Object, required: true },
@@ -34,13 +35,12 @@ function submit() {
 <template>
   <Head :title="t('finance.feeDiscounts.edit')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('finance.feeDiscounts.edit') }}</VCardTitle>
-      <VCardSubtitle>{{ feeDiscount.name }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('finance.feeDiscounts.edit')"
+    :subtitle="feeDiscount.name"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -53,9 +53,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -67,6 +66,6 @@ function submit() {
       <VBtn :loading="form.processing" @click="submit">
         {{ t('common.update') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

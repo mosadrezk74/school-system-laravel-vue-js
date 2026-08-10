@@ -2,9 +2,9 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   messages: { type: Object, required: true },
@@ -37,7 +37,11 @@ const headers = computed(() => [
   { title: t('communication.fields.targetType'), key: 'target_type' },
   { title: t('communication.messages.status'), key: 'status', sortable: false },
   { title: t('communication.messages.sentAt'), key: 'sent_at' },
-  { title: '', key: 'actions', sortable: false, align: 'end' },
+  /*
+   * No actions column: a broadcast message has no edit or delete route, so
+   * View was its only action — and the title now carries that navigation.
+   * An empty column would just be dead space at the end of every row.
+   */
 ])
 
 function goToPage(page) {
@@ -66,18 +70,21 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VCardText class="d-flex flex-wrap gap-4">
+  <AppDataTable
+    :headers="headers"
+    :items="messages.data"
+    mobile-title-key="title"
+    :meta="messages.meta"
+    empty-icon="bx-message-detail"
+    :empty-title="t('communication.messages.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VTextField
         v-model="search"
         :label="t('communication.messages.search')"
         prepend-inner-icon="bx-search"
         clearable
-        density="compact"
-        style="max-inline-size: 320px; flex: 1 1 240px;"
       />
 
       <VSelect
@@ -87,18 +94,16 @@ function goToPage(page) {
           { title: t('communication.messages.statuses.pending'), value: 'pending' },
           { title: t('communication.messages.statuses.sent'), value: 'sent' },
         ]"
-        density="compact"
         clearable
-        style="max-inline-size: 200px;"
       />
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="messages.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
+      <template #item.title="{ item }">
+        <AppTableLink :href="`/communication/messages/${item.id}`">
+          {{ item.title ?? '—' }}
+        </AppTableLink>
+      </template>
+
       <template #item.target_type="{ item }">
         {{ t(`communication.audience.${item.target_type}`) }}
       </template>
@@ -113,23 +118,5 @@ function goToPage(page) {
         {{ item.sent_at ? new Date(item.sent_at).toLocaleString() : '—' }}
       </template>
 
-      <template #item.actions="{ item }">
-        <IconBtn :href="`/communication/messages/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
-      </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-message-detail"
-          :title="t('communication.messages.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="messages.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 </template>

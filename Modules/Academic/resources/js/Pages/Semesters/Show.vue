@@ -2,6 +2,7 @@
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   semester: { type: Object, required: true },
@@ -31,30 +32,27 @@ const details = computed(() => [
 <template>
   <Head :title="semester.name" />
 
+  <AppPageHeader
+    :title="semester.name"
+    :subtitle="semester.academic_year?.name ?? '—'"
+  >
+    <template #actions>
+      <VChip :color="semester.is_active ? 'success' : 'secondary'" size="small">
+        {{ semester.is_active ? t('common.active') : t('common.inactive') }}
+      </VChip>
+      <VBtn
+        prepend-icon="bx-edit"
+        :href="`/academic/semesters/${semester.id}/edit`"
+        :as="Link"
+        color="primary"
+        variant="tonal"
+      >
+        {{ t('common.edit') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
+
   <VCard>
-    <VCardItem>
-      <VCardTitle class="d-flex align-center gap-2">
-        {{ semester.name }}
-        <VChip :color="semester.is_active ? 'success' : 'secondary'" size="small">
-          {{ semester.is_active ? t('common.active') : t('common.inactive') }}
-        </VChip>
-      </VCardTitle>
-      <VCardSubtitle>{{ semester.academic_year?.name ?? '—' }}</VCardSubtitle>
-
-      <template #append>
-        <VBtn
-          prepend-icon="bx-edit"
-          :href="`/academic/semesters/${semester.id}/edit`"
-          :as="Link"
-          color="primary"
-          variant="tonal"
-        >
-          {{ t('common.edit') }}
-        </VBtn>
-      </template>
-    </VCardItem>
-
-    <VDivider />
 
     <VCardText>
       <h6 class="text-h6 mb-3">

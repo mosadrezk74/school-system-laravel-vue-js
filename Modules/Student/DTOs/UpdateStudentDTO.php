@@ -40,10 +40,7 @@ final readonly class UpdateStudentDTO
         public ?string $bloodGroup,
         public ?string $allergies,
         public ?string $medicalConditions,
-        public ?string $previousSchool,
-        public float $scholarshipPercentage,
         public bool $isGraduated,
-        public ?array $extraFields,
     ) {}
 
     public static function fromRequest(UpdateStudentRequest $request): self
@@ -78,10 +75,7 @@ final readonly class UpdateStudentDTO
             bloodGroup: $request->validated('blood_group'),
             allergies: $request->validated('allergies'),
             medicalConditions: $request->validated('medical_conditions'),
-            previousSchool: $request->validated('previous_school'),
-            scholarshipPercentage: (float) $request->validated('scholarship_percentage', 0),
             isGraduated: (bool) $request->validated('is_graduated', false),
-            extraFields: $request->validated('extra_fields'),
         );
     }
 
@@ -109,11 +103,8 @@ final readonly class UpdateStudentDTO
             'blood_group' => $this->bloodGroup,
             'allergies' => $this->allergies,
             'medical_conditions' => $this->medicalConditions,
-            'previous_school' => $this->previousSchool,
-            'scholarship_percentage' => $this->scholarshipPercentage,
             'is_graduated' => $this->isGraduated,
             'is_active' => $this->isActive,
-            'extra_fields' => $this->extraFields,
         ];
     }
 

@@ -2,11 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   teachers: { type: Object, required: true },
@@ -133,11 +133,16 @@ const filterOptions = {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VCardText>
+  <AppDataTable
+    :headers="headers"
+    :items="teachers.data"
+    mobile-title-key="name"
+    :meta="teachers.meta"
+    empty-icon="bx-chalkboard"
+    :empty-title="t('teacher.empty')"
+    @page="goToPage"
+  >
+    <template #filters>
       <VRow>
         <VCol cols="12" md="4">
           <VTextField
@@ -145,7 +150,6 @@ const filterOptions = {
             :label="t('teacher.search')"
             prepend-inner-icon="bx-search"
             clearable
-            density="compact"
           />
         </VCol>
 
@@ -154,7 +158,6 @@ const filterOptions = {
             v-model="isActiveFilter"
             :items="filterOptions.active"
             :label="t('teacher.fields.is_active')"
-            density="compact"
             clearable
           />
         </VCol>
@@ -164,7 +167,6 @@ const filterOptions = {
             v-model="genderFilter"
             :items="filterOptions.gender"
             :label="t('teacher.fields.gender')"
-            density="compact"
             clearable
           />
         </VCol>
@@ -180,16 +182,12 @@ const filterOptions = {
           </VBtn>
         </VCol>
       </VRow>
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="teachers.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
       <template #item.name="{ item }">
-        {{ item.name }}
+        <AppTableLink :href="`/user-management/teachers/${item.id}`">
+          {{ item.name }}
+        </AppTableLink>
       </template>
 
       <template #item.department="{ item }">
@@ -206,9 +204,6 @@ const filterOptions = {
       </template>
 
       <template #item.actions="{ item }">
-        <IconBtn :href="`/user-management/teachers/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
         <IconBtn :href="`/user-management/teachers/${item.id}/edit`" :as="Link">
           <VIcon icon="bx-edit" />
         </IconBtn>
@@ -219,20 +214,7 @@ const filterOptions = {
           <VIcon icon="bx-refresh" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-chalkboard"
-          :title="t('teacher.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="teachers.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

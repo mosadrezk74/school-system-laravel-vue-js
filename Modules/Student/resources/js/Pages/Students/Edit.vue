@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import StudentForm from './_Form.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   student: { type: Object, required: true },
@@ -15,6 +16,7 @@ const form = useForm({
   email: props.student.email,
   username: props.student.username,
   password: '',
+  password_confirmation: '',
   gender: props.student.gender,
   birth_date: props.student.birth_date,
   national_id: props.student.national_id,
@@ -24,7 +26,6 @@ const form = useForm({
   admission_number: props.student.admission_number,
   roll_number: props.student.roll_number,
   admission_date: props.student.admission_date,
-  scholarship_percentage: props.student.scholarship_percentage,
   is_graduated: props.student.is_graduated,
   father_name: props.student.father_name,
   father_phone: props.student.father_phone,
@@ -38,7 +39,6 @@ const form = useForm({
   blood_group: props.student.blood_group,
   allergies: props.student.allergies,
   medical_conditions: props.student.medical_conditions,
-  previous_school: props.student.previous_school,
   emergency_contact_name: props.student.emergency_contact_name,
   emergency_contact_phone: props.student.emergency_contact_phone,
   emergency_contact_relation: props.student.emergency_contact_relation,
@@ -52,13 +52,12 @@ function submit() {
 <template>
   <Head :title="t('students.edit')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('students.edit') }}</VCardTitle>
-      <VCardSubtitle>{{ student.name }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('students.edit')"
+    :subtitle="student.name"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -70,9 +69,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -87,6 +85,6 @@ function submit() {
       >
         {{ t('common.update') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

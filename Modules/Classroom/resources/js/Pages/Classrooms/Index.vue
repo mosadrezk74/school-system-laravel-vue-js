@@ -2,11 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   classrooms: { type: Object, required: true },
@@ -129,9 +129,14 @@ const filterOptions = {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VCardText>
+  <AppDataTable
+    :headers="headers"
+    :items="classrooms.data"
+    mobile-title-key="name"
+    :meta="classrooms.meta"
+    @page="goToPage"
+  >
+    <template #filters>
       <VRow>
         <VCol cols="12" md="3">
           <VTextField
@@ -139,7 +144,6 @@ const filterOptions = {
             :label="t('classroom.search')"
             prepend-inner-icon="bx-search"
             clearable
-            density="compact"
           />
         </VCol>
 
@@ -148,7 +152,6 @@ const filterOptions = {
             v-model="isActiveFilter"
             :items="filterOptions.active"
             :label="t('classroom.fields.is_active')"
-            density="compact"
             clearable
           />
         </VCol>
@@ -164,14 +167,14 @@ const filterOptions = {
           </VBtn>
         </VCol>
       </VRow>
-    </VCardText>
+    </template>
 
-    <VDataTable
-      :headers="headers"
-      :items="classrooms.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
+      <template #item.name="{ item }">
+        <AppTableLink :href="`/academic/classrooms/${item.id}`">
+          {{ item.name ?? '—' }}
+        </AppTableLink>
+      </template>
+
       <template #item.room_type="{ item }">
         <VChip size="small">
           {{ roomTypeLabels[item.room_type] || item.room_type }}
@@ -189,9 +192,6 @@ const filterOptions = {
       </template>
 
       <template #item.actions="{ item }">
-        <IconBtn :href="`/academic/classrooms/${item.id}`" :as="Link">
-          <VIcon icon="bx-show" />
-        </IconBtn>
         <IconBtn :href="`/academic/classrooms/${item.id}/edit`" :as="Link">
           <VIcon icon="bx-edit" />
         </IconBtn>
@@ -202,17 +202,7 @@ const filterOptions = {
           <VIcon icon="bx-refresh" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState :title="t('classroom.empty')" />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="classrooms.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

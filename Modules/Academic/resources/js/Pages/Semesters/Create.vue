@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import SemesterForm from './_Form.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   academicYears: { type: Array, default: () => [] },
@@ -29,13 +30,12 @@ function submit() {
 <template>
   <Head :title="t('semesters.addNew')" />
 
-  <VCard>
-    <VCardItem>
-      <VCardTitle>{{ t('semesters.addNew') }}</VCardTitle>
-      <VCardSubtitle>{{ t('semesters.subtitle') }}</VCardSubtitle>
-    </VCardItem>
+  <AppPageHeader
+    :title="t('semesters.addNew')"
+    :subtitle="t('semesters.subtitle')"
+  />
 
-    <VDivider />
+  <VCard class="app-form-card">
 
     <VCardText>
       <form @submit.prevent="submit">
@@ -46,9 +46,8 @@ function submit() {
       </form>
     </VCardText>
 
-    <VDivider />
-
-    <VCardText class="d-flex justify-end gap-3">
+    <VCardActions class="app-form-actions">
+      <VSpacer />
       <VBtn
         variant="tonal"
         color="secondary"
@@ -65,6 +64,6 @@ function submit() {
       >
         {{ t('common.save') }}
       </VBtn>
-    </VCardText>
+    </VCardActions>
   </VCard>
 </template>

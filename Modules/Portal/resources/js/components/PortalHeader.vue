@@ -1,4 +1,15 @@
 <script setup>
+/**
+ * The portal page heading.
+ *
+ * Now uses the same <AppPageHeader> as the admin side rather than a card with
+ * a 56px avatar, so a teacher and an administrator see the same page
+ * structure. The `icon` prop is retained for call-site compatibility but is
+ * no longer rendered as a large decorative avatar — the title carries the
+ * page identity, and the sidebar already says which section you are in.
+ */
+import AppPageHeader from '@/components/AppPageHeader.vue'
+
 defineProps({
   title: { type: String, required: true },
   subtitle: { type: String, default: null },
@@ -7,25 +18,15 @@ defineProps({
 </script>
 
 <template>
-  <VCard>
-    <VCardText class="d-flex flex-wrap align-center gap-4">
-      <VAvatar color="primary" variant="tonal" size="56">
-        <VIcon :icon="icon" size="32" />
-      </VAvatar>
-
-      <div class="flex-grow-1">
-        <h5 class="text-h5 mb-0">
-          {{ title }}
-        </h5>
-        <p
-          v-if="subtitle"
-          class="text-body-2 text-medium-emphasis mb-0 mt-1"
-        >
-          {{ subtitle }}
-        </p>
-      </div>
-
+  <AppPageHeader
+    :title="title"
+    :subtitle="subtitle"
+  >
+    <template
+      v-if="$slots.actions"
+      #actions
+    >
       <slot name="actions" />
-    </VCardText>
-  </VCard>
+    </template>
+  </AppPageHeader>
 </template>

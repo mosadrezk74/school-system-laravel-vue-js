@@ -2,6 +2,7 @@
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   classroom: { type: Object, required: true },
@@ -51,18 +52,20 @@ const facilitiesInfo = [
 
   <VRow>
     <VCol cols="12">
-      <VCard>
-        <VCardItem>
-          <VCardTitle>{{ classroom.name }}</VCardTitle>
-          <template #append>
-            <VChip :color="classroom.is_active ? 'success' : 'secondary'" size="small">
-              {{ classroom.is_active ? t('common.active') : t('common.inactive') }}
-            </VChip>
-            <IconBtn :href="`/academic/classrooms/${classroom.id}/edit`" :as="Link" class="ms-2">
-              <VIcon icon="bx-edit" />
-            </IconBtn>
-          </template>
-        </VCardItem>
+  <AppPageHeader
+    :title="classroom.name"
+  >
+    <template #actions>
+      <VChip :color="classroom.is_active ? 'success' : 'secondary'" size="small">
+        {{ classroom.is_active ? t('common.active') : t('common.inactive') }}
+      </VChip>
+      <IconBtn :href="`/academic/classrooms/${classroom.id}/edit`" :as="Link" class="ms-2">
+        <VIcon icon="bx-edit" />
+      </IconBtn>
+    </template>
+  </AppPageHeader>
+
+  <VCard>
       </VCard>
     </VCol>
 

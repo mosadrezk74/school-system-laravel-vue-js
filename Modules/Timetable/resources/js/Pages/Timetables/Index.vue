@@ -2,11 +2,10 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppPagination from '@/components/AppPagination.vue'
-import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDataTable from '@/components/AppDataTable.vue'
 
 const props = defineProps({
   timetables: { type: Object, required: true },
@@ -61,16 +60,14 @@ function goToPage(page) {
     </template>
   </AppPageHeader>
 
-  <VCard>
-
-    <VDivider />
-
-    <VDataTable
-      :headers="headers"
-      :items="timetables.data"
-      :items-per-page="-1"
-      hide-default-footer
-    >
+  <AppDataTable
+    :headers="headers"
+    :items="timetables.data"
+    :meta="timetables.meta"
+    empty-icon="bx-calendar-week"
+    :empty-title="t('timetables.empty')"
+    @page="goToPage"
+  >
       <template #item.class="{ item }">
         {{ item.class?.name }}
       </template>
@@ -97,20 +94,7 @@ function goToPage(page) {
           <VIcon icon="bx-archive" />
         </IconBtn>
       </template>
-
-      <template #no-data>
-        <AppEmptyState
-          icon="bx-calendar-week"
-          :title="t('timetables.empty')"
-        />
-      </template>
-    </VDataTable>
-
-    <AppPagination
-      :meta="timetables.meta"
-      @change="goToPage"
-    />
-  </VCard>
+  </AppDataTable>
 
   <AppConfirmDialog
     v-model="isConfirmOpen"

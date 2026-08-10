@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   feeStructure: { type: Object, required: true },
@@ -25,56 +26,42 @@ const scopeLabel = computed(() => {
 <template>
   <Head :title="feeStructure.name" />
 
+  <AppPageHeader
+    :title="feeStructure.name"
+    :subtitle="`${feeStructure.fee_category?.name ?? '—'} · ${scopeLabel}`"
+  >
+    <template #actions>
+      <VChip color="primary" variant="tonal" size="small">
+        {{ feeStructure.frequency_label ?? '—' }}
+      </VChip>
+      <VChip
+        :color="feeStructure.is_optional ? 'warning' : 'success'"
+        variant="tonal"
+        size="small"
+      >
+        {{ feeStructure.is_optional ? t('finance.optional') : t('finance.mandatory') }}
+      </VChip>
+      <div class="text-end">
+        <p class="text-caption text-medium-emphasis mb-0">
+          {{ t('finance.fields.amount') }}
+        </p>
+        <h5 class="text-h5 mb-0">
+          {{ formatMoney(feeStructure.amount) }}
+        </h5>
+      </div>
+      <VBtn
+        variant="tonal"
+        color="secondary"
+        prepend-icon="bx-edit"
+        :href="`/finance/fee-structures/${feeStructure.id}/edit`"
+        :as="Link"
+      >
+        {{ t('common.edit') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
+
   <VRow>
-    <VCol cols="12">
-      <VCard>
-        <VCardText class="d-flex flex-wrap align-center gap-4">
-          <VAvatar color="primary" variant="tonal" size="56">
-            <VIcon icon="bx-layer" size="32" />
-          </VAvatar>
-
-          <div class="flex-grow-1">
-            <div class="d-flex align-center gap-3 flex-wrap">
-              <h5 class="text-h5 mb-0">
-                {{ feeStructure.name }}
-              </h5>
-              <VChip color="primary" variant="tonal" size="small">
-                {{ feeStructure.frequency_label ?? '—' }}
-              </VChip>
-              <VChip
-                :color="feeStructure.is_optional ? 'warning' : 'success'"
-                variant="tonal"
-                size="small"
-              >
-                {{ feeStructure.is_optional ? t('finance.optional') : t('finance.mandatory') }}
-              </VChip>
-            </div>
-            <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
-              {{ feeStructure.fee_category?.name ?? '—' }} · {{ scopeLabel }}
-            </p>
-          </div>
-
-          <div class="text-end">
-            <p class="text-caption text-medium-emphasis mb-0">
-              {{ t('finance.fields.amount') }}
-            </p>
-            <h5 class="text-h5 mb-0">
-              {{ formatMoney(feeStructure.amount) }}
-            </h5>
-          </div>
-
-          <VBtn
-            variant="tonal"
-            color="secondary"
-            prepend-icon="bx-edit"
-            :href="`/finance/fee-structures/${feeStructure.id}/edit`"
-            :as="Link"
-          >
-            {{ t('common.edit') }}
-          </VBtn>
-        </VCardText>
-      </VCard>
-    </VCol>
 
     <VCol cols="12" md="6">
       <VCard>

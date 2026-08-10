@@ -14,6 +14,7 @@ declare module 'vue' {
     AppPageHeader: typeof import('./resources/js/components/AppPageHeader.vue')['default']
     AppPagination: typeof import('./resources/js/components/AppPagination.vue')['default']
     AppStatCard: typeof import('./resources/js/components/AppStatCard.vue')['default']
+    AppTableLink: typeof import('./resources/js/components/AppTableLink.vue')['default']
     CardStatisticsHorizontal: typeof import('./resources/js/@core/components/cards/CardStatisticsHorizontal.vue')['default']
     CardStatisticsVertical: typeof import('./resources/js/@core/components/cards/CardStatisticsVertical.vue')['default']
     CardStatisticsWithImages: typeof import('./resources/js/@core/components/cards/CardStatisticsWithImages.vue')['default']

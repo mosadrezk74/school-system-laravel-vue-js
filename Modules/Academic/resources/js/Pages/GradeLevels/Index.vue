@@ -6,6 +6,7 @@ import AppDataTable from '@/components/AppDataTable.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useIndexFilters } from '@/composables/useIndexFilters'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   gradeLevels: { type: Object, required: true },
@@ -126,7 +127,9 @@ const isConfirmOpen = computed({
 
     <template #item.name="{ item }">
       <div class="d-flex align-center gap-2">
-        <span>{{ item.name || '—' }}</span>
+        <AppTableLink :href="`/academic/grade-levels/${item.id}`">
+          {{ item.name || '—' }}
+        </AppTableLink>
         <VChip
           v-if="item.deleted_at"
           size="x-small"
@@ -151,12 +154,6 @@ const isConfirmOpen = computed({
     </template>
 
     <template #item.actions="{ item }">
-      <IconBtn
-        :href="`/academic/grade-levels/${item.id}`"
-        :as="Link"
-      >
-        <VIcon icon="bx-show" />
-      </IconBtn>
       <IconBtn
         :href="`/academic/grade-levels/${item.id}/edit`"
         :as="Link"

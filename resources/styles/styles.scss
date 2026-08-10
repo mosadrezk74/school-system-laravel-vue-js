@@ -312,6 +312,30 @@ body,
   }
 }
 
+/*
+  Forms get a readable measure rather than stretching a single column of
+  inputs across a 27" monitor. `ch` ties the cap to the text size, so it holds
+  whether the user is reading Arabic or English.
+*/
+.app-form-card {
+  max-inline-size: 64rem;
+}
+
+.v-application .app-form-actions {
+  padding: var(--app-space-4) var(--app-space-5);
+  border-block-start: var(--app-border);
+  gap: var(--app-space-2);
+
+  /* Actions stack full-width on a phone so neither button is clipped. */
+  @media (max-width: 599px) {
+    flex-wrap: wrap;
+
+    .v-btn {
+      flex: 1 1 auto;
+    }
+  }
+}
+
 /* ===========================================================================
    6. Tables
    ===========================================================================

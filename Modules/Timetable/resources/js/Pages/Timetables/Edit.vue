@@ -4,6 +4,7 @@ import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CellDialog from './_CellDialog.vue'
 import TimetableGrid from './_Grid.vue'
+import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   timetable: { type: Object, required: true },
@@ -89,63 +90,54 @@ const conflictMessages = computed(() => {
 <template>
   <Head :title="t('timetables.grid.title')" />
 
-  <VRow>
-    <VCol cols="12">
-      <VCard>
-        <VCardItem>
-          <VCardTitle>
-            {{ timetable.class?.name }}
-          </VCardTitle>
-          <VCardSubtitle>
-            {{ timetable.academic_year?.name }}
-            <template v-if="timetable.semester?.name">
-              — {{ timetable.semester.name }}
-            </template>
-          </VCardSubtitle>
-        </VCardItem>
-      </VCard>
-    </VCol>
+  <!--
+    The timetable grid is the page, so it gets the full content width rather
+    than the narrower `app-form-card` measure used by field-based forms.
+  -->
+  <AppPageHeader
+    :title="timetable.class?.name"
+    :subtitle="timetable.semester?.name
+      ? `${timetable.academic_year?.name} — ${timetable.semester.name}`
+      : timetable.academic_year?.name"
+  />
 
-    <VCol v-if="conflictMessages.length" cols="12">
-      <VAlert type="error" variant="tonal">
-        <div v-for="(message, index) in conflictMessages" :key="index">
-          {{ message }}
-        </div>
-      </VAlert>
-    </VCol>
+  <VAlert
+    v-if="conflictMessages.length"
+    type="error"
+    class="mb-4"
+  >
+    <div
+      v-for="(message, index) in conflictMessages"
+      :key="index"
+    >
+      {{ message }}
+    </div>
+  </VAlert>
 
-    <VCol cols="12">
-      <VCard>
-        <VCardItem>
-          <VCardTitle>{{ t('timetables.grid.title') }}</VCardTitle>
-          <VCardSubtitle>{{ t('timetables.grid.subtitle') }}</VCardSubtitle>
-        </VCardItem>
+  <VCard>
+    <VCardText>
+      <TimetableGrid
+        :periods="periods"
+        :weekdays="weekdays"
+        :entries="entries"
+        :subjects="subjects"
+        :teachers="teachers"
+        :conflict-cells="conflictCells"
+        editable
+        @cell-click="openCell($event.day, $event.period)"
+      />
+    </VCardText>
 
-        <VDivider />
-
-        <VCardText>
-          <TimetableGrid
-            :periods="periods"
-            :weekdays="weekdays"
-            :entries="entries"
-            :subjects="subjects"
-            :teachers="teachers"
-            :conflict-cells="conflictCells"
-            editable
-            @cell-click="openCell($event.day, $event.period)"
-          />
-        </VCardText>
-
-        <VDivider />
-
-        <VCardText class="d-flex justify-end">
-          <VBtn :loading="form.processing" @click="submit">
-            {{ t('timetables.grid.save') }}
-          </VBtn>
-        </VCardText>
-      </VCard>
-    </VCol>
-  </VRow>
+    <VCardActions class="app-form-actions">
+      <VSpacer />
+      <VBtn
+        :loading="form.processing"
+        @click="submit"
+      >
+        {{ t('timetables.grid.save') }}
+      </VBtn>
+    </VCardActions>
+  </VCard>
 
   <CellDialog
     v-model="dialogOpen"
