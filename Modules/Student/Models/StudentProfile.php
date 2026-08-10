@@ -25,6 +25,7 @@ class StudentProfile extends BaseModel
     {
         return [
             'admission_date' => 'date',
+            'scholarship_percentage' => 'decimal:2',
             'is_graduated' => 'boolean',
             'is_active' => 'boolean',
         ];

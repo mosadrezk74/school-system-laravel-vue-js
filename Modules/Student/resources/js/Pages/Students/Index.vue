@@ -51,8 +51,6 @@ watch(status, applyFilters)
 const headers = computed(() => [
   { title: t('students.name'), key: 'name' },
   { title: t('students.email'), key: 'email' },
-  { title: t('students.admissionNumber'), key: 'admission_number' },
-  { title: t('students.academicYear'), key: 'academic_year' },
   { title: t('students.currentClass'), key: 'current_class' },
   { title: t('students.status'), key: 'status', sortable: false },
   { title: '', key: 'actions', sortable: false, align: 'end' },

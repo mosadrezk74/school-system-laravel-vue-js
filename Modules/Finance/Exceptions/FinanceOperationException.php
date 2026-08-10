@@ -71,4 +71,39 @@ class FinanceOperationException extends BaseException
     {
         return new static($message ?: __('finance::finance.discount_not_applicable'), HttpStatus::UNPROCESSABLE_ENTITY);
     }
+
+    public static function paymentMethodNotAvailable(string $message = ''): static
+    {
+        return new static($message ?: __('finance::finance.payment_method_not_available'), HttpStatus::UNPROCESSABLE_ENTITY);
+    }
+
+    public static function paymentNotAwaitingConfirmation(string $message = ''): static
+    {
+        return new static($message ?: __('finance::finance.payment_not_awaiting_confirmation'), HttpStatus::UNPROCESSABLE_ENTITY);
+    }
+
+    public static function paymentNotRefundable(string $message = ''): static
+    {
+        return new static($message ?: __('finance::finance.payment_not_refundable'), HttpStatus::UNPROCESSABLE_ENTITY);
+    }
+
+    public static function refundExceedsPaidAmount(string $message = ''): static
+    {
+        return new static($message ?: __('finance::finance.refund_exceeds_paid_amount'), HttpStatus::UNPROCESSABLE_ENTITY);
+    }
+
+    public static function refundAmountMustBePositive(string $message = ''): static
+    {
+        return new static($message ?: __('finance::finance.refund_amount_must_be_positive'), HttpStatus::UNPROCESSABLE_ENTITY);
+    }
+
+    public static function invoiceAlreadySettled(string $message = ''): static
+    {
+        return new static($message ?: __('finance::finance.invoice_already_settled'), HttpStatus::UNPROCESSABLE_ENTITY);
+    }
+
+    public static function paymentMethodCodeAlreadyExists(string $message = ''): static
+    {
+        return new static($message ?: __('finance::finance.payment_method_code_already_exists'), HttpStatus::CONFLICT);
+    }
 }

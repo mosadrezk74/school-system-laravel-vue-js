@@ -165,6 +165,7 @@ const tabHasError = tab => tabFields[tab].some(field =>
           <VTextField
             v-model="form.currency"
             maxlength="3"
+            :counter="3"
             :label="t('finance.fields.currency')"
             :hint="t('finance.hints.currency')"
             persistent-hint

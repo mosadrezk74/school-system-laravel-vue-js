@@ -96,6 +96,7 @@ class CreateStudentAction extends BaseAction
                     allergies: $dto->allergies,
                     medicalConditions: $dto->medicalConditions,
                     isGraduated: $dto->isGraduated,
+                    scholarshipPercentage: $dto->scholarshipPercentage,
                 );
             }
 

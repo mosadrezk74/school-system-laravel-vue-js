@@ -16,6 +16,21 @@ class UpdateFeeStructureRequest extends BaseRequest
         return [
             ...$this->translatableRules('name'),
             'fee_category_id' => ['required', 'integer', 'exists:fee_categories,id'],
+            'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
+
+            /*
+             * The semester must sit inside the chosen year, so a structure
+             * cannot be re-pointed at a term belonging to another year.
+             */
+            'semester_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('semesters', 'id')->where(
+                    fn ($query) => $query->where('academic_year_id', $this->input('academic_year_id')),
+                ),
+            ],
+
+            'is_active' => ['boolean'],
             'grade_level_id' => ['nullable', 'integer', 'exists:grade_levels,id', 'prohibits:classroom_id'],
             'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
             'amount' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
@@ -35,6 +50,8 @@ class UpdateFeeStructureRequest extends BaseRequest
         return [
             'name' => __('finance::finance.fields.name'),
             'fee_category_id' => __('finance::finance.fields.fee_category_id'),
+            'academic_year_id' => __('finance::finance.fields.academic_year_id'),
+            'semester_id' => __('finance::finance.fields.semester_id'),
             'grade_level_id' => __('finance::finance.fields.grade_level_id'),
             'classroom_id' => __('finance::finance.fields.classroom_id'),
             'amount' => __('finance::finance.fields.amount'),

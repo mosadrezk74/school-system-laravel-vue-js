@@ -9,6 +9,8 @@ defineProps({
   gradeLevels: { type: Array, default: () => [] },
   classrooms: { type: Array, default: () => [] },
   frequencies: { type: Array, default: () => [] },
+  academicYears: { type: Array, default: () => [] },
+  semesters: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -18,6 +20,9 @@ const form = useForm({
   fee_category_id: null,
   grade_level_id: null,
   classroom_id: null,
+  academic_year_id: null,
+  semester_id: null,
+  is_active: true,
   amount: '',
   frequency: null,
   is_optional: false,
@@ -49,6 +54,8 @@ function submit() {
           :grade-levels="gradeLevels"
           :classrooms="classrooms"
           :frequencies="frequencies"
+          :academic-years="academicYears"
+          :semesters="semesters"
         />
       </form>
     </VCardText>

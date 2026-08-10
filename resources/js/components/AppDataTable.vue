@@ -17,6 +17,7 @@ import { useI18n } from 'vue-i18n'
 import { useDisplay } from 'vuetify'
 import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppPagination from '@/components/AppPagination.vue'
+import TruncatedText from '@/components/TruncatedText.vue'
 
 const props = defineProps({
   headers: { type: Array, required: true },
@@ -41,6 +42,12 @@ const props = defineProps({
   mobileTitleKey: { type: String, default: null },
 
   itemKey: { type: String, default: 'id' },
+
+  /**
+   * Visible length for text cells the table renders itself, before they are
+   * truncated and given a hover tooltip.
+   */
+  truncateAt: { type: Number, default: 30 },
 })
 
 defineEmits(['page'])
@@ -71,6 +78,33 @@ const titleHeader = computed(() =>
 const cellSlot = key => `item.${key}`
 
 const hasSlot = name => Boolean(slots[name])
+
+/**
+ * Text columns the table renders itself get truncated automatically.
+ *
+ * A page that supplies its own `#item.<key>` template is rendering something
+ * the table cannot reason about — a chip, a link, a date — so it is left
+ * alone; those cells opt in by using TruncatedText inside their own template.
+ * A header can also force the decision either way with `truncate: true|false`.
+ *
+ * @param {{ key: string, truncate?: boolean }} header
+ * @returns {boolean}
+ */
+function shouldTruncate(header) {
+  if (typeof header.truncate === 'boolean') {
+    return header.truncate
+  }
+
+  return header.key !== 'actions' && !hasSlot(cellSlot(header.key))
+}
+
+/**
+ * Headers this component renders a truncating cell for. A key the page already
+ * templated is excluded, so the page's own slot stays the single definition
+ * and is never shadowed by a duplicate.
+ */
+const truncatedHeaders = computed(() =>
+  props.headers.filter(header => !hasSlot(cellSlot(header.key)) && shouldTruncate(header)))
 </script>
 
 <template>
@@ -132,7 +166,10 @@ const hasSlot = name => Boolean(slots[name])
               :name="cellSlot(titleHeader.key)"
               :item="item"
             >
-              {{ item[titleHeader.key] ?? '—' }}
+              <TruncatedText
+                :text="item[titleHeader.key]"
+                :length="truncateAt"
+              />
             </slot>
           </div>
 
@@ -160,7 +197,10 @@ const hasSlot = name => Boolean(slots[name])
                 :name="cellSlot(header.key)"
                 :item="item"
               >
-                {{ item[header.key] ?? '—' }}
+                <TruncatedText
+                  :text="item[header.key]"
+                  :length="truncateAt"
+                />
               </slot>
             </dd>
           </template>
@@ -193,6 +233,22 @@ const hasSlot = name => Boolean(slots[name])
           <slot
             :name="name"
             v-bind="slotProps ?? {}"
+          />
+        </template>
+
+        <!--
+          Columns the page did not template itself. VDataTable would print the
+          raw value here; truncating instead keeps one long cell from setting
+          the width of the whole column.
+        -->
+        <template
+          v-for="header in truncatedHeaders"
+          :key="`truncate-${header.key}`"
+          #[cellSlot(header.key)]="{ item }"
+        >
+          <TruncatedText
+            :text="item[header.key]"
+            :length="truncateAt"
           />
         </template>
       </VDataTable>

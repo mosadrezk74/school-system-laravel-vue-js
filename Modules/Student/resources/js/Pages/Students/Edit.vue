@@ -27,6 +27,7 @@ const form = useForm({
   roll_number: props.student.roll_number,
   admission_date: props.student.admission_date,
   is_graduated: props.student.is_graduated,
+  scholarship_percentage: props.student.scholarship_percentage ?? 0,
   father_name: props.student.father_name,
   father_phone: props.student.father_phone,
   mother_name: props.student.mother_name,

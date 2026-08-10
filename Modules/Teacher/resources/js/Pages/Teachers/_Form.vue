@@ -10,9 +10,6 @@ const props = defineProps({
 
 const { t } = useI18n()
 
-// A trailing "*" on the label is the one cue every field needs, required or
-// not — leaving it off already reads as optional, so there's no separate
-// "Optional" marker to maintain in sync.
 const required = label => `${label} *`
 
 const activeTab = ref('account')
@@ -94,9 +91,6 @@ const subjectsOptions = [
           <h6 class="text-h6">
             {{ $t('teacher.sections.account') }}
           </h6>
-          <p class="text-body-2 text-medium-emphasis mb-0">
-            {{ $t('teacher.sections.accountDesc') }}
-          </p>
         </div>
       </div>
 
@@ -108,6 +102,8 @@ const subjectsOptions = [
             :hint="$t('teacher.hints.name')"
             persistent-hint
             :error-messages="form.errors.name"
+            maxlength="255"
+            :counter="255"
             required
           />
         </VCol>
@@ -120,6 +116,8 @@ const subjectsOptions = [
             :hint="$t('teacher.hints.email')"
             persistent-hint
             :error-messages="form.errors.email"
+            maxlength="255"
+            :counter="255"
             required
           />
         </VCol>
@@ -131,6 +129,8 @@ const subjectsOptions = [
             :hint="$t('teacher.hints.username')"
             persistent-hint
             :error-messages="form.errors.username"
+            maxlength="100"
+            :counter="100"
             required
           />
         </VCol>
@@ -180,6 +180,8 @@ const subjectsOptions = [
             :hint="$t('students.hints.nationalId')"
             persistent-hint
             :error-messages="form.errors.national_id"
+            maxlength="14"
+            :counter="14"
           />
         </VCol>
 
@@ -190,6 +192,8 @@ const subjectsOptions = [
             :hint="$t('students.hints.phone')"
             persistent-hint
             :error-messages="form.errors.phone"
+            maxlength="20"
+            :counter="20"
           />
         </VCol>
 
@@ -214,9 +218,6 @@ const subjectsOptions = [
           <h6 class="text-h6">
             {{ $t('teacher.sections.professional') }}
           </h6>
-          <p class="text-body-2 text-medium-emphasis mb-0">
-            {{ $t('teacher.sections.professionalDesc') }}
-          </p>
         </div>
       </div>
 
@@ -228,6 +229,8 @@ const subjectsOptions = [
             :hint="$t('teacher.hints.employee_id')"
             persistent-hint
             :error-messages="form.errors.employee_id"
+            maxlength="50"
+            :counter="50"
           />
         </VCol>
 
@@ -238,6 +241,8 @@ const subjectsOptions = [
             :hint="$t('teacher.hints.qualification')"
             persistent-hint
             :error-messages="form.errors.qualification"
+            maxlength="255"
+            :counter="255"
           />
         </VCol>
 
@@ -248,6 +253,8 @@ const subjectsOptions = [
             :hint="$t('teacher.hints.specialization')"
             persistent-hint
             :error-messages="form.errors.specialization"
+            maxlength="255"
+            :counter="255"
           />
         </VCol>
 
@@ -287,9 +294,6 @@ const subjectsOptions = [
           <h6 class="text-h6">
             {{ $t('teacher.sections.employment') }}
           </h6>
-          <p class="text-body-2 text-medium-emphasis mb-0">
-            {{ $t('teacher.sections.employmentDesc') }}
-          </p>
         </div>
       </div>
 
@@ -312,6 +316,8 @@ const subjectsOptions = [
             :hint="$t('teacher.hints.position')"
             persistent-hint
             :error-messages="form.errors.position"
+            maxlength="100"
+            :counter="100"
           />
         </VCol>
 
@@ -351,9 +357,6 @@ const subjectsOptions = [
           <h6 class="text-h6">
             {{ $t('teacher.sections.subjects') }}
           </h6>
-          <p class="text-body-2 text-medium-emphasis mb-0">
-            {{ $t('teacher.sections.subjectsDesc') }}
-          </p>
         </div>
       </div>
 

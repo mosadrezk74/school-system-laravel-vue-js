@@ -14,6 +14,7 @@ const props = defineProps({
   filters: { type: Object, default: () => ({}) },
   invoices: { type: Array, default: () => [] },
   paymentMethods: { type: Array, default: () => [] },
+  statuses: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -25,8 +26,10 @@ const search = ref(props.filters.search ?? '')
 const paymentMethod = ref(props.filters.payment_method ?? null)
 const paidFrom = ref(props.filters.paid_from ?? '')
 const paidTo = ref(props.filters.paid_to ?? '')
+const status = ref(props.filters.status ?? null)
 
 const paymentMethodOptions = computed(() => props.paymentMethods.map(m => ({ title: m.label, value: m.value })))
+const statusOptions = computed(() => props.statuses.map(s => ({ title: s.label, value: s.value })))
 
 function buildQuery(extra = {}) {
   const query = { search: search.value, ...extra }
@@ -39,6 +42,9 @@ function buildQuery(extra = {}) {
 
   if (paidTo.value)
     query.paid_to = paidTo.value
+
+  if (status.value)
+    query.status = status.value
 
   return query
 }
@@ -57,7 +63,7 @@ watch(search, () => {
   searchTimer = setTimeout(applyFilters, 350)
 })
 
-watch([paymentMethod, paidFrom, paidTo], applyFilters)
+watch([paymentMethod, paidFrom, paidTo, status], applyFilters)
 
 const headers = computed(() => [
   { title: t('finance.fields.paid_at'), key: 'paid_at' },
@@ -66,8 +72,38 @@ const headers = computed(() => [
   { title: t('finance.fields.payment_method'), key: 'payment_method' },
   { title: t('finance.fields.reference_number'), key: 'reference_number' },
   { title: t('finance.fields.amount'), key: 'amount' },
+  { title: t('finance.fields.status'), key: 'status', sortable: false },
   { title: '', key: 'actions', sortable: false, align: 'end' },
 ])
+
+const statusColors = {
+  pending: 'warning',
+  paid: 'success',
+  failed: 'error',
+  cancelled: 'secondary',
+  refunded: 'info',
+  partially_refunded: 'info',
+}
+
+function confirmPayment(item) {
+  askConfirm({
+    message: t('finance.confirm_payment_message'),
+    color: 'success',
+    onConfirm: () => {
+      router.patch(`/finance/payments/${item.id}/confirm`, {}, { preserveScroll: true })
+    },
+  })
+}
+
+function cancelPayment(item) {
+  askConfirm({
+    message: t('finance.cancel_payment_message'),
+    color: 'error',
+    onConfirm: () => {
+      router.patch(`/finance/payments/${item.id}/cancel`, {}, { preserveScroll: true })
+    },
+  })
+}
 
 function archive(item) {
   askConfirm({
@@ -129,6 +165,13 @@ function goToPage(page) {
         clearable
       />
 
+      <VSelect
+        v-model="status"
+        :label="t('finance.fields.status')"
+        :items="statusOptions"
+        clearable
+      />
+
       <VTextField
         v-model="paidFrom"
         type="date"
@@ -178,7 +221,31 @@ function goToPage(page) {
         <strong>{{ formatMoney(item.amount) }}</strong>
       </template>
 
+      <template #item.status="{ item }">
+        <VChip
+          :color="statusColors[item.status] ?? 'secondary'"
+          size="small"
+          variant="tonal"
+        >
+          {{ item.status_label ?? '—' }}
+        </VChip>
+      </template>
+
       <template #item.actions="{ item }">
+        <IconBtn
+          v-if="item.awaiting_confirmation"
+          :title="t('finance.confirm_payment')"
+          @click="confirmPayment(item)"
+        >
+          <VIcon icon="bx-check" color="success" />
+        </IconBtn>
+        <IconBtn
+          v-if="item.awaiting_confirmation"
+          :title="t('finance.cancel_payment')"
+          @click="cancelPayment(item)"
+        >
+          <VIcon icon="bx-x" color="error" />
+        </IconBtn>
         <IconBtn @click="archive(item)">
           <VIcon icon="bx-archive" />
         </IconBtn>

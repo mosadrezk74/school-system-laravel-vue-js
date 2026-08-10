@@ -92,7 +92,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
         $discount = round($items->sum(fn (InvoiceItem $item): float => (float) $item->discount_amount), 2);
         $total = max(0, round($subtotal - $discount, 2));
 
-        $paid = round((float) $invoice->payments()->sum('amount'), 2);
+        $paid = round((float) $invoice->payments()->settled()->sum('amount'), 2);
         $balance = max(0, round($total - $paid, 2));
 
         $invoice->update([

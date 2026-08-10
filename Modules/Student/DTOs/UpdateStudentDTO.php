@@ -41,6 +41,9 @@ final readonly class UpdateStudentDTO
         public ?string $allergies,
         public ?string $medicalConditions,
         public bool $isGraduated,
+
+        /** Share of every fee waived for this student, 0–100. */
+        public ?float $scholarshipPercentage,
     ) {}
 
     public static function fromRequest(UpdateStudentRequest $request): self
@@ -76,6 +79,9 @@ final readonly class UpdateStudentDTO
             allergies: $request->validated('allergies'),
             medicalConditions: $request->validated('medical_conditions'),
             isGraduated: (bool) $request->validated('is_graduated', false),
+            scholarshipPercentage: $request->validated('scholarship_percentage') !== null
+                ? (float) $request->validated('scholarship_percentage')
+                : null,
         );
     }
 
@@ -104,6 +110,7 @@ final readonly class UpdateStudentDTO
             'allergies' => $this->allergies,
             'medical_conditions' => $this->medicalConditions,
             'is_graduated' => $this->isGraduated,
+            'scholarship_percentage' => $this->scholarshipPercentage ?? 0,
             'is_active' => $this->isActive,
         ];
     }

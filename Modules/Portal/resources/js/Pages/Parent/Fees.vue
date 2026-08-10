@@ -1,5 +1,5 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3'
+import { Head, Link, router } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ParentLayout from '@modules/Portal/resources/js/layouts/parent.vue'
@@ -42,7 +42,16 @@ const headers = computed(() => [
   { title: t('portal.parent.total'), key: 'total_amount', align: 'end' },
   { title: t('portal.parent.balance'), key: 'balance_due', align: 'end' },
   { title: t('portal.parent.status'), key: 'status' },
+  { title: '', key: 'actions', sortable: false, align: 'end' },
 ])
+
+/*
+ * Only an invoice with something still owed can be paid. A settled or
+ * cancelled one keeps the row but loses the button; the server refuses these
+ * regardless, so this only avoids offering an action that would fail.
+ */
+const canPay = invoice => Number(invoice.balance_due ?? 0) > 0
+  && !['paid', 'cancelled'].includes(invoice.status)
 
 function formatDate(value) {
   return value ? new Date(value).toLocaleDateString() : '—'
@@ -103,6 +112,18 @@ function goToPage(page) {
             >
               {{ item.status_label ?? '—' }}
             </VChip>
+          </template>
+
+          <template #item.actions="{ item }">
+            <VBtn
+              v-if="canPay(item)"
+              size="small"
+              prepend-icon="bx-credit-card"
+              :href="`/parent/invoices/${item.id}/pay`"
+              :as="Link"
+            >
+              {{ t('finance.pay_now') }}
+            </VBtn>
           </template>
 
       <template #no-data>

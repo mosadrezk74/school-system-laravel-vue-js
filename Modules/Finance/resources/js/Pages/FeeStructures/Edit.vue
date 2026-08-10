@@ -10,6 +10,8 @@ const props = defineProps({
   gradeLevels: { type: Array, default: () => [] },
   classrooms: { type: Array, default: () => [] },
   frequencies: { type: Array, default: () => [] },
+  academicYears: { type: Array, default: () => [] },
+  semesters: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -19,6 +21,9 @@ const form = useForm({
   fee_category_id: props.feeStructure.fee_category_id,
   grade_level_id: props.feeStructure.grade_level_id,
   classroom_id: props.feeStructure.classroom_id,
+  academic_year_id: props.feeStructure.academic_year_id,
+  semester_id: props.feeStructure.semester_id,
+  is_active: props.feeStructure.is_active ?? true,
   amount: props.feeStructure.amount ?? '',
   frequency: props.feeStructure.frequency,
   is_optional: props.feeStructure.is_optional,
@@ -50,6 +55,8 @@ function submit() {
           :grade-levels="gradeLevels"
           :classrooms="classrooms"
           :frequencies="frequencies"
+          :academic-years="academicYears"
+          :semesters="semesters"
         />
       </form>
     </VCardText>

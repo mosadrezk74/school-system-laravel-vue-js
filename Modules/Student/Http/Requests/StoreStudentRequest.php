@@ -62,6 +62,14 @@ class StoreStudentRequest extends BaseRequest
 
             'is_graduated' => ['sometimes', 'boolean'],
 
+            /*
+             * A share of the fee, so it cannot fall outside 0–100: a negative
+             * value would bill above the fee's own price and over 100 would
+             * produce a negative balance. StudentFeeCalculator clamps to the
+             * same range, this rejects it at the form instead.
+             */
+            'scholarship_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
+
             // Emergency contact — if a name is given the phone becomes required,
             // since a contact without a number is useless in an emergency.
             'emergency_contact_name' => ['nullable', 'string', 'min:2', 'max:255'],

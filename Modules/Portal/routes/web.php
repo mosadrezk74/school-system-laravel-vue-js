@@ -9,6 +9,7 @@ use Modules\Portal\Http\Controllers\ParentGradeController;
 use Modules\Portal\Http\Controllers\ParentHomeworkController;
 use Modules\Portal\Http\Controllers\ParentMaterialController;
 use Modules\Portal\Http\Controllers\ParentMeetingController;
+use Modules\Portal\Http\Controllers\ParentPaymentRequestController;
 use Modules\Portal\Http\Controllers\StudentAttendanceController;
 use Modules\Portal\Http\Controllers\StudentDashboardController;
 use Modules\Portal\Http\Controllers\StudentGradeController;
@@ -110,6 +111,13 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::middleware('module:Finance')->group(function () {
             Route::get('fees', [ParentFeeController::class, 'index'])->name('fees');
             Route::get('payments', [ParentFeeController::class, 'payments'])->name('payments');
+
+            Route::get('invoices/{invoice}/pay', [ParentPaymentRequestController::class, 'create'])
+                ->name('invoices.pay');
+            Route::post('payment-requests', [ParentPaymentRequestController::class, 'store'])
+                ->name('payment-requests.store');
+            Route::get('payment-requests/{payment}', [ParentPaymentRequestController::class, 'show'])
+                ->name('payment-requests.show');
         });
 
         Route::middleware('module:Meeting')

@@ -21,12 +21,36 @@ class PaymentResource extends BaseResource
             'invoice_id' => $this->invoice_id,
             'student_id' => $this->student_id,
             'amount' => $this->amount,
+            'refunded_amount' => $this->refunded_amount,
+            'refundable_amount' => $this->refundableAmount(),
             'payment_method' => $this->payment_method?->value,
             'payment_method_label' => $this->payment_method?->label(),
+            'payment_method_id' => $this->payment_method_id,
+            'status' => $this->status?->value,
+            'status_label' => $this->status?->label(),
+            'is_refundable' => (bool) $this->status?->isRefundable(),
+            'awaiting_confirmation' => (bool) $this->status?->isAwaitingConfirmation(),
             'reference_number' => $this->reference_number,
             'paid_at' => $this->paid_at?->toIso8601String(),
+            'confirmed_at' => $this->confirmed_at?->toIso8601String(),
             'notes' => $this->notes,
             'created_at' => $this->created_at?->toIso8601String(),
+
+            /*
+             * The configured method, including the URL and bank details the
+             * parent needs to act on a pending request.
+             */
+            'payment_method_details' => $this->whenLoaded('paymentMethod', fn () => $this->paymentMethod ? [
+                'id' => $this->paymentMethod->id,
+                'name' => $this->paymentMethod->name,
+                'type' => $this->paymentMethod->type?->value,
+                'instructions' => $this->paymentMethod->instructions,
+                'payment_url' => $this->paymentMethod->payment_url,
+                'bank_name' => $this->paymentMethod->bank_name,
+                'account_name' => $this->paymentMethod->account_name,
+                'account_number' => $this->paymentMethod->account_number,
+                'iban' => $this->paymentMethod->iban,
+            ] : null),
 
             'student' => $this->whenLoaded('student', fn () => $this->student ? [
                 'id' => $this->student->id,

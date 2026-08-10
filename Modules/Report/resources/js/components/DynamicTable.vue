@@ -3,6 +3,7 @@ import { usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppEmptyState from '@/components/AppEmptyState.vue'
+import TruncatedText from '@/components/TruncatedText.vue'
 
 const props = defineProps({
   columns: { type: Array, default: () => [] },
@@ -58,6 +59,15 @@ function formatCell(column, value) {
 function isBadge(column) {
   return column.type === 'badge'
 }
+
+/**
+ * Only free-text columns are truncated. Money, dates, percentages and numbers
+ * are already formatted to a short, fixed shape, and cutting one would change
+ * the value a reader sees rather than merely shortening it.
+ */
+function isTruncatable(column) {
+  return !['number', 'money', 'percentage', 'date', 'datetime'].includes(column.type)
+}
 </script>
 
 <template>
@@ -94,6 +104,10 @@ function isBadge(column) {
         >
           {{ item[column.key] ?? '—' }}
         </VChip>
+        <TruncatedText
+          v-else-if="isTruncatable(column)"
+          :text="formatCell(column, item[column.key])"
+        />
         <span v-else>{{ formatCell(column, item[column.key]) }}</span>
       </template>
 

@@ -12,7 +12,7 @@ class PaymentQuery extends BaseQuery
     protected array $searchableFields = ['reference_number'];
 
     /** @var array<int, string> */
-    protected array $filterableFields = ['student_id', 'invoice_id', 'payment_method'];
+    protected array $filterableFields = ['student_id', 'invoice_id', 'payment_method', 'status'];
 
     /** @var array<int, string> */
     protected array $sortableFields = ['amount', 'paid_at', 'payment_method', 'created_at'];
@@ -84,6 +84,15 @@ class PaymentQuery extends BaseQuery
     {
         if ($invoiceId) {
             $this->query->where('invoice_id', $invoiceId);
+        }
+
+        return $this;
+    }
+
+    public function status(?string $status): self
+    {
+        if ($status) {
+            $this->query->where('status', $status);
         }
 
         return $this;

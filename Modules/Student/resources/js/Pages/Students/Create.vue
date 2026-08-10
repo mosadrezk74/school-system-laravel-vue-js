@@ -26,6 +26,7 @@ const form = useForm({
   roll_number: '',
   admission_date: null,
   is_graduated: false,
+  scholarship_percentage: 0,
   father_name: '',
   father_phone: '',
   mother_name: '',

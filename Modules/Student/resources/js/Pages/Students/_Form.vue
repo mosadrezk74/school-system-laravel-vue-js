@@ -29,7 +29,7 @@ const activeTab = ref('account')
 // find out which one needs attention.
 const tabFields = {
   account: ['name', 'email', 'username', 'password', 'gender', 'birth_date', 'national_id', 'phone', 'is_active'],
-  enrollment: ['current_class_id', 'admission_date', 'admission_number', 'roll_number', 'is_graduated'],
+  enrollment: ['current_class_id', 'admission_date', 'admission_number', 'roll_number', 'is_graduated', 'scholarship_percentage'],
   guardians: ['father_name', 'father_phone', 'mother_name', 'mother_phone', 'guardian_name', 'guardian_phone', 'guardian_relation', 'address', 'city'],
   medical: ['blood_group', 'allergies', 'medical_conditions', 'emergency_contact_name', 'emergency_contact_phone', 'emergency_contact_relation'],
 }
@@ -102,6 +102,7 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
             persistent-hint
             :error-messages="form.errors.email"
             maxlength="50"
+            :counter="50"
             required
           />
         </VCol>
@@ -125,7 +126,6 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
             :hint="isEdit ? $t('students.hints.passwordHint') : $t('students.hints.password')"
             persistent-hint
             :error-messages="form.errors.password"
-            maxlength="50"
             :required="!isEdit"
           />
         </VCol>
@@ -245,6 +245,21 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
             :hint="$t('students.hints.rollNumber')"
             persistent-hint
             :error-messages="form.errors.roll_number"
+          />
+        </VCol>
+
+        <VCol cols="12" md="4">
+          <VTextField
+            v-model="form.scholarship_percentage"
+            type="number"
+            min="0"
+            max="100"
+            step="0.01"
+            suffix="%"
+            :label="$t('students.scholarshipPercentage')"
+            :hint="$t('students.hints.scholarshipPercentage')"
+            persistent-hint
+            :error-messages="form.errors.scholarship_percentage"
           />
         </VCol>
 

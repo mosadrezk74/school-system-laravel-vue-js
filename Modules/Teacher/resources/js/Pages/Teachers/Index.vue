@@ -68,7 +68,6 @@ const headers = computed(() => [
   { title: t('teacher.fields.email'), key: 'email' },
   { title: t('teacher.fields.employee_id'), key: 'employee_id' },
   { title: t('teacher.fields.position'), key: 'position' },
-  { title: t('teacher.fields.department_id'), key: 'department' },
   { title: t('teacher.fields.is_active'), key: 'is_active', sortable: false },
   { title: '', key: 'actions', sortable: false, align: 'end' },
 ])

@@ -55,6 +55,7 @@ class StudentResource extends BaseResource
             'medical_conditions' => $this->medical_conditions,
 
             'is_graduated' => $this->is_graduated,
+            'scholarship_percentage' => $this->scholarship_percentage,
             'is_active' => $this->is_active,
 
             'created_at' => $this->created_at?->toIso8601String(),

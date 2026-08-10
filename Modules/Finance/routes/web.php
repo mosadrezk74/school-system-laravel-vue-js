@@ -8,6 +8,8 @@ use Modules\Finance\Http\Controllers\FinanceDashboardController;
 use Modules\Finance\Http\Controllers\FinanceReportController;
 use Modules\Finance\Http\Controllers\InvoiceController;
 use Modules\Finance\Http\Controllers\PaymentController;
+use Modules\Finance\Http\Controllers\PaymentMethodController;
+use Modules\Finance\Http\Controllers\RefundController;
 use Modules\Finance\Http\Controllers\StudentFeeController;
 
 Route::middleware(['web', 'auth', 'module:Finance'])->prefix('finance')->group(function () {
@@ -50,6 +52,18 @@ Route::middleware(['web', 'auth', 'module:Finance'])->prefix('finance')->group(f
         ->name('invoices.restore');
     Route::resource('invoices', InvoiceController::class);
 
+    Route::patch('payments/{payment}/confirm', [PaymentController::class, 'confirm'])
+        ->name('payments.confirm');
+    Route::patch('payments/{payment}/cancel', [PaymentController::class, 'cancel'])
+        ->name('payments.cancel');
     Route::resource('payments', PaymentController::class)
         ->only(['index', 'create', 'store', 'show', 'destroy']);
+
+    Route::get('refunds', [RefundController::class, 'index'])->name('refunds.index');
+    Route::post('refunds', [RefundController::class, 'store'])->name('refunds.store');
+
+    Route::patch('payment-methods/{paymentMethod}/restore', [PaymentMethodController::class, 'restore'])
+        ->name('payment-methods.restore');
+    Route::resource('payment-methods', PaymentMethodController::class)
+        ->parameters(['payment-methods' => 'paymentMethod']);
 });

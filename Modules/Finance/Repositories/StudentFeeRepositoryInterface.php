@@ -17,6 +17,14 @@ interface StudentFeeRepositoryInterface
 
     public function create(CreateStudentFeeDTO $dto): StudentFee;
 
+    /**
+     * Persists a fee whose money values were computed server-side, overriding
+     * whatever amounts the request carried.
+     *
+     * @param  array{amount: float, discount_amount: float, final_amount: float}  $amounts
+     */
+    public function createWithAmounts(CreateStudentFeeDTO $dto, array $amounts): StudentFee;
+
     public function update(StudentFee $studentFee, UpdateStudentFeeDTO $dto): StudentFee;
 
     public function delete(StudentFee $studentFee): bool;

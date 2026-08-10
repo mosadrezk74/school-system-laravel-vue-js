@@ -5,7 +5,9 @@ namespace Modules\Finance\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
+use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
+use Modules\Academic\Models\Semester;
 use Modules\Classroom\Models\Classroom;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
@@ -76,7 +78,7 @@ class FeeStructureController extends BaseInertiaController
     {
         $this->authorize('view', $feeStructure);
 
-        $feeStructure->load(['feeCategory', 'gradeLevel', 'classroom']);
+        $feeStructure->load(['feeCategory', 'gradeLevel', 'classroom', 'academicYear', 'semester']);
 
         return $this->render('Finance::FeeStructures/Show', [
             'feeStructure' => new FeeStructureResource($feeStructure),
@@ -87,7 +89,7 @@ class FeeStructureController extends BaseInertiaController
     {
         $this->authorize('update', $feeStructure);
 
-        $feeStructure->load(['feeCategory', 'gradeLevel', 'classroom']);
+        $feeStructure->load(['feeCategory', 'gradeLevel', 'classroom', 'academicYear', 'semester']);
 
         return $this->render('Finance::FeeStructures/Edit', [
             'feeStructure' => new FeeStructureResource($feeStructure),
@@ -144,6 +146,29 @@ class FeeStructureController extends BaseInertiaController
                 ->map(fn (Classroom $classroom) => ['id' => $classroom->id, 'name' => $classroom->name])
                 ->values(),
             'frequencies' => FeeFrequency::options(),
+
+            'academicYears' => AcademicYear::query()->orderByDesc('start_date')->get()
+                ->map(fn (AcademicYear $year) => [
+                    'id' => $year->id,
+                    'name' => $year->name,
+                    'start_date' => $year->start_date?->toDateString(),
+                    'end_date' => $year->end_date?->toDateString(),
+                ])->values(),
+
+            /*
+             * Semesters carry their year and their dates: the year lets the
+             * form narrow the list to the selected year, and the dates are
+             * what the period preview is built from — the duration is never
+             * stored, only derived.
+             */
+            'semesters' => Semester::query()->orderBy('start_date')->get()
+                ->map(fn (Semester $semester) => [
+                    'id' => $semester->id,
+                    'name' => $semester->name,
+                    'academic_year_id' => $semester->academic_year_id,
+                    'start_date' => $semester->start_date?->toDateString(),
+                    'end_date' => $semester->end_date?->toDateString(),
+                ])->values(),
         ];
     }
 }

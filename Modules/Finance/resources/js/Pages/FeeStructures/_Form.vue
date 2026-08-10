@@ -9,6 +9,8 @@ const props = defineProps({
   gradeLevels: { type: Array, default: () => [] },
   classrooms: { type: Array, default: () => [] },
   frequencies: { type: Array, default: () => [] },
+  academicYears: { type: Array, default: () => [] },
+  semesters: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -35,10 +37,44 @@ watch(() => props.form.classroom_id, value => {
     props.form.grade_level_id = null
 })
 
+const academicYearOptions = computed(() => props.academicYears.map(y => ({ title: y.name, value: y.id })))
+
+/*
+ * Only the terms belonging to the chosen year. The backend enforces the same
+ * pairing, so this is about not offering an invalid combination rather than
+ * being the check itself.
+ */
+const semesterOptions = computed(() => props.semesters
+  .filter(s => s.academic_year_id === props.form.academic_year_id)
+  .map(s => ({ title: s.name, value: s.id })))
+
+watch(() => props.form.academic_year_id, () => {
+  const stillValid = props.semesters.some(s =>
+    s.id === props.form.semester_id && s.academic_year_id === props.form.academic_year_id)
+
+  if (!stillValid)
+    props.form.semester_id = null
+})
+
+/*
+ * Preview only, built from the dates the backend sent for the selected
+ * semester or year. No business duration is computed here — the stored value
+ * is the period, and FeeStructure::durationInMonths() remains its authority.
+ */
+const selectedPeriod = computed(() => {
+  const source = props.semesters.find(s => s.id === props.form.semester_id)
+    ?? props.academicYears.find(y => y.id === props.form.academic_year_id)
+
+  if (!source?.start_date || !source?.end_date)
+    return null
+
+  return { start: source.start_date, end: source.end_date, name: source.name }
+})
+
 const activeTab = ref('details')
 
 const tabFields = {
-  details: ['name', 'fee_category_id', 'grade_level_id', 'classroom_id'],
+  details: ['name', 'fee_category_id', 'grade_level_id', 'classroom_id', 'academic_year_id', 'semester_id'],
   amount: ['amount', 'frequency', 'is_optional', 'due_day'],
   late: ['late_fee_amount', 'late_fee_days'],
 }
@@ -139,6 +175,49 @@ const tabHasError = tab => tabFields[tab].some(field =>
             persistent-hint
             clearable
             :error-messages="form.errors.classroom_id"
+          />
+        </VCol>
+
+        <VCol cols="12" md="6">
+          <VSelect
+            v-model="form.academic_year_id"
+            :items="academicYearOptions"
+            :label="t('finance.fields.academic_year_id')"
+            clearable
+            :error-messages="form.errors.academic_year_id"
+          />
+        </VCol>
+
+        <VCol cols="12" md="6">
+          <VSelect
+            v-model="form.semester_id"
+            :items="semesterOptions"
+            :label="t('finance.fields.semester_id')"
+            :disabled="!form.academic_year_id"
+            :hint="form.academic_year_id ? t('finance.hints.semesterFullYear') : t('finance.hints.selectAcademicYearFirst')"
+            persistent-hint
+            clearable
+            :error-messages="form.errors.semester_id"
+          />
+        </VCol>
+
+        <VCol v-if="selectedPeriod" cols="12">
+          <VAlert
+            variant="tonal"
+            density="compact"
+            icon="bx-calendar"
+          >
+            <span class="font-weight-medium">{{ selectedPeriod.name }}</span>
+            <span class="mx-2">·</span>
+            <span>{{ selectedPeriod.start }} → {{ selectedPeriod.end }}</span>
+          </VAlert>
+        </VCol>
+
+        <VCol cols="12" md="6">
+          <VSwitch
+            v-model="form.is_active"
+            :label="t('finance.fields.is_active')"
+            :error-messages="form.errors.is_active"
           />
         </VCol>
       </VRow>

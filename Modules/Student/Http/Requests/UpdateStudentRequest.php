@@ -52,6 +52,7 @@ class UpdateStudentRequest extends BaseRequest
             'roll_number' => ['nullable', 'string', 'max:50'],
             'admission_date' => ['required', 'date', 'before_or_equal:today', 'after:birth_date'],
             'is_graduated' => ['sometimes', 'boolean'],
+            'scholarship_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
 
             // Emergency contact
             'emergency_contact_name' => ['nullable', 'string', 'min:2', 'max:255'],

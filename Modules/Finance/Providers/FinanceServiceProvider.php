@@ -8,12 +8,16 @@ use Modules\Finance\Models\FeeDiscount;
 use Modules\Finance\Models\FeeStructure;
 use Modules\Finance\Models\Invoice;
 use Modules\Finance\Models\Payment;
+use Modules\Finance\Models\PaymentMethod;
+use Modules\Finance\Models\Refund;
 use Modules\Finance\Models\StudentFee;
 use Modules\Finance\Policies\FeeCategoryPolicy;
 use Modules\Finance\Policies\FeeDiscountPolicy;
 use Modules\Finance\Policies\FeeStructurePolicy;
 use Modules\Finance\Policies\InvoicePolicy;
+use Modules\Finance\Policies\PaymentMethodPolicy;
 use Modules\Finance\Policies\PaymentPolicy;
+use Modules\Finance\Policies\RefundPolicy;
 use Modules\Finance\Policies\StudentFeePolicy;
 use Modules\Finance\Repositories\FeeCategoryRepository;
 use Modules\Finance\Repositories\FeeCategoryRepositoryInterface;
@@ -23,6 +27,8 @@ use Modules\Finance\Repositories\FeeStructureRepository;
 use Modules\Finance\Repositories\FeeStructureRepositoryInterface;
 use Modules\Finance\Repositories\InvoiceRepository;
 use Modules\Finance\Repositories\InvoiceRepositoryInterface;
+use Modules\Finance\Repositories\PaymentMethodRepository;
+use Modules\Finance\Repositories\PaymentMethodRepositoryInterface;
 use Modules\Finance\Repositories\PaymentRepository;
 use Modules\Finance\Repositories\PaymentRepositoryInterface;
 use Modules\Finance\Repositories\StudentFeeRepository;
@@ -51,6 +57,7 @@ class FinanceServiceProvider extends ModuleServiceProvider
         $this->app->bind(StudentFeeRepositoryInterface::class, StudentFeeRepository::class);
         $this->app->bind(InvoiceRepositoryInterface::class, InvoiceRepository::class);
         $this->app->bind(PaymentRepositoryInterface::class, PaymentRepository::class);
+        $this->app->bind(PaymentMethodRepositoryInterface::class, PaymentMethodRepository::class);
     }
 
     public function boot(): void
@@ -67,6 +74,8 @@ class FinanceServiceProvider extends ModuleServiceProvider
         Gate::policy(StudentFee::class, StudentFeePolicy::class);
         Gate::policy(Invoice::class, InvoicePolicy::class);
         Gate::policy(Payment::class, PaymentPolicy::class);
+        Gate::policy(PaymentMethod::class, PaymentMethodPolicy::class);
+        Gate::policy(Refund::class, RefundPolicy::class);
     }
 
     /**

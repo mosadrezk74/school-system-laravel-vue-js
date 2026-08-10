@@ -301,6 +301,22 @@ body,
     padding-block-start: var(--app-space-1);
   }
 
+  /* Hint/error text and the character counter share one flex row. Without an
+     explicit alignment the counter is stretched to the height of a wrapping
+     hint and its digits break onto separate lines, pushing the field's details
+     row past the column and overlapping the message. Pinning both to the top
+     and refusing to shrink or wrap the counter keeps them on one axis. */
+  .v-input__details {
+    align-items: flex-start !important;
+  }
+
+  .v-counter {
+    flex-shrink: 0 !important;
+    margin-inline-start: var(--app-space-2);
+    padding-block-start: var(--app-space-1);
+    white-space: nowrap !important;
+  }
+
   /* Focus must be visible for keyboard users in every theme. Vuetify's
      default relies on the field's own outline, which disappears on
      `variant="plain"` and on non-input controls. */

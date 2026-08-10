@@ -19,7 +19,7 @@ class FeeStructureQuery extends BaseQuery
 
     protected function baseQuery(): Builder
     {
-        return FeeStructure::query()->with(['feeCategory', 'gradeLevel', 'classroom']);
+        return FeeStructure::query()->with(['feeCategory', 'gradeLevel', 'classroom', 'academicYear', 'semester']);
     }
 
     public function searchName(?string $term): self

@@ -37,7 +37,7 @@ class RolePermissionSeeder extends Seeder
         'StudyMaterial' => ['study-material'],
         'Behavior' => ['behavior-record'],
         'Meeting' => ['meeting'],
-        'Finance' => ['fee', 'invoice', 'payment'],
+        'Finance' => ['fee', 'invoice', 'payment', 'payment-method', 'refund'],
         'Library' => ['library-item', 'library-borrowing'],
         'Inventory' => ['inventory-item', 'purchase'],
         'Transport' => ['transport-route', 'transport-vehicle'],

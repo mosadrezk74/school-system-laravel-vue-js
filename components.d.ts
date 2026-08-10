@@ -25,6 +25,7 @@ declare module 'vue' {
     ThemeSwitcher: typeof import('./resources/js/@core/components/ThemeSwitcher.vue')['default']
     TranslatableTextarea: typeof import('./resources/js/components/TranslatableTextarea.vue')['default']
     TranslatableTextInput: typeof import('./resources/js/components/TranslatableTextInput.vue')['default']
+    TruncatedText: typeof import('./resources/js/components/TruncatedText.vue')['default']
     VueApexCharts: typeof import('vue3-apexcharts')['default']
   }
 }

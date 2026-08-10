@@ -34,6 +34,19 @@ class StudentFeeRepository implements StudentFeeRepositoryInterface
         return StudentFee::query()->create($dto->toArray());
     }
 
+    /**
+     * @param  array{amount: float, discount_amount: float, final_amount: float}  $amounts
+     */
+    public function createWithAmounts(CreateStudentFeeDTO $dto, array $amounts): StudentFee
+    {
+        return StudentFee::query()->create([
+            ...$dto->toArray(),
+            'amount' => $amounts['amount'],
+            'discount_amount' => $amounts['discount_amount'],
+            'final_amount' => $amounts['final_amount'],
+        ]);
+    }
+
     public function update(StudentFee $studentFee, UpdateStudentFeeDTO $dto): StudentFee
     {
         $studentFee->update($dto->toArray());
