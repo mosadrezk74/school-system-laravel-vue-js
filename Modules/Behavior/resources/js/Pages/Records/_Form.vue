@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -76,9 +77,8 @@ const statusOptions = computed(() => [
     </VCol>
 
     <VCol cols="12" md="6">
-      <VTextField
+      <AppDateField
         v-model="form.date"
-        type="date"
         :label="required(t('behaviorRecords.date'))"
         :hint="$t('behaviorRecords.hints.date')"
         persistent-hint

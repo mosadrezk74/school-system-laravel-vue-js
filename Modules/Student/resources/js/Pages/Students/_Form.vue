@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -146,9 +147,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         </VCol>
 
         <VCol cols="12" md="4">
-          <VTextField
+          <AppDateField
             v-model="form.birth_date"
-            type="date"
             :label="$t('students.birthDate')"
             :hint="$t('students.hints.birthDate')"
             persistent-hint
@@ -217,9 +217,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         </VCol>
 
         <VCol cols="12" md="4">
-          <VTextField
+          <AppDateField
             v-model="form.admission_date"
-            type="date"
             :label="required(t('students.admissionDate'))"
             :hint="$t('students.hints.admissionDate')"
             persistent-hint

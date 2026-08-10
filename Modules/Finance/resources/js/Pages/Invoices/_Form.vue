@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
 import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -138,9 +139,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
         </VCol>
 
         <VCol cols="12" md="4">
-          <VTextField
+          <AppDateField
             v-model="form.issue_date"
-            type="date"
             :label="required(t('finance.fields.issue_date'))"
             :hint="t('finance.hints.issueDate')"
             persistent-hint
@@ -150,9 +150,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
         </VCol>
 
         <VCol cols="12" md="4">
-          <VTextField
+          <AppDateField
             v-model="form.due_date"
-            type="date"
             :label="required(t('finance.fields.due_date'))"
             :hint="t('finance.hints.dueDate2')"
             persistent-hint

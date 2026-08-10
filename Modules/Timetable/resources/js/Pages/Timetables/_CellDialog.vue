@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -25,6 +25,26 @@ watch(() => props.cell, (cell) => {
   classroomId.value = cell?.entry?.classroom_id ?? null
   isOnline.value = cell?.entry?.is_online ?? false
 }, { immediate: true })
+
+/**
+ * Only teachers assigned to the chosen subject may be picked. This mirrors the
+ * server-side rule; it is a convenience filter, not the enforcement point.
+ * Before a subject is chosen there is nothing to narrow by, so show none.
+ */
+const availableTeachers = computed(() => {
+  if (!subjectId.value)
+    return []
+
+  return props.teachers.filter(teacher =>
+    (teacher.subject_ids ?? []).includes(subjectId.value),
+  )
+})
+
+// A teacher valid for the previous subject is usually invalid for the new one.
+watch(subjectId, () => {
+  if (teacherId.value && !availableTeachers.value.some(teacher => teacher.id === teacherId.value))
+    teacherId.value = null
+})
 
 function close() {
   emit('update:modelValue', false)
@@ -75,8 +95,13 @@ function clear() {
           <VCol cols="12">
             <VSelect
               v-model="teacherId"
-              :items="teachers.map(tch => ({ title: tch.name, value: tch.id }))"
+              :items="availableTeachers.map(tch => ({ title: tch.name, value: tch.id }))"
               :label="t('timetables.teacher')"
+              :disabled="!subjectId"
+              :hint="!subjectId
+                ? t('timetables.grid.selectSubjectFirst')
+                : (availableTeachers.length ? undefined : t('timetables.grid.noTeachersForSubject'))"
+              persistent-hint
               clearable
             />
           </VCol>

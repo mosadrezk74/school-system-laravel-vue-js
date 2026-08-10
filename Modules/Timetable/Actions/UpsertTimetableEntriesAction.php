@@ -3,6 +3,7 @@
 namespace Modules\Timetable\Actions;
 
 use App\Models\User;
+use Illuminate\Validation\ValidationException;
 use Modules\Core\Abstracts\BaseAction;
 use Modules\Timetable\DTOs\TimetableEntryDTO;
 use Modules\Timetable\DTOs\UpsertTimetableEntriesDTO;
@@ -58,6 +59,17 @@ class UpsertTimetableEntriesAction extends BaseAction
             }
 
             if ($conflicts !== []) {
+                /*
+                 * The timetable builder is an Inertia page reading form.errors,
+                 * so conflicts have to travel back through the session. A
+                 * TimetableOperationException renders as raw JSON on an HTML
+                 * visit, which left the admin with an unreadable 422 and no
+                 * indication of which cells clashed.
+                 */
+                if (! request()->expectsJson()) {
+                    throw ValidationException::withMessages(['entries' => $conflicts]);
+                }
+
                 throw TimetableOperationException::conflicts($conflicts);
             }
 

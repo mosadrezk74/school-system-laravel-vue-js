@@ -100,7 +100,9 @@
     "delete": "حذف",
     "create": "إنشاء",
     "required": "مطلوب",
-    "madeBy": "صُنع بواسطة"
+    "madeBy": "صُنع بواسطة",
+    "today": "اليوم",
+    "close": "إغلاق"
   },
   "academicYears": {
     "title": "السنوات الدراسية",
@@ -1024,7 +1026,9 @@
       "assignCell": "تحديد الحصة",
       "save": "حفظ الجدول",
       "isOnline": "اجتماع إلكتروني",
-      "startMeeting": "بدء الاجتماع"
+      "startMeeting": "بدء الاجتماع",
+      "selectSubjectFirst": "اختر المادة أولاً.",
+      "noTeachersForSubject": "لا يوجد معلم مسند إلى هذه المادة."
     },
     "periods": {
       "title": "الحصص",

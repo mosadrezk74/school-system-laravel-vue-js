@@ -3,6 +3,7 @@ import { Head, router, useForm } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   classes: { type: Array, default: () => [] },
@@ -102,9 +103,8 @@ function submit() {
         style="max-inline-size: 260px;"
       />
 
-      <VTextField
+      <AppDateField
         v-model="date"
-        type="date"
         :label="t('attendanceRecords.date')"
         :error-messages="form.errors.date"
         density="compact"

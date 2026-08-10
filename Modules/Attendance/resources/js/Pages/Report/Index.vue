@@ -3,6 +3,7 @@ import { Head, useForm } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   classes: { type: Array, default: () => [] },
@@ -101,9 +102,8 @@ function generate() {
             style="max-inline-size: 240px;"
           />
 
-          <VTextField
+          <AppDateField
             v-model="form.date_from"
-            type="date"
             :label="t('attendanceRecords.dateFrom')"
             :error-messages="form.errors.date_from"
             density="compact"
@@ -111,9 +111,8 @@ function generate() {
             style="max-inline-size: 190px;"
           />
 
-          <VTextField
+          <AppDateField
             v-model="form.date_to"
-            type="date"
             :label="t('attendanceRecords.dateTo')"
             :error-messages="form.errors.date_to"
             density="compact"

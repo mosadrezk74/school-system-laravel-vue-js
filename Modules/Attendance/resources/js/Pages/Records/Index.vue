@@ -7,6 +7,7 @@ import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   records: { type: Object, required: true },
@@ -128,16 +129,14 @@ function goToPage(page) {
       />
 
 
-      <VTextField
+      <AppDateField
         v-model="dateFrom"
-        type="date"
         :label="t('attendanceRecords.dateFrom')"
         clearable
       />
 
-      <VTextField
+      <AppDateField
         v-model="dateTo"
-        type="date"
         :label="t('attendanceRecords.dateTo')"
         clearable
       />

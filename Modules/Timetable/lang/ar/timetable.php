@@ -12,6 +12,11 @@ return [
     'overlapping_period_time' => 'توقيت هذه الحصة يتعارض مع حصة أخرى.',
     'entries_conflict' => 'بعض الحصص تتعارض مع جدول موجود بالفعل.',
 
+    'validation' => [
+        'not_a_working_day' => 'اليوم المحدد ليس من أيام الدوام المدرسي.',
+        'teacher_does_not_teach_subject' => 'المعلم المحدد غير مسند إلى المادة المختارة.',
+    ],
+
     'conflicts' => [
         'teacher' => 'المعلم :teacher مجدول بالفعل يوم :day، الحصة :period.',
         'classroom' => 'الفصل الدراسي محجوز بالفعل يوم :day، الحصة :period.',

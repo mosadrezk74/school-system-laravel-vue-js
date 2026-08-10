@@ -6,6 +6,7 @@ import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   years: { type: Object, required: true },
@@ -221,9 +222,8 @@ function goToPage(page) {
             cols="12"
             md="6"
           >
-            <VTextField
+            <AppDateField
               v-model="form.start_date"
-              type="date"
               :label="required(t('academicYears.startDate'))"
               :error-messages="form.errors.start_date"
               required
@@ -233,9 +233,8 @@ function goToPage(page) {
             cols="12"
             md="6"
           >
-            <VTextField
+            <AppDateField
               v-model="form.end_date"
-              type="date"
               :label="required(t('academicYears.endDate'))"
               :error-messages="form.errors.end_date"
               required

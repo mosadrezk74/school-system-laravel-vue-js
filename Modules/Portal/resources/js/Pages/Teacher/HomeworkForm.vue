@@ -6,6 +6,7 @@ import TeacherLayout from '@modules/Portal/resources/js/layouts/teacher.vue'
 import PortalHeader from '@modules/Portal/resources/js/components/PortalHeader.vue'
 import TranslatableTextInput from '@/components/TranslatableTextInput.vue'
 import TranslatableTextarea from '@/components/TranslatableTextarea.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 defineOptions({ layout: TeacherLayout })
 
@@ -95,9 +96,8 @@ function submit() {
               </VCol>
 
               <VCol cols="12" md="4">
-                <VTextField
+                <AppDateField
                   v-model="form.deadline"
-                  type="date"
                   :label="t('portal.teacher.deadline')"
                   :error-messages="form.errors.deadline"
                 />

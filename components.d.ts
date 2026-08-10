@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AppConfirmDialog: typeof import('./resources/js/components/AppConfirmDialog.vue')['default']
     AppDataTable: typeof import('./resources/js/components/AppDataTable.vue')['default']
+    AppDateField: typeof import('./resources/js/components/AppDateField.vue')['default']
     AppEmptyState: typeof import('./resources/js/components/AppEmptyState.vue')['default']
     AppFormSection: typeof import('./resources/js/components/AppFormSection.vue')['default']
     AppPageHeader: typeof import('./resources/js/components/AppPageHeader.vue')['default']

@@ -100,7 +100,9 @@
     "delete": "Delete",
     "create": "Create",
     "required": "Required",
-    "madeBy": "Made by"
+    "madeBy": "Made by",
+    "today": "Today",
+    "close": "Close"
   },
   "academicYears": {
     "title": "Academic Years",
@@ -1032,7 +1034,9 @@
       "assignCell": "Assign Period",
       "save": "Save Timetable",
       "isOnline": "Online Meeting",
-      "startMeeting": "Start Meeting"
+      "startMeeting": "Start Meeting",
+      "selectSubjectFirst": "Select a subject first.",
+      "noTeachersForSubject": "No teacher is assigned to this subject."
     },
     "periods": {
       "title": "Periods",

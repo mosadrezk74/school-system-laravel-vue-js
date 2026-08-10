@@ -6,6 +6,7 @@ import MeetingCard from '../../components/MeetingCard.vue'
 import AppPagination from '@/components/AppPagination.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   meetings: { type: Object, required: true },
@@ -101,9 +102,8 @@ function goToPage(page) {
         style="max-inline-size: 180px;"
       />
 
-      <VTextField
+      <AppDateField
         v-model="date"
-        type="date"
         :label="t('meetings.date')"
         density="compact"
         clearable

@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -147,9 +148,8 @@ const subjectsOptions = computed(() =>
         </VCol>
 
         <VCol cols="12" md="4">
-          <VTextField
+          <AppDateField
             v-model="form.birth_date"
-            type="date"
             :label="$t('students.birthDate')"
             :hint="$t('students.hints.birthDate')"
             persistent-hint
@@ -270,9 +270,8 @@ const subjectsOptions = computed(() =>
 
       <VRow>
         <VCol cols="12" md="6">
-          <VTextField
+          <AppDateField
             v-model="form.joining_date"
-            type="date"
             :label="$t('teacher.fields.joining_date')"
             :hint="$t('teacher.hints.joining_date')"
             persistent-hint

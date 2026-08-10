@@ -158,11 +158,12 @@ class TimetableController extends BaseInertiaController
                 ->values(),
             'teachers' => TeacherProfile::query()
                 ->where('is_active', true)
-                ->with('user:id,name')
+                ->with(['user:id,name', 'subjects:id'])
                 ->get()
                 ->map(fn (TeacherProfile $teacher) => [
                     'id' => $teacher->user_id,
                     'name' => $teacher->user->name,
+                    'subject_ids' => $teacher->subjects->pluck('id')->values(),
                 ])
                 ->values(),
         ];

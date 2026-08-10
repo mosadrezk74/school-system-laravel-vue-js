@@ -6,6 +6,7 @@ import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   payment: { type: Object, required: true },
@@ -184,9 +185,8 @@ function cancelPayment() {
             </VCol>
 
             <VCol cols="12" md="4">
-              <VTextField
+              <AppDateField
                 v-model="refundForm.refund_date"
-                type="date"
                 :label="t('finance.fields.refund_date')"
                 :error-messages="refundForm.errors.refund_date"
               />

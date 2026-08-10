@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TranslatableTextInput from '@/components/TranslatableTextInput.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -209,9 +210,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
 
       <VRow>
         <VCol cols="12" md="4">
-          <VTextField
+          <AppDateField
             v-model="form.start_date"
-            type="date"
             :label="t('finance.fields.start_date')"
             :hint="t('finance.hints.startDate')"
             persistent-hint
@@ -220,9 +220,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
         </VCol>
 
         <VCol cols="12" md="4">
-          <VTextField
+          <AppDateField
             v-model="form.end_date"
-            type="date"
             :label="t('finance.fields.end_date')"
             :hint="t('finance.hints.endDate')"
             persistent-hint

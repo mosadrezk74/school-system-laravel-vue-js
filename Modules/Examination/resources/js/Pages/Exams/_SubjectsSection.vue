@@ -4,6 +4,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   exam: { type: Object, required: true },
@@ -183,9 +184,8 @@ function remove(examSubject) {
             />
           </VCol>
           <VCol cols="12" md="4">
-            <VTextField
+            <AppDateField
               v-model="form.exam_date"
-              type="date"
               :label="t('exams.examDate')"
               :error-messages="form.errors.exam_date"
             />

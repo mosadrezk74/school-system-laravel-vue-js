@@ -8,6 +8,7 @@ import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   payments: { type: Object, required: true },
@@ -172,16 +173,14 @@ function goToPage(page) {
         clearable
       />
 
-      <VTextField
+      <AppDateField
         v-model="paidFrom"
-        type="date"
         :label="t('finance.paidFrom')"
         clearable
       />
 
-      <VTextField
+      <AppDateField
         v-model="paidTo"
-        type="date"
         :label="t('finance.paidTo')"
         clearable
       />

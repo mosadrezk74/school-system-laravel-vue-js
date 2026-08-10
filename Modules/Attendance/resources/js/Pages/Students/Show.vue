@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   student: { type: Object, required: true },
@@ -112,18 +113,16 @@ const statusColor = status => ({
             style="max-inline-size: 220px;"
           />
 
-          <VTextField
+          <AppDateField
             v-model="dateFrom"
-            type="date"
             :label="t('attendanceRecords.dateFrom')"
             density="compact"
             clearable
             style="max-inline-size: 190px;"
           />
 
-          <VTextField
+          <AppDateField
             v-model="dateTo"
-            type="date"
             :label="t('attendanceRecords.dateTo')"
             density="compact"
             clearable

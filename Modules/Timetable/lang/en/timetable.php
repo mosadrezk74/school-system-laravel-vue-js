@@ -12,6 +12,11 @@ return [
     'overlapping_period_time' => 'This period\'s time overlaps with another period.',
     'entries_conflict' => 'Some entries conflict with an existing schedule.',
 
+    'validation' => [
+        'not_a_working_day' => 'The selected day is not one of the school\'s working days.',
+        'teacher_does_not_teach_subject' => 'The selected teacher is not assigned to the selected subject.',
+    ],
+
     'conflicts' => [
         'teacher' => 'Teacher :teacher is already scheduled on :day, period :period.',
         'classroom' => 'The classroom is already booked on :day, period :period.',

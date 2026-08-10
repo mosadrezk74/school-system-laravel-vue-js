@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TranslatableTextInput from '@/components/TranslatableTextInput.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -87,9 +88,8 @@ const academicYearOptions = computed(() => props.academicYears.map(year => ({
     </VCol>
 
     <VCol cols="12" md="6">
-      <VTextField
+      <AppDateField
         v-model="form.start_date"
-        type="date"
         :label="required(t('semesters.fields.startDate'))"
         :hint="t('semesters.hints.startDate')"
         persistent-hint
@@ -99,9 +99,8 @@ const academicYearOptions = computed(() => props.academicYears.map(year => ({
     </VCol>
 
     <VCol cols="12" md="6">
-      <VTextField
+      <AppDateField
         v-model="form.end_date"
-        type="date"
         :label="required(t('semesters.fields.endDate'))"
         :hint="t('semesters.hints.endDate')"
         persistent-hint
@@ -111,9 +110,8 @@ const academicYearOptions = computed(() => props.academicYears.map(year => ({
     </VCol>
 
     <VCol cols="12" md="6">
-      <VTextField
+      <AppDateField
         v-model="form.exam_start_date"
-        type="date"
         clearable
         :label="t('semesters.fields.examStartDate')"
         :hint="t('semesters.hints.examStartDate')"
@@ -123,9 +121,8 @@ const academicYearOptions = computed(() => props.academicYears.map(year => ({
     </VCol>
 
     <VCol cols="12" md="6">
-      <VTextField
+      <AppDateField
         v-model="form.exam_end_date"
-        type="date"
         clearable
         :label="t('semesters.fields.examEndDate')"
         :hint="t('semesters.hints.examEndDate')"

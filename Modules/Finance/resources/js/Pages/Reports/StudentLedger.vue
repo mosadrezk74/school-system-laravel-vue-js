@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
 import AppEmptyState from '@/components/AppEmptyState.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   rows: { type: Object, required: true },
@@ -104,18 +105,16 @@ const headers = computed(() => [
         style="max-inline-size: 200px;"
       />
 
-      <VTextField
+      <AppDateField
         v-model="dateFrom"
-        type="date"
         :label="t('finance.dateFrom')"
         density="compact"
         clearable
         style="max-inline-size: 200px;"
       />
 
-      <VTextField
+      <AppDateField
         v-model="dateTo"
-        type="date"
         :label="t('finance.dateTo')"
         density="compact"
         clearable

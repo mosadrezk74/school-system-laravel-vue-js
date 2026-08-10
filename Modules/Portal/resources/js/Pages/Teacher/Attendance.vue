@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TeacherLayout from '@modules/Portal/resources/js/layouts/teacher.vue'
 import PortalHeader from '@modules/Portal/resources/js/components/PortalHeader.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 defineOptions({ layout: TeacherLayout })
 
@@ -94,9 +95,8 @@ function submit() {
             style="max-inline-size: 260px; flex: 1 1 200px;"
           />
 
-          <VTextField
+          <AppDateField
             v-model="date"
-            type="date"
             :label="t('portal.teacher.date')"
             density="compact"
             hide-details

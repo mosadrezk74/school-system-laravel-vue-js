@@ -8,6 +8,7 @@ import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   invoices: { type: Object, required: true },
@@ -191,16 +192,14 @@ function goToPage(page) {
         clearable
       />
 
-      <VTextField
+      <AppDateField
         v-model="issuedFrom"
-        type="date"
         :label="t('finance.issuedFrom')"
         clearable
       />
 
-      <VTextField
+      <AppDateField
         v-model="issuedTo"
-        type="date"
         :label="t('finance.issuedTo')"
         clearable
       />
@@ -277,18 +276,16 @@ function goToPage(page) {
           </VCol>
 
           <VCol cols="12" md="6">
-            <VTextField
+            <AppDateField
               v-model="generateForm.issue_date"
-              type="date"
               :label="t('finance.fields.issue_date')"
               :error-messages="generateForm.errors.issue_date"
             />
           </VCol>
 
           <VCol cols="12" md="6">
-            <VTextField
+            <AppDateField
               v-model="generateForm.due_date"
-              type="date"
               :label="t('finance.fields.due_date')"
               :error-messages="generateForm.errors.due_date"
             />

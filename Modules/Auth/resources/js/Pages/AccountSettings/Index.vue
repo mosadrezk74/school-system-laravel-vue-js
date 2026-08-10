@@ -3,6 +3,7 @@ import { Head, useForm } from '@inertiajs/vue3'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
   account: { type: Object, required: true },
@@ -147,9 +148,8 @@ const tabHasError = (form, fields) => fields.some(field => !!form.errors[field])
               </VCol>
 
               <VCol cols="12" md="4">
-                <VTextField
+                <AppDateField
                   v-model="profileForm.birth_date"
-                  type="date"
                   :label="t('accountSettings.fields.birth_date')"
                   :error-messages="profileForm.errors.birth_date"
                 />
