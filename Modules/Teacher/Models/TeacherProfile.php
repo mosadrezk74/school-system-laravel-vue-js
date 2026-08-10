@@ -4,8 +4,9 @@ namespace Modules\Teacher\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Teacher\Models\Department;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Modules\Core\Abstracts\BaseModel;
+use Modules\Subject\Models\Subject;
 
 class TeacherProfile extends BaseModel
 {
@@ -29,9 +30,13 @@ class TeacherProfile extends BaseModel
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function department(): BelongsTo
+    /**
+     * Subjects this teacher is qualified to teach.
+     */
+    public function subjects(): BelongsToMany
     {
-        return $this->belongsTo(Department::class, 'department_id');
+        return $this->belongsToMany(Subject::class, 'teacher_subject', 'teacher_profile_id', 'subject_id')
+            ->withTimestamps();
     }
 
     public function createdBy(): BelongsTo

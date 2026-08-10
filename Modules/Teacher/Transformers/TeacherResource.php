@@ -24,11 +24,11 @@ class TeacherResource extends BaseResource
             'specialization' => $this->specialization,
             'experience_years' => $this->experience_years,
             'joining_date' => $this->joining_date,
-            'department_id' => $this->department_id,
-            'department' => $this->whenLoaded('department', fn () => [
-                'id' => $this->department->id,
-                'name' => $this->department->name,
-            ]),
+            'subjects' => $this->whenLoaded('subjects', fn () => $this->subjects->map(fn ($subject) => [
+                'id' => $subject->id,
+                'name' => $subject->name,
+            ])->all()),
+            'subject_ids' => $this->whenLoaded('subjects', fn () => $this->subjects->pluck('id')->all()),
             'position' => $this->position,
             'salary_type' => $this->salary_type,
             'salary_base' => $this->salary_base ? (float) $this->salary_base : null,

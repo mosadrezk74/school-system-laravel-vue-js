@@ -36,7 +36,7 @@ class TeacherRepository implements TeacherRepositoryInterface
 
     public function findAllPaginated(int $perPage = 15, array $filters = [])
     {
-        $query = TeacherProfile::query()->with(['user', 'department']);
+        $query = TeacherProfile::query()->with(['user', 'subjects']);
 
         foreach ($filters as $field => $value) {
             if ($value !== null) {
@@ -146,6 +146,25 @@ class TeacherRepository implements TeacherRepositoryInterface
             ->exists();
     }
 
+    /**
+     * Builds an unused 7-digit employee id.
+     *
+     * Archived teachers keep their id — the unique index still covers
+     * soft-deleted rows — so trashed records are included in the check.
+     */
+    public function generateEmployeeId(): string
+    {
+        do {
+            $employeeId = str_pad((string) random_int(0, 9999999), 7, '0', STR_PAD_LEFT);
+        } while (
+            TeacherProfile::withTrashed()
+                ->where('employee_id', $employeeId)
+                ->exists()
+        );
+
+        return $employeeId;
+    }
+
     public function existsByEmail(string $email, ?int $excludeUserId = null): bool
     {
         return User::query()
@@ -166,6 +185,11 @@ class TeacherRepository implements TeacherRepositoryInterface
         $data['created_by'] = $actorId;
         $data['updated_by'] = $actorId;
 
+        // Admins may leave the employee id blank; the school still needs one.
+        if (blank($data['employee_id'])) {
+            $data['employee_id'] = $this->generateEmployeeId();
+        }
+
         return $this->create($data);
     }
 
@@ -173,6 +197,14 @@ class TeacherRepository implements TeacherRepositoryInterface
     {
         $data = $dto->toArray();
         $data['updated_by'] = $actorId;
+
+        // A teacher never loses their employee id: a blank field on edit keeps
+        // the current one, and fills it in for rows created before it existed.
+        if (blank($data['employee_id'])) {
+            $existing = $this->findById($id)?->employee_id;
+
+            $data['employee_id'] = $existing ?: $this->generateEmployeeId();
+        }
 
         $teacher = $this->update($id, $data);
 
@@ -188,10 +220,10 @@ class TeacherRepository implements TeacherRepositoryInterface
         return TeacherProfile::query()->where('is_active', true)->get();
     }
 
-    public function getTeachersByDepartment(int $departmentId): iterable
+    public function getTeachersBySubject(int $subjectId): iterable
     {
         return TeacherProfile::query()
-            ->where('department_id', $departmentId)
+            ->whereHas('subjects', fn ($query) => $query->where('subjects.id', $subjectId))
             ->where('is_active', true)
             ->get();
     }

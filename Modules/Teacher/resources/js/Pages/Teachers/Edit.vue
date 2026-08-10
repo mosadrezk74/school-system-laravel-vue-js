@@ -6,7 +6,7 @@ import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   teacher: { type: Object, required: true },
-  departments: { type: Array, default: () => [] },
+  subjects: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -26,11 +26,10 @@ const form = useForm({
   specialization: props.teacher.specialization,
   experience_years: props.teacher.experience_years,
   joining_date: props.teacher.joining_date,
-  department_id: props.teacher.department_id,
   position: props.teacher.position,
   salary_type: props.teacher.salary_type,
   salary_base: props.teacher.salary_base,
-  primary_subjects: props.teacher.primary_subjects || [],
+  subject_ids: props.teacher.subject_ids || [],
 })
 
 function submit() {
@@ -52,7 +51,7 @@ function submit() {
       <form @submit.prevent="submit">
         <TeacherForm
           :form="form"
-          :departments="departments"
+          :subjects="subjects"
           is-edit
         />
       </form>

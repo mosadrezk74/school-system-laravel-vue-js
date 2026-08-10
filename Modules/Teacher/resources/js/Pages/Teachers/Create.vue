@@ -5,7 +5,7 @@ import TeacherForm from './_Form.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 
 defineProps({
-  departments: { type: Array, default: () => [] },
+  subjects: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -25,11 +25,10 @@ const form = useForm({
   specialization: '',
   experience_years: 0,
   joining_date: null,
-  department_id: null,
   position: '',
   salary_type: null,
   salary_base: null,
-  primary_subjects: [],
+  subject_ids: [],
 })
 
 function submit() {
@@ -51,7 +50,7 @@ function submit() {
       <form @submit.prevent="submit">
         <TeacherForm
           :form="form"
-          :departments="departments"
+          :subjects="subjects"
         />
       </form>
     </VCardText>

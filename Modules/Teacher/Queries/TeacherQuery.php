@@ -10,7 +10,7 @@ class TeacherQuery extends BaseQuery
 {
     protected array $searchableFields = ['employee_id', 'qualification', 'specialization', 'position'];
 
-    protected array $filterableFields = ['is_active', 'department_id'];
+    protected array $filterableFields = ['is_active'];
 
     protected array $sortableFields = [
         'employee_id',
@@ -23,7 +23,7 @@ class TeacherQuery extends BaseQuery
 
     protected function baseQuery(): Builder
     {
-        return TeacherProfile::query()->with(['user', 'department']);
+        return TeacherProfile::query()->with(['user', 'subjects']);
     }
 
     public function searchUser(?string $term): self
@@ -56,10 +56,12 @@ class TeacherQuery extends BaseQuery
         return $this;
     }
 
-    public function departmentId(?int $departmentId): self
+    public function subjectId(?int $subjectId): self
     {
-        if ($departmentId) {
-            $this->query->where('department_id', $departmentId);
+        if ($subjectId) {
+            $this->query->whereHas('subjects', function (Builder $query) use ($subjectId) {
+                $query->where('subjects.id', $subjectId);
+            });
         }
 
         return $this;

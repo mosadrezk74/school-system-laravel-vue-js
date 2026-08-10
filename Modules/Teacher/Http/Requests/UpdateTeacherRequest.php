@@ -23,12 +23,13 @@ class UpdateTeacherRequest extends BaseRequest
             'national_id' => ['nullable', 'string', 'max:20'],
             'phone' => ['nullable', 'string', 'max:20'],
             'is_active' => ['sometimes', 'boolean'],
-            'employee_id' => ['nullable', 'string', 'max:50', Rule::unique('teacher_profiles', 'employee_id')->ignore($teacher?->id)],
+            'employee_id' => ['nullable', 'string', 'digits:7', Rule::unique('teacher_profiles', 'employee_id')->ignore($teacher?->id)],
             'qualification' => ['nullable', 'string', 'max:255'],
             'specialization' => ['nullable', 'string', 'max:255'],
             'experience_years' => ['nullable', 'integer', 'min:0', 'max:50'],
             'joining_date' => ['nullable', 'date'],
-            'department_id' => ['nullable', 'integer', 'exists:departments,id'],
+            'subject_ids' => ['nullable', 'array'],
+            'subject_ids.*' => ['integer', 'exists:subjects,id'],
             'position' => ['nullable', 'string', 'max:100'],
             'salary_type' => ['nullable', 'string', 'in:fixed,hourly,contract'],
             'salary_base' => ['nullable', 'numeric', 'min:0'],
@@ -45,7 +46,7 @@ class UpdateTeacherRequest extends BaseRequest
             'password' => __('teacher::teacher.fields.password'),
             'gender' => __('teacher::teacher.fields.gender'),
             'employee_id' => __('teacher::teacher.fields.employee_id'),
-            'department_id' => __('teacher::teacher.fields.department_id'),
+            'subject_ids' => __('teacher::teacher.fields.subject_ids'),
         ];
     }
 }

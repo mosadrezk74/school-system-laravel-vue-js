@@ -10,7 +10,7 @@ final readonly class TeacherFilterDTO
     public function __construct(
         public ?string $search,
         public ?bool $isActive,
-        public ?int $departmentId,
+        public ?int $subjectId,
         public ?string $gender,
         public string $sortBy,
         public string $sortOrder,
@@ -22,7 +22,7 @@ final readonly class TeacherFilterDTO
         return new self(
             search: $request->string(Pagination::SEARCH_PARAM)->toString() ?: null,
             isActive: $request->has('is_active') ? filter_var($request->input('is_active'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : null,
-            departmentId: $request->filled('department_id') ? (int) $request->input('department_id') : null,
+            subjectId: $request->filled('subject_id') ? (int) $request->input('subject_id') : null,
             gender: $request->string('gender')->toString() ?: null,
             sortBy: $request->string(Pagination::SORT_PARAM, 'name')->toString(),
             sortOrder: $request->string(Pagination::ORDER_PARAM, Pagination::DEFAULT_ORDER)->toString(),

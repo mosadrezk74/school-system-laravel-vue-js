@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   form: { type: Object, required: true },
-  departments: { type: Array, default: () => [] },
+  subjects: { type: Array, default: () => [] },
   isEdit: { type: Boolean, default: false },
 })
 
@@ -16,41 +16,25 @@ const activeTab = ref('account')
 
 const tabFields = {
   account: ['name', 'email', 'username', 'password', 'gender', 'birth_date', 'national_id', 'phone', 'is_active'],
-  professional: ['employee_id', 'qualification', 'specialization', 'experience_years', 'department_id'],
+  professional: ['employee_id', 'qualification', 'specialization', 'experience_years'],
   employment: ['joining_date', 'position', 'salary_type', 'salary_base'],
-  subjects: ['primary_subjects'],
+  subjects: ['subject_ids'],
 }
 
 const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[field])
 
-const salaryTypes = [
-  { title: 'Fixed', value: 'fixed' },
-  { title: 'Hourly', value: 'hourly' },
-  { title: 'Contract', value: 'contract' },
-]
+const salaryTypes = computed(() => [
+  { title: t('teacher.salaryTypes.fixed'), value: 'fixed' },
+  { title: t('teacher.salaryTypes.hourly'), value: 'hourly' },
+  { title: t('teacher.salaryTypes.contract'), value: 'contract' },
+])
 
-const departmentOptions = computed(() =>
-  props.departments.map(d => ({
-    title: d.name,
-    value: d.id,
+const subjectsOptions = computed(() =>
+  props.subjects.map(subject => ({
+    title: subject.name,
+    value: subject.id,
   }))
 )
-
-const subjectsOptions = [
-  'Mathematics',
-  'Physics',
-  'Chemistry',
-  'Biology',
-  'English',
-  'Arabic',
-  'Islamic Studies',
-  'History',
-  'Geography',
-  'Computer Science',
-  'Physical Education',
-  'Art',
-  'Music',
-]
 </script>
 
 <template>
@@ -350,14 +334,14 @@ const subjectsOptions = [
       <VRow>
         <VCol cols="12" md="8">
           <VSelect
-            v-model="form.primary_subjects"
+            v-model="form.subject_ids"
             multiple
             chips
             :items="subjectsOptions"
-            :label="$t('teacher.fields.primary_subjects')"
-            :hint="$t('teacher.hints.primary_subjects')"
+            :label="$t('teacher.fields.subject_ids')"
+            :hint="$t('teacher.hints.subject_ids')"
             persistent-hint
-            :error-messages="form.errors.primary_subjects"
+            :error-messages="form.errors.subject_ids"
           />
         </VCol>
       </VRow>

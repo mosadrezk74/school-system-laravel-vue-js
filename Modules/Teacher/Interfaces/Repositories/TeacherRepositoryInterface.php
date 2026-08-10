@@ -43,5 +43,7 @@ interface TeacherRepositoryInterface extends RepositoryInterface
 
     public function getActiveTeachers(): iterable;
 
-    public function getTeachersByDepartment(int $departmentId): iterable;
+    public function getTeachersBySubject(int $subjectId): iterable;
+
+    public function generateEmployeeId(): string;
 }

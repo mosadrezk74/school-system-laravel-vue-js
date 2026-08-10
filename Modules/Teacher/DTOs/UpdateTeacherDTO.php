@@ -21,11 +21,12 @@ final readonly class UpdateTeacherDTO
         public ?string $specialization,
         public int $experienceYears,
         public ?string $joiningDate,
-        public ?int $departmentId,
         public ?string $position,
         public ?string $salaryType,
         public ?float $salaryBase,
         public ?array $primarySubjects,
+        /** @var array<int, int>|null */
+        public ?array $subjectIds,
     ) {}
 
     public static function fromRequest(Request $request): self
@@ -45,11 +46,11 @@ final readonly class UpdateTeacherDTO
             specialization: $request->validated('specialization'),
             experienceYears: (int) $request->validated('experience_years', 0),
             joiningDate: $request->validated('joining_date'),
-            departmentId: $request->validated('department_id') ? (int) $request->validated('department_id') : null,
             position: $request->validated('position'),
             salaryType: $request->validated('salary_type'),
             salaryBase: $request->validated('salary_base') ? (float) $request->validated('salary_base') : null,
             primarySubjects: $request->validated('primary_subjects'),
+            subjectIds: $request->validated('subject_ids'),
         );
     }
 
@@ -61,7 +62,6 @@ final readonly class UpdateTeacherDTO
             'specialization' => $this->specialization,
             'experience_years' => $this->experienceYears,
             'joining_date' => $this->joiningDate,
-            'department_id' => $this->departmentId,
             'position' => $this->position,
             'salary_type' => $this->salaryType,
             'salary_base' => $this->salaryBase,

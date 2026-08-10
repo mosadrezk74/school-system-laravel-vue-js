@@ -19,7 +19,6 @@ const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirm
 
 const search = ref(props.filters.search ?? '')
 const isActiveFilter = ref(props.filters.is_active ?? null)
-const departmentFilter = ref(props.filters.department_id ?? null)
 const genderFilter = ref(props.filters.gender ?? null)
 
 let searchTimer
@@ -30,7 +29,7 @@ watch(search, value => {
   }, 350)
 })
 
-watch([isActiveFilter, departmentFilter, genderFilter], () => {
+watch([isActiveFilter, genderFilter], () => {
   applyFilters()
 })
 
@@ -45,9 +44,6 @@ function buildQuery(extra = {}) {
 
   if (isActiveFilter.value !== null)
     query.is_active = isActiveFilter.value
-
-  if (departmentFilter.value)
-    query.department_id = departmentFilter.value
 
   if (genderFilter.value)
     query.gender = genderFilter.value
@@ -187,10 +183,6 @@ const filterOptions = {
         <AppTableLink :href="`/user-management/teachers/${item.id}`">
           {{ item.name }}
         </AppTableLink>
-      </template>
-
-      <template #item.department="{ item }">
-        {{ item.department?.name || '—' }}
       </template>
 
       <template #item.is_active="{ item }">

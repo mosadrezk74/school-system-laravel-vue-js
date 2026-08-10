@@ -29,7 +29,13 @@ class UpdateTeacherAction extends BaseAction
 
             $teacher->user->update($dto->toUserArray());
 
-            return $this->repository->updateFromDTO($teacher->id, $dto, auth()->id());
+            $updated = $this->repository->updateFromDTO($teacher->id, $dto, auth()->id());
+
+            if ($dto->subjectIds !== null) {
+                $updated->subjects()->sync($dto->subjectIds);
+            }
+
+            return $updated->load(['user', 'subjects']);
         });
     }
 }

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('specialization', 255)->nullable();
             $table->tinyInteger('experience_years')->default(0);
             $table->date('joining_date')->nullable();
-            $table->unsignedBigInteger('department_id')->nullable();
             $table->string('position', 100)->nullable();
             $table->string('salary_type', 20)->nullable();
             $table->decimal('salary_base', 10, 2)->nullable();
@@ -28,9 +27,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->unique('user_id');
             $table->unique('employee_id');
-            $table->index(['department_id']);
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->foreign('department_id')->references('id')->on('departments')->nullOnDelete();
             $table->foreign('created_by')->references('id')->on('users')->nullOnDelete();
             $table->foreign('updated_by')->references('id')->on('users')->nullOnDelete();
         });

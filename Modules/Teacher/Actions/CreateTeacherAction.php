@@ -37,7 +37,9 @@ class CreateTeacherAction extends BaseAction
 
             $teacher = $this->repository->createFromDTO($dto, $user->id, auth()->id());
 
-            return $teacher->load('user');
+            $teacher->subjects()->sync($dto->subjectIds ?? []);
+
+            return $teacher->load(['user', 'subjects']);
         });
     }
 }

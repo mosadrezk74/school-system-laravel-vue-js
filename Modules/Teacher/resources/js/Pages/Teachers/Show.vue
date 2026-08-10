@@ -36,9 +36,6 @@ const quickActions = [
             </div>
             <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
               {{ teacher.employee_id ?? '—' }} · {{ teacher.position ?? '—' }}
-              <template v-if="teacher.department">
-                · {{ teacher.department.name }}
-              </template>
             </p>
           </div>
 
@@ -180,16 +177,6 @@ const quickActions = [
                 </VListItemSubtitle>
               </VListItem>
             </VCol>
-            <VCol cols="12">
-              <VListItem>
-                <VListItemTitle class="text-medium-emphasis text-caption">
-                  {{ t('teacher.fields.department_id') }}
-                </VListItemTitle>
-                <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ teacher.department?.name ?? '—' }}
-                </VListItemSubtitle>
-              </VListItem>
-            </VCol>
           </VRow>
         </VCardText>
       </VCard>
@@ -261,16 +248,16 @@ const quickActions = [
           <VCardTitle>{{ t('teacher.sections.subjects') }}</VCardTitle>
         </VCardItem>
         <VCardText>
-          <div v-if="!teacher.primary_subjects || teacher.primary_subjects.length === 0" class="text-disabled">
+          <div v-if="!teacher.subjects || teacher.subjects.length === 0" class="text-disabled">
             {{ t('common.noItems') }}
           </div>
           <VChip
             v-else
-            v-for="subject in teacher.primary_subjects"
-            :key="subject"
+            v-for="subject in teacher.subjects"
+            :key="subject.id"
             class="ma-1"
           >
-            {{ subject }}
+            {{ subject.name }}
           </VChip>
         </VCardText>
       </VCard>

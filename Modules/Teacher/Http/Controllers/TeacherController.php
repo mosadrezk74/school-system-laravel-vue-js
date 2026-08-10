@@ -6,9 +6,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Modules\Teacher\Models\Department;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Subject\Models\Subject;
 use Modules\Teacher\Actions\ArchiveTeacherAction;
 use Modules\Teacher\Actions\CreateTeacherAction;
 use Modules\Teacher\Actions\RestoreTeacherAction;
@@ -33,7 +33,7 @@ class TeacherController extends BaseInertiaController
         $query = (new TeacherQuery)
             ->searchUser($filters->search)
             ->isActive($filters->isActive)
-            ->departmentId($filters->departmentId)
+            ->subjectId($filters->subjectId)
             ->gender($filters->gender)
             ->sort($filters->sortBy, $filters->sortOrder);
 
@@ -44,7 +44,7 @@ class TeacherController extends BaseInertiaController
             'filters' => $request->only([
                 Pagination::SEARCH_PARAM,
                 'is_active',
-                'department_id',
+                'subject_id',
                 'gender',
             ]),
         ]);
@@ -55,9 +55,14 @@ class TeacherController extends BaseInertiaController
         $this->authorize('create', TeacherProfile::class);
 
         return Inertia::render('Teacher::Teachers/Create', [
-            'departments' => Department::query()
+            'subjects' => Subject::query()
                 ->where('is_active', true)
-                ->get(['id', 'name']),
+                ->get(['id', 'name'])
+                ->map(fn (Subject $subject): array => [
+                    'id' => $subject->id,
+                    'name' => $subject->name,
+                ])
+                ->values(),
         ]);
     }
 
@@ -74,7 +79,7 @@ class TeacherController extends BaseInertiaController
     {
         $this->authorize('view', $teacher);
 
-        $teacher->load(['user', 'department']);
+        $teacher->load(['user', 'subjects']);
 
         return Inertia::render('Teacher::Teachers/Show', [
             'teacher' => new TeacherResource($teacher),
@@ -85,13 +90,18 @@ class TeacherController extends BaseInertiaController
     {
         $this->authorize('update', $teacher);
 
-        $teacher->load('user');
+        $teacher->load(['user', 'subjects']);
 
         return Inertia::render('Teacher::Teachers/Edit', [
             'teacher' => new TeacherResource($teacher),
-            'departments' => Department::query()
+            'subjects' => Subject::query()
                 ->where('is_active', true)
-                ->get(['id', 'name']),
+                ->get(['id', 'name'])
+                ->map(fn (Subject $subject): array => [
+                    'id' => $subject->id,
+                    'name' => $subject->name,
+                ])
+                ->values(),
         ]);
     }
 
