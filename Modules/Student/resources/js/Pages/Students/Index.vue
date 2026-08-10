@@ -105,23 +105,29 @@ function goToPage(page) {
     @page="goToPage"
   >
     <template #filters>
-      <VTextField
-        v-model="search"
-        :label="t('students.search')"
-        prepend-inner-icon="bx-search"
-        clearable
-      />
+      <VRow>
+        <VCol cols="12" md="6">
+          <VTextField
+            v-model="search"
+            :label="t('students.search')"
+            prepend-inner-icon="bx-search"
+            clearable
+          />
+        </VCol>
 
-      <VSelect
-        v-model="status"
-        :label="t('common.filter')"
-        :items="[
-          { title: t('common.all'), value: null },
-          { title: t('students.active'), value: true },
-          { title: t('students.inactive'), value: false },
-        ]"
-        clearable
-      />
+        <VCol cols="12" md="4">
+          <VSelect
+            v-model="status"
+            :label="t('common.filter')"
+            :items="[
+              { title: t('common.all'), value: null },
+              { title: t('students.active'), value: true },
+              { title: t('students.inactive'), value: false },
+            ]"
+            clearable
+          />
+        </VCol>
+      </VRow>
     </template>
 
       <template #item.name="{ item }">

@@ -6,6 +6,7 @@ import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   timetables: { type: Object, required: true },
@@ -64,12 +65,15 @@ function goToPage(page) {
     :headers="headers"
     :items="timetables.data"
     :meta="timetables.meta"
+    mobile-title-key="class"
     empty-icon="bx-calendar-week"
     :empty-title="t('timetables.empty')"
     @page="goToPage"
   >
       <template #item.class="{ item }">
-        {{ item.class?.name }}
+        <AppTableLink :href="`/schedule/timetables/${item.id}`">
+          {{ item.class?.name ?? '—' }}
+        </AppTableLink>
       </template>
 
       <template #item.academic_year="{ item }">

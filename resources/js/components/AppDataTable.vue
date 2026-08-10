@@ -74,7 +74,7 @@ const hasSlot = name => Boolean(slots[name])
 </script>
 
 <template>
-  <VCard>
+  <VCard class="app-data-table">
     <!-- Filter toolbar -->
     <div
       v-if="hasSlot('filters')"
@@ -208,27 +208,33 @@ const hasSlot = name => Boolean(slots[name])
 
 <style lang="scss" scoped>
 .app-data-table {
-  /*
-    Filters are laid out by the shell rather than by each page, so a search
-    box and a couple of selects line up the same way everywhere and wrap onto
-    their own rows on a phone instead of overflowing.
-  */
   &__filters {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
     padding: var(--app-space-4);
     gap: var(--app-space-3);
 
-    /* Direct children size themselves; the search field takes the slack. */
-    > * {
-      flex: 0 1 auto;
-      min-inline-size: 12rem;
+    :deep(> .v-row) {
+      flex: 1 1 100%;
+      margin: 0;
     }
 
-    :deep(.v-input:first-child) {
-      flex: 1 1 16rem;
-      max-inline-size: 24rem;
+    :deep(> .v-input) {
+      flex: 0 0 auto;
+      inline-size: 100%;
+    }
+
+    @media (min-width: 600px) {
+      :deep(> .v-input) {
+        inline-size: 14rem;
+      }
+
+      :deep(> .v-input:first-child) {
+        flex: 1 1 18rem;
+        inline-size: auto;
+        max-inline-size: 24rem;
+      }
     }
   }
 
