@@ -54,9 +54,31 @@ class MeetingPolicy
         return $user->can('meeting.update') && $this->ownsOrManages($user, $meeting);
     }
 
+    /**
+     * Who may actually enter the Jitsi room.
+     *
+     * A teacher who owns the meeting (and any admin/owner) can open the room
+     * while it is still scheduled — somebody has to be first in. Everyone
+     * else may only join once it is live, and never after it has finished or
+     * been cancelled. Class membership is enforced separately by the
+     * controller through PortalScopeService, because the policy has no view
+     * of which classes a student belongs to.
+     */
     public function join(User $user, Meeting $meeting): bool
     {
-        return $user->can('meeting.view') && $meeting->status === 'live';
+        if (! $user->can('meeting.view')) {
+            return false;
+        }
+
+        if (in_array($meeting->status, ['finished', 'cancelled'], true)) {
+            return false;
+        }
+
+        if ($this->ownsOrManages($user, $meeting)) {
+            return true;
+        }
+
+        return $meeting->status === 'live';
     }
 
     public function startForEntry(User $user, TimetableEntry $entry): bool

@@ -1163,7 +1163,18 @@
       "scheduledAt": "Required. The date and time the meeting is scheduled to start.",
       "password": "Optional. A password required to join the meeting."
     },
-    "quickActions": "Quick Actions"
+    "quickActions": "Quick Actions",
+    "subject": "Subject",
+    "schoolClass": "Class",
+    "details": "Meeting details",
+    "copied": "Link copied",
+    "jitsi": {
+      "loading": "Loading the meeting…",
+      "failed": "The meeting could not be loaded right now.",
+      "retry": "Try again",
+      "leave": "Leave meeting",
+      "participants": "Participants"
+    }
   },
   "communication": {
     "fields": {

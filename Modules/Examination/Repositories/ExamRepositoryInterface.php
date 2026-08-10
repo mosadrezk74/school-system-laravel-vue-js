@@ -12,8 +12,6 @@ interface ExamRepositoryInterface
 
     public function findByIdOrFail(int $id): Exam;
 
-    public function existsByCode(string $code, ?int $excludeId = null): bool;
-
     public function create(CreateExamDTO $dto, ?int $actorId = null): Exam;
 
     public function update(Exam $exam, UpdateExamDTO $dto, ?int $actorId = null): Exam;

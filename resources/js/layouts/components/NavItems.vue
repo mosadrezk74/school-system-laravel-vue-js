@@ -35,6 +35,7 @@ const sections = computed(() => [
       { title: t('nav.subjects'), to: '/academic/subjects', icon: 'bx-book-open', module: 'Subject' },
       { title: t('nav.classrooms'), to: '/academic/classrooms', icon: 'bx-building', module: 'Classroom' },
       { title: t('nav.studyResources'), to: '/academic/study-resources', icon: 'bx-folder-open', module: 'StudyMaterial' },
+      { title: t('nav.studyMaterials'), to: '/assignments/study-materials', icon: 'bx-folder-open', module: 'Assignment' },
     ],
   },
   {
@@ -51,7 +52,6 @@ const sections = computed(() => [
     heading: t('nav.assignments'),
     children: [
       { title: t('nav.assignments'), to: '/assignments/assignments', icon: 'bx-task', module: 'Assignment' },
-      { title: t('nav.studyMaterials'), to: '/assignments/study-materials', icon: 'bx-folder-open', module: 'Assignment' },
     ],
   },
   {
@@ -129,9 +129,6 @@ const sections = computed(() => [
     heading: t('nav.settings'),
     children: [
       { title: t('nav.languages'), to: '/settings/languages', icon: 'bx-globe' },
-      { title: t('nav.generalSettings'), to: '/settings/general', icon: 'bx-cog' },
-      { title: t('nav.organizationSettings'), to: '/settings/organization', icon: 'bx-sitemap' },
-      { title: t('nav.moduleSettings'), to: '/settings/modules', icon: 'bx-grid-alt' },
       { title: t('nav.aiTranslationSettings'), to: '/settings/ai-translation', icon: 'bx-globe' },
       { title: t('nav.systemErrors'), to: '/system/errors', icon: 'bx-bug', permission: 'viewErrorReports' },
     ],

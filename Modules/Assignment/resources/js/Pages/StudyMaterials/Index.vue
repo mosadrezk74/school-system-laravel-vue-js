@@ -49,8 +49,6 @@ const headers = computed(() => [
   { title: t('studyMaterials.title'), key: 'title' },
   { title: t('studyMaterials.subject'), key: 'subject' },
   { title: t('studyMaterials.teacher'), key: 'teacher' },
-  { title: t('studyMaterials.materialType'), key: 'material_type' },
-  { title: t('studyMaterials.status'), key: 'status', sortable: false },
   { title: '', key: 'actions', sortable: false, align: 'end' },
 ])
 

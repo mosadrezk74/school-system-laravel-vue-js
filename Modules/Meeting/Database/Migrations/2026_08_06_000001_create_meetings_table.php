@@ -15,7 +15,6 @@ return new class extends Migration
             $table->json('description')->nullable();
             $table->string('room_name', 100)->unique();
             $table->string('meeting_url', 255);
-            $table->string('password', 100)->nullable();
             $table->timestamp('scheduled_at');
             $table->unsignedInteger('duration_minutes');
             $table->string('status', 20)->default('scheduled');

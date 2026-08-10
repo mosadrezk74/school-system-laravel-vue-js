@@ -1249,5 +1249,18 @@
       "reviewed": "Examiné",
       "resolved": "Résolu"
     }
+  },
+  "meetings": {
+    "subject": "Matière",
+    "schoolClass": "Classe",
+    "details": "Détails de la réunion",
+    "copied": "Lien copié",
+    "jitsi": {
+      "loading": "Chargement de la réunion…",
+      "failed": "Impossible de charger la réunion pour le moment.",
+      "retry": "Réessayer",
+      "leave": "Quitter la réunion",
+      "participants": "Participants"
+    }
   }
 }

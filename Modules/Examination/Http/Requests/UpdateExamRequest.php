@@ -2,7 +2,6 @@
 
 namespace Modules\Examination\Http\Requests;
 
-use Illuminate\Validation\Rule;
 use Modules\Core\Abstracts\BaseRequest;
 
 class UpdateExamRequest extends BaseRequest
@@ -18,7 +17,6 @@ class UpdateExamRequest extends BaseRequest
             'semester_id' => ['nullable', 'integer', 'exists:semesters,id'],
             'class_id' => ['nullable', 'integer', 'exists:classes,id'],
             ...$this->translatableRules('name'),
-            'code' => ['nullable', 'string', 'max:50', Rule::unique('exams', 'code')->ignore($exam?->id)],
             'exam_type' => ['required', 'string', 'max:20'],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
@@ -38,7 +36,6 @@ class UpdateExamRequest extends BaseRequest
             'semester_id' => __('examination::exam.fields.semester_id'),
             'class_id' => __('examination::exam.fields.class_id'),
             'name' => __('examination::exam.fields.name'),
-            'code' => __('examination::exam.fields.code'),
             'exam_type' => __('examination::exam.fields.exam_type'),
             'start_date' => __('examination::exam.fields.start_date'),
             'end_date' => __('examination::exam.fields.end_date'),

@@ -13,7 +13,6 @@ class StoreBehaviorCategoryRequest extends BaseRequest
     {
         return [
             ...$this->translatableRules('name'),
-            'code' => ['nullable', 'string', 'max:50', 'unique:behavior_categories,code'],
             'type' => ['required', 'string', 'in:merit,violation'],
             'points' => ['required', 'integer'],
             'is_active' => ['sometimes', 'boolean'],
@@ -27,7 +26,6 @@ class StoreBehaviorCategoryRequest extends BaseRequest
     {
         return [
             'name' => __('behavior::behavior.fields.name'),
-            'code' => __('behavior::behavior.fields.code'),
             'type' => __('behavior::behavior.fields.type'),
             'points' => __('behavior::behavior.fields.points'),
         ];

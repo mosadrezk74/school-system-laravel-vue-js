@@ -15,7 +15,6 @@ const { t } = useI18n()
 
 const form = useForm({
   name: props.exam.name || '',
-  code: props.exam.code,
   exam_type: props.exam.exam_type,
   semester_id: props.exam.semester_id,
   class_id: props.exam.class_id,

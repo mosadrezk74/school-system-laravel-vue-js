@@ -79,7 +79,7 @@ const required = label => `${label} *`
       />
     </VCol>
 
-    <VCol cols="12" md="6">
+    <VCol cols="12" md="4">
       <VTextField
         v-model="form.scheduled_at"
         type="datetime-local"
@@ -88,16 +88,6 @@ const required = label => `${label} *`
         persistent-hint
         :error-messages="form.errors.scheduled_at"
         required
-      />
-    </VCol>
-
-    <VCol cols="12" md="6">
-      <VTextField
-        v-model="form.password"
-        :label="t('meetings.password')"
-        :hint="t('meetings.hints.password')"
-        persistent-hint
-        :error-messages="form.errors.password"
       />
     </VCol>
   </VRow>

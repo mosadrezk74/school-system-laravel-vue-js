@@ -13,7 +13,6 @@ return new class extends Migration
             $table->unsignedBigInteger('academic_year_id');
             $table->unsignedBigInteger('semester_id')->nullable();
             $table->string('name', 100);
-            $table->string('code', 50)->nullable();
             $table->string('exam_type', 20);
             $table->date('start_date');
             $table->date('end_date');
@@ -26,7 +25,6 @@ return new class extends Migration
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->unique('code');
             $table->index(['academic_year_id', 'semester_id']);
             $table->foreign('academic_year_id')->references('id')->on('academic_years')->cascadeOnDelete();
             $table->foreign('semester_id')->references('id')->on('semesters')->nullOnDelete();

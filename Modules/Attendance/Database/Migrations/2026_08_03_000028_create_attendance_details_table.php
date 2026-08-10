@@ -13,8 +13,6 @@ return new class extends Migration
             $table->unsignedBigInteger('attendance_record_id');
             $table->unsignedBigInteger('student_id');
             $table->string('status', 15);
-            $table->time('check_in_time')->nullable();
-            $table->time('check_out_time')->nullable();
             $table->timestamps();
             $table->unique(['attendance_record_id', 'student_id']);
             $table->index(['student_id']);

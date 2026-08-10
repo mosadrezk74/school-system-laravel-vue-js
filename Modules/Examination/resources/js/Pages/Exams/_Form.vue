@@ -34,7 +34,7 @@ const examTypeOptions = [
 const activeTab = ref('details')
 
 const tabFields = {
-  details: ['name', 'code', 'exam_type', 'semester_id', 'class_id'],
+  details: ['name', 'exam_type', 'semester_id', 'class_id'],
   schedule: ['start_date', 'end_date'],
   grading: ['passing_grade', 'total_marks', 'weightage', 'is_published'],
 }
@@ -92,15 +92,6 @@ const tabHasError = tab => tabFields[tab].some(field =>
       />
 
       <VRow>
-        <VCol cols="12" md="6">
-          <VTextField
-            v-model="form.code"
-            :label="$t('exams.code')"
-            :hint="$t('exams.hints.code')"
-            persistent-hint
-            :error-messages="form.errors.code"
-          />
-        </VCol>
 
 
         <VCol cols="12" md="4">

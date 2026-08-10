@@ -43,7 +43,6 @@ const editing = ref(null)
 
 const form = useForm({
   name: '',
-  code: '',
   type: 'violation',
   points: 0,
   is_active: true,
@@ -51,7 +50,6 @@ const form = useForm({
 
 const headers = computed(() => [
   { title: t('behaviorCategories.name'), key: 'name' },
-  { title: t('behaviorCategories.code'), key: 'code' },
   { title: t('behaviorCategories.type'), key: 'type' },
   { title: t('behaviorCategories.points'), key: 'points' },
   { title: t('behaviorCategories.active'), key: 'status', sortable: false },
@@ -66,7 +64,7 @@ const typeOptions = computed(() => [
 function openCreate() {
   editing.value = null
   form.defaults({
-    name: '', code: '', type: 'violation', points: 0, is_active: true,
+    name: '', type: 'violation', points: 0, is_active: true,
   })
   form.reset()
   form.clearErrors()
@@ -77,7 +75,6 @@ function openEdit(item) {
   editing.value = item
   form.defaults({
     name: item.name ?? '',
-    code: item.code ?? '',
     type: item.type ?? 'violation',
     points: item.points ?? 0,
     is_active: item.is_active,
@@ -204,15 +201,6 @@ function goToPage(page) {
         />
 
         <VRow>
-          <VCol cols="12" md="6">
-            <VTextField
-              v-model="form.code"
-              :label="t('behaviorCategories.code')"
-              :hint="t('behaviorCategories.hints.code')"
-              persistent-hint
-              :error-messages="form.errors.code"
-            />
-          </VCol>
           <VCol cols="12" md="6">
             <VSelect
               v-model="form.type"

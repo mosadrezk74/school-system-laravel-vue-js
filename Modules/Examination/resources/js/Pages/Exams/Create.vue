@@ -13,7 +13,6 @@ const { t } = useI18n()
 
 const form = useForm({
   name: '',
-  code: '',
   exam_type: 'midterm',
   semester_id: null,
   class_id: null,

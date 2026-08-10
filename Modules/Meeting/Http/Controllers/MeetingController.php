@@ -25,6 +25,8 @@ use Modules\Meeting\Http\Requests\StoreMeetingRequest;
 use Modules\Meeting\Http\Requests\UpdateMeetingRequest;
 use Modules\Meeting\Models\Meeting;
 use Modules\Meeting\Queries\MeetingQuery;
+use Modules\Meeting\Services\JitsiRoomFactory;
+use Modules\Meeting\Services\MeetingAccessGuard;
 use Modules\Meeting\Transformers\MeetingResource;
 use Modules\Timetable\Models\TimetableEntry;
 
@@ -87,6 +89,40 @@ class MeetingController extends BaseInertiaController
             'meeting' => new MeetingResource($meeting),
             'can' => [
                 'manage' => auth()->user()->can('update', $meeting),
+            ],
+        ]);
+    }
+
+    /**
+     * Renders the in-app meeting room. The Jitsi conference is embedded here
+     * rather than opened on meet.etqan.cloud, so the user never leaves the
+     * application.
+     */
+    public function join(Request $request, Meeting $meeting, MeetingAccessGuard $guard): Response
+    {
+        $this->authorize('join', $meeting);
+
+        abort_unless($guard->allows($request->user(), $meeting), 403);
+
+        $meeting->load(['teacher', 'subject', 'schoolClass']);
+
+        $user = $request->user();
+
+        return $this->render('Meeting::Meetings/Join', [
+            'meeting' => new MeetingResource($meeting),
+
+            /*
+             * The room name is read from the stored record, never from user
+             * input, so nobody can point the embed at an arbitrary room.
+             */
+            'jitsi' => [
+                'domain' => app(JitsiRoomFactory::class)->domain(),
+                'room_name' => $meeting->room_name,
+                'display_name' => $user->name,
+                'email' => $user->email,
+            ],
+            'can' => [
+                'manage' => $user->can('update', $meeting),
             ],
         ]);
     }

@@ -53,9 +53,6 @@ const headers = computed(() => [
   { title: t('assignments.class'), key: 'class' },
   { title: t('assignments.subject'), key: 'subject' },
   { title: t('assignments.teacher'), key: 'teacher' },
-  { title: t('assignments.deadline'), key: 'deadline' },
-  { title: t('assignments.maxScore'), key: 'max_score' },
-  { title: t('assignments.status'), key: 'status', sortable: false },
   { title: '', key: 'actions', sortable: false, align: 'end' },
 ])
 

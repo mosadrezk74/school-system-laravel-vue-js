@@ -9,14 +9,13 @@ use Modules\Examination\Models\Exam;
 class ExamQuery extends BaseQuery
 {
     /**
-     * `name` is now a Spatie-translatable JSON column, so a plain LIKE
-     * against it matches raw JSON rather than the human-readable text (same
-     * tradeoff already accepted by BehaviorCategoryQuery). Searches `code`
-     * only rather than over-engineering a JSON-aware search.
+     * `name` is a Spatie-translatable JSON column. A LIKE against it matches
+     * the stored JSON, which still finds the typed text for any locale — it
+     * is the only searchable column left now that `code` is gone.
      *
      * @var array<int, string>
      */
-    protected array $searchableFields = ['code'];
+    protected array $searchableFields = ['name'];
 
     /** @var array<int, string> */
     protected array $filterableFields = ['academic_year_id', 'semester_id', 'class_id', 'exam_type', 'is_published'];

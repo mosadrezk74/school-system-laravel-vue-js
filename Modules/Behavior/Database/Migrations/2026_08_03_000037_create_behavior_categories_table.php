@@ -10,14 +10,12 @@ return new class extends Migration
     {
         Schema::create('behavior_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 50)->nullable();
             $table->json('name');
             $table->string('type', 10);
             $table->smallInteger('points')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();
-            $table->unique('code');
         });
     }
 

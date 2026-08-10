@@ -46,7 +46,9 @@ function cancel() {
 }
 
 function join() {
-  window.open(props.meeting.meeting_url, '_blank', 'noopener')
+  // Stay inside the application: the conference is embedded on our own page
+  // rather than handing the user off to the Jitsi host.
+  router.visit(`/meetings/meetings/${props.meeting.id}/join`)
 }
 
 function copyLink() {

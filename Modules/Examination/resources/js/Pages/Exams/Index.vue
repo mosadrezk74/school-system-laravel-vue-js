@@ -47,7 +47,6 @@ watch(published, applyFilters)
 
 const headers = computed(() => [
   { title: t('exams.name'), key: 'name' },
-  { title: t('exams.code'), key: 'code' },
   { title: t('exams.examType'), key: 'exam_type' },
   { title: t('exams.startDate'), key: 'start_date' },
   { title: t('exams.endDate'), key: 'end_date' },

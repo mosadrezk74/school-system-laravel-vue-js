@@ -1249,5 +1249,18 @@
       "reviewed": "Geprüft",
       "resolved": "Gelöst"
     }
+  },
+  "meetings": {
+    "subject": "Fach",
+    "schoolClass": "Klasse",
+    "details": "Besprechungsdetails",
+    "copied": "Link kopiert",
+    "jitsi": {
+      "loading": "Besprechung wird geladen…",
+      "failed": "Die Besprechung konnte derzeit nicht geladen werden.",
+      "retry": "Erneut versuchen",
+      "leave": "Besprechung verlassen",
+      "participants": "Teilnehmer"
+    }
   }
 }

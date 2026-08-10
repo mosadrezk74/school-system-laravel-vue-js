@@ -20,7 +20,6 @@ class BehaviorCategoryResource extends BaseResource
             'id' => $this->id,
             'name' => $this->name,
             'name_translations' => $this->getTranslations('name'),
-            'code' => $this->code,
             'type' => $this->type,
             'points' => $this->points,
             'is_active' => $this->is_active,

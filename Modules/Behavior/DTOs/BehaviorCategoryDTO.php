@@ -16,7 +16,6 @@ final readonly class BehaviorCategoryDTO
 {
     public function __construct(
         public array $name,
-        public ?string $code,
         public string $type,
         public int $points,
         public bool $isActive,
@@ -26,7 +25,6 @@ final readonly class BehaviorCategoryDTO
     {
         return new self(
             name: $request->validated('name'),
-            code: $request->validated('code'),
             type: $request->validated('type'),
             points: (int) $request->validated('points', 0),
             isActive: (bool) $request->validated('is_active', true),
@@ -40,7 +38,6 @@ final readonly class BehaviorCategoryDTO
     {
         return [
             'name' => $this->name,
-            'code' => $this->code,
             'type' => $this->type,
             'points' => $this->points,
             'is_active' => $this->isActive,

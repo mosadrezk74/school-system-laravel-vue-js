@@ -4,6 +4,13 @@ use Illuminate\Support\Facades\Route;
 use Modules\Meeting\Http\Controllers\MeetingController;
 
 Route::middleware(['web', 'auth', 'module:Meeting'])->prefix('meetings')->group(function () {
+    /*
+     * Declared before the resource so `meetings/{meeting}/join` is not
+     * captured by the resource's show route.
+     */
+    Route::get('meetings/{meeting}/join', [MeetingController::class, 'join'])
+        ->name('meetings.join');
+
     Route::resource('meetings', MeetingController::class);
 
     Route::patch('meetings/{meeting}/start', [MeetingController::class, 'start'])

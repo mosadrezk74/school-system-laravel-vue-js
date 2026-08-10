@@ -22,14 +22,6 @@ class ExamRepository implements ExamRepositoryInterface
         return Exam::query()->findOrFail($id);
     }
 
-    public function existsByCode(string $code, ?int $excludeId = null): bool
-    {
-        return Exam::query()
-            ->where('code', $code)
-            ->when($excludeId, fn ($query) => $query->whereKeyNot($excludeId))
-            ->exists();
-    }
-
     public function create(CreateExamDTO $dto, ?int $actorId = null): Exam
     {
         return Exam::create([
