@@ -57,7 +57,6 @@ return [
         'finance_outstanding_fees' => 'Outstanding Fees',
         'finance_invoices' => 'Invoices',
         'meeting_sessions' => 'Meeting Sessions',
-        'study_material_resources' => 'Study Resources',
     ],
 
     'filters' => [

@@ -21,9 +21,4 @@ class AssignmentOperationException extends BaseException
     {
         return new static($message ?: __('assignment::assignment.submission_not_found'), HttpStatus::NOT_FOUND);
     }
-
-    public static function studyMaterialNotFound(string $message = ''): static
-    {
-        return new static($message ?: __('assignment::study_material.study_material_not_found'), HttpStatus::NOT_FOUND);
-    }
 }

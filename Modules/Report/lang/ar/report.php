@@ -57,7 +57,6 @@ return [
         'finance_outstanding_fees' => 'الرسوم المستحقة',
         'finance_invoices' => 'الفواتير',
         'meeting_sessions' => 'جلسات الاجتماعات',
-        'study_material_resources' => 'المواد الدراسية',
     ],
 
     'filters' => [

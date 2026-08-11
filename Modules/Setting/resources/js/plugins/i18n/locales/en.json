@@ -19,7 +19,6 @@
     "behaviorRecords": "Behavior Records",
     "behaviorCategories": "Behavior Categories",
     "assignments": "Assignments",
-    "studyMaterials": "Study Materials",
     "attendance": "Attendance",
     "attendanceTake": "Take Attendance",
     "attendanceRecords": "Attendance Records",
@@ -788,50 +787,6 @@
     "search": "Search",
     "empty": "No attendance records yet. Take attendance to get started.",
     "confirmDelete": "Delete this attendance record? This cannot be undone."
-  },
-  "studyMaterials": {
-    "title": "Study Materials",
-    "subtitle": "Manage learning resources shared with students.",
-    "addNew": "New Study Material",
-    "edit": "Edit Study Material",
-    "titleField": "Title",
-    "description": "Description",
-    "class": "Class",
-    "subject": "Subject",
-    "teacher": "Teacher",
-    "academicYear": "Academic Year",
-    "semester": "Semester",
-    "materialType": "Material Type",
-    "isPublished": "Published",
-    "published": "Published",
-    "unpublished": "Unpublished",
-    "search": "Search by title",
-    "empty": "No study materials yet. Add your first material to get started.",
-    "confirmArchive": "Archive this study material? An admin can restore it later.",
-    "sections": {
-      "details": "Details",
-      "detailsDesc": "Title, description, class, subject, teacher and academic period.",
-      "publishing": "Publishing",
-      "publishingDesc": "Control whether the material is visible to students."
-    },
-    "hints": {
-      "title": "Required. A short, descriptive name for the material.",
-      "description": "Optional. Additional details about the material.",
-      "class": "Optional. The class this material is intended for, if specific to one.",
-      "subject": "Required. The subject this material belongs to.",
-      "teacher": "Required. The teacher who shared this material.",
-      "academicYear": "Required. The academic year the material belongs to — determines the available classes and semesters below.",
-      "semester": "Optional. The semester this material belongs to.",
-      "materialType": "Optional. A short label for the type of material, e.g. slides or video.",
-      "isPublished": "Controls visibility to students. Unpublished materials are only visible to staff."
-    },
-    "statistics": "Statistics",
-    "viewCount": "Views",
-    "downloadCount": "Downloads",
-    "quickActions": "Quick Actions",
-    "quickAction": {
-      "edit": "Edit Study Material"
-    }
   },
   "classroom": {
     "title": "Classrooms",

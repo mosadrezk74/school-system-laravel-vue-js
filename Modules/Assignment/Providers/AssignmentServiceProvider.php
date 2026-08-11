@@ -5,16 +5,12 @@ namespace Modules\Assignment\Providers;
 use Illuminate\Support\Facades\Gate;
 use Modules\Assignment\Models\Assignment;
 use Modules\Assignment\Models\AssignmentSubmission;
-use Modules\Assignment\Models\StudyMaterial;
 use Modules\Assignment\Policies\AssignmentPolicy;
 use Modules\Assignment\Policies\AssignmentSubmissionPolicy;
-use Modules\Assignment\Policies\StudyMaterialPolicy;
 use Modules\Assignment\Repositories\AssignmentRepository;
 use Modules\Assignment\Repositories\AssignmentRepositoryInterface;
 use Modules\Assignment\Repositories\AssignmentSubmissionRepository;
 use Modules\Assignment\Repositories\AssignmentSubmissionRepositoryInterface;
-use Modules\Assignment\Repositories\StudyMaterialRepository;
-use Modules\Assignment\Repositories\StudyMaterialRepositoryInterface;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class AssignmentServiceProvider extends ModuleServiceProvider
@@ -51,7 +47,6 @@ class AssignmentServiceProvider extends ModuleServiceProvider
         parent::register();
 
         $this->app->bind(AssignmentRepositoryInterface::class, AssignmentRepository::class);
-        $this->app->bind(StudyMaterialRepositoryInterface::class, StudyMaterialRepository::class);
         $this->app->bind(AssignmentSubmissionRepositoryInterface::class, AssignmentSubmissionRepository::class);
     }
 
@@ -64,7 +59,6 @@ class AssignmentServiceProvider extends ModuleServiceProvider
         $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
 
         Gate::policy(Assignment::class, AssignmentPolicy::class);
-        Gate::policy(StudyMaterial::class, StudyMaterialPolicy::class);
         Gate::policy(AssignmentSubmission::class, AssignmentSubmissionPolicy::class);
     }
 
