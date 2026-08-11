@@ -25,8 +25,27 @@ class SemesterObserver
         AcademicContextService::flush();
     }
 
+    /**
+     * A soft-deleted semester must not keep the flag: restoring it later would
+     * silently produce two current semesters, since the demotion in saved()
+     * only runs for the row being promoted.
+     */
     public function deleted(Semester $semester): void
     {
+        if ($semester->is_current) {
+            Semester::withTrashed()
+                ->whereKey($semester->getKey())
+                ->update(['is_current' => false]);
+
+            /*
+             * Keep the in-memory model in step with that query-builder write.
+             * Leaving it stale makes a later restore() fire saved() with
+             * is_current still true, which would demote whichever semester
+             * became current in the meantime and leave none at all.
+             */
+            $semester->setAttribute('is_current', false)->syncOriginalAttribute('is_current');
+        }
+
         AcademicContextService::flush();
     }
 

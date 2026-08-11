@@ -68,6 +68,59 @@ it('does not demote anything when saving an unrelated field', function () {
         ->and($year->refresh()->is_current)->toBeTrue();
 });
 
+it('does not demote another semester when only the name changes', function () {
+    $year = AcademicYear::factory()->current()->create();
+    $current = Semester::factory()->current()->create(['academic_year_id' => $year->id]);
+    $other = Semester::factory()->create(['academic_year_id' => $year->id]);
+
+    $other->update(['name' => ['en' => 'Renamed', 'ar' => 'معاد تسميته']]);
+
+    expect($current->refresh()->is_current)->toBeTrue()
+        ->and($other->refresh()->is_current)->toBeFalse();
+});
+
+it('does not demote another semester when only the dates change', function () {
+    $year = AcademicYear::factory()->current()->create();
+    $current = Semester::factory()->current()->create(['academic_year_id' => $year->id]);
+    $other = Semester::factory()->create(['academic_year_id' => $year->id]);
+
+    $other->update(['start_date' => now()->addYear()->toDateString()]);
+
+    expect($current->refresh()->is_current)->toBeTrue();
+});
+
+it('clears the flag when the current semester is soft deleted', function () {
+    $year = AcademicYear::factory()->current()->create();
+    $term = Semester::factory()->current()->create(['academic_year_id' => $year->id]);
+
+    $term->delete();
+
+    /* Restoring must not resurrect a second current semester. */
+    expect(Semester::withTrashed()->whereKey($term->getKey())->value('is_current'))
+        ->toEqual(false);
+});
+
+it('does not leave two current semesters after restoring a deleted one', function () {
+    $year = AcademicYear::factory()->current()->create();
+    $first = Semester::factory()->current()->create(['academic_year_id' => $year->id]);
+
+    $first->delete();
+    $second = Semester::factory()->current()->create(['academic_year_id' => $year->id]);
+    $first->restore();
+
+    expect(Semester::query()->where('is_current', true)->count())->toBe(1)
+        ->and($second->refresh()->is_current)->toBeTrue();
+});
+
+it('clears the flag when the current academic year is soft deleted', function () {
+    $year = AcademicYear::factory()->current()->create();
+
+    $year->delete();
+
+    expect(AcademicYear::withTrashed()->whereKey($year->getKey())->value('is_current'))
+        ->toEqual(false);
+});
+
 it('resolves the flagged current year and semester', function () {
     $year = AcademicYear::factory()->current()->create();
     $term = Semester::factory()->current()->create(['academic_year_id' => $year->id]);

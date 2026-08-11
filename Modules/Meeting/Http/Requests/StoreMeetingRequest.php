@@ -19,6 +19,16 @@ class StoreMeetingRequest extends BaseRequest
             'duration_minutes' => ['required', 'integer', 'min:1', 'max:600'],
             'teacher_id' => ['required', 'integer', 'exists:users,id'],
             'semester_id' => ['nullable', 'integer', 'exists:semesters,id'],
+
+            /*
+             * The forms have always submitted these two, but they were never
+             * validated and never reached the DTO, so every meeting was stored
+             * unscoped. They carry the class/subject a teacher may only pick
+             * from their own assignments — TeacherStoreMeetingRequest enforces
+             * that intersection.
+             */
+            'school_class_id' => ['nullable', 'integer', 'exists:classes,id'],
+            'subject_id' => ['nullable', 'integer', 'exists:subjects,id'],
         ];
     }
 

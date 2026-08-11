@@ -16,6 +16,8 @@ final readonly class UpdateMeetingDTO
         public int $teacherId,
         public ?int $academicYearId,
         public ?int $semesterId,
+        public ?int $subjectId = null,
+        public ?int $schoolClassId = null,
     ) {}
 
     public static function fromRequest(UpdateMeetingRequest $request): self
@@ -29,6 +31,8 @@ final readonly class UpdateMeetingDTO
             teacherId: (int) $request->validated('teacher_id'),
             academicYearId: AcademicYearService::id(),
             semesterId: $request->validated('semester_id') ? (int) $request->validated('semester_id') : null,
+            subjectId: $request->validated('subject_id') ? (int) $request->validated('subject_id') : null,
+            schoolClassId: $request->validated('school_class_id') ? (int) $request->validated('school_class_id') : null,
         );
     }
 
@@ -46,6 +50,8 @@ final readonly class UpdateMeetingDTO
             'teacher_id' => $this->teacherId,
             'academic_year_id' => $this->academicYearId,
             'semester_id' => $this->semesterId,
+            'subject_id' => $this->subjectId,
+            'school_class_id' => $this->schoolClassId,
         ];
     }
 }

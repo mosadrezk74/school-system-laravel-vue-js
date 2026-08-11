@@ -32,6 +32,8 @@ final readonly class CreateMeetingDTO
             teacherId: (int) $request->validated('teacher_id'),
             academicYearId: AcademicYearService::id(),
             semesterId: $request->validated('semester_id') ? (int) $request->validated('semester_id') : null,
+            subjectId: $request->validated('subject_id') ? (int) $request->validated('subject_id') : null,
+            schoolClassId: $request->validated('school_class_id') ? (int) $request->validated('school_class_id') : null,
         );
     }
 

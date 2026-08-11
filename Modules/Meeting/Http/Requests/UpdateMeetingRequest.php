@@ -19,6 +19,8 @@ class UpdateMeetingRequest extends BaseRequest
             'duration_minutes' => ['required', 'integer', 'min:1', 'max:600'],
             'teacher_id' => ['required', 'integer', 'exists:users,id'],
             'semester_id' => ['nullable', 'integer', 'exists:semesters,id'],
+            'school_class_id' => ['nullable', 'integer', 'exists:classes,id'],
+            'subject_id' => ['nullable', 'integer', 'exists:subjects,id'],
         ];
     }
 

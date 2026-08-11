@@ -29,8 +29,26 @@ class AcademicYearObserver
         $this->flushCaches();
     }
 
+    /**
+     * A soft-deleted year must not keep the flag: restoring it later would
+     * silently produce two current years, since the demotion in saved() only
+     * runs for the row being promoted.
+     */
     public function deleted(AcademicYear $academicYear): void
     {
+        if ($academicYear->is_current) {
+            AcademicYear::withTrashed()
+                ->whereKey($academicYear->getKey())
+                ->update(['is_current' => false]);
+
+            /*
+             * Keep the in-memory model in step with that query-builder write,
+             * so a later restore() does not fire saved() with a stale
+             * is_current and demote the year that took its place.
+             */
+            $academicYear->setAttribute('is_current', false)->syncOriginalAttribute('is_current');
+        }
+
         $this->flushCaches();
     }
 
