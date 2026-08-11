@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -53,6 +54,15 @@ class AppServiceProvider extends ServiceProvider
     protected function configureDefaults(): void
     {
         Date::use(CarbonImmutable::class);
+
+        /*
+         * Blocks db:wipe, migrate:fresh, migrate:refresh and migrate:reset in
+         * production. This school has already lost a database to an accidental
+         * migrate:fresh — the guard must stay.
+         */
+        DB::prohibitDestructiveCommands(
+            app()->isProduction(),
+        );
 
         Password::defaults(fn (): ?Password => app()->isProduction()
             ? Password::min(12)
