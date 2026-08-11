@@ -34,7 +34,6 @@ const sections = computed(() => [
       { title: t('nav.classrooms'), to: '/academic/classrooms', icon: 'bx-building', module: 'Classroom' },
       { title: t('nav.classes'), to: '/academic/classes', icon: 'bx-chalkboard', module: 'SchoolClass' },
       { title: t('nav.subjects'), to: '/academic/subjects', icon: 'bx-book-open', module: 'Subject' },
-      { title: t('nav.studyMaterials'), to: '/assignments/study-materials', icon: 'bx-folder-open', module: 'Assignment' },
     ],
   },
   {

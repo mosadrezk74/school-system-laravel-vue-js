@@ -2,6 +2,7 @@
 
 namespace Modules\Academic\Services;
 
+use Modules\Academic\Exceptions\AcademicYearNotSetException;
 use Modules\Academic\Models\AcademicYear;
 
 class AcademicYearService

@@ -1035,7 +1035,9 @@
       "add": "إضافة",
       "classLabel": "فصل",
       "academicYearLabel": "السنة الدراسية",
-      "confirmDelete": "هل تريد حذف هذه الحصة من الجدول؟"
+      "confirmDelete": "هل تريد حذف هذه الحصة من الجدول؟",
+      "makeOnline": "تحويل إلى حصة إلكترونية",
+      "makeOffline": "تحويل إلى حصة حضورية"
     },
     "periods": {
       "title": "الحصص",

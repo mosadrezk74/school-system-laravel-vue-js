@@ -41,6 +41,7 @@ class UpdateSemesterRequest extends BaseRequest
             'exam_start_date' => ['nullable', 'date'],
             'exam_end_date' => ['nullable', 'date', 'after_or_equal:exam_start_date'],
             'is_active' => ['sometimes', 'boolean'],
+            'is_current' => ['sometimes', 'boolean'],
         ];
     }
 
@@ -57,6 +58,7 @@ class UpdateSemesterRequest extends BaseRequest
             'end_date' => __('academic::semesters.fields.end_date'),
             'exam_start_date' => __('academic::semesters.fields.exam_start_date'),
             'exam_end_date' => __('academic::semesters.fields.exam_end_date'),
+            'is_current' => __('academic::semesters.fields.is_current'),
         ];
     }
 }

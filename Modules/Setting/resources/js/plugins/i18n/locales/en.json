@@ -1043,7 +1043,9 @@
       "add": "Add",
       "classLabel": "Class",
       "academicYearLabel": "Academic year",
-      "confirmDelete": "Remove this lesson from the timetable?"
+      "confirmDelete": "Remove this lesson from the timetable?",
+      "makeOnline": "Switch to online lesson",
+      "makeOffline": "Switch to in-person lesson"
     },
     "periods": {
       "title": "Periods",

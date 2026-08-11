@@ -18,6 +18,8 @@ return [
         'subject_not_taught_by_class' => 'المادة المختارة غير مرتبطة بهذا الفصل.',
         'teacher_not_assigned_to_class_subject' => 'المعلم المحدد غير مسند لتدريس هذه المادة في هذا الفصل.',
         'duplicate_slot' => 'يوجد أكثر من حصة في نفس اليوم والحصة.',
+        'subject_required' => 'يجب اختيار المادة لكل حصة دراسية.',
+        'teacher_required' => 'يجب اختيار المعلم لكل حصة دراسية.',
     ],
 
     'conflicts' => [

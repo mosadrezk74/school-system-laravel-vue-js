@@ -183,6 +183,21 @@ class UpdateTimetableEntriesRequest extends BaseRequest
     }
 
     /**
+     * `required_if` builds a message naming the other field, which surfaced as
+     * "... is required when entries.4.is_break is false" — a rule expressed in
+     * payload terms the admin never sees. State the actual requirement instead.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'entries.*.subject_id.required_if' => __('timetable::timetable.validation.subject_required'),
+            'entries.*.teacher_id.required_if' => __('timetable::timetable.validation.teacher_required'),
+        ];
+    }
+
+    /**
      * @return array<string, string>
      */
     public function attributes(): array

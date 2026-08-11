@@ -6,8 +6,11 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Modules\Academic\Interfaces\Repositories\GradeLevelRepositoryInterface;
 use Modules\Academic\Interfaces\Repositories\SemesterRepositoryInterface;
+use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
 use Modules\Academic\Models\Semester;
+use Modules\Academic\Observers\AcademicYearObserver;
+use Modules\Academic\Observers\SemesterObserver;
 use Modules\Academic\Policies\GradeLevelPolicy;
 use Modules\Academic\Policies\SemesterPolicy;
 use Modules\Academic\Repositories\GradeLevelRepository;
@@ -68,6 +71,9 @@ class AcademicServiceProvider extends ModuleServiceProvider
 
         Gate::policy(Semester::class, SemesterPolicy::class);
         Gate::policy(GradeLevel::class, GradeLevelPolicy::class);
+
+        AcademicYear::observe(AcademicYearObserver::class);
+        Semester::observe(SemesterObserver::class);
     }
 
     /**

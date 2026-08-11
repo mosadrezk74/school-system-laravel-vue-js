@@ -15,6 +15,11 @@ const props = defineProps({
 
 const { t } = useI18n()
 
+/** Period times are stored as HH:MM:SS; seconds are noise on screen. */
+function shortTime(value) {
+  return typeof value === 'string' ? value.slice(0, 5) : value
+}
+
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
 const weekdayForm = useForm({
@@ -117,7 +122,7 @@ function archive(item) {
           </template>
 
           <template #item.time="{ item }">
-            {{ item.start_time }} - {{ item.end_time }}
+            {{ shortTime(item.start_time) }} - {{ shortTime(item.end_time) }}
           </template>
 
           <template #item.is_break="{ item }">

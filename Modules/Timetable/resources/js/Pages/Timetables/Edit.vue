@@ -77,6 +77,13 @@ function confirmDelete({ day, period }) {
   deleteDialogOpen.value = true
 }
 
+function toggleOnline({ day, period }) {
+  const cell = entries[cellKey(day, period.id)]
+
+  if (cell)
+    cell.is_online = !cell.is_online
+}
+
 function removeCell() {
   const target = pendingDelete.value
 
@@ -191,6 +198,7 @@ function goBack() {
         editable
         @cell-click="openCell($event.day, $event.period)"
         @cell-delete="confirmDelete"
+        @cell-toggle-online="toggleOnline"
       />
     </VCardText>
 

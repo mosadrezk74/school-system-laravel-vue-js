@@ -30,6 +30,7 @@ class SemesterResource extends BaseResource
             'exam_start_date' => $this->exam_start_date?->toDateString(),
             'exam_end_date' => $this->exam_end_date?->toDateString(),
             'is_active' => (bool) $this->is_active,
+            'is_current' => (bool) $this->is_current,
             'created_at' => $this->created_at?->toIso8601String(),
             'deleted_at' => $this->deleted_at?->toIso8601String(),
 

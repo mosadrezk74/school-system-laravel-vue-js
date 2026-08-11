@@ -52,7 +52,13 @@ function close() {
   emit('update:modelValue', false)
 }
 
+/** A lesson is only meaningful with both a subject and the teacher giving it. */
+const canSave = computed(() => Boolean(subjectId.value) && Boolean(teacherId.value))
+
 function save() {
+  if (!canSave.value)
+    return
+
   emit('save', {
     subject_id: subjectId.value,
     teacher_id: teacherId.value,
@@ -140,7 +146,7 @@ function clear() {
           <VBtn variant="tonal" color="secondary" @click="close">
             {{ t('common.cancel') }}
           </VBtn>
-          <VBtn v-if="!isBreak" @click="save">
+          <VBtn v-if="!isBreak" :disabled="!canSave" @click="save">
             {{ t('common.save') }}
           </VBtn>
         </div>

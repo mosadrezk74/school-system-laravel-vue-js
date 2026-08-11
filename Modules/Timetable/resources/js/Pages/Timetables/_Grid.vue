@@ -13,12 +13,17 @@ const props = defineProps({
   showMeetingActions: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['cell-click', 'cell-delete'])
+const emit = defineEmits(['cell-click', 'cell-delete', 'cell-toggle-online'])
 
 const { t } = useI18n()
 
 function startMeeting(entry) {
   router.patch(`/meetings/timetable-entries/${entry.id}/start-meeting`)
+}
+
+/** Period times arrive as HH:MM:SS; the seconds carry no meaning on a timetable. */
+function shortTime(value) {
+  return typeof value === 'string' ? value.slice(0, 5) : value
 }
 
 function cellKey(day, periodId) {
@@ -57,6 +62,10 @@ function onDelete(day, period) {
   emit('cell-delete', { day, period })
 }
 
+function onToggleOnline(day, period) {
+  emit('cell-toggle-online', { day, period })
+}
+
 const firstLessonPeriod = props.periods.find(period => !period.is_break) ?? null
 </script>
 
@@ -86,7 +95,7 @@ const firstLessonPeriod = props.periods.find(period => !period.is_break) ?? null
               {{ period.is_break ? t('timetables.periods.isBreak') : period.name }}
             </div>
             <div class="text-caption text-medium-emphasis">
-              {{ period.start_time }} - {{ period.end_time }}
+              {{ shortTime(period.start_time) }} - {{ shortTime(period.end_time) }}
             </div>
           </th>
 
@@ -150,6 +159,13 @@ const firstLessonPeriod = props.periods.find(period => !period.is_break) ?? null
                     prepend-icon="bx-edit"
                     :title="t('common.edit')"
                     @click="onCellClick(day.value, period)"
+                  />
+                  <VListItem
+                    :prepend-icon="entryAt(day.value, period).is_online ? 'bx-buildings' : 'bx-video'"
+                    :title="entryAt(day.value, period).is_online
+                      ? t('timetables.grid.makeOffline')
+                      : t('timetables.grid.makeOnline')"
+                    @click="onToggleOnline(day.value, period)"
                   />
                   <VListItem
                     prepend-icon="bx-trash"

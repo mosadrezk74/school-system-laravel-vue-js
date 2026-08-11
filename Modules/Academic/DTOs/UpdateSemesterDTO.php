@@ -18,6 +18,7 @@ final readonly class UpdateSemesterDTO
         public ?string $examStartDate,
         public ?string $examEndDate,
         public bool $isActive,
+        public bool $isCurrent,
     ) {}
 
     public static function fromRequest(Request $request): self
@@ -31,6 +32,7 @@ final readonly class UpdateSemesterDTO
             examStartDate: $request->validated('exam_start_date') ?: null,
             examEndDate: $request->validated('exam_end_date') ?: null,
             isActive: (bool) $request->validated('is_active', true),
+            isCurrent: (bool) $request->validated('is_current', false),
         );
     }
 
@@ -48,6 +50,7 @@ final readonly class UpdateSemesterDTO
             'exam_start_date' => $this->examStartDate,
             'exam_end_date' => $this->examEndDate,
             'is_active' => $this->isActive,
+            'is_current' => $this->isCurrent,
         ];
     }
 }
