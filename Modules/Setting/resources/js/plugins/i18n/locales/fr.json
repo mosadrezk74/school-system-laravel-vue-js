@@ -19,7 +19,6 @@
     "attendanceTake": "Faire l'appel",
     "attendanceReport": "Rapport de présence",
     "attendanceDashboard": "Tableau de bord présence",
-    "studyResources": "Study Resources",
     "finance": "Finance",
     "financeDashboard": "Tableau de bord financier",
     "feeCategories": "Catégories de frais",
@@ -519,50 +518,6 @@
     "notes": "Notes",
     "teacher": "Enseignant"
   },
-  "studyResources": {
-    "title": "Study Resources",
-    "subtitle": "Share learning materials with students.",
-    "addNew": "New Study Resource",
-    "edit": "Edit Study Resource",
-    "titleField": "Title",
-    "description": "Description",
-    "subject": "Subject",
-    "gradeLevel": "Grade Level",
-    "classroom": "Classroom",
-    "teacher": "Teacher",
-    "type": "Type",
-    "file": "File",
-    "fileName": "File Name",
-    "fileType": "File Type",
-    "fileSize": "File Size",
-    "currentFile": "Current file",
-    "uploadedAt": "Uploaded At",
-    "externalUrl": "External URL",
-    "downloadsCount": "Downloads",
-    "createdAt": "Created At",
-    "download": "Download",
-    "openLink": "Open Link",
-    "search": "Search by title",
-    "empty": "No study resources yet. Add your first resource to get started.",
-    "confirmArchive": "Archive this study resource? An admin can restore it later.",
-    "sections": {
-      "details": "Details",
-      "detailsDesc": "Title, description, subject, grade, classroom and teacher.",
-      "file": "File & Link",
-      "fileDesc": "Upload a file, provide an external URL, or both."
-    },
-    "hints": {
-      "title": "Required. A short, descriptive name for the resource.",
-      "description": "Optional. Additional details about the resource.",
-      "subject": "Required. The subject this resource belongs to.",
-      "gradeLevel": "Required. The grade level this resource targets.",
-      "classroom": "Optional. Limit the resource to a single classroom.",
-      "teacher": "Required. The teacher who shared this resource.",
-      "type": "Required. The kind of resource being shared.",
-      "file": "Optional if an external URL is provided. Max 50 MB.",
-      "externalUrl": "Optional if a file is uploaded. A link to the resource."
-    }
-  },
   "finance": {
     "fields": {
       "name": "Nom",
@@ -885,7 +840,6 @@
       "myClasses": "Mes classes",
       "attendance": "Présence",
       "homework": "Devoirs",
-      "studyMaterials": "Supports",
       "meetings": "Réunions",
       "learning": "Apprentissage",
       "grades": "Notes",
@@ -894,7 +848,6 @@
       "finance": "Finance",
       "fees": "Frais",
       "payments": "Paiements",
-      "materials": "Supports",
       "live": "En direct",
       "notifications": "Notifications"
     },
@@ -1262,5 +1215,14 @@
       "leave": "Quitter la réunion",
       "participants": "Participants"
     }
+  },
+  "notification": {
+    "title": "Notifications",
+    "subtitle": "Tout ce que l’école vous a envoyé.",
+    "empty": "Vous n’avez aucune notification.",
+    "unread_only": "Non lues uniquement",
+    "mark_read": "Marquer comme lue",
+    "mark_all_read": "Tout marquer comme lu",
+    "unread": "Non lue"
   }
 }

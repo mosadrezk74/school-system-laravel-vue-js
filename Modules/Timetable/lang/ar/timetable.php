@@ -15,6 +15,9 @@ return [
     'validation' => [
         'not_a_working_day' => 'اليوم المحدد ليس من أيام الدوام المدرسي.',
         'teacher_does_not_teach_subject' => 'المعلم المحدد غير مسند إلى المادة المختارة.',
+        'subject_not_taught_by_class' => 'المادة المختارة غير مرتبطة بهذا الفصل.',
+        'teacher_not_assigned_to_class_subject' => 'المعلم المحدد غير مسند لتدريس هذه المادة في هذا الفصل.',
+        'duplicate_slot' => 'يوجد أكثر من حصة في نفس اليوم والحصة.',
     ],
 
     'conflicts' => [

@@ -73,7 +73,7 @@ class TimetableController extends BaseInertiaController
 
         return $this->render('Timetable::Timetables/Show', [
             'timetable' => new TimetableResource($timetable),
-            'periods' => PeriodResource::collection(Period::query()->where('is_active', true)->orderBy('period_number')->get()),
+            'periods' => $this->activePeriods(),
             'weekdays' => $this->activeWeekdayOptions(),
         ]);
     }
@@ -86,7 +86,7 @@ class TimetableController extends BaseInertiaController
 
         return $this->render('Timetable::Timetables/Edit', [
             'timetable' => new TimetableResource($timetable),
-            'periods' => PeriodResource::collection(Period::query()->where('is_active', true)->orderBy('period_number')->get()),
+            'periods' => $this->activePeriods(),
             'weekdays' => $this->activeWeekdayOptions(),
             ...$this->referenceLookups(),
         ]);
@@ -132,6 +132,26 @@ class TimetableController extends BaseInertiaController
             ->filter(fn (array $option) => in_array($option['value'], $activeWeekdays, true))
             ->values()
             ->all();
+    }
+
+    /**
+     * The scheduling grid is built from these, so they must arrive as a plain
+     * list. `PeriodResource::collection()` is an AnonymousResourceCollection,
+     * which Inertia serialises through toResponse() and therefore keeps the
+     * "data" envelope even though BaseResource unwraps single resources —
+     * the page then read `periods.length` off an object and rendered an
+     * empty grid.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    protected function activePeriods(): array
+    {
+        $periods = Period::query()
+            ->where('is_active', true)
+            ->orderBy('period_number')
+            ->get();
+
+        return PeriodResource::collection($periods)->resolve(request());
     }
 
     /**

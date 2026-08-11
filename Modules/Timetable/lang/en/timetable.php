@@ -15,6 +15,9 @@ return [
     'validation' => [
         'not_a_working_day' => 'The selected day is not one of the school\'s working days.',
         'teacher_does_not_teach_subject' => 'The selected teacher is not assigned to the selected subject.',
+        'subject_not_taught_by_class' => 'The selected subject is not linked to this class.',
+        'teacher_not_assigned_to_class_subject' => 'The selected teacher is not assigned to teach this subject in this class.',
+        'duplicate_slot' => 'More than one lesson was placed in the same day and period.',
     ],
 
     'conflicts' => [

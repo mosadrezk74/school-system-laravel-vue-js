@@ -30,6 +30,22 @@ class TimetableRepository implements TimetableRepositoryInterface
             ->exists();
     }
 
+    public function findArchivedForClassAndYear(int $classId, int $academicYearId): ?Timetable
+    {
+        return Timetable::onlyTrashed()
+            ->where('class_id', $classId)
+            ->where('academic_year_id', $academicYearId)
+            ->first();
+    }
+
+    public function restoreWith(Timetable $timetable, CreateTimetableDTO $dto): Timetable
+    {
+        $timetable->restore();
+        $timetable->update($dto->toArray());
+
+        return $timetable->refresh();
+    }
+
     public function create(CreateTimetableDTO $dto, ?int $actorId = null): Timetable
     {
         return Timetable::create($dto->toArray());

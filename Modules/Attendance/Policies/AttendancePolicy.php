@@ -12,12 +12,12 @@ class AttendancePolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->can('attendance.view') && $this->ownsClass($record->class_id);
+        return $user->can('attendance.view');
     }
 
     public function view(User $user, AttendanceRecord $record): bool
     {
-        return $user->can('attendance.view');
+        return $user->can('attendance.view') && $this->ownsClass($record->class_id);
     }
 
     public function create(User $user): bool

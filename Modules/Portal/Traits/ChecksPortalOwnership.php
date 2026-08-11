@@ -30,6 +30,16 @@ trait ChecksPortalOwnership
         return $classId === null || $this->ownsClass($classId);
     }
 
+    protected function ownsSubject(?int $subjectId): bool
+    {
+        return $this->scope()->canAccessSubject($subjectId);
+    }
+
+    protected function ownsClassSubject(?int $classId, ?int $subjectId): bool
+    {
+        return $this->scope()->canAccessClassSubject($classId, $subjectId);
+    }
+
     protected function ownsTeacherRecord(?int $teacherId): bool
     {
         $scope = $this->scope();

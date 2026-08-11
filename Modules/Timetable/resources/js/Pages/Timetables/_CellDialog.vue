@@ -46,6 +46,8 @@ watch(subjectId, () => {
     teacherId.value = null
 })
 
+const isBreak = computed(() => Boolean(props.cell?.period?.is_break))
+
 function close() {
   emit('update:modelValue', false)
 }
@@ -82,7 +84,13 @@ function clear() {
 
       <VDivider />
 
-      <VCardText>
+      <VCardText v-if="isBreak">
+        <VAlert type="info" variant="tonal">
+          {{ t('timetables.periods.isBreak') }}
+        </VAlert>
+      </VCardText>
+
+      <VCardText v-else>
         <VRow>
           <VCol cols="12">
             <VSelect
@@ -132,7 +140,7 @@ function clear() {
           <VBtn variant="tonal" color="secondary" @click="close">
             {{ t('common.cancel') }}
           </VBtn>
-          <VBtn @click="save">
+          <VBtn v-if="!isBreak" @click="save">
             {{ t('common.save') }}
           </VBtn>
         </div>

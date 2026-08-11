@@ -39,7 +39,6 @@
     "emailBroadcast": "Send Email",
     "attendanceReport": "Attendance Report",
     "attendanceDashboard": "Attendance Dashboard",
-    "studyResources": "Study Resources",
     "finance": "Finance",
     "financeDashboard": "Finance Dashboard",
     "feeCategories": "Fee Categories",
@@ -1036,7 +1035,15 @@
       "isOnline": "Online Meeting",
       "startMeeting": "Start Meeting",
       "selectSubjectFirst": "Select a subject first.",
-      "noTeachersForSubject": "No teacher is assigned to this subject."
+      "noTeachersForSubject": "No teacher is assigned to this subject.",
+      "noPeriods": "No periods have been defined.",
+      "noWeekdays": "No working days have been configured.",
+      "manageSubjectTeachers": "Manage subject teachers",
+      "days": "Days",
+      "add": "Add",
+      "classLabel": "Class",
+      "academicYearLabel": "Academic year",
+      "confirmDelete": "Remove this lesson from the timetable?"
     },
     "periods": {
       "title": "Periods",
@@ -1275,50 +1282,6 @@
     "empty": "No attendance records for the selected filters.",
     "notes": "Notes",
     "teacher": "Teacher"
-  },
-  "studyResources": {
-    "title": "Study Resources",
-    "subtitle": "Share learning materials with students.",
-    "addNew": "New Study Resource",
-    "edit": "Edit Study Resource",
-    "titleField": "Title",
-    "description": "Description",
-    "subject": "Subject",
-    "gradeLevel": "Grade Level",
-    "classroom": "Classroom",
-    "teacher": "Teacher",
-    "type": "Type",
-    "file": "File",
-    "fileName": "File Name",
-    "fileType": "File Type",
-    "fileSize": "File Size",
-    "currentFile": "Current file",
-    "uploadedAt": "Uploaded At",
-    "externalUrl": "External URL",
-    "downloadsCount": "Downloads",
-    "createdAt": "Created At",
-    "download": "Download",
-    "openLink": "Open Link",
-    "search": "Search by title",
-    "empty": "No study resources yet. Add your first resource to get started.",
-    "confirmArchive": "Archive this study resource? An admin can restore it later.",
-    "sections": {
-      "details": "Details",
-      "detailsDesc": "Title, description, subject, grade, classroom and teacher.",
-      "file": "File & Link",
-      "fileDesc": "Upload a file, provide an external URL, or both."
-    },
-    "hints": {
-      "title": "Required. A short, descriptive name for the resource.",
-      "description": "Optional. Additional details about the resource.",
-      "subject": "Required. The subject this resource belongs to.",
-      "gradeLevel": "Required. The grade level this resource targets.",
-      "classroom": "Optional. Limit the resource to a single classroom.",
-      "teacher": "Required. The teacher who shared this resource.",
-      "type": "Required. The kind of resource being shared.",
-      "file": "Optional if an external URL is provided. Max 50 MB.",
-      "externalUrl": "Optional if a file is uploaded. A link to the resource."
-    }
   },
   "finance": {
     "fields": {
@@ -1642,7 +1605,6 @@
       "myClasses": "My Classes",
       "attendance": "Attendance",
       "homework": "Homework",
-      "studyMaterials": "Study Materials",
       "meetings": "Meetings",
       "learning": "Learning",
       "grades": "Grades",
@@ -1651,7 +1613,6 @@
       "finance": "Finance",
       "fees": "Fees",
       "payments": "Payments",
-      "materials": "Study Materials",
       "live": "Live",
       "notifications": "Notifications"
     },
@@ -2000,5 +1961,14 @@
       "reviewed": "Reviewed",
       "resolved": "Resolved"
     }
+  },
+  "notification": {
+    "title": "Notifications",
+    "subtitle": "Everything the school has sent you.",
+    "empty": "You have no notifications.",
+    "unread_only": "Unread only",
+    "mark_read": "Mark as read",
+    "mark_all_read": "Mark all as read",
+    "unread": "Unread"
   }
 }

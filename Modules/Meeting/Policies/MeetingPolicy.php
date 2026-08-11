@@ -5,6 +5,7 @@ namespace Modules\Meeting\Policies;
 use App\Models\User;
 use Modules\Auth\Enums\UserRole;
 use Modules\Meeting\Models\Meeting;
+use Modules\Meeting\Services\MeetingAccessGuard;
 use Modules\Timetable\Models\TimetableEntry;
 
 class MeetingPolicy
@@ -16,7 +17,8 @@ class MeetingPolicy
 
     public function view(User $user, Meeting $meeting): bool
     {
-        return $user->can('meeting.view');
+        return $user->can('meeting.view')
+            && app(MeetingAccessGuard::class)->allows($user, $meeting);
     }
 
     public function create(User $user): bool

@@ -12,12 +12,12 @@ class ExamPolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->can('exam.view') && $this->ownsClassOrSchoolWide($exam->class_id);
+        return $user->can('exam.view');
     }
 
     public function view(User $user, Exam $exam): bool
     {
-        return $user->can('exam.view');
+        return $user->can('exam.view') && $this->ownsClassOrSchoolWide($exam->class_id);
     }
 
     public function create(User $user): bool

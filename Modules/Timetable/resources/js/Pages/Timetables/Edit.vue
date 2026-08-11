@@ -1,9 +1,10 @@
 <script setup>
-import { Head, useForm } from '@inertiajs/vue3'
+import { Head, router, useForm } from '@inertiajs/vue3'
 import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CellDialog from './_CellDialog.vue'
 import TimetableGrid from './_Grid.vue'
+import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
@@ -23,7 +24,14 @@ function cellKey(day, periodId) {
 
 const entries = reactive({})
 for (const entry of props.timetable.entries ?? []) {
-  entries[cellKey(entry.day_of_week, entry.period_id)] = {
+  const periodId = entry.period_id ?? entry.period?.id
+
+  if (!Number.isInteger(periodId))
+    continue
+
+  entries[cellKey(entry.day_of_week, periodId)] = {
+    day_of_week: entry.day_of_week,
+    period_id: periodId,
     subject_id: entry.subject?.id ?? null,
     teacher_id: entry.teacher?.id ?? null,
     classroom_id: entry.classroom?.id ?? null,
@@ -47,7 +55,35 @@ function openCell(day, period) {
 
 function saveCell(payload) {
   const { day, period } = activeCell.value
-  entries[cellKey(day, period.id)] = payload
+
+  if (!Number.isInteger(period?.id))
+    return
+
+  entries[cellKey(day, period.id)] = {
+    ...payload,
+    day_of_week: day,
+    period_id: period.id,
+  }
+}
+
+const deleteDialogOpen = ref(false)
+const pendingDelete = ref(null)
+
+function confirmDelete({ day, period }) {
+  if (!Number.isInteger(period?.id))
+    return
+
+  pendingDelete.value = { day, period }
+  deleteDialogOpen.value = true
+}
+
+function removeCell() {
+  const target = pendingDelete.value
+
+  if (target)
+    delete entries[cellKey(target.day, target.period.id)]
+
+  pendingDelete.value = null
 }
 
 function clearCell() {
@@ -60,19 +96,17 @@ const conflictCells = ref([])
 const form = useForm({ entries: [] })
 
 function submit() {
-  form.entries = Object.entries(entries).map(([key, value]) => {
-    const [day, periodId] = key.split('-').map(Number)
-
-    return {
-      day_of_week: day,
-      period_id: periodId,
+  form.entries = Object.values(entries)
+    .filter(value => Number.isInteger(value.period_id) && Number.isInteger(value.day_of_week))
+    .map(value => ({
+      day_of_week: value.day_of_week,
+      period_id: value.period_id,
       subject_id: value.subject_id,
       teacher_id: value.teacher_id,
       classroom_id: value.classroom_id,
       is_break: false,
       is_online: value.is_online ?? false,
-    }
-  })
+    }))
 
   conflictCells.value = []
 
@@ -85,6 +119,27 @@ const conflictMessages = computed(() => {
   const errors = form.errors
   return Object.values(errors).filter(Boolean)
 })
+
+const subtitleLine = computed(() => {
+  const parts = []
+
+  if (props.timetable.class?.name)
+    parts.push(`${t('timetables.grid.classLabel')}: ${props.timetable.class.name}`)
+
+  if (props.timetable.academic_year?.name)
+    parts.push(`${t('timetables.grid.academicYearLabel')}: ${props.timetable.academic_year.name}`)
+
+  if (props.timetable.semester?.name)
+    parts.push(props.timetable.semester.name)
+
+  return parts.join(' — ')
+})
+
+const timetablesIndexUrl = '/schedule/timetables'
+
+function goBack() {
+  router.visit(timetablesIndexUrl)
+}
 </script>
 
 <template>
@@ -95,11 +150,21 @@ const conflictMessages = computed(() => {
     than the narrower `app-form-card` measure used by field-based forms.
   -->
   <AppPageHeader
-    :title="timetable.class?.name"
-    :subtitle="timetable.semester?.name
-      ? `${timetable.academic_year?.name} — ${timetable.semester.name}`
-      : timetable.academic_year?.name"
-  />
+    :title="t('timetables.grid.title')"
+    :subtitle="subtitleLine"
+  >
+    <template #actions>
+      <VBtn
+        color="error"
+        variant="tonal"
+        prepend-icon="bx-arrow-back"
+        :href="timetablesIndexUrl"
+        @click.prevent="goBack"
+      >
+        {{ t('common.back') }}
+      </VBtn>
+    </template>
+  </AppPageHeader>
 
   <VAlert
     v-if="conflictMessages.length"
@@ -125,6 +190,7 @@ const conflictMessages = computed(() => {
         :conflict-cells="conflictCells"
         editable
         @cell-click="openCell($event.day, $event.period)"
+        @cell-delete="confirmDelete"
       />
     </VCardText>
 
@@ -147,5 +213,11 @@ const conflictMessages = computed(() => {
     :classrooms="classrooms"
     @save="saveCell"
     @clear="clearCell"
+  />
+
+  <AppConfirmDialog
+    v-model="deleteDialogOpen"
+    :message="t('timetables.grid.confirmDelete')"
+    @confirm="removeCell"
   />
 </template>

@@ -13,7 +13,6 @@ use Modules\Finance\Enums\InvoiceStatus;
 use Modules\Finance\Models\Invoice;
 use Modules\Meeting\Models\Meeting;
 use Modules\Portal\Services\PortalScopeService;
-use Modules\StudyMaterial\Models\StudyResource;
 
 class BuildParentDashboardAction extends BaseAction
 {
@@ -77,13 +76,6 @@ class BuildParentDashboardAction extends BaseAction
                 ->route('/parent/meetings')
                 ->priority(50),
 
-            DashboardWidget::make('recent_files', fn (): int => $this->recentFiles())
-                ->module('StudyMaterial')
-                ->permission('study-material.view')
-                ->icon('bx-folder-open')
-                ->color('secondary')
-                ->route('/parent/materials')
-                ->priority(60),
             DashboardWidget::make('unread_notifications', fn (): int => $this->unreadNotifications())
                 ->module('Notification')
                 ->icon('bx-bell')
@@ -146,13 +138,6 @@ class BuildParentDashboardAction extends BaseAction
             ->whereIn('student_id', $this->childIds())
             ->whereNotIn('status', [InvoiceStatus::Paid->value, InvoiceStatus::Cancelled->value])
             ->sum('balance_due'), 2);
-    }
-
-    private function recentFiles(): int
-    {
-        return StudyResource::query()
-            ->whereIn('grade_level_id', $this->scope->gradeLevelIdsFor() ?? [])
-            ->count();
     }
 
     private function upcomingMeetings(): int

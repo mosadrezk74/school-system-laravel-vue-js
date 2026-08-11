@@ -31,10 +31,9 @@ const sections = computed(() => [
       { title: t('nav.academicYears'), to: '/academic/academic-years', icon: 'bx-calendar' },
       { title: t('nav.semesters'), to: '/academic/semesters', icon: 'bx-calendar-event' },
       { title: t('nav.gradeLevels'), to: '/academic/grade-levels', icon: 'bx-layer' },
+      { title: t('nav.classrooms'), to: '/academic/classrooms', icon: 'bx-building', module: 'Classroom' },
       { title: t('nav.classes'), to: '/academic/classes', icon: 'bx-chalkboard', module: 'SchoolClass' },
       { title: t('nav.subjects'), to: '/academic/subjects', icon: 'bx-book-open', module: 'Subject' },
-      { title: t('nav.classrooms'), to: '/academic/classrooms', icon: 'bx-building', module: 'Classroom' },
-      { title: t('nav.studyResources'), to: '/academic/study-resources', icon: 'bx-folder-open', module: 'StudyMaterial' },
       { title: t('nav.studyMaterials'), to: '/assignments/study-materials', icon: 'bx-folder-open', module: 'Assignment' },
     ],
   },
@@ -45,6 +44,14 @@ const sections = computed(() => [
       { title: t('nav.students'), to: '/user-management/students', icon: 'bx-user', module: 'Student' },
       { title: t('nav.teachers'), to: '/user-management/teachers', icon: 'bx-briefcase-alt-2', module: 'Teacher' },
       { title: t('nav.guardians'), to: '/user-management/guardians', icon: 'bx-group', module: 'GuardianProfile' },
+    ],
+  },
+  {
+    key: 'schedule',
+    heading: t('nav.schedule'),
+    children: [
+      { title: t('nav.periods'), to: '/schedule/periods', icon: 'bx-time-five', module: 'Timetable' },
+      { title: t('nav.timetables'), to: '/schedule/timetables', icon: 'bx-calendar-week', module: 'Timetable' },
     ],
   },
   {
@@ -108,14 +115,7 @@ const sections = computed(() => [
       { title: t('nav.feeDiscounts'), to: '/finance/fee-discounts', icon: 'bx-gift', module: 'Finance' },
     ],
   },
-  {
-    key: 'schedule',
-    heading: t('nav.schedule'),
-    children: [
-      { title: t('nav.periods'), to: '/schedule/periods', icon: 'bx-time-five', module: 'Timetable' },
-      { title: t('nav.timetables'), to: '/schedule/timetables', icon: 'bx-calendar-week', module: 'Timetable' },
-    ],
-  },
+
   {
     key: 'reports',
     heading: t('nav.reports'),

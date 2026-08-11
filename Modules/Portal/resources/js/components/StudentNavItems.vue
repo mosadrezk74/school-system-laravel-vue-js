@@ -21,7 +21,6 @@ const sections = computed(() => [
       { title: t('portal.nav.homework'), to: '/student/homework', icon: 'bx-task', module: 'Assignment' },
       { title: t('portal.nav.grades'), to: '/student/grades', icon: 'bx-medal', module: 'Examination' },
       { title: t('portal.nav.attendance'), to: '/student/attendance', icon: 'bx-check-square', module: 'Attendance' },
-      { title: t('portal.nav.materials'), to: '/student/materials', icon: 'bx-folder-open', module: 'StudyMaterial' },
     ],
   },
   {

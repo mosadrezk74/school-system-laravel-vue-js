@@ -12,7 +12,6 @@ use Modules\Core\Support\DashboardWidget;
 use Modules\Examination\Models\ExamResult;
 use Modules\Meeting\Models\Meeting;
 use Modules\Portal\Services\PortalScopeService;
-use Modules\StudyMaterial\Models\StudyResource;
 
 class BuildStudentDashboardAction extends BaseAction
 {
@@ -70,13 +69,6 @@ class BuildStudentDashboardAction extends BaseAction
                 ->route('/student/meetings')
                 ->priority(40),
 
-            DashboardWidget::make('recent_files', fn (): int => $this->recentFiles())
-                ->module('StudyMaterial')
-                ->permission('study-material.view')
-                ->icon('bx-folder-open')
-                ->color('secondary')
-                ->route('/student/materials')
-                ->priority(50),
             DashboardWidget::make('unread_notifications', fn (): int => $this->unreadNotifications())
                 ->module('Notification')
                 ->icon('bx-bell')
@@ -128,13 +120,6 @@ class BuildStudentDashboardAction extends BaseAction
     {
         return ExamResult::query()
             ->where('student_id', $this->studentId())
-            ->count();
-    }
-
-    private function recentFiles(): int
-    {
-        return StudyResource::query()
-            ->whereIn('grade_level_id', $this->scope->gradeLevelIdsFor() ?? [])
             ->count();
     }
 

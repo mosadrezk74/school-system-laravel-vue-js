@@ -13,6 +13,7 @@ use Modules\Attendance\Services\AttendanceRosterService;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Portal\Services\PortalScopeService;
 use Modules\SchoolClass\Models\SchoolClass;
+use Modules\Student\Models\StudentProfile;
 
 class TeacherAttendanceController extends BaseInertiaController
 {
@@ -37,11 +38,35 @@ class TeacherAttendanceController extends BaseInertiaController
 
     public function store(StoreAttendanceRequest $request, MarkAttendanceAction $action): RedirectResponse
     {
-        abort_unless($this->scope->canAccessClass((int) $request->validated('class_id')), 403);
+        $classId = (int) $request->validated('class_id');
+        $subjectId = $request->validated('subject_id');
+
+        abort_unless($this->scope->canAccessClass($classId), 403);
+
+        if ($subjectId !== null) {
+            abort_unless($this->scope->canAccessClassSubject($classId, (int) $subjectId), 403);
+        }
+
+        $this->assertStudentsBelongToClass($request->validated('students'), $classId);
 
         $action->execute(MarkAttendanceDTO::fromRequest($request));
 
         return $this->backWithSuccess(__('attendance::attendance.marked'));
+    }
+
+    /**
+     * @param  array<int, array{student_id: int}>  $students
+     */
+    private function assertStudentsBelongToClass(array $students, int $classId): void
+    {
+        $submitted = collect($students)->pluck('student_id')->map(fn ($id): int => (int) $id)->unique();
+
+        $enrolled = StudentProfile::query()
+            ->where('current_class_id', $classId)
+            ->whereIn('id', $submitted)
+            ->pluck('id');
+
+        abort_unless($submitted->count() === $enrolled->count(), 403);
     }
 
     /**

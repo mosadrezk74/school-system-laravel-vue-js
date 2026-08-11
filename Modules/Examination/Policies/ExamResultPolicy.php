@@ -27,11 +27,15 @@ class ExamResultPolicy
 
     public function update(User $user, ExamResult $examResult): bool
     {
-        return $user->can('exam-result.update') && $this->ownsStudent($examResult->student_id);
+        return $user->can('exam-result.update')
+            && $this->ownsStudent($examResult->student_id)
+            && $this->ownsClassSubject($examResult->class_id, $examResult->subject_id);
     }
 
     public function delete(User $user, ExamResult $examResult): bool
     {
-        return $user->can('exam-result.delete') && $this->ownsStudent($examResult->student_id);
+        return $user->can('exam-result.delete')
+            && $this->ownsStudent($examResult->student_id)
+            && $this->ownsClassSubject($examResult->class_id, $examResult->subject_id);
     }
 }

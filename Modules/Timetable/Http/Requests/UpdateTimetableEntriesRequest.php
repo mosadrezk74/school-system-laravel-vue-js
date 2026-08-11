@@ -4,9 +4,11 @@ namespace Modules\Timetable\Http\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
 use Modules\Core\Abstracts\BaseRequest;
+use Modules\SchoolClass\Models\ClassSubject;
 use Modules\Setting\Services\SettingsService;
 use Modules\Teacher\Models\TeacherProfile;
 use Modules\Timetable\Enums\Weekday;
+use Modules\Timetable\Models\Timetable;
 
 class UpdateTimetableEntriesRequest extends BaseRequest
 {
@@ -38,7 +40,83 @@ class UpdateTimetableEntriesRequest extends BaseRequest
         $validator->after(function (Validator $validator): void {
             $this->validateWorkingDays($validator);
             $this->validateTeacherTeachesSubject($validator);
+            $this->validateClassSubjectAssignment($validator);
+            $this->validateNoDuplicateSlots($validator);
         });
+    }
+
+    /**
+     * Where the class already declares which subjects it studies, a timetable
+     * entry may not invent a different one, and a class_subjects row naming a
+     * teacher is the authority on who teaches it.
+     */
+    private function validateClassSubjectAssignment(Validator $validator): void
+    {
+        $timetable = $this->route('timetable');
+
+        if (! $timetable instanceof Timetable) {
+            return;
+        }
+
+        $assignments = ClassSubject::query()
+            ->where('class_id', $timetable->class_id)
+            ->get();
+
+        if ($assignments->isEmpty()) {
+            return;
+        }
+
+        foreach ($this->entriesPayload() as $index => $entry) {
+            if (($entry['is_break'] ?? false) || empty($entry['subject_id'])) {
+                continue;
+            }
+
+            $match = $assignments->firstWhere('subject_id', (int) $entry['subject_id']);
+
+            if ($match === null) {
+                $validator->errors()->add(
+                    "entries.{$index}.subject_id",
+                    __('timetable::timetable.validation.subject_not_taught_by_class')
+                );
+
+                continue;
+            }
+
+            if ($match->teacher_id !== null
+                && ! empty($entry['teacher_id'])
+                && (int) $entry['teacher_id'] !== $match->teacher_id) {
+                $validator->errors()->add(
+                    "entries.{$index}.teacher_id",
+                    __('timetable::timetable.validation.teacher_not_assigned_to_class_subject')
+                );
+            }
+        }
+    }
+
+    /**
+     * The unique index catches this at write time; surfacing it here attaches
+     * the failure to the offending cell instead of a database error.
+     */
+    private function validateNoDuplicateSlots(Validator $validator): void
+    {
+        $seen = [];
+
+        foreach ($this->entriesPayload() as $index => $entry) {
+            if (! isset($entry['day_of_week'], $entry['period_id'])) {
+                continue;
+            }
+
+            $slot = $entry['day_of_week'].'-'.$entry['period_id'];
+
+            if (isset($seen[$slot])) {
+                $validator->errors()->add(
+                    "entries.{$index}.period_id",
+                    __('timetable::timetable.validation.duplicate_slot')
+                );
+            }
+
+            $seen[$slot] = true;
+        }
     }
 
     private function validateWorkingDays(Validator $validator): void

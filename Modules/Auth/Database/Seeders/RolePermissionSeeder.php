@@ -34,7 +34,6 @@ class RolePermissionSeeder extends Seeder
         'Attendance' => ['attendance'],
         'Examination' => ['exam', 'exam-result'],
         'Assignment' => ['assignment'],
-        'StudyMaterial' => ['study-material'],
         'Behavior' => ['behavior-record'],
         'Meeting' => ['meeting'],
         'Finance' => ['fee', 'invoice', 'payment', 'payment-method', 'refund'],

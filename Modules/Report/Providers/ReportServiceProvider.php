@@ -11,7 +11,6 @@ use Modules\Report\Reports\FinanceOutstandingFeesProvider;
 use Modules\Report\Reports\InvoiceReportProvider;
 use Modules\Report\Reports\MeetingReportProvider;
 use Modules\Report\Reports\StudentReportProvider;
-use Modules\Report\Reports\StudyMaterialReportProvider;
 use Modules\Report\Repositories\ReportGenerationRepository;
 use Modules\Report\Repositories\ReportGenerationRepositoryInterface;
 use Modules\Report\Repositories\ReportTemplateRepository;
@@ -43,7 +42,6 @@ class ReportServiceProvider extends ModuleServiceProvider
         ['Finance', FinanceOutstandingFeesProvider::class],
         ['Finance', InvoiceReportProvider::class],
         ['Meeting', MeetingReportProvider::class],
-        ['StudyMaterial', StudyMaterialReportProvider::class],
     ];
 
     public function register(): void

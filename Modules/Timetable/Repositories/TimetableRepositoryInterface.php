@@ -13,6 +13,10 @@ interface TimetableRepositoryInterface
 
     public function existsForClassAndYear(int $classId, int $academicYearId, ?int $excludeId = null): bool;
 
+    public function findArchivedForClassAndYear(int $classId, int $academicYearId): ?Timetable;
+
+    public function restoreWith(Timetable $timetable, CreateTimetableDTO $dto): Timetable;
+
     public function create(CreateTimetableDTO $dto, ?int $actorId = null): Timetable;
 
     public function update(Timetable $timetable, CreateTimetableDTO $dto, ?int $actorId = null): Timetable;

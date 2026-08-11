@@ -12,12 +12,12 @@ class AssignmentPolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->can('assignment.view') && $this->ownsClass($assignment->class_id);
+        return $user->can('assignment.view');
     }
 
     public function view(User $user, Assignment $assignment): bool
     {
-        return $user->can('assignment.view');
+        return $user->can('assignment.view') && $this->ownsClassOrSchoolWide($assignment->class_id);
     }
 
     public function create(User $user): bool

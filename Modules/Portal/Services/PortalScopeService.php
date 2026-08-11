@@ -331,6 +331,54 @@ class PortalScopeService
         return $accessible === null || in_array($studentId, $accessible, true);
     }
 
+    /**
+     * Subject ids the signed-in user may act on. Null means unrestricted.
+     *
+     * @return array<int, int>|null
+     */
+    public function accessibleSubjectIds(): ?array
+    {
+        return $this->remember('accessibleSubjectIds', function (): ?array {
+            if (! $this->isTeacher()) {
+                return $this->isStaff() ? null : [];
+            }
+
+            return $this->teacherSubjects()
+                ->pluck('subject_id')
+                ->filter()
+                ->unique()
+                ->values()
+                ->all();
+        });
+    }
+
+    public function canAccessSubject(?int $subjectId): bool
+    {
+        $accessible = $this->accessibleSubjectIds();
+
+        if ($accessible === null) {
+            return true;
+        }
+
+        return $subjectId !== null && in_array($subjectId, $accessible, true);
+    }
+
+    /**
+     * A teacher may only touch a record sitting at the intersection of a class
+     * and a subject they are actually assigned to teach.
+     */
+    public function canAccessClassSubject(?int $classId, ?int $subjectId): bool
+    {
+        if (! $this->isTeacher()) {
+            return $this->canAccessClass($classId);
+        }
+
+        return $this->teacherSubjects()->contains(
+            fn (ClassSubject $link): bool => $link->class_id === $classId
+                && $link->subject_id === $subjectId
+        );
+    }
+
     public function canAccessClass(?int $classId): bool
     {
         if ($classId === null) {

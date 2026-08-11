@@ -7,6 +7,7 @@ use Modules\Academic\Models\GradeLevel;
 use Modules\Auth\Database\Seeders\RolePermissionSeeder;
 use Modules\Auth\Enums\UserRole;
 use Modules\Classroom\Models\Classroom;
+use Modules\SchoolClass\Models\ClassSubject;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\Setting\Models\SchoolSetting;
 use Modules\Subject\Models\Subject;
@@ -433,4 +434,246 @@ test('a student cannot save a timetable', function () {
     $this->actingAs($student)
         ->put(route('timetables.entries.update', $timetable), ['entries' => []])
         ->assertForbidden();
+});
+
+test('a subject the class does not study is rejected once class subjects exist', function () {
+    $class = makeClass($this->academicYear);
+    $timetable = makeTimetableFor($class, $this->academicYear);
+
+    $math = makeTimetableSubject('Mathematics');
+    $art = makeTimetableSubject('Art');
+    $teacher = makeTeacherFor([$math, $art]);
+
+    ClassSubject::create([
+        'class_id' => $class->id,
+        'subject_id' => $math->id,
+        'teacher_id' => $teacher->id,
+        'academic_year_id' => $this->academicYear->id,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->put(route('timetables.entries.update', $timetable), [
+            'entries' => [
+                ['day_of_week' => Weekday::Sunday->value, 'period_id' => makePeriod(1)->id, 'subject_id' => $art->id, 'teacher_id' => $teacher->id],
+            ],
+        ])
+        ->assertSessionHasErrors('entries.0.subject_id');
+
+    expect($timetable->entries()->count())->toBe(0);
+});
+
+test('a teacher other than the one assigned to the class subject is rejected', function () {
+    $class = makeClass($this->academicYear);
+    $timetable = makeTimetableFor($class, $this->academicYear);
+
+    $math = makeTimetableSubject('Mathematics');
+    $assigned = makeTeacherFor([$math], 'Assigned Teacher');
+    $other = makeTeacherFor([$math], 'Other Teacher');
+
+    ClassSubject::create([
+        'class_id' => $class->id,
+        'subject_id' => $math->id,
+        'teacher_id' => $assigned->id,
+        'academic_year_id' => $this->academicYear->id,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->put(route('timetables.entries.update', $timetable), [
+            'entries' => [
+                ['day_of_week' => Weekday::Sunday->value, 'period_id' => makePeriod(1)->id, 'subject_id' => $math->id, 'teacher_id' => $other->id],
+            ],
+        ])
+        ->assertSessionHasErrors('entries.0.teacher_id');
+
+    expect($timetable->entries()->count())->toBe(0);
+});
+
+test('the teacher assigned to the class subject is accepted', function () {
+    $class = makeClass($this->academicYear);
+    $timetable = makeTimetableFor($class, $this->academicYear);
+
+    $math = makeTimetableSubject('Mathematics');
+    $assigned = makeTeacherFor([$math], 'Assigned Teacher');
+
+    ClassSubject::create([
+        'class_id' => $class->id,
+        'subject_id' => $math->id,
+        'teacher_id' => $assigned->id,
+        'academic_year_id' => $this->academicYear->id,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->put(route('timetables.entries.update', $timetable), [
+            'entries' => [
+                ['day_of_week' => Weekday::Sunday->value, 'period_id' => makePeriod(1)->id, 'subject_id' => $math->id, 'teacher_id' => $assigned->id],
+            ],
+        ])
+        ->assertSessionHasNoErrors();
+
+    expect($timetable->entries()->count())->toBe(1);
+});
+
+test('two entries submitted for the same day and period are rejected with a field error', function () {
+    $class = makeClass($this->academicYear);
+    $timetable = makeTimetableFor($class, $this->academicYear);
+
+    $math = makeTimetableSubject('Mathematics');
+    $teacher = makeTeacherFor([$math]);
+    $period = makePeriod(1);
+
+    $this->actingAs($this->admin)
+        ->put(route('timetables.entries.update', $timetable), [
+            'entries' => [
+                ['day_of_week' => Weekday::Sunday->value, 'period_id' => $period->id, 'subject_id' => $math->id, 'teacher_id' => $teacher->id],
+                ['day_of_week' => Weekday::Sunday->value, 'period_id' => $period->id, 'subject_id' => $math->id, 'teacher_id' => $teacher->id],
+            ],
+        ])
+        ->assertSessionHasErrors('entries.1.period_id');
+
+    expect($timetable->entries()->count())->toBe(0);
+});
+
+test('a null period id is rejected rather than reaching the database', function () {
+    $class = makeClass($this->academicYear);
+    $timetable = makeTimetableFor($class, $this->academicYear);
+
+    $math = makeTimetableSubject('Mathematics');
+    $teacher = makeTeacherFor([$math]);
+
+    $this->actingAs($this->admin)
+        ->put(route('timetables.entries.update', $timetable), [
+            'entries' => [
+                ['day_of_week' => Weekday::Sunday->value, 'period_id' => null, 'subject_id' => $math->id, 'teacher_id' => $teacher->id],
+            ],
+        ])
+        ->assertSessionHasErrors('entries.0.period_id');
+
+    expect($timetable->entries()->count())->toBe(0);
+});
+
+test('a classroom that does not exist is rejected', function () {
+    $class = makeClass($this->academicYear);
+    $timetable = makeTimetableFor($class, $this->academicYear);
+
+    $math = makeTimetableSubject('Mathematics');
+    $teacher = makeTeacherFor([$math]);
+
+    $this->actingAs($this->admin)
+        ->put(route('timetables.entries.update', $timetable), [
+            'entries' => [
+                ['day_of_week' => Weekday::Sunday->value, 'period_id' => makePeriod(1)->id, 'subject_id' => $math->id, 'teacher_id' => $teacher->id, 'classroom_id' => 999999],
+            ],
+        ])
+        ->assertSessionHasErrors('entries.0.classroom_id');
+});
+
+test('the edit screen sends periods as a plain list so the grid can render', function () {
+    $class = makeClass($this->academicYear);
+    $timetable = makeTimetableFor($class, $this->academicYear);
+
+    makePeriod(1);
+    makePeriod(2);
+
+    $this->actingAs($this->admin)
+        ->get(route('timetables.edit', $timetable))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('periods', 2)
+            ->where('periods.0.period_number', 1)
+            ->where('periods.1.period_number', 2)
+        );
+});
+
+test('an empty timetable still returns the full grid structure', function () {
+    $class = makeClass($this->academicYear);
+    $timetable = makeTimetableFor($class, $this->academicYear);
+
+    makePeriod(1);
+    makePeriod(2);
+    makePeriod(3);
+
+    $this->actingAs($this->admin)
+        ->get(route('timetables.edit', $timetable))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('timetable.entries', 0)
+            ->has('periods', 3)
+            ->has('weekdays', count($this->workingDays))
+        );
+});
+
+test('inactive periods are excluded from the scheduling grid', function () {
+    $class = makeClass($this->academicYear);
+    $timetable = makeTimetableFor($class, $this->academicYear);
+
+    makePeriod(1);
+
+    Period::create([
+        'period_number' => 2,
+        'name' => ['en' => 'Retired Period'],
+        'start_time' => '10:00:00',
+        'end_time' => '10:45:00',
+        'is_break' => false,
+        'is_active' => false,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->get(route('timetables.edit', $timetable))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page->has('periods', 1));
+});
+
+test('break periods are sent as structure with their break flag intact', function () {
+    $class = makeClass($this->academicYear);
+    $timetable = makeTimetableFor($class, $this->academicYear);
+
+    makePeriod(1);
+
+    Period::create([
+        'period_number' => 2,
+        'name' => ['en' => 'Recess'],
+        'start_time' => '10:15:00',
+        'end_time' => '10:45:00',
+        'is_break' => true,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->get(route('timetables.edit', $timetable))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('periods', 2)
+            ->where('periods.1.is_break', true)
+        );
+});
+
+test('an entry whose period id is null does not break the edit screen', function () {
+    $class = makeClass($this->academicYear);
+    $timetable = makeTimetableFor($class, $this->academicYear);
+
+    $math = makeTimetableSubject('Mathematics');
+    $teacher = makeTeacherFor([$math]);
+    $period = makePeriod(1);
+
+    // A legacy row written before period_id existed.
+    DB::table('timetable_entries')->insert([
+        'timetable_id' => $timetable->id,
+        'day_of_week' => Weekday::Sunday->value,
+        'period_id' => null,
+        'period_number' => $period->period_number,
+        'start_time' => $period->start_time,
+        'end_time' => $period->end_time,
+        'subject_id' => $math->id,
+        'teacher_id' => $teacher->id,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    $this->actingAs($this->admin)
+        ->get(route('timetables.edit', $timetable))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('periods', 1)
+            ->where('timetable.entries.0.period_id', null)
+        );
 });
