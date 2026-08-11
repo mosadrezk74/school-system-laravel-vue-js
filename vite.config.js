@@ -25,6 +25,15 @@ export default defineConfig({
       refresh: true,
     }),
     vuetify({
+      /*
+       * `VSelect` is deliberately excluded from Vuetify's auto-import so the
+       * project-wide searchable wrapper at resources/js/components/VSelect.vue
+       * is what `<VSelect>` resolves to. Without this, vite-plugin-vuetify
+       * rewrites every `<VSelect>` straight to vuetify/lib and the wrapper is
+       * never loaded — it does not lose to unplugin-vue-components, it runs
+       * first. Everything else still auto-imports as before.
+       */
+      autoImport: { ignore: ['VSelect'] },
       styles: {
         configFile: 'resources/styles/variables/_vuetify.scss',
       },

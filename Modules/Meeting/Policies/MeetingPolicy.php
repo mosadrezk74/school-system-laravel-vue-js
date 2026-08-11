@@ -46,6 +46,11 @@ class MeetingPolicy
         return $user->can('meeting.update') && $this->ownsOrManages($user, $meeting);
     }
 
+    /**
+     * Ending a live room kicks every participant out, so it stays with the
+     * meeting's own teacher and the admins — never a student or guardian,
+     * whose role grants meeting.view only.
+     */
     public function finish(User $user, Meeting $meeting): bool
     {
         return $user->can('meeting.update') && $this->ownsOrManages($user, $meeting);

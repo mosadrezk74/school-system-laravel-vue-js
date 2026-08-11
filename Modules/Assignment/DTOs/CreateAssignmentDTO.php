@@ -2,7 +2,7 @@
 
 namespace Modules\Assignment\DTOs;
 
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Assignment\Http\Requests\StoreAssignmentRequest;
 
 final readonly class CreateAssignmentDTO
@@ -12,7 +12,7 @@ final readonly class CreateAssignmentDTO
         public int $subjectId,
         public int $teacherId,
         public int $academicYearId,
-        public ?int $semesterId,
+        public int $semesterId,
         public array $title,
         public ?array $description,
         public float $maxScore,
@@ -22,14 +22,21 @@ final readonly class CreateAssignmentDTO
         public bool $isPublished,
     ) {}
 
+    /**
+     * The academic context is resolved here rather than read from the request:
+     * both ids are trusted application state, and requireContext() throws if
+     * the school has no current year or semester configured.
+     */
     public static function fromRequest(StoreAssignmentRequest $request): self
     {
+        $context = app(AcademicContextService::class)->requireContext();
+
         return new self(
             classId: (int) $request->validated('class_id'),
             subjectId: (int) $request->validated('subject_id'),
             teacherId: (int) $request->validated('teacher_id'),
-            academicYearId: AcademicYearService::requiredId(),
-            semesterId: $request->validated('semester_id') ? (int) $request->validated('semester_id') : null,
+            academicYearId: $context['academic_year_id'],
+            semesterId: $context['semester_id'],
             title: $request->validated('title'),
             description: $request->validated('description'),
             maxScore: (float) $request->validated('max_score'),

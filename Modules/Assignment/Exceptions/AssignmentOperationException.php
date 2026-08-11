@@ -21,4 +21,12 @@ class AssignmentOperationException extends BaseException
     {
         return new static($message ?: __('assignment::assignment.submission_not_found'), HttpStatus::NOT_FOUND);
     }
+
+    public static function invalidTeachingAssignment(string $message = ''): static
+    {
+        return new static(
+            $message ?: __('assignment::assignment.validation.teacher_not_assigned_to_class_subject'),
+            HttpStatus::UNPROCESSABLE_ENTITY,
+        );
+    }
 }

@@ -49,7 +49,9 @@ Route::middleware(['web', 'auth'])->group(function () {
             Route::get('meetings/{meeting}/edit', [TeacherMeetingController::class, 'edit'])->name('meetings.edit');
             Route::put('meetings/{meeting}', [TeacherMeetingController::class, 'update'])->name('meetings.update');
             Route::patch('meetings/{meeting}/start', [TeacherMeetingController::class, 'start'])->name('meetings.start');
+            Route::patch('meetings/{meeting}/finish', [TeacherMeetingController::class, 'finish'])->name('meetings.finish');
             Route::patch('meetings/{meeting}/cancel', [TeacherMeetingController::class, 'cancel'])->name('meetings.cancel');
+            Route::get('meetings/{meeting}/status', [TeacherMeetingController::class, 'status'])->name('meetings.status');
         });
     });
 

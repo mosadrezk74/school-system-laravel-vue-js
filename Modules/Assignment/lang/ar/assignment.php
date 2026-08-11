@@ -22,4 +22,9 @@ return [
         'max_score' => 'الدرجة الكلية',
         'deadline' => 'الموعد النهائي',
     ],
+
+    'validation' => [
+        'subject_not_taught_by_class' => 'المادة المختارة غير مرتبطة بهذا الفصل.',
+        'teacher_not_assigned_to_class_subject' => 'المعلم المحدد غير مسند لتدريس هذه المادة في هذا الفصل.',
+    ],
 ];

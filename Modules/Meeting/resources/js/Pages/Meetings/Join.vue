@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, router, usePage } from '@inertiajs/vue3'
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import JitsiMeeting from '../../components/JitsiMeeting.vue'
@@ -9,6 +9,8 @@ const props = defineProps({
   meeting: { type: Object, required: true },
   jitsi: { type: Object, required: true },
   can: { type: Object, default: () => ({}) },
+  statusUrl: { type: String, default: '' },
+  returnUrl: { type: String, default: '' },
 })
 
 const { t } = useI18n()
@@ -42,8 +44,49 @@ function copyLink() {
 function leave() {
   // Ask Jitsi to hang up first so the conference closes cleanly, then leave.
   conference.value?.hangUp()
-  router.visit('/meetings/meetings')
+  router.visit(props.returnUrl ?? '/meetings/meetings')
 }
+
+/*
+ * Ending or cancelling a meeting from the dashboard has to close the room for
+ * everyone still inside it, including participants who opened Jitsi directly.
+ * Jitsi itself has no notion of our meeting lifecycle, so the page polls its
+ * own status endpoint and hangs the conference up as soon as it stops being
+ * live. The server remains the authority — the poll only reacts to it.
+ */
+const ended = ref(false)
+let statusTimer = null
+
+async function pollStatus() {
+  if (!props.statusUrl) return
+
+  try {
+    const response = await fetch(props.statusUrl, {
+      headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      credentials: 'same-origin',
+    })
+
+    if (!response.ok) return
+
+    const { status } = await response.json()
+
+    if (status !== 'live' && !ended.value) {
+      ended.value = true
+      conference.value?.hangUp()
+    }
+  } catch {
+    // A transient network blip must not tear the room down.
+  }
+}
+
+onMounted(() => {
+  if (props.meeting.status === 'live')
+    statusTimer = setInterval(pollStatus, 10000)
+})
+
+onBeforeUnmount(() => {
+  if (statusTimer) clearInterval(statusTimer)
+})
 </script>
 
 <template>
@@ -61,6 +104,14 @@ function leave() {
     </template>
   </AppPageHeader>
 
+  <VAlert
+    v-if="ended"
+    type="info"
+    variant="tonal"
+    class="mb-4"
+    :text="t('meetings.jitsi.ended')"
+  />
+
   <VRow>
     <VCol cols="12" lg="9">
       <VCard>
@@ -73,6 +124,9 @@ function leave() {
             :email="jitsi.email"
             :is-moderator="can.manage === true"
             :lang="locale"
+            :start-with-audio-muted="jitsi.start_with_audio_muted !== false"
+            :start-with-video-muted="jitsi.start_with_video_muted !== false"
+            :show-prejoin="jitsi.show_prejoin !== false"
             @participant-joined="participants++"
             @participant-left="participants = Math.max(0, participants - 1)"
             @closed="leave"

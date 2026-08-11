@@ -5,10 +5,9 @@ import AssignmentForm from './_Form.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 
 defineProps({
-  semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
-  subjects: { type: Array, default: () => [] },
-  teachers: { type: Array, default: () => [] },
+  classSubjects: { type: Array, default: () => [] },
+  currentSemester: { type: Object, default: null },
 })
 
 const { t } = useI18n()
@@ -19,7 +18,6 @@ const form = useForm({
   class_id: null,
   subject_id: null,
   teacher_id: null,
-  semester_id: null,
   max_score: 100,
   deadline: null,
   assignment_type: '',
@@ -46,10 +44,9 @@ function submit() {
       <form @submit.prevent="submit">
         <AssignmentForm
           :form="form"
-          :semesters="semesters"
           :classes="classes"
-          :subjects="subjects"
-          :teachers="teachers"
+          :class-subjects="classSubjects"
+          :current-semester="currentSemester"
         />
       </form>
     </VCardText>

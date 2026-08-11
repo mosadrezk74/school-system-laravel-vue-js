@@ -152,6 +152,18 @@ class RolePermissionSeeder extends Seeder
                 ['is_system' => true],
             );
 
+            /*
+             * MySQL's default collation is case-insensitive, so the lookup
+             * above matches a legacy differently-cased row ("Teacher") and
+             * updates it instead of creating "teacher". Spatie resolves roles
+             * by exact name, so assignRole('teacher') would then miss the row
+             * this seeder just permissioned and every teacher would sign in
+             * with no abilities at all. Force the canonical casing.
+             */
+            if ($role->name !== $case->value) {
+                $role->forceFill(['name' => $case->value])->save();
+            }
+
             // Owner bypasses permission checks entirely (see AuthServiceProvider),
             // so attaching rows for it would be misleading.
             if ($case === UserRole::Owner) {

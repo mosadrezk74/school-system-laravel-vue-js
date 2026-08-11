@@ -918,7 +918,9 @@
       "externalUrl": "External URL",
       "start": "Start",
       "confirmArchive": "Archive this item? An admin can restore it later.",
-      "confirmCancel": "Cancel this meeting?"
+      "confirmCancel": "Cancel this meeting?",
+      "finish": "Beenden",
+      "confirmFinish": "Diese Besprechung beenden? Alle noch anwesenden Teilnehmer werden getrennt."
     },
     "student": {
       "title": "Schülerportal",
@@ -1213,7 +1215,9 @@
       "failed": "Die Besprechung konnte derzeit nicht geladen werden.",
       "retry": "Erneut versuchen",
       "leave": "Besprechung verlassen",
-      "participants": "Teilnehmer"
+      "participants": "Teilnehmer",
+      "insecure": "Diese Besprechung erfordert eine sichere (HTTPS-)Verbindung, damit der Browser auf Kamera und Mikrofon zugreifen kann.",
+      "ended": "Diese Besprechung wurde beendet."
     }
   },
   "notification": {

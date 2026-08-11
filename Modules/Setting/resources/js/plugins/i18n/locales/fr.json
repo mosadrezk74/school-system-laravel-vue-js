@@ -918,7 +918,9 @@
       "externalUrl": "External URL",
       "start": "Start",
       "confirmArchive": "Archive this item? An admin can restore it later.",
-      "confirmCancel": "Cancel this meeting?"
+      "confirmCancel": "Cancel this meeting?",
+      "finish": "Terminer",
+      "confirmFinish": "Terminer cette réunion ? Toutes les personnes encore présentes seront déconnectées."
     },
     "student": {
       "title": "Portail Élève",
@@ -1213,7 +1215,9 @@
       "failed": "Impossible de charger la réunion pour le moment.",
       "retry": "Réessayer",
       "leave": "Quitter la réunion",
-      "participants": "Participants"
+      "participants": "Participants",
+      "insecure": "Cette réunion nécessite une connexion sécurisée (HTTPS) pour que le navigateur puisse accéder à votre caméra et à votre microphone.",
+      "ended": "Cette réunion est terminée."
     }
   },
   "notification": {

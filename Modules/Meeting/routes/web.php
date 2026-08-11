@@ -11,6 +11,13 @@ Route::middleware(['web', 'auth', 'module:Meeting'])->prefix('meetings')->group(
     Route::get('meetings/{meeting}/join', [MeetingController::class, 'join'])
         ->name('meetings.join');
 
+    /*
+     * Polled by an open room so that finishing or cancelling the meeting
+     * elsewhere also closes it for whoever is still inside.
+     */
+    Route::get('meetings/{meeting}/status', [MeetingController::class, 'status'])
+        ->name('meetings.status');
+
     Route::resource('meetings', MeetingController::class);
 
     Route::patch('meetings/{meeting}/start', [MeetingController::class, 'start'])

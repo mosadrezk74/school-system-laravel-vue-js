@@ -2,11 +2,10 @@
 
 namespace Modules\Assignment\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Modules\Academic\Models\Semester;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Academic\Services\AcademicYearService;
 use Modules\Assignment\Actions\ArchiveAssignmentAction;
 use Modules\Assignment\Actions\CreateAssignmentAction;
@@ -20,9 +19,9 @@ use Modules\Assignment\Http\Requests\UpdateAssignmentRequest;
 use Modules\Assignment\Models\Assignment;
 use Modules\Assignment\Queries\AssignmentQuery;
 use Modules\Assignment\Transformers\AssignmentResource;
-use Modules\Auth\Enums\UserRole;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\SchoolClass\Models\ClassSubject;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\Subject\Models\Subject;
 
@@ -130,18 +129,31 @@ class AssignmentController extends BaseInertiaController
      */
     protected function formOptions(): array
     {
+        $context = app(AcademicContextService::class);
+        $semester = $context->currentSemester();
+
         return [
-            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get()
-                ->map(fn (Semester $semester) => [
-                    'id' => $semester->id,
-                    'name' => $semester->name,
-                    'academic_year_id' => $semester->academic_year_id,
-                ])
-                ->values(),
             'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
                 ->get(['id', 'name', 'academic_year_id']),
-            'subjects' => Subject::query()->get()->map(fn (Subject $subject) => ['id' => $subject->id, 'name' => $subject->name])->values(),
-            'teachers' => User::query()->where('role', UserRole::Teacher->value)->get(['id', 'name']),
+
+            /*
+             * One eager-loaded pass over the real teaching assignments feeds
+             * both cascading dropdowns, so the form never offers a subject the
+             * class does not study or a teacher who does not teach it.
+             */
+            'classSubjects' => ClassSubject::query()
+                ->with(['subject:id,name', 'teacher:id,name'])
+                ->get()
+                ->map(fn (ClassSubject $link): array => [
+                    'class_id' => $link->class_id,
+                    'subject_id' => $link->subject_id,
+                    'subject_name' => $link->subject?->name,
+                    'teacher_id' => $link->teacher_id,
+                    'teacher_name' => $link->teacher?->name,
+                ])
+                ->values(),
+
+            'currentSemester' => $semester ? ['id' => $semester->id, 'name' => $semester->name] : null,
         ];
     }
 }

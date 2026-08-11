@@ -18,6 +18,16 @@ const props = defineProps({
   // Moderators get the room opened without the prejoin gate.
   isModerator: { type: Boolean, default: false },
   lang: { type: String, default: 'en' },
+
+  /*
+   * Media defaults are a school setting, not a role consequence. They start
+   * muted so nobody is pushed live before they have checked themselves, and
+   * the prejoin screen stays on for everyone — including the teacher — so the
+   * camera is never opened without an explicit click.
+   */
+  startWithAudioMuted: { type: Boolean, default: true },
+  startWithVideoMuted: { type: Boolean, default: true },
+  showPrejoin: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['joined', 'left', 'participant-joined', 'participant-left', 'failed', 'closed'])
@@ -76,6 +86,19 @@ async function start() {
   status.value = 'loading'
   disposeApi()
 
+  /*
+   * Cameras and microphones are only exposed in a secure context, so over
+   * plain HTTP navigator.mediaDevices is undefined and Jitsi throws deep
+   * inside its own bundle while enumerating devices — leaving the embed
+   * spinning forever with nothing actionable on screen. Fail loudly instead.
+   */
+  if (!window.isSecureContext) {
+    status.value = 'insecure'
+    emit('failed', new Error('Jitsi requires a secure context (HTTPS)'))
+
+    return
+  }
+
   try {
     const JitsiMeetExternalAPI = await loadExternalApi(props.domain)
 
@@ -90,9 +113,9 @@ async function start() {
         email: props.email,
       },
       configOverwrite: {
-        prejoinPageEnabled: !props.isModerator,
-        startWithAudioMuted: !props.isModerator,
-        startWithVideoMuted: !props.isModerator,
+        prejoinPageEnabled: props.showPrejoin,
+        startWithAudioMuted: props.startWithAudioMuted,
+        startWithVideoMuted: props.startWithVideoMuted,
         disableDeepLinking: true,
       },
       interfaceConfigOverwrite: {
@@ -100,6 +123,17 @@ async function start() {
         SHOW_JITSI_WATERMARK: false,
         SHOW_BRAND_WATERMARK: false,
       },
+    })
+
+    /*
+     * The overlay must come down as soon as Jitsi owns the iframe, not when
+     * the conference is joined. A non-moderator lands on the prejoin screen
+     * and only joins after clicking it — waiting for videoConferenceJoined
+     * left that screen hidden behind an opaque overlay forever, so the
+     * meeting looked like it never loaded.
+     */
+    api.value.getIFrame()?.addEventListener('load', () => {
+      if (status.value === 'loading') status.value = 'ready'
     })
 
     api.value.addEventListener('videoConferenceJoined', () => {
@@ -135,12 +169,19 @@ onBeforeUnmount(disposeApi)
 
 <template>
   <div class="jitsi-wrapper">
-    <div v-show="status !== 'error'" ref="container" class="jitsi-frame" />
+    <div v-show="status !== 'error' && status !== 'insecure'" ref="container" class="jitsi-frame" />
 
     <div v-if="status === 'loading'" class="jitsi-overlay d-flex flex-column align-center justify-center">
       <VProgressCircular indeterminate color="primary" size="42" />
       <p class="text-body-2 text-medium-emphasis mt-4 mb-0">
         {{ t('meetings.jitsi.loading') }}
+      </p>
+    </div>
+
+    <div v-if="status === 'insecure'" class="jitsi-error d-flex flex-column align-center justify-center text-center">
+      <VIcon icon="bx-lock-alt" size="42" class="mb-3 text-warning" />
+      <p class="text-body-1 mb-0">
+        {{ t('meetings.jitsi.insecure') }}
       </p>
     </div>
 

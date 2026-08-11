@@ -1,15 +1,16 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TranslatableTextInput from '@/components/TranslatableTextInput.vue'
 import TranslatableTextarea from '@/components/TranslatableTextarea.vue'
 
 const props = defineProps({
   form: { type: Object, required: true },
-  semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
-  subjects: { type: Array, default: () => [] },
-  teachers: { type: Array, default: () => [] },
+
+  /** Real teaching assignments: class -> subject -> teacher. */
+  classSubjects: { type: Array, default: () => [] },
+  currentSemester: { type: Object, default: null },
 })
 
 const { t } = useI18n()
@@ -24,10 +25,52 @@ const classOptions = computed(() => props.classes.map(c => ({
   value: c.id,
 })))
 
-const semesterOptions = computed(() => props.semesters.map(s => ({
-  title: s.name,
-  value: s.id,
-})))
+/*
+ * Subjects and teachers are narrowed from the same class_subjects data the
+ * server validates against, so the form can only ever offer a combination the
+ * backend will accept. This mirrors the rule; it does not enforce it.
+ */
+const subjectOptions = computed(() => {
+  if (!props.form.class_id)
+    return []
+
+  const seen = new Map()
+
+  for (const link of props.classSubjects) {
+    if (link.class_id === props.form.class_id && !seen.has(link.subject_id))
+      seen.set(link.subject_id, { title: link.subject_name, value: link.subject_id })
+  }
+
+  return [...seen.values()]
+})
+
+const teacherOptions = computed(() => {
+  if (!props.form.class_id || !props.form.subject_id)
+    return []
+
+  const seen = new Map()
+
+  for (const link of props.classSubjects) {
+    if (link.class_id === props.form.class_id
+      && link.subject_id === props.form.subject_id
+      && link.teacher_id
+      && !seen.has(link.teacher_id)) {
+      seen.set(link.teacher_id, { title: link.teacher_name, value: link.teacher_id })
+    }
+  }
+
+  return [...seen.values()]
+})
+
+// A subject or teacher chosen for the previous class is meaningless afterwards.
+watch(() => props.form.class_id, () => {
+  props.form.subject_id = null
+  props.form.teacher_id = null
+})
+
+watch(() => props.form.subject_id, () => {
+  props.form.teacher_id = null
+})
 
 
 const activeTab = ref('details')
@@ -36,7 +79,7 @@ const activeTab = ref('details')
 // validation error — the user shouldn't have to click through every tab to
 // find out which one needs attention.
 const tabFields = {
-  details: ['title', 'description', 'class_id', 'subject_id', 'teacher_id', 'semester_id'],
+  details: ['title', 'description', 'class_id', 'subject_id', 'teacher_id'],
   grading: ['max_score', 'deadline', 'assignment_type', 'is_group_work'],
   publishing: ['is_published'],
 }
@@ -104,16 +147,16 @@ const tabHasError = tab => tabFields[tab].some(field =>
 
       <VRow>
 
-        <VCol cols="12" md="4">
-          <VSelect
-            v-model="form.semester_id"
-            clearable
-            :items="semesterOptions"
-            :label="$t('assignments.semester')"
-            :hint="$t('assignments.hints.semester')"
-            persistent-hint
-            :error-messages="form.errors.semester_id"
-          />
+        <VCol cols="12">
+          <VAlert
+            :type="currentSemester ? 'info' : 'warning'"
+            variant="tonal"
+            density="compact"
+          >
+            {{ currentSemester
+              ? `${$t('assignments.currentSemester')}: ${currentSemester.name}`
+              : $t('assignments.noCurrentSemester') }}
+          </VAlert>
         </VCol>
 
         <VCol cols="12" md="4">
@@ -131,9 +174,12 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="6">
           <VSelect
             v-model="form.subject_id"
-            :items="subjects.map(s => ({ title: s.name, value: s.id }))"
+            :items="subjectOptions"
             :label="required(t('assignments.subject'))"
-            :hint="$t('assignments.hints.subject')"
+            :disabled="!form.class_id"
+            :hint="!form.class_id
+              ? $t('assignments.selectClassFirst')
+              : (subjectOptions.length ? $t('assignments.hints.subject') : $t('assignments.noSubjectsForClass'))"
             persistent-hint
             :error-messages="form.errors.subject_id"
             required
@@ -143,9 +189,12 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="6">
           <VSelect
             v-model="form.teacher_id"
-            :items="teachers.map(u => ({ title: u.name, value: u.id }))"
+            :items="teacherOptions"
             :label="required(t('assignments.teacher'))"
-            :hint="$t('assignments.hints.teacher')"
+            :disabled="!form.class_id || !form.subject_id"
+            :hint="!form.subject_id
+              ? $t('assignments.selectSubjectFirst')
+              : (teacherOptions.length ? $t('assignments.hints.teacher') : $t('assignments.noTeacherForClassSubject'))"
             persistent-hint
             :error-messages="form.errors.teacher_id"
             required

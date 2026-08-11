@@ -3,6 +3,7 @@
 namespace Modules\Meeting\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -27,6 +28,7 @@ use Modules\Meeting\Models\Meeting;
 use Modules\Meeting\Queries\MeetingQuery;
 use Modules\Meeting\Services\JitsiRoomFactory;
 use Modules\Meeting\Services\MeetingAccessGuard;
+use Modules\Meeting\Services\MeetingMediaDefaults;
 use Modules\Meeting\Transformers\MeetingResource;
 use Modules\Timetable\Models\TimetableEntry;
 
@@ -120,11 +122,27 @@ class MeetingController extends BaseInertiaController
                 'room_name' => $meeting->room_name,
                 'display_name' => $user->name,
                 'email' => $user->email,
+                ...app(MeetingMediaDefaults::class)->toArray(),
             ],
             'can' => [
                 'manage' => $user->can('update', $meeting),
             ],
+            'statusUrl' => route('meetings.status', $meeting),
+            'returnUrl' => route('meetings.index'),
         ]);
+    }
+
+    /**
+     * Reports the meeting's lifecycle state to an open room. Read-only, and
+     * gated by the same view checks as the room itself.
+     */
+    public function status(Request $request, Meeting $meeting, MeetingAccessGuard $guard): JsonResponse
+    {
+        $this->authorize('view', $meeting);
+
+        abort_unless($guard->allows($request->user(), $meeting), 403);
+
+        return response()->json(['status' => $meeting->status]);
     }
 
     public function edit(Meeting $meeting): Response

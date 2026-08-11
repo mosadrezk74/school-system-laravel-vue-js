@@ -2,6 +2,7 @@
 
 namespace Modules\Portal\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -9,12 +10,14 @@ use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
 use Modules\Meeting\Actions\CancelMeetingAction;
 use Modules\Meeting\Actions\CreateMeetingAction;
+use Modules\Meeting\Actions\FinishMeetingAction;
 use Modules\Meeting\Actions\StartMeetingAction;
 use Modules\Meeting\Actions\UpdateMeetingAction;
 use Modules\Meeting\DTOs\CreateMeetingDTO;
 use Modules\Meeting\DTOs\UpdateMeetingDTO;
 use Modules\Meeting\Models\Meeting;
 use Modules\Meeting\Queries\MeetingQuery;
+use Modules\Meeting\Services\MeetingAccessGuard;
 use Modules\Meeting\Transformers\MeetingResource;
 use Modules\Portal\Http\Requests\TeacherStoreMeetingRequest;
 use Modules\Portal\Http\Requests\TeacherUpdateMeetingRequest;
@@ -84,6 +87,28 @@ class TeacherMeetingController extends BaseInertiaController
         $action->execute($meeting);
 
         return $this->backWithSuccess(__('meeting::meeting.started'));
+    }
+
+    public function finish(Meeting $meeting, FinishMeetingAction $action): RedirectResponse
+    {
+        $this->authorize('finish', $meeting);
+
+        $action->execute($meeting);
+
+        return $this->backWithSuccess(__('meeting::meeting.finished'));
+    }
+
+    /**
+     * Lets an open room poll for the moment its meeting stops being live, so
+     * ending it from the dashboard also closes it for everyone still inside.
+     */
+    public function status(Meeting $meeting, MeetingAccessGuard $guard): JsonResponse
+    {
+        $this->authorize('view', $meeting);
+
+        abort_unless($guard->allows(request()->user(), $meeting), 403);
+
+        return response()->json(['status' => $meeting->status]);
     }
 
     public function cancel(Meeting $meeting, CancelMeetingAction $action): RedirectResponse

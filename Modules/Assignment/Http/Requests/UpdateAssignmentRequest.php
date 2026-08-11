@@ -2,11 +2,18 @@
 
 namespace Modules\Assignment\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
+use Modules\Assignment\Support\ValidatesClassSubjectTeacher;
 use Modules\Core\Abstracts\BaseRequest;
 
 class UpdateAssignmentRequest extends BaseRequest
 {
+    use ValidatesClassSubjectTeacher;
+
     /**
+     * An assignment keeps the academic year and semester it was created in, so
+     * editing never restamps them — historical records stay where they belong.
+     *
      * @return array<string, mixed>
      */
     public function rules(): array
@@ -15,7 +22,6 @@ class UpdateAssignmentRequest extends BaseRequest
             'class_id' => ['required', 'integer', 'exists:classes,id'],
             'subject_id' => ['required', 'integer', 'exists:subjects,id'],
             'teacher_id' => ['required', 'integer', 'exists:users,id'],
-            'semester_id' => ['nullable', 'integer', 'exists:semesters,id'],
             ...$this->translatableRules('title'),
             ...$this->translatableRules('description', required: false),
             'max_score' => ['required', 'numeric', 'min:0'],
@@ -24,6 +30,11 @@ class UpdateAssignmentRequest extends BaseRequest
             'is_group_work' => ['sometimes', 'boolean'],
             'is_published' => ['sometimes', 'boolean'],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(fn (Validator $validator) => $this->validateClassSubjectTeacher($validator));
     }
 
     /**
@@ -35,7 +46,6 @@ class UpdateAssignmentRequest extends BaseRequest
             'class_id' => __('assignment::assignment.fields.class_id'),
             'subject_id' => __('assignment::assignment.fields.subject_id'),
             'teacher_id' => __('assignment::assignment.fields.teacher_id'),
-            'semester_id' => __('assignment::assignment.fields.semester_id'),
             'title' => __('assignment::assignment.fields.title'),
             'max_score' => __('assignment::assignment.fields.max_score'),
             'deadline' => __('assignment::assignment.fields.deadline'),

@@ -73,6 +73,20 @@ function cancel(item) {
   })
 }
 
+/*
+ * Ending the meeting closes the room for everyone still inside it, so it is
+ * confirmed the same way cancelling is.
+ */
+function finish(item) {
+  askConfirm({
+    message: t('portal.teacher.confirmFinish'),
+    color: 'error',
+    onConfirm: () => {
+      router.patch(`/teacher/meetings/${item.id}/finish`, {}, { preserveScroll: true })
+    },
+  })
+}
+
 function goToPage(page) {
   router.get('/teacher/meetings', buildQuery({ page }), {
     preserveState: true,
@@ -144,18 +158,30 @@ function goToPage(page) {
             >
               {{ t('portal.teacher.start') }}
             </VBtn>
+            <!-- The in-app room, not meet.etqan.cloud: leaving the app would
+                 skip the embed and its lifecycle handling. -->
             <VBtn
-              v-if="item.meeting_url && item.status === 'live'"
+              v-if="item.status === 'live'"
               variant="tonal"
               color="success"
               size="small"
               prepend-icon="bx-video"
               class="me-2"
-              :href="item.meeting_url"
-              target="_blank"
-              rel="noopener noreferrer"
+              :href="`/meetings/meetings/${item.id}/join`"
+              :as="Link"
             >
               {{ t('portal.teacher.join') }}
+            </VBtn>
+            <VBtn
+              v-if="item.status === 'live'"
+              variant="tonal"
+              color="error"
+              size="small"
+              prepend-icon="bx-stop-circle"
+              class="me-2"
+              @click="finish(item)"
+            >
+              {{ t('portal.teacher.finish') }}
             </VBtn>
             <IconBtn :href="`/teacher/meetings/${item.id}/edit`" :as="Link">
               <VIcon icon="bx-edit" />

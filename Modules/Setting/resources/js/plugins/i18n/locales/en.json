@@ -1141,7 +1141,9 @@
       "failed": "The meeting could not be loaded right now.",
       "retry": "Try again",
       "leave": "Leave meeting",
-      "participants": "Participants"
+      "participants": "Participants",
+      "insecure": "This meeting requires a secure (HTTPS) connection so the browser can access your camera and microphone.",
+      "ended": "This meeting has ended."
     }
   },
   "communication": {
@@ -1640,7 +1642,9 @@
       "externalUrl": "External URL",
       "start": "Start",
       "confirmArchive": "Archive this item? An admin can restore it later.",
-      "confirmCancel": "Cancel this meeting?"
+      "confirmCancel": "Cancel this meeting?",
+      "finish": "Finish",
+      "confirmFinish": "Finish this meeting? Everyone still in the room will be disconnected."
     },
     "student": {
       "title": "Student Portal",

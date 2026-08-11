@@ -27,6 +27,7 @@ declare module 'vue' {
     TranslatableTextarea: typeof import('./resources/js/components/TranslatableTextarea.vue')['default']
     TranslatableTextInput: typeof import('./resources/js/components/TranslatableTextInput.vue')['default']
     TruncatedText: typeof import('./resources/js/components/TruncatedText.vue')['default']
+    VSelect: typeof import('./resources/js/components/VSelect.vue')['default']
     VueApexCharts: typeof import('vue3-apexcharts')['default']
   }
 }

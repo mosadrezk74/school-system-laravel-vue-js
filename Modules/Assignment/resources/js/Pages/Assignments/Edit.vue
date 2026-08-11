@@ -6,10 +6,9 @@ import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
   assignment: { type: Object, required: true },
-  semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
-  subjects: { type: Array, default: () => [] },
-  teachers: { type: Array, default: () => [] },
+  classSubjects: { type: Array, default: () => [] },
+  currentSemester: { type: Object, default: null },
 })
 
 const { t } = useI18n()
@@ -20,7 +19,6 @@ const form = useForm({
   class_id: props.assignment.class_id,
   subject_id: props.assignment.subject_id,
   teacher_id: props.assignment.teacher_id,
-  semester_id: props.assignment.semester_id,
   max_score: props.assignment.max_score,
   deadline: props.assignment.deadline ? props.assignment.deadline.slice(0, 16) : null,
   assignment_type: props.assignment.assignment_type,
@@ -47,10 +45,9 @@ function submit() {
       <form @submit.prevent="submit">
         <AssignmentForm
           :form="form"
-          :semesters="semesters"
           :classes="classes"
-          :subjects="subjects"
-          :teachers="teachers"
+          :class-subjects="classSubjects"
+          :current-semester="currentSemester"
           is-edit
         />
       </form>
