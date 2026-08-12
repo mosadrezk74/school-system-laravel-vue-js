@@ -39,14 +39,19 @@ class PromotionOperationException extends BaseException
         return new static($message ?: __('promotion::promotions.errors.target_year_same_as_source'), HttpStatus::UNPROCESSABLE_ENTITY);
     }
 
+    public static function targetSemesterInvalid(string $message = ''): static
+    {
+        return new static($message ?: __('promotion::promotions.errors.target_semester_invalid'), HttpStatus::UNPROCESSABLE_ENTITY);
+    }
+
+    public static function targetSemesterRequired(string $message = ''): static
+    {
+        return new static($message ?: __('promotion::promotions.errors.target_semester_required'), HttpStatus::UNPROCESSABLE_ENTITY);
+    }
+
     public static function targetClassInvalid(string $message = ''): static
     {
         return new static($message ?: __('promotion::promotions.errors.target_class_invalid'), HttpStatus::UNPROCESSABLE_ENTITY);
-    }
-
-    public static function targetClassWrongYear(string $message = ''): static
-    {
-        return new static($message ?: __('promotion::promotions.errors.target_class_wrong_year'), HttpStatus::UNPROCESSABLE_ENTITY);
     }
 
     /** The target grade must sit at or above the student's current grade. */

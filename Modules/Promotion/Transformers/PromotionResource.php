@@ -27,6 +27,11 @@ class PromotionResource extends BaseResource
             'to_academic_year_id' => $this->to_academic_year_id,
             'to_academic_year_name' => $this->whenLoaded('toAcademicYear', fn () => $this->toAcademicYear?->name),
 
+            // Semester names are translatable JSON, so they resolve through the
+            // model rather than being read raw.
+            'to_semester_id' => $this->to_semester_id,
+            'to_semester_name' => $this->whenLoaded('toSemester', fn () => $this->toSemester?->name),
+
             'from_class_id' => $this->from_class_id,
             'from_class_name' => $this->whenLoaded('fromClass', fn () => $this->fromClass?->name),
             'to_class_id' => $this->to_class_id,

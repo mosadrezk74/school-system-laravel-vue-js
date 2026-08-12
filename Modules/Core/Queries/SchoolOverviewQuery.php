@@ -72,7 +72,6 @@ class SchoolOverviewQuery
     public function classCapacityUsage(?int $academicYearId, int $limit = 6): array
     {
         return SchoolClass::query()
-            ->when($academicYearId, fn (Builder $query) => $query->where('classes.academic_year_id', $academicYearId))
             ->where('classes.is_active', true)
             ->withCount(['students as students_count' => fn (Builder $query) => $query
                 ->where('student_profiles.is_active', true)
@@ -124,8 +123,8 @@ class SchoolOverviewQuery
 
     public function activeClasses(?int $academicYearId): int
     {
+        // Classes are no longer bound to a year, so the count is school-wide.
         return SchoolClass::query()
-            ->when($academicYearId, fn (Builder $query) => $query->where('academic_year_id', $academicYearId))
             ->where('is_active', true)
             ->count();
     }
@@ -137,7 +136,6 @@ class SchoolOverviewQuery
     public function classesWithoutStudents(?int $academicYearId): int
     {
         return SchoolClass::query()
-            ->when($academicYearId, fn (Builder $query) => $query->where('academic_year_id', $academicYearId))
             ->where('is_active', true)
             ->whereDoesntHave('students', fn (Builder $query) => $query
                 ->where('student_profiles.is_active', true)

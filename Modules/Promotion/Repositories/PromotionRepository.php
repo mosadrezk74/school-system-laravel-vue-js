@@ -75,6 +75,7 @@ class PromotionRepository implements PromotionRepositoryInterface
         PromotionDecisionDTO $decision,
         int $fromAcademicYearId,
         ?int $toAcademicYearId,
+        ?int $toSemesterId,
         ?int $actorId,
     ): StudentPromotion {
         return StudentPromotion::query()->create([
@@ -83,6 +84,10 @@ class PromotionRepository implements PromotionRepositoryInterface
 
             // Only a promotion moves the student into another year.
             'to_academic_year_id' => $decision->status->requiresTargetYear() ? $toAcademicYearId : null,
+
+            // Stored so the history shows the exact term promoted into, and so
+            // a revert never has to infer it from the current context.
+            'to_semester_id' => $decision->status->requiresTargetYear() ? $toSemesterId : null,
             'from_class_id' => $student->current_class_id,
             'to_class_id' => $decision->status->requiresTargetClass() ? $decision->targetClassId : null,
             'status' => $decision->status,

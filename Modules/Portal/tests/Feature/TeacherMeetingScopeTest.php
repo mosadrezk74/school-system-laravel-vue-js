@@ -37,7 +37,6 @@ function meetingClassSubject(AcademicYear $year, User $teacher): array
     $grade = GradeLevel::create(['name' => ['en' => 'G'.uniqid()], 'is_active' => true]);
     $class = SchoolClass::create([
         'grade_level_id' => $grade->id,
-        'academic_year_id' => $year->id,
         'name' => 'Class '.uniqid(),
         'capacity' => 30,
         'is_active' => true,

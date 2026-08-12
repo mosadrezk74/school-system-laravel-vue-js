@@ -61,7 +61,7 @@ class CreateClassesForGradeLevelAction extends BaseAction
                     throw ClassOperationException::invalidCapacity();
                 }
 
-                if ($this->repository->existsForGradeLevel($section->academicYearId, $section->gradeLevelId, $section->name)) {
+                if ($this->repository->existsForGradeLevel($section->gradeLevelId, $section->name)) {
                     throw ClassOperationException::classAlreadyExists();
                 }
 

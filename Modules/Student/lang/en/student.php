@@ -10,7 +10,7 @@ return [
     'admission_number_already_exists' => 'A student with this admission number already exists.',
     'user_is_not_a_student' => 'The selected user is not a student.',
     'student_not_found' => 'Student not found.',
-    'class_does_not_belong_to_year' => 'The selected class does not belong to the selected academic year.',
+    'class_not_found' => 'The selected class could not be found.',
     'academic_year_not_active' => 'The selected academic year is not active.',
     'incompatible_academic_data' => 'The academic data provided is incompatible.',
 

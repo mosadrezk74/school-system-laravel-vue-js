@@ -18,6 +18,7 @@ class PromotionQuery extends BaseQuery
             'student.user',
             'fromAcademicYear',
             'toAcademicYear',
+            'toSemester',
             'fromClass',
             'toClass',
             'promotedBy',

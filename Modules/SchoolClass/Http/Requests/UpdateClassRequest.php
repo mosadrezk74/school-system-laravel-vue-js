@@ -3,7 +3,6 @@
 namespace Modules\SchoolClass\Http\Requests;
 
 use Illuminate\Validation\Rule;
-use Modules\Academic\Services\AcademicYearService;
 use Modules\Core\Abstracts\BaseRequest;
 
 class UpdateClassRequest extends BaseRequest
@@ -28,7 +27,6 @@ class UpdateClassRequest extends BaseRequest
                 'required', 'string', 'max:100',
                 Rule::unique('classes', 'name')
                     ->where(fn ($query) => $query
-                        ->where('academic_year_id', AcademicYearService::id())
                         ->where('grade_level_id', $this->input('grade_level_id'))
                         ->whereNull('deleted_at'))
                     ->ignore($class?->id),

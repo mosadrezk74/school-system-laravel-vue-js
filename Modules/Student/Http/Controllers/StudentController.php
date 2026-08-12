@@ -5,7 +5,6 @@ namespace Modules\Student\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Modules\Academic\Services\AcademicYearService;
 use Modules\Behavior\Models\BehaviorRecord;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
@@ -59,9 +58,9 @@ class StudentController extends BaseInertiaController
         $this->authorize('create', StudentProfile::class);
 
         return $this->render('Student::Students/Create', [
-            'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
+            'classes' => SchoolClass::query()->where('is_active', true)
                 ->with(['gradeLevel:id,name'])
-                ->get(['id', 'name', 'grade_level_id', 'academic_year_id']),
+                ->get(['id', 'name', 'grade_level_id']),
         ]);
     }
 
@@ -107,9 +106,9 @@ class StudentController extends BaseInertiaController
 
         return $this->render('Student::Students/Edit', [
             'student' => new StudentResource($student),
-            'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
+            'classes' => SchoolClass::query()->where('is_active', true)
                 ->with(['gradeLevel:id,name'])
-                ->get(['id', 'name', 'grade_level_id', 'academic_year_id']),
+                ->get(['id', 'name', 'grade_level_id']),
         ]);
     }
 

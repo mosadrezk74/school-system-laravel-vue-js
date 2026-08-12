@@ -138,11 +138,17 @@ class PortalScopeService
              * assistant_teacher_id, so a teacher reaches a class by being
              * assigned to teach a subject in it.
              */
+            /*
+             * Classes are no longer bound to an academic year, so the year
+             * filter moved onto the assignment pivot, which is what actually
+             * carries it. A teacher therefore still reaches only the classes
+             * they teach *this* year, not every class they have ever taught.
+             */
             return SchoolClass::query()
                 ->with('gradeLevel')
-                ->where('academic_year_id', AcademicYearService::id())
                 ->whereIn('id', ClassSubject::query()
                     ->where('teacher_id', $teacherId)
+                    ->where('academic_year_id', AcademicYearService::id())
                     ->select('class_id'))
                 ->get();
         });

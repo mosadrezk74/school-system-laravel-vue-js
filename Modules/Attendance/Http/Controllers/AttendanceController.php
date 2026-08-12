@@ -273,14 +273,13 @@ class AttendanceController extends BaseInertiaController
      */
     protected function activeClasses(): array
     {
-        return SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
+        return SchoolClass::query()->where('is_active', true)
             ->with(['gradeLevel:id,name'])
-            ->get(['id', 'name', 'grade_level_id', 'academic_year_id'])
+            ->get(['id', 'name', 'grade_level_id'])
             ->map(fn (SchoolClass $class) => [
                 'id' => $class->id,
                 'name' => $class->name,
                 'grade_level_id' => $class->grade_level_id,
-                'academic_year_id' => $class->academic_year_id,
                 'grade_level' => $class->gradeLevel ? ['id' => $class->gradeLevel->id, 'name' => $class->gradeLevel->name] : null,
             ])
             ->values()

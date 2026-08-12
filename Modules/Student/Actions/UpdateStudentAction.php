@@ -41,12 +41,13 @@ class UpdateStudentAction extends BaseAction
                 throw StudentOperationException::academicYearNotActive();
             }
 
-            if ($dto->currentClassId) {
-                $class = SchoolClass::find($dto->currentClassId);
-
-                if (! $class || $class->academic_year_id !== $dto->academicYearId) {
-                    throw StudentOperationException::classDoesNotBelongToYear();
-                }
+            /*
+             * Classes are no longer tied to an academic year, so only their
+             * existence is checked — a class is a standing structure the
+             * student can be placed in whichever year they are enrolled for.
+             */
+            if ($dto->currentClassId && ! SchoolClass::find($dto->currentClassId)) {
+                throw StudentOperationException::classNotFound();
             }
 
             $student = $this->repository->update($student, $dto, auth()->id());

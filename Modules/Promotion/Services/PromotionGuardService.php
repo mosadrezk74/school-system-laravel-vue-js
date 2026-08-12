@@ -4,6 +4,7 @@ namespace Modules\Promotion\Services;
 
 use Illuminate\Support\Collection;
 use Modules\Academic\Models\AcademicYear;
+use Modules\Academic\Models\Semester;
 use Modules\Promotion\DTOs\PromotionDecisionDTO;
 use Modules\Promotion\Exceptions\PromotionOperationException;
 use Modules\Promotion\Models\StudentPromotion;
@@ -42,6 +43,29 @@ class PromotionGuardService
         return $year;
     }
 
+    /**
+     * The target term must exist and be active.
+     *
+     * Deliberately *not* checked against the target academic year: this school
+     * treats terms and classes as standing structures that recur every year,
+     * so pairing them with a year is an administrative choice rather than a
+     * constraint. The chosen year, term and class are each recorded as picked.
+     */
+    public function assertTargetSemester(?int $targetSemesterId): Semester
+    {
+        if ($targetSemesterId === null) {
+            throw PromotionOperationException::targetSemesterRequired();
+        }
+
+        $semester = Semester::query()->whereKey($targetSemesterId)->first();
+
+        if (! $semester instanceof Semester || ! $semester->is_active) {
+            throw PromotionOperationException::targetSemesterInvalid();
+        }
+
+        return $semester;
+    }
+
     /** The student must be sitting in the year the decision is being made for. */
     public function assertStudentInSourceYear(StudentProfile $student, int $sourceYearId): void
     {
@@ -68,13 +92,15 @@ class PromotionGuardService
     }
 
     /**
-     * The target class must exist, sit in the target year, and represent a
-     * grade the student is not moving backwards into.
+     * The target class must exist, be active, and represent a grade the
+     * student is not moving backwards into.
+     *
+     * Its academic year is not checked, for the same reason as the term above:
+     * classes here are standing structures that carry across years.
      */
     public function assertTargetClass(
         PromotionDecisionDTO $decision,
         StudentProfile $student,
-        int $targetYearId,
     ): SchoolClass {
         if ($decision->targetClassId === null) {
             throw PromotionOperationException::targetClassRequired();
@@ -87,10 +113,6 @@ class PromotionGuardService
 
         if (! $class instanceof SchoolClass || ! $class->is_active) {
             throw PromotionOperationException::targetClassInvalid();
-        }
-
-        if ((int) $class->academic_year_id !== $targetYearId) {
-            throw PromotionOperationException::targetClassWrongYear();
         }
 
         $this->assertGradeProgression($student, $class);

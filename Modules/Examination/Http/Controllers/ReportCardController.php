@@ -102,7 +102,6 @@ class ReportCardController extends BaseInertiaController
     {
         return $this->scope
             ->applyClassScope(SchoolClass::query(), 'id')
-            ->where('academic_year_id', $academicYearId)
             ->get()
             ->map(fn (SchoolClass $class): array => [
                 'value' => $class->id,

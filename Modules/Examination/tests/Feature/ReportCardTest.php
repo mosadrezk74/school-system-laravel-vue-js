@@ -55,7 +55,6 @@ beforeEach(function (): void {
 
     $this->class = SchoolClass::query()->create([
         'grade_level_id' => $this->gradeLevel->id,
-        'academic_year_id' => $this->year->id,
         'name' => '5A',
         'capacity' => 30,
         'is_active' => true,

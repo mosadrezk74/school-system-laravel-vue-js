@@ -27,9 +27,9 @@ class StudentOperationException extends BaseException
         return new static($message ?: __('student::student.student_not_found'), HttpStatus::NOT_FOUND);
     }
 
-    public static function classDoesNotBelongToYear(string $message = ''): static
+    public static function classNotFound(string $message = ''): static
     {
-        return new static($message ?: __('student::student.class_does_not_belong_to_year'), HttpStatus::UNPROCESSABLE_ENTITY);
+        return new static($message ?: __('student::student.class_not_found'), HttpStatus::UNPROCESSABLE_ENTITY);
     }
 
     public static function academicYearNotActive(string $message = ''): static

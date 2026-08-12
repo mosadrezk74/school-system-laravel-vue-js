@@ -155,7 +155,6 @@ it('rejects updating a student to a class from a different academic year', funct
 
     $class = SchoolClass::create([
         'grade_level_id' => $gradeLevel->id,
-        'academic_year_id' => $otherYear->id,
         'name' => 'Class 1',
         'is_active' => true,
     ]);

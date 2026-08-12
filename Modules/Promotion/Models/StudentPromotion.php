@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Academic\Models\AcademicYear;
+use Modules\Academic\Models\Semester;
 use Modules\Promotion\Enums\PromotionStatus;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\Student\Models\StudentProfile;
@@ -50,6 +51,15 @@ class StudentPromotion extends Model
     public function toAcademicYear(): BelongsTo
     {
         return $this->belongsTo(AcademicYear::class, 'to_academic_year_id');
+    }
+
+    /**
+     * The term the student was promoted into. Null for retained, graduated
+     * and transferred decisions, which move nobody.
+     */
+    public function toSemester(): BelongsTo
+    {
+        return $this->belongsTo(Semester::class, 'to_semester_id');
     }
 
     public function fromClass(): BelongsTo

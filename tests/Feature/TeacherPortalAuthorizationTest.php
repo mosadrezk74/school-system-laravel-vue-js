@@ -19,7 +19,6 @@ function teacherPortalClass(AcademicYear $year): SchoolClass
 {
     return SchoolClass::create([
         'name' => fake()->unique()->bothify('Class-##'),
-        'academic_year_id' => $year->id,
         'grade_level_id' => GradeLevel::create([
             'name' => fake()->unique()->bothify('Grade-##'),
             'level' => fake()->unique()->numberBetween(1, 900),

@@ -7,8 +7,11 @@ use Modules\Academic\Models\Semester;
 use Modules\Academic\Services\AcademicContextService;
 use Modules\Auth\Database\Seeders\RolePermissionSeeder;
 use Modules\Auth\Enums\UserRole;
+use Modules\Promotion\DTOs\PromotionDecisionDTO;
 use Modules\Promotion\Enums\PromotionStatus;
+use Modules\Promotion\Exceptions\PromotionOperationException;
 use Modules\Promotion\Models\StudentPromotion;
+use Modules\Promotion\Services\PromotionGuardService;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\Setting\Models\SchoolSetting;
 use Modules\Student\Models\StudentProfile;
@@ -45,6 +48,17 @@ beforeEach(function (): void {
         'is_current' => true,
     ]);
 
+    // The term the promotion targets — belongs to the *next* year, which is
+    // what the year/semester pairing rules are checked against.
+    $this->nextYearSemester = Semester::query()->create([
+        'academic_year_id' => $this->nextYear->id,
+        'name' => ['en' => 'First Semester', 'ar' => 'الفصل الأول'],
+        'sequence' => 1,
+        'start_date' => now()->addMonths(6)->toDateString(),
+        'end_date' => now()->addMonths(10)->toDateString(),
+        'is_active' => true,
+    ]);
+
     AcademicContextService::flush();
 
     $this->grade5 = GradeLevel::query()->create([
@@ -62,7 +76,6 @@ function promoClass(AcademicYear $year, GradeLevel $grade, string $name, int $ca
 {
     return SchoolClass::query()->create([
         'grade_level_id' => $grade->id,
-        'academic_year_id' => $year->id,
         'name' => $name,
         'capacity' => $capacity,
         'is_active' => true,
@@ -95,10 +108,11 @@ function promoActor(UserRole $role): User
 /**
  * @param  array<int, array<string, mixed>>  $decisions
  */
-function promote(User $actor, array $decisions, ?int $targetYearId = null)
+function promote(User $actor, array $decisions, ?int $targetYearId = null, ?int $targetSemesterId = null)
 {
     return test()->actingAs($actor)->post(route('promotions.store'), [
         'to_academic_year_id' => $targetYearId ?? test()->nextYear->id,
+        'to_semester_id' => $targetSemesterId ?? test()->nextYearSemester->id,
         'decisions' => $decisions,
     ]);
 }
@@ -186,8 +200,128 @@ test('a single student is promoted into the target year and class', function () 
     expect($record->status)->toBe(PromotionStatus::Promoted)
         ->and($record->from_academic_year_id)->toBe($this->year->id)
         ->and($record->to_academic_year_id)->toBe($this->nextYear->id)
+        ->and($record->to_semester_id)->toBe($this->nextYearSemester->id)
         ->and($record->from_class_id)->toBe($this->classA->id)
         ->and($record->to_class_id)->toBe($this->targetClass->id);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Target academic context — year, semester and class must agree
+|--------------------------------------------------------------------------
+*/
+
+test('the promotion record stores the selected target semester', function () {
+    $student = promoStudent();
+
+    promote(promoActor(UserRole::Admin), [decision($student)])->assertRedirect();
+
+    expect(StudentPromotion::query()->first()->to_semester_id)
+        ->toBe($this->nextYearSemester->id);
+});
+
+test('a semester from another academic year is accepted', function () {
+    $student = promoStudent();
+
+    /*
+     * Terms are standing structures here, so one created under a different
+     * year is still a valid destination — the school picks the year and the
+     * term independently and both are recorded as chosen.
+     */
+    promote(promoActor(UserRole::Admin), [decision($student)], null, $this->semester->id)
+        ->assertRedirect();
+
+    expect(StudentPromotion::query()->first()->to_semester_id)->toBe($this->semester->id);
+});
+
+test('a class from another academic year is accepted', function () {
+    $student = promoStudent();
+    $otherYearClass = promoClass($this->year, $this->grade6, '6-current');
+
+    // Classes recur every year too, so this is a valid destination.
+    promote(promoActor(UserRole::Admin), [decision($student, 'promoted', $otherYearClass->id)])
+        ->assertRedirect();
+
+    expect($student->fresh()->current_class_id)->toBe($otherYearClass->id)
+        ->and(StudentPromotion::query()->first()->to_class_id)->toBe($otherYearClass->id);
+});
+
+test('a missing target semester is rejected when students are being moved', function () {
+    $student = promoStudent();
+
+    $this->actingAs(promoActor(UserRole::Admin))
+        ->post(route('promotions.store'), [
+            'to_academic_year_id' => $this->nextYear->id,
+            'decisions' => [decision($student)],
+        ])
+        ->assertStatus(422);
+
+    expect(StudentPromotion::query()->count())->toBe(0);
+});
+
+test('an inactive target semester is rejected', function () {
+    $student = promoStudent();
+
+    $inactive = Semester::query()->create([
+        'academic_year_id' => $this->nextYear->id,
+        'name' => ['en' => 'Retired Term'],
+        'sequence' => 9,
+        'start_date' => now()->addMonths(6)->toDateString(),
+        'end_date' => now()->addMonths(10)->toDateString(),
+        'is_active' => false,
+    ]);
+
+    promote(promoActor(UserRole::Admin), [decision($student)], null, $inactive->id)
+        ->assertStatus(422);
+
+    expect(StudentPromotion::query()->count())->toBe(0);
+});
+
+test('the guard still refuses a missing or inactive target semester', function () {
+    $guard = app(PromotionGuardService::class);
+
+    $inactive = Semester::query()->create([
+        'academic_year_id' => $this->nextYear->id,
+        'name' => ['en' => 'Retired Term'],
+        'sequence' => 9,
+        'start_date' => now()->addMonths(6)->toDateString(),
+        'end_date' => now()->addMonths(10)->toDateString(),
+        'is_active' => false,
+    ]);
+
+    // Existence and active state are still enforced; only the year link went.
+    expect(fn () => $guard->assertTargetSemester(null))
+        ->toThrow(PromotionOperationException::class);
+
+    expect(fn () => $guard->assertTargetSemester($inactive->id))
+        ->toThrow(PromotionOperationException::class);
+
+    expect($guard->assertTargetSemester($this->nextYearSemester->id)->id)
+        ->toBe($this->nextYearSemester->id);
+});
+
+test('a retained only batch needs no target semester', function () {
+    $student = promoStudent();
+
+    $this->actingAs(promoActor(UserRole::Admin))
+        ->post(route('promotions.store'), [
+            'decisions' => [decision($student, 'retained')],
+        ])
+        ->assertRedirect();
+
+    $record = StudentPromotion::query()->first();
+
+    expect($record->status)->toBe(PromotionStatus::Retained)
+        ->and($record->to_semester_id)->toBeNull()
+        ->and($record->to_academic_year_id)->toBeNull();
+});
+
+test('a graduated decision records no target semester', function () {
+    $student = promoStudent();
+
+    promote(promoActor(UserRole::Admin), [decision($student, 'graduated')])->assertRedirect();
+
+    expect(StudentPromotion::query()->first()->to_semester_id)->toBeNull();
 });
 
 test('a bulk promotion moves every selected student', function () {
@@ -306,7 +440,9 @@ test('an inactive target year is rejected', function () {
     $student = promoStudent();
     $inactive = AcademicYear::factory()->create(['is_current' => false, 'is_active' => false]);
 
-    promote(promoActor(UserRole::Admin), [decision($student)], $inactive->id)->assertStatus(422);
+    // The year itself must still be active; only the term/class links went.
+    promote(promoActor(UserRole::Admin), [decision($student)], $inactive->id)
+        ->assertStatus(422);
 
     expect(StudentPromotion::query()->count())->toBe(0);
 });
@@ -314,19 +450,30 @@ test('an inactive target year is rejected', function () {
 test('promoting into the current year is rejected', function () {
     $student = promoStudent();
 
-    promote(promoActor(UserRole::Admin), [decision($student)], $this->year->id)->assertStatus(422);
+    // The same-as-source rule is unchanged by the relaxed term/class linking.
+    promote(promoActor(UserRole::Admin), [decision($student)], $this->year->id)
+        ->assertStatus(422);
 
     expect(StudentPromotion::query()->count())->toBe(0);
 });
 
-test('a target class from the wrong year is rejected', function () {
+test('the guard still refuses an inactive target class', function () {
     $student = promoStudent();
-    $wrongYearClass = promoClass($this->year, $this->grade6, '6-current');
 
-    promote(promoActor(UserRole::Admin), [decision($student, 'promoted', $wrongYearClass->id)])
-        ->assertStatus(422);
+    $inactiveClass = promoClass($this->nextYear, $this->grade6, '6-retired');
+    $inactiveClass->update(['is_active' => false]);
 
-    expect(StudentPromotion::query()->count())->toBe(0);
+    $guard = app(PromotionGuardService::class);
+
+    $decision = new PromotionDecisionDTO(
+        studentId: $student->id,
+        status: PromotionStatus::Promoted,
+        targetClassId: $inactiveClass->id,
+        remarks: null,
+    );
+
+    expect(fn () => $guard->assertTargetClass($decision, $student))
+        ->toThrow(PromotionOperationException::class);
 });
 
 test('moving a student to a lower grade level is rejected', function () {
@@ -441,6 +588,7 @@ test('the source year is taken from the academic context not the request', funct
     $this->actingAs(promoActor(UserRole::Admin))
         ->post(route('promotions.store'), [
             'to_academic_year_id' => $this->nextYear->id,
+            'to_semester_id' => $this->nextYearSemester->id,
             'from_academic_year_id' => $this->nextYear->id,
             'academic_year_id' => $this->nextYear->id,
             'decisions' => [decision($student)],
@@ -488,13 +636,22 @@ test('the wizard shows an empty list when nobody is eligible', function () {
         ->assertInertia(fn ($page) => $page->where('students', []));
 });
 
-test('no target classes are offered before a target year is chosen', function () {
+test('an inactive class is not offered in the wizard', function () {
     promoStudent();
 
+    $inactiveClass = promoClass($this->nextYear, $this->grade6, '6-retired');
+    $inactiveClass->update(['is_active' => false]);
+
+    /*
+     * Target classes are no longer gated on the target year, but they are
+     * still limited to active ones.
+     */
     $this->actingAs(promoActor(UserRole::Admin))
         ->get(route('promotions.create'))
         ->assertOk()
-        ->assertInertia(fn ($page) => $page->where('targetClasses', []));
+        ->assertInertia(fn ($page) => expect(
+            collect($page->toArray()['props']['targetClasses'])->pluck('class_id'),
+        )->not->toContain($inactiveClass->id));
 });
 
 /*
@@ -520,6 +677,81 @@ test('a promotion can be reverted and restores the previous state', function () 
     expect($student->academic_year_id)->toBe($this->year->id)
         ->and($student->current_class_id)->toBe($this->classA->id)
         ->and(StudentPromotion::query()->count())->toBe(0);
+});
+
+test('reverting restores the previous state from the record without guessing a semester', function () {
+    $student = promoStudent();
+    $admin = promoActor(UserRole::Admin);
+
+    promote($admin, [decision($student)])->assertRedirect();
+
+    $promotion = StudentPromotion::query()->first();
+
+    expect($promotion->to_semester_id)->toBe($this->nextYearSemester->id);
+
+    $this->actingAs($admin)
+        ->delete(route('promotions.revert', $promotion))
+        ->assertRedirect();
+
+    $student->refresh();
+
+    /*
+     * student_profiles stores no semester at all, so a revert restores year
+     * and class from the promotion row and has nothing to infer. The target
+     * semester lives only in the history, which the revert removes with it.
+     */
+    expect($student->academic_year_id)->toBe($this->year->id)
+        ->and($student->current_class_id)->toBe($this->classA->id)
+        ->and(StudentPromotion::query()->count())->toBe(0);
+});
+
+test('the wizard offers every active semester regardless of year', function () {
+    promoStudent();
+
+    $this->actingAs(promoActor(UserRole::Admin))
+        ->get(route('promotions.create'))
+        ->assertOk()
+        ->assertInertia(function ($page) {
+            $ids = collect($page->toArray()['props']['targetSemesters'])->pluck('value');
+
+            // Both years' terms are offered — they are standing structures.
+            expect($ids)->toContain($this->nextYearSemester->id)
+                ->and($ids)->toContain($this->semester->id);
+        });
+});
+
+test('the wizard offers every active class regardless of year', function () {
+    promoStudent();
+
+    $this->actingAs(promoActor(UserRole::Admin))
+        ->get(route('promotions.create'))
+        ->assertOk()
+        ->assertInertia(function ($page) {
+            $ids = collect($page->toArray()['props']['targetClasses'])->pluck('class_id');
+
+            expect($ids)->toContain($this->targetClass->id)
+                ->and($ids)->toContain($this->classA->id);
+        });
+});
+
+test('an inactive semester is not offered in the wizard', function () {
+    promoStudent();
+
+    $inactive = Semester::query()->create([
+        'academic_year_id' => $this->nextYear->id,
+        'name' => ['en' => 'Retired Term'],
+        'sequence' => 9,
+        'start_date' => now()->addMonths(6)->toDateString(),
+        'end_date' => now()->addMonths(10)->toDateString(),
+        'is_active' => false,
+    ]);
+
+    $this->actingAs(promoActor(UserRole::Admin))
+        ->get(route('promotions.create'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => expect(
+            collect($page->toArray()['props']['targetSemesters'])->pluck('value'),
+        )->not->toContain($inactive->id));
 });
 
 test('reverting a graduation restores the previous graduated flag', function () {
@@ -569,6 +801,7 @@ test('an older promotion cannot be reverted once a newer one exists', function (
         'student_id' => $student->id,
         'from_academic_year_id' => $this->nextYear->id,
         'to_academic_year_id' => $thirdYear->id,
+        'to_semester_id' => null,
         'from_class_id' => $this->targetClass->id,
         'to_class_id' => $thirdClass->id,
         'status' => PromotionStatus::Promoted,

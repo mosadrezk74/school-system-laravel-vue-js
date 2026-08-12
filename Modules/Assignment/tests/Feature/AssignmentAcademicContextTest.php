@@ -22,7 +22,6 @@ function assignmentClass(AcademicYear $year, string $name = 'Grade 1 - A'): Scho
 
     return SchoolClass::create([
         'grade_level_id' => $grade->id,
-        'academic_year_id' => $year->id,
         'name' => $name,
         'capacity' => 30,
         'is_active' => true,

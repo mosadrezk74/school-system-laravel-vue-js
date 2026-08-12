@@ -10,7 +10,7 @@ return [
     'admission_number_already_exists' => 'يوجد طالب آخر بنفس رقم القيد.',
     'user_is_not_a_student' => 'المستخدم المحدد ليس طالبًا.',
     'student_not_found' => 'الطالب غير موجود.',
-    'class_does_not_belong_to_year' => 'الفصل المحدد لا ينتمي إلى العام الدراسي المحدد.',
+    'class_not_found' => 'تعذّر العثور على الفصل المحدد.',
     'academic_year_not_active' => 'العام الدراسي المحدد غير مفعل.',
     'incompatible_academic_data' => 'البيانات الأكاديمية المقدمة غير متوافقة.',
 

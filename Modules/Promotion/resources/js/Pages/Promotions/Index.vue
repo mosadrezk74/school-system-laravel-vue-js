@@ -151,8 +151,15 @@ const dash = value => value || '—'
       </div>
     </template>
 
+    <!-- Year, term and class together: the full target academic context. -->
     <template #item.to="{ item }">
       {{ dash(item.to_academic_year_name) }}
+      <div
+        v-if="item.to_semester_name"
+        class="text-caption text-medium-emphasis"
+      >
+        {{ item.to_semester_name }}
+      </div>
       <div class="text-caption text-medium-emphasis">
         {{ dash(item.to_class_name) }}
       </div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
 use Modules\Academic\Services\AcademicYearService;
@@ -87,8 +88,8 @@ it('creates four sections under one grade level', function () {
         ])
         ->assertSessionHasNoErrors();
 
+    // Classes are no longer year-scoped, so the grade level alone identifies them.
     expect(SchoolClass::query()
-        ->where('academic_year_id', $year->id)
         ->where('grade_level_id', $grade->id)
         ->count())->toBe(4);
 });
@@ -167,34 +168,28 @@ it('allows the same section name under a different grade level', function () {
     expect(SchoolClass::query()->where('name', '3-A')->count())->toBe(2);
 });
 
-it('allows the same grade and section name in a different academic year', function () {
-    $firstYear = currentYear();
+it('refuses the same section name in the same grade level whatever the year', function () {
+    currentYear();
     $grade = makeGrade();
 
     SchoolClass::query()->create([
-        'academic_year_id' => $firstYear->id,
         'grade_level_id' => $grade->id,
         'name' => '3-A',
         'capacity' => 30,
         'is_active' => true,
     ]);
 
-    // A second year becomes current; the same section name must be free again.
-    $secondYear = AcademicYear::factory()->create([
-        'is_active' => true,
-        'start_date' => now()->addYear()->toDateString(),
-        'end_date' => now()->addYears(2)->toDateString(),
-    ]);
-
-    SchoolClass::query()->create([
-        'academic_year_id' => $secondYear->id,
+    /*
+     * Classes are no longer scoped to an academic year, so a section name is
+     * unique within its grade level outright — the same name can no longer be
+     * reused by moving to a different year.
+     */
+    expect(fn () => SchoolClass::query()->create([
         'grade_level_id' => $grade->id,
         'name' => '3-A',
         'capacity' => 30,
         'is_active' => true,
-    ]);
-
-    expect(SchoolClass::query()->where('name', '3-A')->count())->toBe(2);
+    ]))->toThrow(QueryException::class);
 });
 
 // --- Atomicity -------------------------------------------------------------
@@ -278,7 +273,6 @@ it('leaves an existing class and its student attachment untouched', function () 
     $grade = makeGrade();
 
     $existing = SchoolClass::query()->create([
-        'academic_year_id' => $year->id,
         'grade_level_id' => $grade->id,
         'name' => '3-A',
         'capacity' => 30,

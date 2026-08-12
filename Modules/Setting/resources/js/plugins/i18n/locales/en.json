@@ -2111,11 +2111,15 @@
       "currentClass": "Current class",
       "average": "Average",
       "promotedBy": "Decided by",
-      "promotedAt": "Decided at"
+      "promotedAt": "Decided at",
+      "toSemester": "Target semester"
     },
     "hints": {
-      "targetYear": "The academic year students will move into."
-    }
+      "targetYear": "The academic year students will move into.",
+      "targetSemester": "The term students will start in."
+    },
+    "noTargetSemesters": "No semesters in the target year",
+    "missingTargetSemester": "Choose a target semester."
   },
   "news": {
     "title": "News",

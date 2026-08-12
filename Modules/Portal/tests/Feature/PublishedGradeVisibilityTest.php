@@ -59,7 +59,6 @@ function gradeClass(AcademicYear $year): SchoolClass
 
     return SchoolClass::query()->create([
         'grade_level_id' => $gradeLevel->id,
-        'academic_year_id' => $year->id,
         'name' => 'Class '.$gradeLevel->id,
         'capacity' => 30,
         'is_active' => true,

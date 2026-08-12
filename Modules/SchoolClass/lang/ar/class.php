@@ -16,7 +16,6 @@ return [
 
     'fields' => [
         'grade_level_id' => 'المرحلة الدراسية',
-        'academic_year_id' => 'العام الدراسي',
         'classroom_id' => 'القاعة الدراسية',
         'name' => 'اسم الفصل',
         'capacity' => 'السعة',

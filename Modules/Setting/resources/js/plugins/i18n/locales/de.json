@@ -1407,11 +1407,15 @@
       "currentClass": "Aktuelle Klasse",
       "average": "Durchschnitt",
       "promotedBy": "Entschieden von",
-      "promotedAt": "Entschieden am"
+      "promotedAt": "Entschieden am",
+      "toSemester": "Zielhalbjahr"
     },
     "hints": {
-      "targetYear": "Das Schuljahr, in das die Schüler wechseln."
-    }
+      "targetYear": "Das Schuljahr, in das die Schüler wechseln.",
+      "targetSemester": "Das Halbjahr, in dem die Schüler beginnen."
+    },
+    "noTargetSemesters": "Keine Halbjahre im Zieljahr",
+    "missingTargetSemester": "Wählen Sie ein Zielhalbjahr."
   },
   "news": {
     "title": "Neuigkeiten",

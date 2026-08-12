@@ -37,6 +37,7 @@ interface PromotionRepositoryInterface
         PromotionDecisionDTO $decision,
         int $fromAcademicYearId,
         ?int $toAcademicYearId,
+        ?int $toSemesterId,
         ?int $actorId,
     ): StudentPromotion;
 

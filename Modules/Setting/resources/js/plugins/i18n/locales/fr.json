@@ -1407,11 +1407,15 @@
       "currentClass": "Classe actuelle",
       "average": "Moyenne",
       "promotedBy": "Décidé par",
-      "promotedAt": "Décidé le"
+      "promotedAt": "Décidé le",
+      "toSemester": "Semestre cible"
     },
     "hints": {
-      "targetYear": "L'année scolaire vers laquelle les élèves passeront."
-    }
+      "targetYear": "L'année scolaire vers laquelle les élèves passeront.",
+      "targetSemester": "Le semestre dans lequel les élèves commenceront."
+    },
+    "noTargetSemesters": "Aucun semestre dans l'année cible",
+    "missingTargetSemester": "Choisissez un semestre cible."
   },
   "news": {
     "title": "Actualités",

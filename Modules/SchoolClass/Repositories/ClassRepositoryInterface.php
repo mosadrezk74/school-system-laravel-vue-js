@@ -16,7 +16,7 @@ interface ClassRepositoryInterface
      * Whether a section of this name already exists in the given year and
      * grade. Sections share a grade level, so the name is part of the key.
      */
-    public function existsForGradeLevel(int $academicYearId, int $gradeLevelId, string $name, ?int $excludeId = null): bool;
+    public function existsForGradeLevel(int $gradeLevelId, string $name, ?int $excludeId = null): bool;
 
     public function create(CreateClassDTO $dto, ?int $actorId = null): SchoolClass;
 

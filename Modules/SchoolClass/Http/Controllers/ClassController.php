@@ -36,7 +36,6 @@ class ClassController extends BaseInertiaController
 
         $query = (new ClassQuery)
             ->search($filters->search ?? '')
-            ->academicYearId($filters->academicYearId)
             ->gradeLevelId($filters->gradeLevelId)
             ->isActive($filters->isActive)
             ->sort($filters->sortBy, $filters->sortOrder);
@@ -87,7 +86,7 @@ class ClassController extends BaseInertiaController
     {
         $this->authorize('view', $class);
 
-        $class->load(['gradeLevel', 'academicYear', 'classroom']);
+        $class->load(['gradeLevel', 'classroom']);
 
         $roster = StudentProfile::query()
             ->where('current_class_id', $class->id)

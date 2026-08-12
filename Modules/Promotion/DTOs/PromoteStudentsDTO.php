@@ -7,9 +7,10 @@ use Illuminate\Http\Request;
 /**
  * A bulk promotion request.
  *
- * The target academic year is an explicit administrative input — it is the one
- * piece of academic context the admin genuinely chooses. The *source* year is
- * never accepted here: the Action resolves it from AcademicContextService.
+ * The target academic year and semester are explicit administrative inputs —
+ * they are the academic context the admin genuinely chooses, and are therefore
+ * deliberately *not* read from AcademicContextService. The *source* year is
+ * never accepted here: the Action resolves that from the current context.
  */
 final readonly class PromoteStudentsDTO
 {
@@ -18,6 +19,7 @@ final readonly class PromoteStudentsDTO
      */
     public function __construct(
         public ?int $targetAcademicYearId,
+        public ?int $targetSemesterId,
         public array $decisions,
     ) {}
 
@@ -26,6 +28,9 @@ final readonly class PromoteStudentsDTO
         return new self(
             targetAcademicYearId: $request->filled('to_academic_year_id')
                 ? $request->integer('to_academic_year_id')
+                : null,
+            targetSemesterId: $request->filled('to_semester_id')
+                ? $request->integer('to_semester_id')
                 : null,
             decisions: array_map(
                 static fn (array $row): PromotionDecisionDTO => PromotionDecisionDTO::fromArray($row),

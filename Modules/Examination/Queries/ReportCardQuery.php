@@ -4,6 +4,7 @@ namespace Modules\Examination\Queries;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\Semester;
 use Modules\Examination\DTOs\ReportCardDTO;
 use Modules\Examination\DTOs\ReportCardResultDTO;
@@ -48,7 +49,7 @@ class ReportCardQuery
      */
     public function forStudent(StudentProfile $student, int $academicYearId, int $semesterId): ReportCardDTO
     {
-        $student->loadMissing(['user', 'currentClass.gradeLevel', 'currentClass.academicYear']);
+        $student->loadMissing(['user', 'currentClass.gradeLevel']);
 
         $results = $this->resultsFor($student->id, $academicYearId, $semesterId);
         $examSubjects = $this->examSubjectsFor($student->current_class_id, $academicYearId, $semesterId);
@@ -69,7 +70,7 @@ class ReportCardQuery
             classId: $student->current_class_id,
             className: $student->currentClass?->name,
             academicYearId: $academicYearId,
-            academicYearName: $student->currentClass?->academicYear?->name,
+            academicYearName: $this->academicYearName($academicYearId),
             semesterId: $semesterId,
             semesterName: $this->semesterName($semesterId),
             subjects: $subjects,
@@ -336,6 +337,18 @@ class ReportCardQuery
         $examSubject = $examSubjects->get("{$result->exam_id}:{$result->subject_id}");
 
         return $examSubject !== null ? (float) $examSubject->total_marks : null;
+    }
+
+    /**
+     * Read from the reported year itself.
+     *
+     * It used to come from the student's class, but classes no longer carry an
+     * academic year — and the card's year is the one being reported on anyway,
+     * which is the more truthful source.
+     */
+    private function academicYearName(int $academicYearId): ?string
+    {
+        return AcademicYear::query()->whereKey($academicYearId)->value('name');
     }
 
     /**

@@ -2105,11 +2105,15 @@
       "currentClass": "الصف الحالي",
       "average": "المعدل",
       "promotedBy": "صاحب القرار",
-      "promotedAt": "تاريخ القرار"
+      "promotedAt": "تاريخ القرار",
+      "toSemester": "الفصل المستهدف"
     },
     "hints": {
-      "targetYear": "العام الدراسي الذي سينتقل إليه الطلاب."
-    }
+      "targetYear": "العام الدراسي الذي سينتقل إليه الطلاب.",
+      "targetSemester": "الفصل الدراسي الذي سيبدأ فيه الطلاب."
+    },
+    "noTargetSemesters": "لا توجد فصول دراسية في العام المستهدف",
+    "missingTargetSemester": "اختر الفصل الدراسي المستهدف."
   },
   "news": {
     "title": "الأخبار",

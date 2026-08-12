@@ -50,7 +50,6 @@ watch(status, applyFilters)
 
 const headers = computed(() => [
   { title: t('classes.name'), key: 'name' },
-  { title: t('classes.academicYear'), key: 'academic_year' },
   { title: t('classes.gradeLevel'), key: 'grade_level' },
   { title: t('classes.capacity'), key: 'capacity', sortable: false },
   { title: t('classes.active'), key: 'status', sortable: false },
@@ -129,9 +128,6 @@ function goToPage(page) {
         </AppTableLink>
       </template>
 
-      <template #item.academic_year="{ item }">
-        {{ item.academic_year?.name }}
-      </template>
 
       <template #item.grade_level="{ item }">
         {{ item.grade_level?.name }}

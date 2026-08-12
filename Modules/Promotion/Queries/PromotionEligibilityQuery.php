@@ -78,15 +78,18 @@ class PromotionEligibilityQuery
     }
 
     /**
-     * Classes available in the target year, with their remaining room.
+     * Classes a student may be promoted into, with their remaining room.
+     *
+     * Not scoped to an academic year: this school runs standing classes that
+     * recur every year, so every active class is a valid destination and the
+     * year is recorded from the administrator's separate choice.
      *
      * @return Collection<int, array<string, mixed>>
      */
-    public function targetClasses(int $targetAcademicYearId): Collection
+    public function targetClasses(): Collection
     {
         $classes = SchoolClass::query()
             ->with('gradeLevel')
-            ->where('academic_year_id', $targetAcademicYearId)
             ->where('is_active', true)
             ->get();
 

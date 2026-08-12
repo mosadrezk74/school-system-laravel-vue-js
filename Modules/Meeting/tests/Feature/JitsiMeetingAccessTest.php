@@ -37,7 +37,6 @@ function meetingClass(string $name = 'Class 3-A'): SchoolClass
     return SchoolClass::query()->create([
         'name' => $name,
         'grade_level_id' => $grade->id,
-        'academic_year_id' => $year->id,
     ]);
 }
 
@@ -64,7 +63,7 @@ function enrolStudent(User $student, SchoolClass $class): StudentProfile
         'user_id' => $student->id,
         'admission_number' => (string) Str::random(8),
         'current_class_id' => $class->id,
-        'academic_year_id' => $class->academic_year_id,
+        'academic_year_id' => AcademicYear::query()->value('id'),
         'admission_date' => now()->subYear(),
         'status' => 'active',
     ]);

@@ -50,7 +50,13 @@ class PromoteStudentsAction extends BaseAction
         $sourceYearId = $this->context->requireCurrentYearId();
 
         return $this->executeWithTransaction(function () use ($dto, $sourceYearId): Collection {
-            $targetYearId = $this->resolveTargetYear($dto, $sourceYearId);
+            /*
+             * The target year and semester are the administrator's explicit
+             * choice, never the current academic context — resolved and
+             * validated together so a term from one year can never be paired
+             * with another year.
+             */
+            [$targetYearId, $targetSemesterId] = $this->resolveTarget($dto, $sourceYearId);
 
             $students = $this->loadStudents($dto);
             $existing = $this->repository->existingDecisions($dto->studentIds(), $sourceYearId);
@@ -59,24 +65,38 @@ class PromoteStudentsAction extends BaseAction
             $targetClasses = $this->validateAll($dto, $students, $existing, $sourceYearId, $targetYearId);
 
             // Phase 2 — apply, now that the whole batch is known to be valid.
-            return $this->applyAll($dto, $students, $sourceYearId, $targetYearId, $targetClasses);
+            return $this->applyAll(
+                $dto,
+                $students,
+                $sourceYearId,
+                $targetYearId,
+                $targetSemesterId,
+                $targetClasses,
+            );
         });
     }
 
     /**
-     * The target year is only required when at least one student is actually
-     * being moved; a batch of retentions needs none.
+     * The target year and term are only required when at least one student is
+     * actually being moved; a batch of retentions needs neither.
+     *
+     * @return array{0: int|null, 1: int|null}
      */
-    private function resolveTargetYear(PromoteStudentsDTO $dto, int $sourceYearId): ?int
+    private function resolveTarget(PromoteStudentsDTO $dto, int $sourceYearId): array
     {
         $movesAnyone = collect($dto->decisions)
             ->contains(fn (PromotionDecisionDTO $decision): bool => $decision->status->requiresTargetYear());
 
         if (! $movesAnyone) {
-            return null;
+            return [null, null];
         }
 
-        return $this->guard->assertTargetYear($dto->targetAcademicYearId, $sourceYearId)->id;
+        $targetYearId = $this->guard->assertTargetYear($dto->targetAcademicYearId, $sourceYearId)->id;
+
+        // Existence and active state only — terms are not tied to the year.
+        $targetSemesterId = $this->guard->assertTargetSemester($dto->targetSemesterId)->id;
+
+        return [$targetYearId, $targetSemesterId];
     }
 
     /**
@@ -137,7 +157,7 @@ class PromoteStudentsAction extends BaseAction
                 continue;
             }
 
-            $class = $this->guard->assertTargetClass($decision, $student, (int) $targetYearId);
+            $class = $this->guard->assertTargetClass($decision, $student);
 
             $incoming[$class->id] = ($incoming[$class->id] ?? 0) + 1;
             $this->guard->assertCapacity($class, $counts, $incoming[$class->id]);
@@ -158,6 +178,7 @@ class PromoteStudentsAction extends BaseAction
         Collection $students,
         int $sourceYearId,
         ?int $targetYearId,
+        ?int $targetSemesterId,
         array $targetClasses,
     ): Collection {
         $actorId = auth()->id();
@@ -170,7 +191,14 @@ class PromoteStudentsAction extends BaseAction
             // Recorded before the student is changed, so from_* captures the
             // state being left behind rather than the one just written.
             $records->push(
-                $this->repository->record($student, $decision, $sourceYearId, $targetYearId, $actorId),
+                $this->repository->record(
+                    $student,
+                    $decision,
+                    $sourceYearId,
+                    $targetYearId,
+                    $targetSemesterId,
+                    $actorId,
+                ),
             );
 
             $this->repository->applyToStudent($student, $decision, $targetYearId);

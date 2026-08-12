@@ -13,7 +13,6 @@ const { t } = useI18n()
 // route), so this action opens that index rather than a specific record.
 const quickActions = [
   { key: 'edit', icon: 'bx-edit', href: `/academic/classes/${props.class.id}/edit` },
-  { key: 'viewAcademicYear', icon: 'bx-calendar', href: props.class.academic_year ? '/academic/academic-years' : null },
 ]
 </script>
 
@@ -39,7 +38,7 @@ const quickActions = [
               </VChip>
             </div>
             <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
-              {{ $props.class.grade_level?.name ?? '—' }} · {{ $props.class.academic_year?.name ?? '—' }}
+              {{ $props.class.grade_level?.name ?? '—' }}
             </p>
           </div>
 
@@ -72,16 +71,6 @@ const quickActions = [
                 </VListItemTitle>
                 <VListItemSubtitle class="text-body-1 text-high-emphasis">
                   {{ $props.class.grade_level?.name ?? '—' }}
-                </VListItemSubtitle>
-              </VListItem>
-            </VCol>
-            <VCol cols="6">
-              <VListItem>
-                <VListItemTitle class="text-medium-emphasis text-caption">
-                  {{ t('classes.academicYear') }}
-                </VListItemTitle>
-                <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ $props.class.academic_year?.name ?? '—' }}
                 </VListItemSubtitle>
               </VListItem>
             </VCol>

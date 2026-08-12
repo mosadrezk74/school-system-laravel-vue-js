@@ -17,6 +17,7 @@ import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 const props = defineProps({
   students: { type: Array, default: () => [] },
   targetClasses: { type: Array, default: () => [] },
+  targetSemesters: { type: Array, default: () => [] },
   sourceClasses: { type: Array, default: () => [] },
   academicYears: { type: Array, default: () => [] },
   statusOptions: { type: Array, default: () => [] },
@@ -27,9 +28,10 @@ const props = defineProps({
 const { t } = useI18n()
 
 const targetYearId = ref(props.filters.to_academic_year_id ?? null)
+const targetSemesterId = ref(null)
 const sourceClassId = ref(props.filters.class_id ?? null)
 
-/** Reloads eligibility whenever the year or source class changes. */
+/** Reloads the eligible student list from the server. */
 const reload = () => {
   router.get('/user-management/promotions/create', {
     ...(targetYearId.value ? { to_academic_year_id: targetYearId.value } : {}),
@@ -37,6 +39,11 @@ const reload = () => {
   }, { preserveState: true, preserveScroll: true, replace: true })
 }
 
+/*
+ * The term and class lists are not narrowed by the target year — those are
+ * standing structures that recur every year — so changing the year leaves
+ * both selections valid and nothing needs clearing.
+ */
 watch(targetYearId, reload)
 watch(sourceClassId, reload)
 
@@ -98,16 +105,23 @@ const missingClass = computed(
   () => selectedIds.value.some(id => needsClass(id) && !decisions.value[id].target_class_id),
 )
 
+/** A term is as mandatory as the year whenever anyone is being moved. */
+const missingTargetSemester = computed(
+  () => requiresTargetYear.value && !targetSemesterId.value,
+)
+
 const canSubmit = computed(() => selectedIds.value.length > 0
   && !missingClass.value
+  && !missingTargetSemester.value
   && (!requiresTargetYear.value || Boolean(targetYearId.value)))
 
-const form = useForm({ to_academic_year_id: null, decisions: [] })
+const form = useForm({ to_academic_year_id: null, to_semester_id: null, decisions: [] })
 
 const isConfirmOpen = ref(false)
 
 function submit() {
   form.to_academic_year_id = targetYearId.value
+  form.to_semester_id = targetSemesterId.value
   form.decisions = selectedIds.value.map(id => ({
     student_id: id,
     status: decisions.value[id].status,
@@ -136,7 +150,7 @@ const dash = value => (value === null || value === undefined ? '—' : value)
       <VRow dense>
         <VCol
           cols="12"
-          md="4"
+          md="3"
         >
           <VSelect
             v-model="targetYearId"
@@ -150,7 +164,22 @@ const dash = value => (value === null || value === undefined ? '—' : value)
 
         <VCol
           cols="12"
-          md="4"
+          md="3"
+        >
+          <VSelect
+            v-model="targetSemesterId"
+            :items="targetSemesters"
+            :label="t('promotions.fields.toSemester')"
+            :no-data-text="t('promotions.noTargetSemesters')"
+            :hint="t('promotions.hints.targetSemester')"
+            persistent-hint
+            clearable
+          />
+        </VCol>
+
+        <VCol
+          cols="12"
+          md="3"
         >
           <VSelect
             v-model="sourceClassId"
@@ -161,7 +190,7 @@ const dash = value => (value === null || value === undefined ? '—' : value)
 
         <VCol
           cols="12"
-          md="4"
+          md="3"
           class="d-flex align-center gap-2"
         >
           <VBtn
@@ -287,6 +316,12 @@ const dash = value => (value === null || value === undefined ? '—' : value)
             class="text-body-2 text-error mb-0"
           >
             {{ t('promotions.missingTargetYear') }}
+          </p>
+          <p
+            v-else-if="missingTargetSemester"
+            class="text-body-2 text-error mb-0"
+          >
+            {{ t('promotions.missingTargetSemester') }}
           </p>
         </div>
 

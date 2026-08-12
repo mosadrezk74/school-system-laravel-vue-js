@@ -3,7 +3,6 @@
 namespace Modules\SchoolClass\Http\Requests;
 
 use Illuminate\Validation\Rule;
-use Modules\Academic\Services\AcademicYearService;
 use Modules\Core\Abstracts\BaseRequest;
 
 class StoreClassSectionsRequest extends BaseRequest
@@ -30,7 +29,6 @@ class StoreClassSectionsRequest extends BaseRequest
                 'distinct:ignore_case',
                 Rule::unique('classes', 'name')
                     ->where(fn ($query) => $query
-                        ->where('academic_year_id', AcademicYearService::id())
                         ->where('grade_level_id', $this->input('grade_level_id'))
                         ->whereNull('deleted_at')),
             ],

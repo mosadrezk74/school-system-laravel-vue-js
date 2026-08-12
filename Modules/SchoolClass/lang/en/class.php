@@ -16,7 +16,6 @@ return [
 
     'fields' => [
         'grade_level_id' => 'Grade Level',
-        'academic_year_id' => 'Academic Year',
         'classroom_id' => 'Classroom',
         'name' => 'Class Name',
         'capacity' => 'Capacity',

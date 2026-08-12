@@ -6,6 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Academic\Models\AcademicYear;
+use Modules\Academic\Models\Semester;
 use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
@@ -68,10 +69,16 @@ class PromotionController extends BaseInertiaController
 
         return $this->render('Promotion::Promotions/Create', [
             'students' => $eligibility->eligible($sourceYearId, $semesterId, $classId),
-            'targetClasses' => $targetYearId !== null
-                ? $eligibility->targetClasses($targetYearId)
-                : [],
-            'sourceClasses' => $this->sourceClassOptions($sourceYearId),
+
+            /*
+             * Offered in full rather than narrowed by the target year: terms
+             * and classes are standing structures here, so all active ones are
+             * valid destinations whichever year is being promoted into.
+             */
+            'targetClasses' => $eligibility->targetClasses(),
+            'targetSemesters' => $this->targetSemesterOptions(),
+
+            'sourceClasses' => $this->sourceClassOptions(),
             'academicYears' => $this->academicYearOptions($sourceYearId),
             'statusOptions' => $this->statusOptions(),
             'filters' => [
@@ -128,12 +135,40 @@ class PromotionController extends BaseInertiaController
     }
 
     /**
+     * Every active term, in teaching order.
+     *
+     * Not scoped to the target year — see targetClasses(): terms recur each
+     * year, so the administrator picks the year and the term independently.
+     *
      * @return array<int, array{value: int, title: string}>
      */
-    private function sourceClassOptions(int $academicYearId): array
+    private function targetSemesterOptions(): array
+    {
+        return Semester::query()
+            ->where('is_active', true)
+            ->orderBy('sequence')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (Semester $semester): array => [
+                'value' => $semester->id,
+
+                // `name` is translatable JSON; the model resolves the locale.
+                'title' => (string) $semester->name,
+            ])
+            ->all();
+    }
+
+    /**
+     * Classes available to narrow the eligible-student list by.
+     *
+     * Not year-scoped — classes are standing structures. The list is only a
+     * filter over students who are already limited to the current year.
+     *
+     * @return array<int, array{value: int, title: string}>
+     */
+    private function sourceClassOptions(): array
     {
         return SchoolClass::query()
-            ->where('academic_year_id', $academicYearId)
             ->where('is_active', true)
             ->get(['id', 'name'])
             ->map(fn (SchoolClass $class): array => [

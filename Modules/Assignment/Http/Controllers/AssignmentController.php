@@ -6,7 +6,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Academic\Services\AcademicContextService;
-use Modules\Academic\Services\AcademicYearService;
 use Modules\Assignment\Actions\ArchiveAssignmentAction;
 use Modules\Assignment\Actions\CreateAssignmentAction;
 use Modules\Assignment\Actions\RestoreAssignmentAction;
@@ -133,8 +132,8 @@ class AssignmentController extends BaseInertiaController
         $semester = $context->currentSemester();
 
         return [
-            'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicYearService::id())
-                ->get(['id', 'name', 'academic_year_id']),
+            'classes' => SchoolClass::query()->where('is_active', true)
+                ->get(['id', 'name']),
 
             /*
              * One eager-loaded pass over the real teaching assignments feeds
