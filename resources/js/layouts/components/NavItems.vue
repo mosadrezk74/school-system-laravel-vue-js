@@ -43,6 +43,7 @@ const sections = computed(() => [
       { title: t('nav.students'), to: '/user-management/students', icon: 'bx-user', module: 'Student' },
       { title: t('nav.teachers'), to: '/user-management/teachers', icon: 'bx-briefcase-alt-2', module: 'Teacher' },
       { title: t('nav.guardians'), to: '/user-management/guardians', icon: 'bx-group', module: 'GuardianProfile' },
+      { title: t('nav.promotions'), to: '/user-management/promotions', icon: 'bx-up-arrow-alt', module: 'Promotion', permission: 'viewPromotions' },
     ],
   },
   {
@@ -81,6 +82,7 @@ const sections = computed(() => [
     children: [
       { title: t('nav.messages'), to: '/communication/messages', icon: 'bx-message-detail', module: 'Communication' },
       { title: t('nav.emailBroadcast'), to: '/communication/email-broadcast', icon: 'bx-envelope', module: 'Communication' },
+      { title: t('nav.news'), to: '/communication/news', icon: 'bx-news', module: 'News', permission: 'viewNews' },
     ],
   },
   {

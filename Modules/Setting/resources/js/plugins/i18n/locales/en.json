@@ -55,7 +55,9 @@
     "roles": "Roles",
     "admins": "Administrators",
     "schoolTerms": "Terms & Conditions",
-    "reportCards": "Report cards"
+    "reportCards": "Report cards",
+    "promotions": "Promotions",
+    "news": "News"
   },
   "navbar": {
     "search": "Search",
@@ -75,6 +77,7 @@
     "search": "Search",
     "all": "All",
     "yes": "Yes",
+    "searchPlaceholder": "Search...",
     "no": "No",
     "active": "Active",
     "inactive": "Inactive",
@@ -1580,7 +1583,8 @@
       "live": "Live",
       "notifications": "Notifications",
       "terms": "Terms & Conditions",
-      "reportCard": "Report card"
+      "reportCard": "Report card",
+      "news": "News"
     },
     "teacher": {
       "title": "Teacher Portal",
@@ -2072,6 +2076,76 @@
       "average": "Average",
       "overallGrade": "Overall grade",
       "rank": "Class rank"
+    }
+  },
+  "promotions": {
+    "title": "Student promotions",
+    "subtitle": "End-of-year decisions and their history.",
+    "startPromotion": "New promotion",
+    "wizardSubtitle": "Promoting students out of {year}.",
+    "search": "Search students",
+    "empty": "No promotion decisions recorded yet",
+    "noEligible": "No eligible students",
+    "noEligibleHint": "Every student in the current year already has a decision, or none match this class.",
+    "noTargetClasses": "No classes in the target year",
+    "noResults": "No results",
+    "selectAll": "Select all",
+    "clearAll": "Clear",
+    "review": "Review & confirm",
+    "confirmExecute": "Confirm",
+    "revert": "Revert",
+    "missingClass": "Every promoted student needs a target class.",
+    "missingTargetYear": "Choose a target academic year.",
+    "selectedSummary": "{selected} selected · {promoted} to be promoted",
+    "confirmBulk": "Record decisions for {count} student(s)? {promoted} will move to the target year.",
+    "confirmRevert": "Revert the promotion for {name}? Their previous class and year will be restored.",
+    "fields": {
+      "student": "Student",
+      "status": "Decision",
+      "from": "From",
+      "to": "To",
+      "fromYear": "From year",
+      "toYear": "Target year",
+      "fromClass": "Current class",
+      "toClass": "Target class",
+      "currentClass": "Current class",
+      "average": "Average",
+      "promotedBy": "Decided by",
+      "promotedAt": "Decided at"
+    },
+    "hints": {
+      "targetYear": "The academic year students will move into."
+    }
+  },
+  "news": {
+    "title": "News",
+    "subtitle": "School announcements and notices.",
+    "addNew": "Add news",
+    "edit": "Edit news",
+    "search": "Search news",
+    "empty": "No news items yet",
+    "scheduled": "Scheduled",
+    "feedTitle": "School news",
+    "feedEmpty": "No news yet",
+    "feedEmptyHint": "Announcements from the school will appear here.",
+    "confirmDelete": "Delete “{title}”?",
+    "fields": {
+      "title": "Title",
+      "body": "Content",
+      "status": "Status",
+      "audience": "Audience",
+      "publishedAt": "Publish at",
+      "isPinned": "Pinned",
+      "author": "Author"
+    },
+    "hints": {
+      "audience": "Who this item is written for.",
+      "publishedAt": "Leave blank to publish immediately. A future date schedules it.",
+      "isPinned": "Pinned items appear at the top of the feed."
+    },
+    "sections": {
+      "details": "News details",
+      "detailsDesc": "Write the announcement and choose who sees it."
     }
   }
 }

@@ -19,5 +19,7 @@
     "Report": true,
     "Student": true,
     "Meeting": true,
-    "Portal": true
+    "Portal": true,
+    "Promotion": true,
+    "News": true
 }

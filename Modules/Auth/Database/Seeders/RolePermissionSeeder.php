@@ -27,6 +27,7 @@ class RolePermissionSeeder extends Seeder
         'SchoolClass' => ['school-class'],
         'Subject' => ['subject'],
         'Student' => ['student'],
+        'Promotion' => ['student-promotion'],
         'Teacher' => ['teacher'],
         'GuardianProfile' => ['guardian'],
         'Staff' => ['staff', 'leave-request'],
@@ -42,6 +43,7 @@ class RolePermissionSeeder extends Seeder
         'Transport' => ['transport-route', 'transport-vehicle'],
         'Hostel' => ['hostel'],
         'Communication' => ['message', 'broadcast'],
+        'News' => ['news'],
         'Report' => ['report'],
     ];
 

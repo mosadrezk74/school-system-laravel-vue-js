@@ -41,6 +41,8 @@ class CoreServiceProvider extends ServiceProvider
                 'viewRoles' => auth()->user()?->can('role.view') ?? false,
                 'viewUsers' => auth()->user()?->can('user.view') ?? false,
                 'viewSchoolTerms' => auth()->user()?->can('school-term.view') ?? false,
+                'viewPromotions' => auth()->user()?->can('student-promotion.view') ?? false,
+                'viewNews' => auth()->user()?->can('news.view') ?? false,
             ],
         ]);
 

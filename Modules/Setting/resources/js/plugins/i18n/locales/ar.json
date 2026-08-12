@@ -55,7 +55,9 @@
     "roles": "الأدوار",
     "admins": "المديرون",
     "schoolTerms": "الشروط والأحكام",
-    "reportCards": "بطاقات الدرجات"
+    "reportCards": "بطاقات الدرجات",
+    "promotions": "الترقيات",
+    "news": "الأخبار"
   },
   "navbar": {
     "search": "بحث",
@@ -79,6 +81,7 @@
     "active": "نشط",
     "inactive": "غير نشط",
     "cancel": "إلغاء",
+    "searchPlaceholder": "ابحث",
     "save": "حفظ",
     "clear": "مسح",
     "update": "تحديث",
@@ -1572,7 +1575,8 @@
       "live": "مباشر",
       "notifications": "الإشعارات",
       "terms": "الشروط والأحكام",
-      "reportCard": "بطاقة الدرجات"
+      "reportCard": "بطاقة الدرجات",
+      "news": "الأخبار"
     },
     "teacher": {
       "title": "بوابة المعلم",
@@ -2066,6 +2070,76 @@
       "average": "المعدل",
       "overallGrade": "التقدير العام",
       "rank": "الترتيب في الصف"
+    }
+  },
+  "promotions": {
+    "title": "ترقية الطلاب",
+    "subtitle": "قرارات نهاية العام وسجلّها.",
+    "startPromotion": "ترقية جديدة",
+    "wizardSubtitle": "ترقية الطلاب من {year}.",
+    "search": "البحث عن طالب",
+    "empty": "لا توجد قرارات ترقية مسجّلة",
+    "noEligible": "لا يوجد طلاب مؤهلون",
+    "noEligibleHint": "جميع طلاب العام الحالي لديهم قرار بالفعل، أو لا يوجد من يطابق هذا الصف.",
+    "noTargetClasses": "لا توجد صفوف في العام المستهدف",
+    "noResults": "لا توجد نتائج",
+    "selectAll": "تحديد الكل",
+    "clearAll": "إلغاء التحديد",
+    "review": "مراجعة وتأكيد",
+    "confirmExecute": "تأكيد",
+    "revert": "تراجع",
+    "missingClass": "كل طالب مُرقّى يحتاج إلى صف مستهدف.",
+    "missingTargetYear": "اختر العام الدراسي المستهدف.",
+    "selectedSummary": "{selected} محدد · {promoted} سيتم ترقيتهم",
+    "confirmBulk": "تسجيل قرارات لـ {count} طالب؟ سينتقل {promoted} إلى العام المستهدف.",
+    "confirmRevert": "التراجع عن ترقية {name}؟ سيتم استعادة صفه وعامه السابقين.",
+    "fields": {
+      "student": "الطالب",
+      "status": "القرار",
+      "from": "من",
+      "to": "إلى",
+      "fromYear": "من عام",
+      "toYear": "العام المستهدف",
+      "fromClass": "الصف الحالي",
+      "toClass": "الصف المستهدف",
+      "currentClass": "الصف الحالي",
+      "average": "المعدل",
+      "promotedBy": "صاحب القرار",
+      "promotedAt": "تاريخ القرار"
+    },
+    "hints": {
+      "targetYear": "العام الدراسي الذي سينتقل إليه الطلاب."
+    }
+  },
+  "news": {
+    "title": "الأخبار",
+    "subtitle": "إعلانات المدرسة وإشعاراتها.",
+    "addNew": "إضافة خبر",
+    "edit": "تعديل الخبر",
+    "search": "البحث في الأخبار",
+    "empty": "لا توجد أخبار بعد",
+    "scheduled": "مجدول",
+    "feedTitle": "أخبار المدرسة",
+    "feedEmpty": "لا توجد أخبار بعد",
+    "feedEmptyHint": "ستظهر إعلانات المدرسة هنا.",
+    "confirmDelete": "حذف «{title}»؟",
+    "fields": {
+      "title": "العنوان",
+      "body": "المحتوى",
+      "status": "الحالة",
+      "audience": "الجمهور",
+      "publishedAt": "تاريخ النشر",
+      "isPinned": "مثبّت",
+      "author": "الكاتب"
+    },
+    "hints": {
+      "audience": "الفئة التي كُتب لها هذا الخبر.",
+      "publishedAt": "اتركه فارغًا للنشر فورًا. التاريخ المستقبلي يجدول الخبر.",
+      "isPinned": "تظهر الأخبار المثبّتة في أعلى القائمة."
+    },
+    "sections": {
+      "details": "بيانات الخبر",
+      "detailsDesc": "اكتب الإعلان واختر من يراه."
     }
   }
 }

@@ -36,7 +36,9 @@
     "roles": "Rôles",
     "admins": "Administrateurs",
     "schoolTerms": "Conditions générales",
-    "reportCards": "Bulletins"
+    "reportCards": "Bulletins",
+    "promotions": "Promotions",
+    "news": "Actualités"
   },
   "navbar": {
     "search": "Rechercher",
@@ -856,7 +858,8 @@
       "live": "En direct",
       "notifications": "Notifications",
       "terms": "Conditions générales",
-      "reportCard": "Bulletin"
+      "reportCard": "Bulletin",
+      "news": "Actualités"
     },
     "teacher": {
       "title": "Portail Enseignant",
@@ -1369,6 +1372,76 @@
       "average": "Moyenne",
       "overallGrade": "Appréciation générale",
       "rank": "Rang"
+    }
+  },
+  "promotions": {
+    "title": "Promotions des élèves",
+    "subtitle": "Décisions de fin d'année et leur historique.",
+    "startPromotion": "Nouvelle promotion",
+    "wizardSubtitle": "Promotion des élèves depuis {year}.",
+    "search": "Rechercher un élève",
+    "empty": "Aucune décision de promotion enregistrée",
+    "noEligible": "Aucun élève éligible",
+    "noEligibleHint": "Tous les élèves de l'année en cours ont déjà une décision, ou aucun ne correspond à cette classe.",
+    "noTargetClasses": "Aucune classe dans l'année cible",
+    "noResults": "Aucun résultat",
+    "selectAll": "Tout sélectionner",
+    "clearAll": "Effacer",
+    "review": "Vérifier et confirmer",
+    "confirmExecute": "Confirmer",
+    "revert": "Annuler",
+    "missingClass": "Chaque élève promu doit avoir une classe cible.",
+    "missingTargetYear": "Choisissez une année scolaire cible.",
+    "selectedSummary": "{selected} sélectionné(s) · {promoted} à promouvoir",
+    "confirmBulk": "Enregistrer les décisions pour {count} élève(s) ? {promoted} passeront à l'année cible.",
+    "confirmRevert": "Annuler la promotion de {name} ? Sa classe et son année précédentes seront restaurées.",
+    "fields": {
+      "student": "Élève",
+      "status": "Décision",
+      "from": "De",
+      "to": "À",
+      "fromYear": "Année d'origine",
+      "toYear": "Année cible",
+      "fromClass": "Classe actuelle",
+      "toClass": "Classe cible",
+      "currentClass": "Classe actuelle",
+      "average": "Moyenne",
+      "promotedBy": "Décidé par",
+      "promotedAt": "Décidé le"
+    },
+    "hints": {
+      "targetYear": "L'année scolaire vers laquelle les élèves passeront."
+    }
+  },
+  "news": {
+    "title": "Actualités",
+    "subtitle": "Annonces et avis de l'école.",
+    "addNew": "Ajouter une actualité",
+    "edit": "Modifier l'actualité",
+    "search": "Rechercher",
+    "empty": "Aucune actualité",
+    "scheduled": "Programmé",
+    "feedTitle": "Actualités de l'école",
+    "feedEmpty": "Aucune actualité",
+    "feedEmptyHint": "Les annonces de l'école apparaîtront ici.",
+    "confirmDelete": "Supprimer « {title} » ?",
+    "fields": {
+      "title": "Titre",
+      "body": "Contenu",
+      "status": "Statut",
+      "audience": "Public",
+      "publishedAt": "Publier le",
+      "isPinned": "Épinglé",
+      "author": "Auteur"
+    },
+    "hints": {
+      "audience": "À qui cette actualité s'adresse.",
+      "publishedAt": "Laissez vide pour publier immédiatement. Une date future la programme.",
+      "isPinned": "Les actualités épinglées apparaissent en haut."
+    },
+    "sections": {
+      "details": "Détails de l'actualité",
+      "detailsDesc": "Rédigez l'annonce et choisissez son public."
     }
   }
 }

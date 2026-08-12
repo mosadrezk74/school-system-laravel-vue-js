@@ -29,7 +29,7 @@ const examTypeOptions = [
   { title: t('exams.types.midterm'), value: 'midterm' },
   { title: t('exams.types.final'), value: 'final' },
   { title: t('exams.types.quiz'), value: 'quiz' },
-  { title: t('exams.types.unitTest'), value: 'unit_test' },
+  { title: t('exams.types.unit_test'), value: 'unit_test' },
 ]
 
 const activeTab = ref('details')

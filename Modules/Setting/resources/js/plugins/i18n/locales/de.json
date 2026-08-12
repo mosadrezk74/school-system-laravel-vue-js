@@ -36,7 +36,9 @@
     "roles": "Rollen",
     "admins": "Administratoren",
     "schoolTerms": "Geschäftsbedingungen",
-    "reportCards": "Zeugnisse"
+    "reportCards": "Zeugnisse",
+    "promotions": "Versetzungen",
+    "news": "Neuigkeiten"
   },
   "navbar": {
     "search": "Suche",
@@ -856,7 +858,8 @@
       "live": "Live",
       "notifications": "Benachrichtigungen",
       "terms": "Geschäftsbedingungen",
-      "reportCard": "Zeugnis"
+      "reportCard": "Zeugnis",
+      "news": "Neuigkeiten"
     },
     "teacher": {
       "title": "Lehrerportal",
@@ -1369,6 +1372,76 @@
       "average": "Durchschnitt",
       "overallGrade": "Gesamtnote",
       "rank": "Klassenrang"
+    }
+  },
+  "promotions": {
+    "title": "Schülerversetzungen",
+    "subtitle": "Entscheidungen zum Schuljahresende und deren Verlauf.",
+    "startPromotion": "Neue Versetzung",
+    "wizardSubtitle": "Versetzung der Schüler aus {year}.",
+    "search": "Schüler suchen",
+    "empty": "Noch keine Versetzungsentscheidungen erfasst",
+    "noEligible": "Keine infrage kommenden Schüler",
+    "noEligibleHint": "Für alle Schüler des laufenden Jahres liegt bereits eine Entscheidung vor, oder keiner passt zu dieser Klasse.",
+    "noTargetClasses": "Keine Klassen im Zieljahr",
+    "noResults": "Keine Ergebnisse",
+    "selectAll": "Alle auswählen",
+    "clearAll": "Leeren",
+    "review": "Prüfen und bestätigen",
+    "confirmExecute": "Bestätigen",
+    "revert": "Rückgängig",
+    "missingClass": "Jeder versetzte Schüler benötigt eine Zielklasse.",
+    "missingTargetYear": "Wählen Sie ein Zielschuljahr.",
+    "selectedSummary": "{selected} ausgewählt · {promoted} werden versetzt",
+    "confirmBulk": "Entscheidungen für {count} Schüler erfassen? {promoted} wechseln ins Zieljahr.",
+    "confirmRevert": "Versetzung von {name} rückgängig machen? Klasse und Jahr werden wiederhergestellt.",
+    "fields": {
+      "student": "Schüler",
+      "status": "Entscheidung",
+      "from": "Von",
+      "to": "Nach",
+      "fromYear": "Ausgangsjahr",
+      "toYear": "Zieljahr",
+      "fromClass": "Aktuelle Klasse",
+      "toClass": "Zielklasse",
+      "currentClass": "Aktuelle Klasse",
+      "average": "Durchschnitt",
+      "promotedBy": "Entschieden von",
+      "promotedAt": "Entschieden am"
+    },
+    "hints": {
+      "targetYear": "Das Schuljahr, in das die Schüler wechseln."
+    }
+  },
+  "news": {
+    "title": "Neuigkeiten",
+    "subtitle": "Ankündigungen und Mitteilungen der Schule.",
+    "addNew": "Neuigkeit hinzufügen",
+    "edit": "Neuigkeit bearbeiten",
+    "search": "Neuigkeiten suchen",
+    "empty": "Noch keine Neuigkeiten",
+    "scheduled": "Geplant",
+    "feedTitle": "Schulnachrichten",
+    "feedEmpty": "Noch keine Neuigkeiten",
+    "feedEmptyHint": "Ankündigungen der Schule erscheinen hier.",
+    "confirmDelete": "„{title}“ löschen?",
+    "fields": {
+      "title": "Titel",
+      "body": "Inhalt",
+      "status": "Status",
+      "audience": "Zielgruppe",
+      "publishedAt": "Veröffentlichen am",
+      "isPinned": "Angeheftet",
+      "author": "Autor"
+    },
+    "hints": {
+      "audience": "Für wen diese Neuigkeit bestimmt ist.",
+      "publishedAt": "Leer lassen, um sofort zu veröffentlichen. Ein künftiges Datum plant sie.",
+      "isPinned": "Angeheftete Beiträge erscheinen ganz oben."
+    },
+    "sections": {
+      "details": "Details der Neuigkeit",
+      "detailsDesc": "Verfassen Sie die Ankündigung und wählen Sie die Zielgruppe."
     }
   }
 }

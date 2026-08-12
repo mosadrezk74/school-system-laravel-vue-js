@@ -38,6 +38,7 @@ const sections = computed(() => [
     heading: null,
     children: [
       { title: t('portal.nav.notifications'), to: '/notifications', icon: 'bx-bell', module: 'Notification' },
+      { title: t('portal.nav.news'), to: '/news', icon: 'bx-news', module: 'News' },
       { title: t('portal.nav.terms'), to: '/terms', icon: 'bx-file' },
     ],
   },
