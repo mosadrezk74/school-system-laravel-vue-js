@@ -6,16 +6,19 @@ use Illuminate\Support\Collection;
 use Modules\Core\Abstracts\BaseAction;
 use Modules\Examination\DTOs\EnterExamResultsDTO;
 use Modules\Examination\Exceptions\ExamOperationException;
-use Modules\Examination\Models\ExamGrade;
 use Modules\Examination\Models\ExamResult;
 use Modules\Examination\Models\ExamSubject;
 use Modules\Examination\Repositories\ExamResultRepositoryInterface;
+use Modules\Examination\Services\GradeBandResolver;
+use Modules\Examination\Services\ResultRankCalculator;
 use Modules\SchoolClass\Models\SchoolClass;
 
 class EnterExamResultsAction extends BaseAction
 {
     public function __construct(
         protected ExamResultRepositoryInterface $repository,
+        protected GradeBandResolver $gradeBands,
+        protected ResultRankCalculator $ranks,
     ) {}
 
     /**
@@ -55,9 +58,7 @@ class EnterExamResultsAction extends BaseAction
                     'remarks' => $row['remarks'] ?? null,
                     'percentage' => $percentage,
                     'is_passed' => $isPassed,
-                    'grade' => $percentage !== null
-                        ? $this->resolveGrade($gradeLevelId, $dto->subjectId, $percentage)
-                        : null,
+                    'grade' => $this->gradeBands->resolveName($gradeLevelId, $dto->subjectId, $percentage),
                 ];
             }, $dto->results);
 
@@ -69,37 +70,19 @@ class EnterExamResultsAction extends BaseAction
         });
     }
 
-    protected function resolveGrade(?int $gradeLevelId, int $subjectId, float $percentage): ?string
-    {
-        if (! $gradeLevelId) {
-            return null;
-        }
-
-        $grade = ExamGrade::query()
-            ->where('grade_level_id', $gradeLevelId)
-            ->where('subject_id', $subjectId)
-            ->where('min_percentage', '<=', $percentage)
-            ->where('max_percentage', '>=', $percentage)
-            ->first()
-            ?? ExamGrade::query()
-                ->where('grade_level_id', $gradeLevelId)
-                ->whereNull('subject_id')
-                ->where('min_percentage', '<=', $percentage)
-                ->where('max_percentage', '>=', $percentage)
-                ->first();
-
-        return $grade?->grade_name;
-    }
-
+    /**
+     * Standing within this exam + subject + class, which is what
+     * exam_results.rank has always meant.
+     *
+     * Delegated to ResultRankCalculator so tied percentages share a position
+     * (1, 2, 2, 4) instead of being split arbitrarily by row order.
+     */
     protected function recomputeRanks(int $examId, int $subjectId, int $classId): void
     {
-        $ranked = $this->repository->findByExamSubjectClass($examId, $subjectId, $classId)
-            ->whereNotNull('percentage')
-            ->sortByDesc('percentage')
-            ->values();
+        $results = $this->repository->findByExamSubjectClass($examId, $subjectId, $classId);
 
-        foreach ($ranked as $index => $result) {
-            $this->repository->updateRank($result->id, $index + 1);
+        foreach ($this->ranks->rankResults($results) as $resultId => $rank) {
+            $this->repository->updateRank($resultId, $rank);
         }
     }
 }

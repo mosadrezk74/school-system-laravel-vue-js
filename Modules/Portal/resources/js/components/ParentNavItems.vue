@@ -21,6 +21,7 @@ const sections = computed(() => [
       { title: t('portal.nav.attendance'), to: '/parent/attendance', icon: 'bx-check-square', module: 'Attendance' },
       { title: t('portal.nav.homework'), to: '/parent/homework', icon: 'bx-task', module: 'Assignment' },
       { title: t('portal.nav.grades'), to: '/parent/grades', icon: 'bx-medal', module: 'Examination' },
+      { title: t('portal.nav.reportCard'), to: '/parent/report-card', icon: 'bx-id-card', module: 'Examination' },
       { title: t('portal.nav.meetings'), to: '/parent/meetings', icon: 'bx-video', module: 'Meeting' },
     ],
   },
@@ -37,6 +38,7 @@ const sections = computed(() => [
     heading: null,
     children: [
       { title: t('portal.nav.notifications'), to: '/notifications', icon: 'bx-bell', module: 'Notification' },
+      { title: t('portal.nav.terms'), to: '/terms', icon: 'bx-file' },
     ],
   },
 ])

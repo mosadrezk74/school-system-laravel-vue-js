@@ -55,13 +55,15 @@ function goToPage(page) {
   })
 }
 
+// Set a semester as current
+function setCurrent(item) {
+  router.patch(`/academic/semesters/${item.id}/set-current`, {}, { preserveScroll: true })
+}
+
 const headers = computed(() => [
   { title: t('semesters.fields.name'), key: 'name', sortable: false },
   { title: t('semesters.fields.academicYear'), key: 'academic_year', sortable: false },
-  { title: t('semesters.fields.sequence'), key: 'sequence' },
-  { title: t('semesters.fields.startDate'), key: 'start_date' },
-  { title: t('semesters.fields.endDate'), key: 'end_date' },
-  { title: t('semesters.fields.isActive'), key: 'is_active', sortable: false },
+  { title: t('semesters.fields.status'), key: 'status', sortable: false },
   { title: '', key: 'actions', sortable: false, align: 'end' },
 ])
 
@@ -153,46 +155,48 @@ function restore(item) {
       </VRow>
     </template>
 
-      <template #item.name="{ item }">
-        <div class="d-flex align-center gap-2">
-          <AppTableLink :href="`/academic/semesters/${item.id}`">
-            {{ item.name }}
-          </AppTableLink>
-          <VChip v-if="item.deleted_at" size="x-small" color="warning">
-            {{ t('common.archived') }}
-          </VChip>
-        </div>
-      </template>
-
-      <template #item.academic_year="{ item }">
-        {{ item.academic_year?.name ?? '—' }}
-      </template>
-
-      <template #item.start_date="{ item }">
-        {{ item.start_date ?? '—' }}
-      </template>
-
-      <template #item.end_date="{ item }">
-        {{ item.end_date ?? '—' }}
-      </template>
-
-      <template #item.is_active="{ item }">
-        <VChip :color="item.is_active ? 'success' : 'secondary'" size="small">
-          {{ item.is_active ? t('common.active') : t('common.inactive') }}
+    <template #item.name="{ item }">
+      <div class="d-flex align-center gap-2">
+        <AppTableLink :href="`/academic/semesters/${item.id}`">
+          {{ item.name }}
+        </AppTableLink>
+        <VChip v-if="item.deleted_at" size="x-small" color="warning">
+          {{ t('common.archived') }}
         </VChip>
-      </template>
+      </div>
+    </template>
 
-      <template #item.actions="{ item }">
-        <IconBtn :href="`/academic/semesters/${item.id}/edit`" :as="Link">
-          <VIcon icon="bx-edit" />
-        </IconBtn>
-        <IconBtn v-if="!item.deleted_at" @click="archive(item)">
-          <VIcon icon="bx-archive" />
-        </IconBtn>
-        <IconBtn v-else @click="restore(item)">
-          <VIcon icon="bx-refresh" />
-        </IconBtn>
-      </template>
+    <template #item.academic_year="{ item }">
+      {{ item.academic_year?.name ?? '—' }}
+    </template>
+    <template #item.status="{ item }">
+      <VChip
+        v-if="item.is_current"
+        color="success"
+        size="small"
+      >
+        {{ t('semesters.current') }}
+      </VChip>
+    </template>
+
+    <template #item.actions="{ item }">
+      <IconBtn
+        v-if="!item.is_current && !item.deleted_at"
+        :title="t('semesters.setCurrent')"
+        @click="setCurrent(item)"
+      >
+        <VIcon icon="bx-check-circle" />
+      </IconBtn>
+      <IconBtn :href="`/academic/semesters/${item.id}/edit`" :as="Link">
+        <VIcon icon="bx-edit" />
+      </IconBtn>
+      <IconBtn v-if="!item.deleted_at" @click="archive(item)">
+        <VIcon icon="bx-archive" />
+      </IconBtn>
+      <IconBtn v-else @click="restore(item)">
+        <VIcon icon="bx-refresh" />
+      </IconBtn>
+    </template>
   </AppDataTable>
 
   <AppConfirmDialog

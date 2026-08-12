@@ -38,6 +38,9 @@ class CoreServiceProvider extends ServiceProvider
         Inertia::share([
             'can' => fn () => [
                 'viewErrorReports' => auth()->user()?->can('error-report.view') ?? false,
+                'viewRoles' => auth()->user()?->can('role.view') ?? false,
+                'viewUsers' => auth()->user()?->can('user.view') ?? false,
+                'viewSchoolTerms' => auth()->user()?->can('school-term.view') ?? false,
             ],
         ]);
 

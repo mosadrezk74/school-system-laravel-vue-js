@@ -9,6 +9,7 @@ use Inertia\Response;
 use Modules\Academic\Actions\ArchiveSemesterAction;
 use Modules\Academic\Actions\CreateSemesterAction;
 use Modules\Academic\Actions\RestoreSemesterAction;
+use Modules\Academic\Actions\SetCurrentSemesterAction;
 use Modules\Academic\Actions\UpdateSemesterAction;
 use Modules\Academic\DTOs\CreateSemesterDTO;
 use Modules\Academic\DTOs\SemesterFilterDTO;
@@ -144,5 +145,14 @@ class SemesterController extends BaseInertiaController
                 'name' => $year->name,
             ])
             ->values();
+    }
+
+    public function setCurrent(
+        Semester $semester,
+        SetCurrentSemesterAction $action,
+    ): RedirectResponse {
+        $action->execute($semester);
+
+        return $this->backWithSuccess(__('academic::semesters.set_current'));
     }
 }

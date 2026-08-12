@@ -31,7 +31,12 @@
     "reportTemplates": "Berichtsvorlagen",
     "semesters": "Semester",
     "gradeLevels": "Klassenstufen",
-    "systemErrors": "Systemfehler"
+    "systemErrors": "Systemfehler",
+    "accessControl": "Zugriffssteuerung",
+    "roles": "Rollen",
+    "admins": "Administratoren",
+    "schoolTerms": "Geschäftsbedingungen",
+    "reportCards": "Zeugnisse"
   },
   "navbar": {
     "search": "Suche",
@@ -849,7 +854,9 @@
       "fees": "Gebühren",
       "payments": "Zahlungen",
       "live": "Live",
-      "notifications": "Benachrichtigungen"
+      "notifications": "Benachrichtigungen",
+      "terms": "Geschäftsbedingungen",
+      "reportCard": "Zeugnis"
     },
     "teacher": {
       "title": "Lehrerportal",
@@ -1228,5 +1235,140 @@
     "mark_read": "Als gelesen markieren",
     "mark_all_read": "Alle als gelesen markieren",
     "unread": "Ungelesen"
+  },
+  "roles": {
+    "title": "Rollen",
+    "subtitle": "Legen Sie fest, was jede Benutzergruppe tun darf.",
+    "addNew": "Rolle hinzufügen",
+    "edit": "Rolle bearbeiten",
+    "search": "Rollen suchen",
+    "empty": "Keine Rollen gefunden",
+    "filterSystem": "System",
+    "filterCustom": "Benutzerdefiniert",
+    "confirmDelete": "Möchten Sie die Rolle „{name}“ wirklich löschen?",
+    "selectAll": "Alle auswählen",
+    "clearAll": "Auswahl aufheben",
+    "selectedCount": "{selected} von {total} Berechtigungen ausgewählt",
+    "systemRoleNotice": "Dies ist eine Systemrolle. Ihr Name ist fest, die Berechtigungen können Sie jedoch anpassen.",
+    "fields": {
+      "name": "Name",
+      "permissions": "Berechtigungen",
+      "is_system": "Typ",
+      "users_count": "Benutzer",
+      "permissions_count": "Berechtigungen"
+    },
+    "hints": {
+      "name": "Nur Kleinbuchstaben, Ziffern, Binde- und Unterstriche."
+    },
+    "sections": {
+      "details": "Rollendetails",
+      "detailsDesc": "Benennen Sie die Rolle und wählen Sie die Berechtigungen."
+    }
+  },
+  "admins": {
+    "title": "Administratoren",
+    "subtitle": "Verwalten Sie die Konten, die die Schule betreiben.",
+    "addNew": "Administrator hinzufügen",
+    "edit": "Administrator bearbeiten",
+    "search": "Administratoren suchen",
+    "empty": "Keine Administratoren gefunden",
+    "owner": "Eigentümer",
+    "admin": "Administrator",
+    "you": "Sie",
+    "activate": "Aktivieren",
+    "deactivate": "Deaktivieren",
+    "confirmDelete": "Möchten Sie {name} wirklich löschen?",
+    "confirmActivate": "Konto von {name} aktivieren?",
+    "confirmDeactivate": "Konto von {name} deaktivieren? Eine Anmeldung ist dann nicht mehr möglich.",
+    "fields": {
+      "name": "Vollständiger Name",
+      "email": "E-Mail",
+      "username": "Benutzername",
+      "password": "Passwort",
+      "password_confirmation": "Passwort bestätigen",
+      "phone": "Telefon",
+      "is_active": "Aktiv",
+      "account_role": "Kontotyp",
+      "roles": "Rollen"
+    },
+    "hints": {
+      "username": "Wird er leer gelassen, leitet er sich aus der E-Mail-Adresse ab.",
+      "passwordEdit": "Leer lassen, um das aktuelle Passwort beizubehalten.",
+      "roles": "Rollen bestimmen, was dieses Konto tatsächlich tun darf."
+    },
+    "sections": {
+      "account": "Kontodetails",
+      "accountDesc": "Anmeldedaten und Kontaktinformationen.",
+      "access": "Zugriff",
+      "accessDesc": "Kontotyp und Rollen, die Berechtigungen gewähren."
+    }
+  },
+  "schoolTerms": {
+    "title": "Geschäftsbedingungen",
+    "subtitle": "Die Bedingungen der Schule, als Versionsverlauf geführt.",
+    "newVersion": "Neue Version",
+    "editDraft": "Entwurf bearbeiten",
+    "saveDraft": "Entwurf speichern",
+    "publish": "Veröffentlichen",
+    "search": "Bedingungen suchen",
+    "empty": "Es wurden noch keine Bedingungen erstellt",
+    "versionLabel": "Version {version}",
+    "prefilledFrom": "Aus der veröffentlichten Version {version} vorausgefüllt. Bearbeiten Sie den Text und speichern Sie ihn als neuen Entwurf.",
+    "confirmPublish": "Version {version} veröffentlichen? Sie wird zu den geltenden Bedingungen und muss von allen erneut akzeptiert werden.",
+    "confirmDelete": "Entwurf Version {version} löschen?",
+    "fields": {
+      "title": "Titel",
+      "content": "Inhalt",
+      "version": "Version",
+      "status": "Status",
+      "publishedAt": "Veröffentlicht am",
+      "createdBy": "Erstellt von",
+      "acceptances": "Zustimmungen"
+    },
+    "statuses": {
+      "draft": "Entwurf",
+      "published": "Veröffentlicht",
+      "archived": "Archiviert"
+    },
+    "sections": {
+      "details": "Inhalt der Bedingungen",
+      "detailsDesc": "Geben Sie den Bedingungen einen Titel und verfassen Sie den vollständigen Text."
+    },
+    "portal": {
+      "title": "Geschäftsbedingungen der Schule",
+      "none": "Die Schule hat noch keine Bedingungen veröffentlicht.",
+      "agreeLabel": "Ich stimme den Geschäftsbedingungen der Schule zu",
+      "accept": "Akzeptieren",
+      "alreadyAccepted": "Sie haben diese Version am {date} akzeptiert."
+    }
+  },
+  "reportCard": {
+    "title": "Zeugnis",
+    "subtitle": "Zusammengefasste Ergebnisse für das laufende Schuljahr und Halbjahr.",
+    "empty": "Noch keine Ergebnisse",
+    "emptyHint": "Ergebnisse erscheinen hier, sobald Prüfungen bewertet und veröffentlicht wurden.",
+    "selectStudent": "Schüler auswählen",
+    "selectStudentHint": "Wählen Sie eine Klasse und einen Schüler, um das Zeugnis zu sehen.",
+    "noStudents": "Keine Schüler verfügbar",
+    "passed": "Bestanden",
+    "failed": "Nicht bestanden",
+    "pending": "Ausstehend",
+    "unpublishedCount": "{count} unveröffentlicht",
+    "fields": {
+      "student": "Schüler",
+      "class": "Klasse",
+      "academicYear": "Schuljahr",
+      "semester": "Halbjahr",
+      "subject": "Fach",
+      "obtained": "Punkte",
+      "max": "Max",
+      "percentage": "Prozent",
+      "grade": "Note",
+      "result": "Ergebnis",
+      "total": "Gesamt",
+      "average": "Durchschnitt",
+      "overallGrade": "Gesamtnote",
+      "rank": "Klassenrang"
+    }
   }
 }

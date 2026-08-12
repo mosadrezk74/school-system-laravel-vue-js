@@ -9,7 +9,7 @@ use Modules\Attendance\Models\AttendanceDetail;
 use Modules\Core\Abstracts\BaseAction;
 use Modules\Core\Services\DashboardWidgetCollector;
 use Modules\Core\Support\DashboardWidget;
-use Modules\Examination\Models\ExamResult;
+use Modules\Examination\Queries\ExamResultQuery;
 use Modules\Meeting\Models\Meeting;
 use Modules\Portal\Services\PortalScopeService;
 
@@ -116,10 +116,16 @@ class BuildStudentDashboardAction extends BaseAction
         return round(($present / $all) * 100, 1);
     }
 
+    /**
+     * Counts only results the school has published — the dashboard tile must
+     * not reveal that unreleased marks exist, and must agree with what the
+     * grades page will actually list.
+     */
     private function recentResults(): int
     {
-        return ExamResult::query()
-            ->where('student_id', $this->studentId())
+        return (new ExamResultQuery)
+            ->visibleToFamily($this->scope)
+            ->forStudent($this->studentId())
             ->count();
     }
 

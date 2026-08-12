@@ -7,8 +7,6 @@ const { t } = useI18n()
 
 const user = computed(() => usePage().props.auth?.user)
 
-// A real logout must POST so Fortify can invalidate the session; a link to
-// /login would just navigate while leaving the user signed in.
 const logout = () => router.post('/logout')
 
 import avatar1 from '@images/avatars/avatar-1.png'
@@ -66,19 +64,6 @@ import avatar1 from '@images/avatars/avatar-1.png'
           </VListItem>
           <VDivider class="my-2" />
 
-          <!-- 👉 Profile -->
-          <VListItem link href="/account-settings" :as="Link">
-            <template #prepend>
-              <VIcon
-                class="me-2"
-                icon="bx-user"
-                size="22"
-              />
-            </template>
-
-            <VListItemTitle>{{ t('userMenu.profile') }}</VListItemTitle>
-          </VListItem>
-
           <!-- 👉 Settings -->
           <VListItem link href="/account-settings" :as="Link">
             <template #prepend>
@@ -92,8 +77,6 @@ import avatar1 from '@images/avatars/avatar-1.png'
             <VListItemTitle>{{ t('userMenu.settings') }}</VListItemTitle>
           </VListItem>
 
-          <!-- Divider -->
-          <VDivider class="my-2" />
 
           <!-- 👉 Logout -->
           <VListItem @click="logout">

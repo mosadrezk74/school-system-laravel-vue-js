@@ -17,6 +17,9 @@ Route::middleware(['auth'])
             [AcademicYearController::class, 'setCurrent'],
         )->name('academic-years.set-current');
 
+        Route::patch('/academic/semesters/{semester}/set-current',
+            [SemesterController::class, 'setCurrent'])
+            ->name('academic.semesters.set-current');
         /*
          * Restore is declared before the resource so `semesters/{semester}`
          * cannot swallow the more specific path, and takes the raw id because

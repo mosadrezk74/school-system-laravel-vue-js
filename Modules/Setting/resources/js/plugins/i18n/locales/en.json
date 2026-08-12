@@ -50,7 +50,12 @@
     "reportTemplates": "Report Templates",
     "semesters": "Semesters",
     "gradeLevels": "Grade Levels",
-    "systemErrors": "System Errors"
+    "systemErrors": "System Errors",
+    "accessControl": "Access control",
+    "roles": "Roles",
+    "admins": "Administrators",
+    "schoolTerms": "Terms & Conditions",
+    "reportCards": "Report cards"
   },
   "navbar": {
     "search": "Search",
@@ -1573,7 +1578,9 @@
       "fees": "Fees",
       "payments": "Payments",
       "live": "Live",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "terms": "Terms & Conditions",
+      "reportCard": "Report card"
     },
     "teacher": {
       "title": "Teacher Portal",
@@ -1931,5 +1938,140 @@
     "mark_read": "Mark as read",
     "mark_all_read": "Mark all as read",
     "unread": "Unread"
+  },
+  "roles": {
+    "title": "Roles",
+    "subtitle": "Define what each group of users may do.",
+    "addNew": "Add role",
+    "edit": "Edit role",
+    "search": "Search roles",
+    "empty": "No roles found",
+    "filterSystem": "System",
+    "filterCustom": "Custom",
+    "confirmDelete": "Are you sure you want to delete the role “{name}”?",
+    "selectAll": "Select all",
+    "clearAll": "Clear all",
+    "selectedCount": "{selected} of {total} permissions selected",
+    "systemRoleNotice": "This is a system role. Its name is fixed, but you can still adjust its permissions.",
+    "fields": {
+      "name": "Name",
+      "permissions": "Permissions",
+      "is_system": "Type",
+      "users_count": "Users",
+      "permissions_count": "Permissions"
+    },
+    "hints": {
+      "name": "Lowercase letters, numbers, hyphens and underscores only."
+    },
+    "sections": {
+      "details": "Role details",
+      "detailsDesc": "Name the role and choose the permissions it grants."
+    }
+  },
+  "admins": {
+    "title": "Administrators",
+    "subtitle": "Manage the accounts that run the school.",
+    "addNew": "Add administrator",
+    "edit": "Edit administrator",
+    "search": "Search administrators",
+    "empty": "No administrators found",
+    "owner": "Owner",
+    "admin": "Administrator",
+    "you": "You",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "confirmDelete": "Are you sure you want to delete {name}?",
+    "confirmActivate": "Activate the account of {name}?",
+    "confirmDeactivate": "Deactivate the account of {name}? They will not be able to sign in.",
+    "fields": {
+      "name": "Full name",
+      "email": "Email",
+      "username": "Username",
+      "password": "Password",
+      "password_confirmation": "Confirm password",
+      "phone": "Phone",
+      "is_active": "Active",
+      "account_role": "Account type",
+      "roles": "Roles"
+    },
+    "hints": {
+      "username": "Left blank, one is derived from the email address.",
+      "passwordEdit": "Leave blank to keep the current password.",
+      "roles": "Roles decide what this account may actually do."
+    },
+    "sections": {
+      "account": "Account details",
+      "accountDesc": "Sign-in details and contact information.",
+      "access": "Access",
+      "accessDesc": "Account type and the roles that grant permissions."
+    }
+  },
+  "schoolTerms": {
+    "title": "Terms & Conditions",
+    "subtitle": "The school's terms, kept as a version history.",
+    "newVersion": "New version",
+    "editDraft": "Edit draft",
+    "saveDraft": "Save draft",
+    "publish": "Publish",
+    "search": "Search terms",
+    "empty": "No terms have been created yet",
+    "versionLabel": "Version {version}",
+    "prefilledFrom": "Pre-filled from the published version {version}. Edit the wording and save it as a new draft.",
+    "confirmPublish": "Publish version {version}? It becomes the terms in force and everyone will be asked to accept it again.",
+    "confirmDelete": "Delete draft version {version}?",
+    "fields": {
+      "title": "Title",
+      "content": "Content",
+      "version": "Version",
+      "status": "Status",
+      "publishedAt": "Published at",
+      "createdBy": "Created by",
+      "acceptances": "Acceptances"
+    },
+    "statuses": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "sections": {
+      "details": "Terms content",
+      "detailsDesc": "Give the terms a title and write their full text."
+    },
+    "portal": {
+      "title": "School terms & conditions",
+      "none": "The school has not published any terms yet.",
+      "agreeLabel": "I agree to the school's terms and conditions",
+      "accept": "Accept",
+      "alreadyAccepted": "You accepted this version on {date}."
+    }
+  },
+  "reportCard": {
+    "title": "Report card",
+    "subtitle": "Consolidated results for the current academic year and term.",
+    "empty": "No results yet",
+    "emptyHint": "Results appear here once exams have been marked and published.",
+    "selectStudent": "Select a student",
+    "selectStudentHint": "Choose a class and a student to see their report card.",
+    "noStudents": "No students available",
+    "passed": "Passed",
+    "failed": "Failed",
+    "pending": "Pending",
+    "unpublishedCount": "{count} unpublished",
+    "fields": {
+      "student": "Student",
+      "class": "Class",
+      "academicYear": "Academic year",
+      "semester": "Term",
+      "subject": "Subject",
+      "obtained": "Score",
+      "max": "Max",
+      "percentage": "Percentage",
+      "grade": "Grade",
+      "result": "Result",
+      "total": "Total",
+      "average": "Average",
+      "overallGrade": "Overall grade",
+      "rank": "Class rank"
+    }
   }
 }

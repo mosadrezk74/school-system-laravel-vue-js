@@ -6,11 +6,16 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Modules\Core\Services\ModuleRegistry;
+use Modules\Setting\Interfaces\Repositories\SchoolTermRepositoryInterface;
 use Modules\Setting\Models\Language;
 use Modules\Setting\Models\SchoolSetting;
+use Modules\Setting\Models\SchoolTerm;
 use Modules\Setting\Policies\LanguagePolicy;
 use Modules\Setting\Policies\SchoolSettingPolicy;
+use Modules\Setting\Policies\SchoolTermPolicy;
+use Modules\Setting\Repositories\SchoolTermRepository;
 use Modules\Setting\Services\LanguageService;
+use Modules\Setting\Services\SchoolTermService;
 use Modules\Setting\Services\SettingsService;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
@@ -48,6 +53,7 @@ class SettingServiceProvider extends ModuleServiceProvider
 
         Gate::policy(Language::class, LanguagePolicy::class);
         Gate::policy(SchoolSetting::class, SchoolSettingPolicy::class);
+        Gate::policy(SchoolTerm::class, SchoolTermPolicy::class);
 
         // The frontend switcher renders exactly what the school has enabled,
         // so adding or removing a language is a database change with no
@@ -58,7 +64,24 @@ class SettingServiceProvider extends ModuleServiceProvider
             'languages' => fn () => app(LanguageService::class)->active()->values()->all(),
             'setupCompleted' => fn () => app(SettingsService::class)->isSetupCompleted(),
             'enabledModules' => fn () => app(ModuleRegistry::class)->enabledNames(),
+
+            /*
+             * Lets any portal layout raise the agreement prompt. Evaluated
+             * against the version published right now, so releasing a new one
+             * puts everyone who only accepted the previous wording back into
+             * the "needs to accept" state without a backfill.
+             */
+            'schoolTerms' => fn (): array => auth()->check()
+                ? ['acceptedCurrent' => app(SchoolTermService::class)->hasAcceptedCurrent(auth()->user())]
+                : ['acceptedCurrent' => true],
         ]);
+    }
+
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->bind(SchoolTermRepositoryInterface::class, SchoolTermRepository::class);
     }
 
     protected array $providers = [

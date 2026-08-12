@@ -31,7 +31,12 @@
     "reportTemplates": "Modèles de rapport",
     "semesters": "Semestres",
     "gradeLevels": "Niveaux scolaires",
-    "systemErrors": "Erreurs système"
+    "systemErrors": "Erreurs système",
+    "accessControl": "Contrôle d'accès",
+    "roles": "Rôles",
+    "admins": "Administrateurs",
+    "schoolTerms": "Conditions générales",
+    "reportCards": "Bulletins"
   },
   "navbar": {
     "search": "Rechercher",
@@ -849,7 +854,9 @@
       "fees": "Frais",
       "payments": "Paiements",
       "live": "En direct",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "terms": "Conditions générales",
+      "reportCard": "Bulletin"
     },
     "teacher": {
       "title": "Portail Enseignant",
@@ -1228,5 +1235,140 @@
     "mark_read": "Marquer comme lue",
     "mark_all_read": "Tout marquer comme lu",
     "unread": "Non lue"
+  },
+  "roles": {
+    "title": "Rôles",
+    "subtitle": "Définissez ce que chaque groupe d'utilisateurs peut faire.",
+    "addNew": "Ajouter un rôle",
+    "edit": "Modifier le rôle",
+    "search": "Rechercher des rôles",
+    "empty": "Aucun rôle trouvé",
+    "filterSystem": "Système",
+    "filterCustom": "Personnalisé",
+    "confirmDelete": "Voulez-vous vraiment supprimer le rôle « {name} » ?",
+    "selectAll": "Tout sélectionner",
+    "clearAll": "Tout effacer",
+    "selectedCount": "{selected} sur {total} permissions sélectionnées",
+    "systemRoleNotice": "Ceci est un rôle système. Son nom est fixe, mais vous pouvez modifier ses permissions.",
+    "fields": {
+      "name": "Nom",
+      "permissions": "Permissions",
+      "is_system": "Type",
+      "users_count": "Utilisateurs",
+      "permissions_count": "Permissions"
+    },
+    "hints": {
+      "name": "Minuscules, chiffres, tirets et tirets bas uniquement."
+    },
+    "sections": {
+      "details": "Détails du rôle",
+      "detailsDesc": "Nommez le rôle et choisissez les permissions qu'il accorde."
+    }
+  },
+  "admins": {
+    "title": "Administrateurs",
+    "subtitle": "Gérez les comptes qui administrent l'école.",
+    "addNew": "Ajouter un administrateur",
+    "edit": "Modifier l'administrateur",
+    "search": "Rechercher des administrateurs",
+    "empty": "Aucun administrateur trouvé",
+    "owner": "Propriétaire",
+    "admin": "Administrateur",
+    "you": "Vous",
+    "activate": "Activer",
+    "deactivate": "Désactiver",
+    "confirmDelete": "Voulez-vous vraiment supprimer {name} ?",
+    "confirmActivate": "Activer le compte de {name} ?",
+    "confirmDeactivate": "Désactiver le compte de {name} ? Il ne pourra plus se connecter.",
+    "fields": {
+      "name": "Nom complet",
+      "email": "E-mail",
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe",
+      "password_confirmation": "Confirmer le mot de passe",
+      "phone": "Téléphone",
+      "is_active": "Actif",
+      "account_role": "Type de compte",
+      "roles": "Rôles"
+    },
+    "hints": {
+      "username": "Laissé vide, il est dérivé de l'adresse e-mail.",
+      "passwordEdit": "Laissez vide pour conserver le mot de passe actuel.",
+      "roles": "Les rôles déterminent ce que ce compte peut réellement faire."
+    },
+    "sections": {
+      "account": "Détails du compte",
+      "accountDesc": "Identifiants de connexion et coordonnées.",
+      "access": "Accès",
+      "accessDesc": "Type de compte et rôles accordant les permissions."
+    }
+  },
+  "schoolTerms": {
+    "title": "Conditions générales",
+    "subtitle": "Les conditions de l'école, conservées sous forme d'historique de versions.",
+    "newVersion": "Nouvelle version",
+    "editDraft": "Modifier le brouillon",
+    "saveDraft": "Enregistrer le brouillon",
+    "publish": "Publier",
+    "search": "Rechercher",
+    "empty": "Aucune condition n'a encore été créée",
+    "versionLabel": "Version {version}",
+    "prefilledFrom": "Pré-rempli à partir de la version publiée {version}. Modifiez le texte et enregistrez-le comme nouveau brouillon.",
+    "confirmPublish": "Publier la version {version} ? Elle deviendra les conditions en vigueur et chacun devra l'accepter à nouveau.",
+    "confirmDelete": "Supprimer le brouillon version {version} ?",
+    "fields": {
+      "title": "Titre",
+      "content": "Contenu",
+      "version": "Version",
+      "status": "Statut",
+      "publishedAt": "Publié le",
+      "createdBy": "Créé par",
+      "acceptances": "Acceptations"
+    },
+    "statuses": {
+      "draft": "Brouillon",
+      "published": "Publié",
+      "archived": "Archivé"
+    },
+    "sections": {
+      "details": "Contenu des conditions",
+      "detailsDesc": "Donnez un titre aux conditions et rédigez leur texte complet."
+    },
+    "portal": {
+      "title": "Conditions générales de l'école",
+      "none": "L'école n'a encore publié aucune condition.",
+      "agreeLabel": "J'accepte les conditions générales de l'école",
+      "accept": "Accepter",
+      "alreadyAccepted": "Vous avez accepté cette version le {date}."
+    }
+  },
+  "reportCard": {
+    "title": "Bulletin",
+    "subtitle": "Résultats consolidés pour l'année et le trimestre en cours.",
+    "empty": "Aucun résultat",
+    "emptyHint": "Les résultats apparaissent ici une fois les examens notés et publiés.",
+    "selectStudent": "Sélectionner un élève",
+    "selectStudentHint": "Choisissez une classe et un élève pour voir son bulletin.",
+    "noStudents": "Aucun élève disponible",
+    "passed": "Réussi",
+    "failed": "Échoué",
+    "pending": "En attente",
+    "unpublishedCount": "{count} non publié(s)",
+    "fields": {
+      "student": "Élève",
+      "class": "Classe",
+      "academicYear": "Année scolaire",
+      "semester": "Trimestre",
+      "subject": "Matière",
+      "obtained": "Note",
+      "max": "Max",
+      "percentage": "Pourcentage",
+      "grade": "Appréciation",
+      "result": "Résultat",
+      "total": "Total",
+      "average": "Moyenne",
+      "overallGrade": "Appréciation générale",
+      "rank": "Rang"
+    }
   }
 }

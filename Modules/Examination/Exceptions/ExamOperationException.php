@@ -31,4 +31,15 @@ class ExamOperationException extends BaseException
     {
         return new static($message ?: __('examination::exam_grade.grade_already_exists'), HttpStatus::CONFLICT);
     }
+
+    /** A report card was asked for someone the viewer may not read. */
+    public static function studentNotAccessible(string $message = ''): static
+    {
+        return new static($message ?: __('examination::report_card.student_not_accessible'), HttpStatus::FORBIDDEN);
+    }
+
+    public static function studentNotFound(string $message = ''): static
+    {
+        return new static($message ?: __('examination::report_card.student_not_found'), HttpStatus::NOT_FOUND);
+    }
 }

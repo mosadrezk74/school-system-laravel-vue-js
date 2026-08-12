@@ -9,6 +9,7 @@ use Modules\Portal\Http\Controllers\ParentGradeController;
 use Modules\Portal\Http\Controllers\ParentHomeworkController;
 use Modules\Portal\Http\Controllers\ParentMeetingController;
 use Modules\Portal\Http\Controllers\ParentPaymentRequestController;
+use Modules\Portal\Http\Controllers\ReportCardPortalController;
 use Modules\Portal\Http\Controllers\StudentAttendanceController;
 use Modules\Portal\Http\Controllers\StudentDashboardController;
 use Modules\Portal\Http\Controllers\StudentGradeController;
@@ -67,8 +68,10 @@ Route::middleware(['web', 'auth'])->group(function () {
             Route::post('homework/{assignment}/submit', [StudentHomeworkController::class, 'submit'])->name('homework.submit');
         });
 
-        Route::middleware('module:Examination')
-            ->get('grades', [StudentGradeController::class, 'index'])->name('grades');
+        Route::middleware('module:Examination')->group(function () {
+            Route::get('grades', [StudentGradeController::class, 'index'])->name('grades');
+            Route::get('report-card', [ReportCardPortalController::class, 'show'])->name('report-card');
+        });
 
         Route::middleware('module:Attendance')
             ->get('attendance', [StudentAttendanceController::class, 'index'])->name('attendance');
@@ -90,8 +93,10 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::middleware('module:Assignment')
             ->get('homework', [ParentHomeworkController::class, 'index'])->name('homework');
 
-        Route::middleware('module:Examination')
-            ->get('grades', [ParentGradeController::class, 'index'])->name('grades');
+        Route::middleware('module:Examination')->group(function () {
+            Route::get('grades', [ParentGradeController::class, 'index'])->name('grades');
+            Route::get('report-card', [ReportCardPortalController::class, 'show'])->name('report-card');
+        });
 
         Route::middleware('module:Finance')->group(function () {
             Route::get('fees', [ParentFeeController::class, 'index'])->name('fees');

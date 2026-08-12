@@ -10,6 +10,7 @@ use Modules\Examination\Models\ExamResult;
 use Modules\Examination\Policies\ExamGradePolicy;
 use Modules\Examination\Policies\ExamPolicy;
 use Modules\Examination\Policies\ExamResultPolicy;
+use Modules\Examination\Policies\ReportCardPolicy;
 use Modules\Examination\Repositories\ExamGradeRepository;
 use Modules\Examination\Repositories\ExamGradeRepositoryInterface;
 use Modules\Examination\Repositories\ExamRepository;
@@ -70,6 +71,15 @@ class ExaminationServiceProvider extends ModuleServiceProvider
         Gate::policy(Exam::class, ExamPolicy::class);
         Gate::policy(ExamGrade::class, ExamGradePolicy::class);
         Gate::policy(ExamResult::class, ExamResultPolicy::class);
+
+        /*
+         * Report cards are read *about* a StudentProfile, whose policy slot
+         * StudentPolicy already occupies, so they are registered as named
+         * abilities instead of a second model policy.
+         */
+        Gate::define('viewAnyReportCard', [ReportCardPolicy::class, 'viewAny']);
+        Gate::define('viewOwnReportCard', [ReportCardPolicy::class, 'viewOwn']);
+        Gate::define('viewReportCard', [ReportCardPolicy::class, 'view']);
     }
 
     /**

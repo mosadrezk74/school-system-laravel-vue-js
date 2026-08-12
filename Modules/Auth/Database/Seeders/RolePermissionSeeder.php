@@ -21,7 +21,7 @@ class RolePermissionSeeder extends Seeder
     private const RESOURCES = [
         'Auth' => ['user', 'role'],
         'Core' => ['error-report'],
-        'Setting' => ['setting', 'language'],
+        'Setting' => ['setting', 'language', 'school-term'],
         'Academic' => ['academic-year', 'semester', 'grade-level'],
         'Classroom' => ['classroom'],
         'SchoolClass' => ['school-class'],
@@ -54,6 +54,13 @@ class RolePermissionSeeder extends Seeder
      */
     private const RESOURCE_ABILITIES = [
         'report' => ['view', 'generate', 'manage'],
+
+        /*
+         * Releasing a version of the school's terms is a separate grant from
+         * drafting one: publishing is what families are then asked to agree
+         * to, so it can be withheld from whoever writes the text.
+         */
+        'school-term' => ['view', 'create', 'update', 'delete', 'publish'],
 
         /*
          * Stack traces name internal files and classes, so reading them is a

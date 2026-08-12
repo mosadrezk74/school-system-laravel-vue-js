@@ -4,8 +4,17 @@ use Illuminate\Support\Facades\Route;
 use Modules\Examination\Http\Controllers\ExamController;
 use Modules\Examination\Http\Controllers\ExamGradeController;
 use Modules\Examination\Http\Controllers\ExamSubjectController;
+use Modules\Examination\Http\Controllers\ReportCardController;
 
 Route::middleware(['web', 'auth', 'module:Examination'])->prefix('examination')->group(function () {
+    /*
+     * Declared before the exams resource so `exams/{exam}` cannot swallow it,
+     * and kept out of the resource because a report card is a read-only view
+     * over results rather than a CRUD resource of its own.
+     */
+    Route::get('report-cards', [ReportCardController::class, 'index'])
+        ->name('report-cards.index');
+
     Route::resource('exams', ExamController::class);
 
     // Not part of the resource: it must resolve soft-deleted exams, which the

@@ -46,6 +46,14 @@ const sections = computed(() => [
     ],
   },
   {
+    key: 'access_control',
+    heading: t('nav.accessControl'),
+    children: [
+      { title: t('nav.admins'), to: '/access-control/admins', icon: 'bx-user-circle', permission: 'viewUsers' },
+      { title: t('nav.roles'), to: '/access-control/roles', icon: 'bx-shield-quarter', permission: 'viewRoles' },
+    ],
+  },
+  {
     key: 'schedule',
     heading: t('nav.schedule'),
     children: [
@@ -99,6 +107,7 @@ const sections = computed(() => [
     children: [
       { title: t('nav.exams'), to: '/examination/exams', icon: 'bx-file', module: 'Examination' },
       { title: t('nav.examGrades'), to: '/examination/grades', icon: 'bx-medal', module: 'Examination' },
+      { title: t('nav.reportCards'), to: '/examination/report-cards', icon: 'bx-id-card', module: 'Examination' },
     ],
   },
   {
@@ -129,6 +138,7 @@ const sections = computed(() => [
     children: [
       { title: t('nav.languages'), to: '/settings/languages', icon: 'bx-globe' },
       { title: t('nav.aiTranslationSettings'), to: '/settings/ai-translation', icon: 'bx-globe' },
+      { title: t('nav.schoolTerms'), to: '/settings/school-terms', icon: 'bx-file', permission: 'viewSchoolTerms' },
       { title: t('nav.systemErrors'), to: '/system/errors', icon: 'bx-bug', permission: 'viewErrorReports' },
     ],
   },

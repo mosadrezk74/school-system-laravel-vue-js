@@ -20,6 +20,7 @@ const sections = computed(() => [
     children: [
       { title: t('portal.nav.homework'), to: '/student/homework', icon: 'bx-task', module: 'Assignment' },
       { title: t('portal.nav.grades'), to: '/student/grades', icon: 'bx-medal', module: 'Examination' },
+      { title: t('portal.nav.reportCard'), to: '/student/report-card', icon: 'bx-id-card', module: 'Examination' },
       { title: t('portal.nav.attendance'), to: '/student/attendance', icon: 'bx-check-square', module: 'Attendance' },
     ],
   },
@@ -35,6 +36,7 @@ const sections = computed(() => [
     heading: null,
     children: [
       { title: t('portal.nav.notifications'), to: '/notifications', icon: 'bx-bell', module: 'Notification' },
+      { title: t('portal.nav.terms'), to: '/terms', icon: 'bx-file' },
     ],
   },
 ])

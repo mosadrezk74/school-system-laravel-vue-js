@@ -7,6 +7,7 @@ use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
 use Modules\Examination\Models\ExamResult;
+use Modules\Examination\Queries\ExamResultQuery;
 use Modules\Examination\Transformers\ExamResultResource;
 use Modules\Portal\Services\PortalScopeService;
 use Modules\Portal\Traits\ResolvesGuardianChildren;
@@ -21,13 +22,20 @@ class ParentGradeController extends BaseInertiaController
     {
         $this->authorize('viewAny', ExamResult::class);
 
+        // selectedChild() resolves against the guardian's own children, so an
+        // id from the query string can never reach another family's student.
         $child = $this->selectedChild($request);
 
-        $results = $this->scope
-            ->applyStudentScope(ExamResult::query())
-            ->when($child, fn ($query) => $query->where('student_id', $child->id))
+        /*
+         * visibleToFamily() applies both the ownership scope and the
+         * published-exams rule, so a guardian can never read marks the school
+         * has not released yet.
+         */
+        $results = (new ExamResultQuery)
+            ->visibleToFamily($this->scope)
+            ->forStudent($child?->id)
+            ->latestFirst()
             ->with(['exam', 'subject'])
-            ->latest('id')
             ->paginate($request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE));
 
         return $this->render('Portal::Parent/Grades', [

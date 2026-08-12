@@ -10,6 +10,7 @@ return [
     'not_found' => 'Semester not found.',
     'no_current_semester' => 'No current semester is set. Set one as current first.',
     'cannot_activate_inactive' => 'An inactive semester cannot be set as current.',
+    'set_current' => 'Semester set as current successfully.',
 
     'fields' => [
         'academic_year_id' => 'Academic Year',
@@ -21,5 +22,6 @@ return [
         'exam_end_date' => 'Exam End Date',
         'is_active' => 'Active',
         'is_current' => 'Current',
+        'status' => 'Status',
     ],
 ];
