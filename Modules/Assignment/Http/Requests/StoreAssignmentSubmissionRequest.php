@@ -13,7 +13,8 @@ class StoreAssignmentSubmissionRequest extends BaseRequest
     {
         return [
             'student_id' => ['required', 'integer', 'exists:student_profiles,id'],
-            'submitted_at' => ['required', 'date'],
+            // A submission cannot be recorded as having happened in the future.
+            'submitted_at' => ['required', 'date', 'before_or_equal:now'],
         ];
     }
 }

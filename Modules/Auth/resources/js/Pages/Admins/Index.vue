@@ -123,6 +123,7 @@ const isSelf = item => item.id === props.currentUserId
         >
           <VTextField
             v-model="filters.search.value"
+            maxlength="100"
             :label="t('admins.search')"
             prepend-inner-icon="bx-search"
             clearable

@@ -17,6 +17,7 @@ use Modules\GuardianProfile\DTOs\CreateGuardianDTO;
 use Modules\GuardianProfile\DTOs\GuardianFilterDTO;
 use Modules\GuardianProfile\DTOs\LinkGuardianStudentDTO;
 use Modules\GuardianProfile\DTOs\UpdateGuardianDTO;
+use Modules\GuardianProfile\Enums\RelationshipType;
 use Modules\GuardianProfile\Http\Requests\LinkStudentRequest;
 use Modules\GuardianProfile\Http\Requests\StoreGuardianRequest;
 use Modules\GuardianProfile\Http\Requests\UpdateGuardianRequest;
@@ -75,6 +76,13 @@ class GuardianController extends BaseInertiaController
         return $this->render('GuardianProfile::Guardians/Show', [
             'guardian' => new GuardianResource($guardian),
             'students' => $this->studentOptions($request),
+
+            /*
+             * From the same enum the rule validates against. This was 50
+             * characters of free text, so one parent could be filed as
+             * "Father", "father" and "dad" across three children.
+             */
+            'relationships' => RelationshipType::selectOptions(),
         ]);
     }
 

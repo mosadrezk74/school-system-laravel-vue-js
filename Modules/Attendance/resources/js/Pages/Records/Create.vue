@@ -5,6 +5,8 @@ import AttendanceForm from './_Form.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
+  /** Sent by the controller from the same enum the rules validate against. */
+  attendanceStatuses: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   subjects: { type: Array, default: () => [] },
@@ -58,6 +60,7 @@ function submit() {
           :semesters="semesters"
           :classes="classes"
           :subjects="subjects"
+          :attendance-statuses="attendanceStatuses"
           @class-change="onClassChange"
         />
       </form>

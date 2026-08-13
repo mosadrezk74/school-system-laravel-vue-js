@@ -6,15 +6,24 @@ use Modules\Core\Abstracts\BaseRequest;
 
 class StoreMeetingRequest extends BaseRequest
 {
+    /** `meetings.title` is varchar(255); `description` is JSON, so its cap is a domain choice. */
+    private const TITLE_MAX = 255;
+
+    private const DESCRIPTION_MAX = 2000;
+
     /**
      * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:255'],
-            ...$this->translatableRules('description', required: false),
-            'password' => ['nullable', 'string', 'max:100'],
+            // `meetings.title` is varchar(255).
+            'title' => ['required', 'string', 'min:3', 'max:'.self::TITLE_MAX],
+            ...$this->translatableRules('description', required: false, max: self::DESCRIPTION_MAX),
+            // The room password is handed to attendees verbatim, so it has to stay
+            // typeable: no leading/trailing space (trimmed upstream) and a floor
+            // that rules out a one-character "password".
+            'password' => ['nullable', 'string', 'min:4', 'max:100'],
             'scheduled_at' => ['required', 'date'],
             'duration_minutes' => ['required', 'integer', 'min:1', 'max:600'],
             'teacher_id' => ['required', 'integer', 'exists:users,id'],

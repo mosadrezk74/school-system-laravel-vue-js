@@ -7,8 +7,10 @@ const props = defineProps({
   form: { type: Object, required: true },
   classes: { type: Array, default: () => [] },
 
-  /** Sent by the controller from the same constant the rules validate against. */
+  /** All three come from the same enums the rules validate against. */
   bloodGroups: { type: Array, default: () => [] },
+  genders: { type: Array, default: () => [] },
+  relationships: { type: Array, default: () => [] },
   isEdit: { type: Boolean, default: false },
 })
 
@@ -24,12 +26,6 @@ const classOptions = computed(() => props.classes.map(c => ({
     .filter(Boolean)
     .join(' · '),
   value: c.id,
-})))
-
-// A+ / O- read the same in every locale, so the value is its own label.
-const bloodGroupOptions = computed(() => props.bloodGroups.map(group => ({
-  title: group,
-  value: group,
 })))
 
 const activeTab = ref('account')
@@ -95,6 +91,9 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.name"
+            autocomplete="name"
+            maxlength="255"
+            :counter="255"
             :label="required(t('students.name'))"
             :hint="$t('students.hints.name')"
             persistent-hint
@@ -106,13 +105,15 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.email"
+            autocomplete="email"
+            inputmode="email"
             type="email"
             :label="required(t('students.email'))"
             :hint="$t('students.hints.email')"
             persistent-hint
             :error-messages="form.errors.email"
-            maxlength="50"
-            :counter="50"
+            maxlength="255"
+            :counter="255"
             required
           />
         </VCol>
@@ -120,6 +121,9 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.username"
+            autocomplete="username"
+            maxlength="100"
+            :counter="100"
             :label="required(t('students.username'))"
             :hint="$t('students.hints.username')"
             persistent-hint
@@ -131,6 +135,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.password"
+            autocomplete="new-password"
+            maxlength="255"
             type="password"
             :label="isEdit ? t('students.password') : required(t('students.password'))"
             :hint="isEdit ? $t('students.hints.passwordHint') : $t('students.hints.password')"
@@ -143,10 +149,7 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="4">
           <VSelect
             v-model="form.gender"
-            :items="[
-              { title: $t('students.male'), value: 'male' },
-              { title: $t('students.female'), value: 'female' },
-            ]"
+            :items="genders"
             :label="required(t('students.gender'))"
             :hint="$t('students.hints.gender')"
             persistent-hint
@@ -168,6 +171,9 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.national_id"
+            inputmode="numeric"
+            maxlength="20"
+            :counter="20"
             :label="$t('students.nationalId')"
             :hint="$t('students.hints.nationalId')"
             persistent-hint
@@ -178,6 +184,10 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.phone"
+            autocomplete="tel"
+            inputmode="tel"
+            maxlength="20"
+            :counter="20"
             :label="$t('students.phone')"
             :hint="$t('students.hints.phone')"
             persistent-hint
@@ -239,6 +249,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.admission_number"
+            maxlength="50"
+            :counter="50"
             :label="$t('students.admissionNumber')"
             :hint="$t('students.hints.admissionNumber')"
             persistent-hint
@@ -249,6 +261,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.roll_number"
+            maxlength="50"
+            :counter="50"
             :label="$t('students.rollNumber')"
             :hint="$t('students.hints.rollNumber')"
             persistent-hint
@@ -259,6 +273,7 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.scholarship_percentage"
+            inputmode="decimal"
             type="number"
             min="0"
             max="100"
@@ -302,6 +317,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.father_name"
+            maxlength="255"
+            :counter="255"
             :label="$t('students.fatherName')"
             :hint="$t('students.hints.fatherName')"
             persistent-hint
@@ -312,6 +329,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.father_phone"
+            maxlength="20"
+            :counter="20"
             :label="$t('students.fatherPhone')"
             :hint="$t('students.hints.fatherPhone')"
             persistent-hint
@@ -322,6 +341,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.mother_name"
+            maxlength="255"
+            :counter="255"
             :label="$t('students.motherName')"
             :hint="$t('students.hints.motherName')"
             persistent-hint
@@ -332,6 +353,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.mother_phone"
+            maxlength="20"
+            :counter="20"
             :label="$t('students.motherPhone')"
             :hint="$t('students.hints.motherPhone')"
             persistent-hint
@@ -342,6 +365,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.guardian_name"
+            maxlength="255"
+            :counter="255"
             :label="$t('students.guardianName')"
             :hint="$t('students.hints.guardianName')"
             persistent-hint
@@ -352,6 +377,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.guardian_phone"
+            maxlength="20"
+            :counter="20"
             :label="$t('students.guardianPhone')"
             :hint="$t('students.hints.guardianPhone')"
             persistent-hint
@@ -360,8 +387,10 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         </VCol>
 
         <VCol cols="12" md="4">
-          <VTextField
+          <VSelect
             v-model="form.guardian_relation"
+            :items="relationships"
+            clearable
             :label="$t('students.guardianRelation')"
             :hint="$t('students.hints.guardianRelation')"
             persistent-hint
@@ -372,6 +401,9 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="8">
           <VTextField
             v-model="form.address"
+            autocomplete="street-address"
+            maxlength="500"
+            :counter="500"
             :label="$t('students.address')"
             :hint="$t('students.hints.address')"
             persistent-hint
@@ -382,6 +414,9 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.city"
+            autocomplete="address-level2"
+            maxlength="100"
+            :counter="100"
             :label="$t('students.city')"
             :hint="$t('students.hints.city')"
             persistent-hint
@@ -410,7 +445,7 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="4">
           <VSelect
             v-model="form.blood_group"
-            :items="bloodGroupOptions"
+            :items="bloodGroups"
             :label="$t('students.bloodGroup')"
             :hint="$t('students.hints.bloodGroup')"
             persistent-hint
@@ -422,6 +457,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.allergies"
+            maxlength="1000"
+            :counter="1000"
             :label="$t('students.allergies')"
             :hint="$t('students.hints.allergies')"
             persistent-hint
@@ -432,6 +469,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.medical_conditions"
+            maxlength="1000"
+            :counter="1000"
             :label="$t('students.medicalConditions')"
             :hint="$t('students.hints.medicalConditions')"
             persistent-hint
@@ -442,6 +481,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.emergency_contact_name"
+            maxlength="255"
+            :counter="255"
             :label="$t('students.emergencyContactName')"
             :hint="$t('students.hints.emergencyContactName')"
             persistent-hint
@@ -452,6 +493,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.emergency_contact_phone"
+            maxlength="20"
+            :counter="20"
             :label="$t('students.emergencyContactPhone')"
             :hint="$t('students.hints.emergencyContactPhone')"
             persistent-hint
@@ -460,8 +503,10 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         </VCol>
 
         <VCol cols="12" md="4">
-          <VTextField
+          <VSelect
             v-model="form.emergency_contact_relation"
+            :items="relationships"
+            clearable
             :label="$t('students.emergencyContactRelation')"
             :hint="$t('students.hints.emergencyContactRelation')"
             persistent-hint

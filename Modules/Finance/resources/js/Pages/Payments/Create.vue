@@ -102,6 +102,8 @@ function submit() {
           <VCol cols="12" md="4">
             <VTextField
               v-model="form.amount"
+              inputmode="decimal"
+              max="99999999.99"
               type="number"
               step="0.01"
               min="0"
@@ -140,6 +142,8 @@ function submit() {
           <VCol cols="12" md="6">
             <VTextField
               v-model="form.reference_number"
+              maxlength="100"
+              :counter="100"
               :label="t('finance.fields.reference_number')"
               :hint="t('finance.hints.referenceNumber')"
               persistent-hint
@@ -150,6 +154,8 @@ function submit() {
           <VCol cols="12">
             <VTextarea
               v-model="form.notes"
+              maxlength="5000"
+              :counter="5000"
               rows="3"
               :label="t('finance.fields.notes')"
               :hint="t('finance.hints.notes')"

@@ -6,6 +6,8 @@ import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 
 const props = defineProps({
+  /** Sent by the controller from the same enum the rule validates against. */
+  relationships: { type: Array, default: () => [] },
   guardian: { type: Object, required: true },
   students: { type: Object, default: () => ({ data: [], meta: {} }) },
 })
@@ -277,6 +279,7 @@ const quickActions = [
               <VCol cols="12" md="6">
                 <VTextField
                   v-model="studentSearch"
+                  maxlength="100"
                   :label="t('guardians.searchStudents')"
                   prepend-inner-icon="bx-search"
                   clearable
@@ -302,8 +305,9 @@ const quickActions = [
               </VCol>
 
               <VCol cols="12" md="6">
-                <VTextField
+                <VSelect
                   v-model="linkForm.relationship"
+                  :items="relationships"
                   :label="t('guardians.relationship')"
                   :hint="t('guardians.hints.relationship')"
                   persistent-hint

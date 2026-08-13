@@ -131,6 +131,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol v-if="!isEdit" cols="12" md="6">
           <VTextField
             v-model="form.invoice_number"
+            maxlength="50"
+            :counter="50"
             :label="t('finance.fields.invoice_number')"
             :hint="t('finance.hints.invoiceNumber')"
             persistent-hint
@@ -175,6 +177,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12">
           <VTextarea
             v-model="form.notes"
+            maxlength="5000"
+            :counter="5000"
             rows="3"
             :label="t('finance.fields.notes')"
             :hint="t('finance.hints.notes')"
@@ -239,6 +243,9 @@ const tabHasError = tab => tabFields[tab].some(field =>
             <VCol cols="6" md="2">
               <VTextField
                 v-model="item.quantity"
+                inputmode="numeric"
+                max="9999"
+                step="1"
                 type="number"
                 min="1"
                 :label="t('finance.quantity')"
@@ -250,6 +257,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
             <VCol cols="6" md="2">
               <VTextField
                 v-model="item.unit_price"
+                inputmode="decimal"
+                max="99999999.99"
                 type="number"
                 step="0.01"
                 min="0"
@@ -262,6 +271,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
             <VCol cols="6" md="2">
               <VTextField
                 v-model="item.discount_amount"
+                inputmode="decimal"
+                max="99999999.99"
                 type="number"
                 step="0.01"
                 min="0"

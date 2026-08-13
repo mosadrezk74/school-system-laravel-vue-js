@@ -136,6 +136,7 @@ function goToPage(page) {
     <template #filters>
       <VTextField
         v-model="search"
+        maxlength="100"
         :label="t('finance.searchByName')"
         prepend-inner-icon="bx-search"
         clearable

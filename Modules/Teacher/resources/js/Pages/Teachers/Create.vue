@@ -5,6 +5,8 @@ import TeacherForm from './_Form.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 
 defineProps({
+  salaryTypeOptions: { type: Array, default: () => [] },
+  genders: { type: Array, default: () => [] },
   subjects: { type: Array, default: () => [] },
 })
 
@@ -51,6 +53,8 @@ function submit() {
         <TeacherForm
           :form="form"
           :subjects="subjects"
+          :salary-type-options="salaryTypeOptions"
+          :genders="genders"
         />
       </form>
     </VCardText>

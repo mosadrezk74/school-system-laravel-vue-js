@@ -75,6 +75,8 @@ const submit = () => form.post('/login', {
           <div class="d-flex flex-column gap-4">
             <VTextField
               v-model="form.email"
+              inputmode="email"
+              maxlength="255"
               autofocus
               :label="t('auth.email')"
               type="email"
@@ -85,6 +87,7 @@ const submit = () => form.post('/login', {
 
             <VTextField
               v-model="form.password"
+              maxlength="255"
               :label="t('auth.password')"
               :type="isPasswordVisible ? 'text' : 'password'"
               autocomplete="current-password"

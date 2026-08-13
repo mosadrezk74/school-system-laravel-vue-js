@@ -5,6 +5,8 @@ import StudentForm from './_Form.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
+  relationships: { type: Array, default: () => [] },
+  genders: { type: Array, default: () => [] },
   student: { type: Object, required: true },
   classes: { type: Array, default: () => [] },
   bloodGroups: { type: Array, default: () => [] },
@@ -66,6 +68,8 @@ function submit() {
           :form="form"
           :classes="classes"
           :blood-groups="bloodGroups"
+          :relationships="relationships"
+          :genders="genders"
           is-edit
         />
       </form>

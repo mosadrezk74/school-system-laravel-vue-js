@@ -4,24 +4,38 @@ namespace Modules\Auth\Http\Requests;
 
 use Illuminate\Validation\Rule;
 use Modules\Auth\Enums\UserRole;
+use Modules\Auth\Http\Requests\Concerns\AccountFieldRules;
 use Modules\Core\Abstracts\BaseRequest;
 
 class StoreAdminRequest extends BaseRequest
 {
+    use AccountFieldRules;
+
+    /** An administrator is a member of staff, so an adult age range applies. */
+    private const MIN_AGE = 18;
+
+    private const MAX_AGE = 100;
+
     /**
      * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
-            'username' => ['nullable', 'string', 'max:100', Rule::unique('users', 'username')],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'gender' => ['nullable', 'string', 'in:male,female'],
-            'birth_date' => ['nullable', 'date', 'before:today'],
-            'national_id' => ['nullable', 'string', 'max:20'],
+            /*
+             * Account fields come from AccountFieldRules so this screen keeps
+             * the same limits and formats as the other four that write to
+             * `users`. The username stays optional here: an admin created for
+             * a person who only ever signs in by email does not need one.
+             */
+            'name' => $this->nameRules(),
+            'email' => $this->emailRules(),
+            'username' => $this->usernameRules(required: false),
+            'password' => ['required', 'string', 'min:8', 'max:255', 'confirmed'],
+            'phone' => $this->phoneRules(),
+            'gender' => $this->genderRules(required: false),
+            'birth_date' => $this->birthDateRules(self::MIN_AGE, self::MAX_AGE),
+            'national_id' => $this->nationalIdRules(),
             'is_active' => ['sometimes', 'boolean'],
 
             /*
@@ -36,7 +50,7 @@ class StoreAdminRequest extends BaseRequest
             ])],
 
             'roles' => ['sometimes', 'array'],
-            'roles.*' => ['string', Rule::exists('roles', 'name')],
+            'roles.*' => ['string', 'distinct', Rule::exists('roles', 'name')],
         ];
     }
 
@@ -54,5 +68,13 @@ class StoreAdminRequest extends BaseRequest
             'account_role' => __('auth::admins.fields.account_role'),
             'roles' => __('auth::admins.fields.roles'),
         ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return $this->accountFieldMessages();
     }
 }

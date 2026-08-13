@@ -7,6 +7,9 @@ use Modules\Core\Abstracts\BaseRequest;
 
 class UpdateSemesterRequest extends BaseRequest
 {
+    /** `semesters.name` is JSON; a term label is short by nature. */
+    private const NAME_MAX = 100;
+
     /**
      * @return array<string, mixed>
      */
@@ -23,7 +26,7 @@ class UpdateSemesterRequest extends BaseRequest
              * locale. On update the typed value is merged over the row's
              * stored translations, preserving untouched locales.
              */
-            ...$this->translatableRules('name'),
+            ...$this->translatableRules('name', max: self::NAME_MAX),
 
             /*
              * Same unique pair as the store request, with this row excluded so

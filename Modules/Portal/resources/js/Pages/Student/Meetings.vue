@@ -81,6 +81,7 @@ function goToPage(page) {
         <VCardText>
           <VTextField
             v-model="search"
+            maxlength="100"
             :label="t('portal.student.searchMeetings')"
             prepend-inner-icon="bx-search"
             density="compact"

@@ -77,6 +77,7 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="6">
           <TranslatableTextInput
             v-model="form.name"
+            :maxlength="100"
             field="name"
             :label="t('report.fields.name')"
             :errors="form.errors"

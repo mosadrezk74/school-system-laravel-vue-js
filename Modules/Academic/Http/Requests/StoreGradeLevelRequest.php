@@ -6,6 +6,11 @@ use Modules\Core\Abstracts\BaseRequest;
 
 class StoreGradeLevelRequest extends BaseRequest
 {
+    /** `grade_levels.name` and `.description` are JSON, so these are domain limits: a grade label is short, its blurb is a sentence or two. */
+    private const NAME_MAX = 100;
+
+    private const DESCRIPTION_MAX = 500;
+
     /**
      * @return array<string, mixed>
      */
@@ -17,8 +22,8 @@ class StoreGradeLevelRequest extends BaseRequest
              * language is detected and the remaining active locales are filled
              * in by BaseRequest once validation passes.
              */
-            ...$this->translatableRules('name'),
-            ...$this->translatableRules('description', required: false),
+            ...$this->translatableRules('name', max: self::NAME_MAX),
+            ...$this->translatableRules('description', required: false, max: self::DESCRIPTION_MAX),
 
             'display_order' => ['nullable', 'integer', 'min:0', 'max:32767'],
             'is_active' => ['sometimes', 'boolean'],

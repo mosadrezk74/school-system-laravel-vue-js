@@ -5,6 +5,8 @@ import TeacherForm from './_Form.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
+  salaryTypeOptions: { type: Array, default: () => [] },
+  genders: { type: Array, default: () => [] },
   teacher: { type: Object, required: true },
   subjects: { type: Array, default: () => [] },
 })
@@ -52,6 +54,8 @@ function submit() {
         <TeacherForm
           :form="form"
           :subjects="subjects"
+          :salary-type-options="salaryTypeOptions"
+          :genders="genders"
           is-edit
         />
       </form>

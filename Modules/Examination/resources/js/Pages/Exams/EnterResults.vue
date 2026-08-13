@@ -61,6 +61,8 @@ function submit() {
           <td style="min-inline-size: 140px;">
             <VTextField
               v-model="form.results[index].obtained_marks"
+              inputmode="decimal"
+              step="0.01"
               type="number"
               min="0"
               :max="examSubject.total_marks"
@@ -72,6 +74,8 @@ function submit() {
           <td style="min-inline-size: 220px;">
             <VTextField
               v-model="form.results[index].remarks"
+              maxlength="1000"
+              :counter="1000"
               density="compact"
               hide-details
             />

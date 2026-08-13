@@ -11,6 +11,7 @@ use Modules\Auth\Actions\UpdatePasswordAction;
 use Modules\Auth\Actions\UpdateProfileAction;
 use Modules\Auth\DTOs\UpdatePasswordDTO;
 use Modules\Auth\DTOs\UpdateProfileDTO;
+use Modules\Auth\Enums\Gender;
 use Modules\Auth\Http\Requests\DeleteProfileRequest;
 use Modules\Auth\Http\Requests\UpdatePasswordRequest;
 use Modules\Auth\Http\Requests\UpdateProfileRequest;
@@ -66,6 +67,12 @@ class AccountSettingsController extends BaseInertiaController
             'languageOptions' => $this->languageOptions(),
             'themes' => $this->themes(),
             'timezones' => $this->timezones(),
+
+            /*
+             * From the same enum UpdateProfileRequest validates against, so
+             * this screen no longer keeps its own copy of the two options.
+             */
+            'genders' => Gender::selectOptions(),
         ]);
     }
 

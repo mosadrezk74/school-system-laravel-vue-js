@@ -52,6 +52,7 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
   
           <TranslatableTextInput
             v-model="form.name"
+            :maxlength="100"
             field="name"
             :label="$t('classroom.fields.name')"
             :errors="form.errors"
@@ -74,6 +75,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.capacity"
+            inputmode="numeric"
+            step="1"
             type="number"
             min="1"
             max="999"
@@ -91,6 +94,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.building"
+            maxlength="50"
+            :counter="50"
             :label="$t('classroom.fields.building')"
             :hint="$t('classroom.hints.building')"
             persistent-hint
@@ -101,6 +106,8 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.floor"
+            inputmode="numeric"
+            step="1"
             type="number"
             min="-5"
             max="50"

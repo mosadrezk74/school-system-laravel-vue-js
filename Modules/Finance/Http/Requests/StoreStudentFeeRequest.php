@@ -18,7 +18,7 @@ class StoreStudentFeeRequest extends BaseRequest
             'fee_structure_id' => ['required', 'integer', 'exists:fee_structures,id'],
             'amount' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
             'discount_amount' => ['nullable', 'numeric', 'min:0', 'max:99999999.99', 'lte:amount'],
-            'status' => ['nullable', 'string', Rule::in(StudentFeeStatus::values())],
+            'status' => ['nullable', 'string', Rule::enum(StudentFeeStatus::class)],
         ];
     }
 

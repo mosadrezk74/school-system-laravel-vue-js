@@ -5,6 +5,8 @@ import StudentForm from './_Form.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 
 defineProps({
+  relationships: { type: Array, default: () => [] },
+  genders: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   bloodGroups: { type: Array, default: () => [] },
 })
@@ -65,6 +67,8 @@ function submit() {
           :form="form"
           :classes="classes"
           :blood-groups="bloodGroups"
+          :relationships="relationships"
+          :genders="genders"
         />
       </form>
     </VCardText>

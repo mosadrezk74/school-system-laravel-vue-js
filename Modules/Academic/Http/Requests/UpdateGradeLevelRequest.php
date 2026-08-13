@@ -6,6 +6,11 @@ use Modules\Core\Abstracts\BaseRequest;
 
 class UpdateGradeLevelRequest extends BaseRequest
 {
+    /** `grade_levels.name` and `.description` are JSON, so these are domain limits: a grade label is short, its blurb is a sentence or two. */
+    private const NAME_MAX = 100;
+
+    private const DESCRIPTION_MAX = 500;
+
     /**
      * @return array<string, mixed>
      */
@@ -17,8 +22,8 @@ class UpdateGradeLevelRequest extends BaseRequest
              * value is merged over the row's existing translations, so locales
              * the user did not touch are preserved.
              */
-            ...$this->translatableRules('name'),
-            ...$this->translatableRules('description', required: false),
+            ...$this->translatableRules('name', max: self::NAME_MAX),
+            ...$this->translatableRules('description', required: false, max: self::DESCRIPTION_MAX),
 
             'display_order' => ['nullable', 'integer', 'min:0', 'max:32767'],
             'is_active' => ['sometimes', 'boolean'],

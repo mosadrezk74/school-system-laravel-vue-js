@@ -86,6 +86,7 @@ const formatDate = value => value ? new Date(value).toLocaleString() : '—'
         <VCol cols="12" md="5">
           <VTextField
             v-model="search"
+            maxlength="100"
             :label="t('systemErrors.search')"
             prepend-inner-icon="bx-search"
             clearable

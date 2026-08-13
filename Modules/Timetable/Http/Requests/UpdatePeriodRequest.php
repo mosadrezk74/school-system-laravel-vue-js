@@ -6,6 +6,12 @@ use Modules\Core\Abstracts\BaseRequest;
 
 class UpdatePeriodRequest extends BaseRequest
 {
+    /** `periods.period_number` is a tinyint. */
+    private const PERIOD_NUMBER_MAX = 127;
+
+    /** `periods.name` is JSON; a period label such as "Second Period" is short. */
+    private const NAME_MAX = 50;
+
     /**
      * @return array<string, mixed>
      */
@@ -14,8 +20,8 @@ class UpdatePeriodRequest extends BaseRequest
         $periodId = $this->route('period')?->id;
 
         return [
-            'period_number' => ['required', 'integer', 'min:1', 'unique:periods,period_number,'.$periodId],
-            ...$this->translatableRules('name'),
+            'period_number' => ['required', 'integer', 'min:1', 'max:'.self::PERIOD_NUMBER_MAX, 'unique:periods,period_number,'.$periodId],
+            ...$this->translatableRules('name', max: self::NAME_MAX),
             'start_time' => ['required', 'date_format:H:i'],
             'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
             'is_break' => ['sometimes', 'boolean'],

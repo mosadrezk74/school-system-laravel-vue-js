@@ -19,6 +19,42 @@ abstract class BaseRequest extends FormRequest
     }
 
     /**
+     * Trims every submitted string and turns the blanks an HTML form sends for
+     * untouched optional inputs into real nulls.
+     *
+     * Without this a `nullable` rule is defeated by the empty string that
+     * actually arrives: `['nullable', 'regex:...']` runs the regex against ""
+     * and fails, so an optional field the user never touched blocks the save.
+     * It also stops " " being stored as a name.
+     *
+     * Applied to nested arrays too, so repeater rows (invoice items,
+     * attendance notes, promotion remarks) get the same treatment as top-level
+     * fields. Requests that override this must call `parent::prepareForValidation()`.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge($this->normalizeStrings($this->all()));
+    }
+
+    /**
+     * @param  array<mixed>  $data
+     * @return array<mixed>
+     */
+    private function normalizeStrings(array $data): array
+    {
+        foreach ($data as $key => $value) {
+            if (is_string($value)) {
+                $trimmed = trim($value);
+                $data[$key] = $trimmed === '' ? null : $trimmed;
+            } elseif (is_array($value)) {
+                $data[$key] = $this->normalizeStrings($value);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Normalises phone numbers to E.164 when propaganistas/laravel-phone is
      * available. The class check is required: that package came from another
      * project and isn't installed here, so an unguarded call would fatal on
@@ -148,19 +184,35 @@ abstract class BaseRequest extends FormRequest
     }
 
     /**
+     * Default ceiling for a translatable field. Every translatable column is
+     * JSON, so the database imposes no width of its own and an uncapped
+     * `string` rule would accept a megabyte of text into a column the UI
+     * renders as a single line. Callers pass a tighter domain limit; this is
+     * only the backstop for short labels.
+     */
+    protected const TRANSLATABLE_DEFAULT_MAX = 255;
+
+    /**
      * Validation rules for a translatable field. The form submits a single
      * plain-text value; its language is auto-detected and the other active
      * locales are filled in automatically once validation passes (see
      * expandTranslatableField()), so the field only needs a string rule here.
      *
+     * The limit is applied to the plain string the form submits, which is the
+     * value the user actually typed. The generated translations are not
+     * re-checked: a translation can legitimately run longer than its source
+     * (Arabic and German both do), and rejecting it would fail a save the user
+     * has no way to correct.
+     *
+     * @param  int  $max  Maximum characters for the typed value.
      * @return array<string, mixed>
      */
-    protected function translatableRules(string $field, bool $required = true): array
+    protected function translatableRules(string $field, bool $required = true, int $max = self::TRANSLATABLE_DEFAULT_MAX): array
     {
         $this->translatableFields[] = $field;
 
         return [
-            $field => [$required ? 'required' : 'nullable', 'string'],
+            $field => [$required ? 'required' : 'nullable', 'string', 'max:'.$max],
         ];
     }
 }

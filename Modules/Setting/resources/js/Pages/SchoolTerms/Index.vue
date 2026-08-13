@@ -112,6 +112,7 @@ const isDraft = item => item.status === 'draft'
         >
           <VTextField
             v-model="filters.search.value"
+            maxlength="100"
             :label="t('schoolTerms.search')"
             prepend-inner-icon="bx-search"
             clearable

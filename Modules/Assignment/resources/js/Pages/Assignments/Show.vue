@@ -271,6 +271,9 @@ function submitGrade() {
           <VCol cols="12">
             <VTextField
               v-model="gradeForm.score"
+              inputmode="decimal"
+              max="9999.99"
+              step="0.01"
               type="number"
               min="0"
               :label="t('assignments.score')"
@@ -280,6 +283,8 @@ function submitGrade() {
           <VCol cols="12">
             <VTextField
               v-model="gradeForm.grade"
+              maxlength="10"
+              :counter="10"
               :label="t('assignments.grade')"
               :error-messages="gradeForm.errors.grade"
             />
@@ -287,6 +292,8 @@ function submitGrade() {
           <VCol cols="12">
             <VTextarea
               v-model="gradeForm.feedback"
+              maxlength="2000"
+              :counter="2000"
               :label="t('assignments.feedback')"
               :error-messages="gradeForm.errors.feedback"
               rows="3"

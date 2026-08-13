@@ -58,6 +58,8 @@ function submit() {
               <VCol cols="12" md="6">
                 <VTextField
                   v-model="form.title"
+                  maxlength="255"
+                  :counter="255"
                   :label="t('portal.teacher.meetingTitle')"
                   :error-messages="form.errors.title"
                 />
@@ -95,6 +97,9 @@ function submit() {
               <VCol cols="12" md="6">
                 <VTextField
                   v-model="form.duration_minutes"
+                  inputmode="numeric"
+                  max="600"
+                  step="1"
                   type="number"
                   min="5"
                   :label="t('portal.teacher.duration')"
@@ -105,6 +110,7 @@ function submit() {
               <VCol cols="12">
                 <TranslatableTextarea
                   v-model="form.description"
+                  :maxlength="2000"
                   field="description"
                   :label="t('portal.teacher.description')"
                   :errors="form.errors"

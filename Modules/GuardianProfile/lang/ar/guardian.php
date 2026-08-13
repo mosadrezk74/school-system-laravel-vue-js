@@ -26,4 +26,18 @@ return [
         'phone' => 'الهاتف',
         'occupation' => 'المهنة',
     ],
+
+    /** Labels for Modules\GuardianProfile\Enums\RelationshipType. */
+    'relationships' => [
+        'father' => 'الأب',
+        'mother' => 'الأم',
+        'grandfather' => 'الجد',
+        'grandmother' => 'الجدة',
+        'brother' => 'الأخ',
+        'sister' => 'الأخت',
+        'uncle' => 'العم / الخال',
+        'aunt' => 'العمة / الخالة',
+        'legal_guardian' => 'الوصي القانوني',
+        'other' => 'أخرى',
+    ],
 ];

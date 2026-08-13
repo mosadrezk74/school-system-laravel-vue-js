@@ -104,6 +104,7 @@ const dash = value => value || '—'
         >
           <VTextField
             v-model="filters.search.value"
+            maxlength="100"
             :label="t('promotions.search')"
             prepend-inner-icon="bx-search"
             clearable

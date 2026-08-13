@@ -27,6 +27,7 @@ const showsBankDetails = computed(() => props.form.type === 'bank_transfer')
     <VCol cols="12" md="6">
       <TranslatableTextInput
         v-model="form.name"
+        :maxlength="255"
         field="name"
         :label="t('finance.fields.name')"
         :errors="form.errors"
@@ -37,6 +38,8 @@ const showsBankDetails = computed(() => props.form.type === 'bank_transfer')
     <VCol cols="12" md="3">
       <VTextField
         v-model="form.code"
+        maxlength="50"
+        :counter="50"
         :label="t('finance.fields.code')"
         :error-messages="form.errors.code"
         required
@@ -56,6 +59,7 @@ const showsBankDetails = computed(() => props.form.type === 'bank_transfer')
     <VCol cols="12">
       <TranslatableTextarea
         v-model="form.description"
+        :maxlength="1000"
         field="description"
         :label="t('finance.fields.description')"
         :errors="form.errors"
@@ -65,6 +69,8 @@ const showsBankDetails = computed(() => props.form.type === 'bank_transfer')
     <VCol v-if="showsPaymentUrl" cols="12">
       <VTextField
         v-model="form.payment_url"
+        maxlength="255"
+        :counter="255"
         type="url"
         :label="t('finance.fields.payment_url')"
         placeholder="https://"
@@ -76,6 +82,8 @@ const showsBankDetails = computed(() => props.form.type === 'bank_transfer')
       <VCol cols="12" md="6">
         <VTextField
           v-model="form.bank_name"
+          maxlength="255"
+          :counter="255"
           :label="t('finance.fields.bank_name')"
           :error-messages="form.errors.bank_name"
         />
@@ -84,6 +92,8 @@ const showsBankDetails = computed(() => props.form.type === 'bank_transfer')
       <VCol cols="12" md="6">
         <VTextField
           v-model="form.account_name"
+          maxlength="255"
+          :counter="255"
           :label="t('finance.fields.account_name')"
           :error-messages="form.errors.account_name"
         />
@@ -92,6 +102,8 @@ const showsBankDetails = computed(() => props.form.type === 'bank_transfer')
       <VCol cols="12" md="6">
         <VTextField
           v-model="form.account_number"
+          maxlength="100"
+          :counter="100"
           :label="t('finance.fields.account_number')"
           :error-messages="form.errors.account_number"
         />
@@ -100,6 +112,8 @@ const showsBankDetails = computed(() => props.form.type === 'bank_transfer')
       <VCol cols="12" md="6">
         <VTextField
           v-model="form.iban"
+          maxlength="64"
+          :counter="64"
           :label="t('finance.fields.iban')"
           :error-messages="form.errors.iban"
         />
@@ -109,6 +123,7 @@ const showsBankDetails = computed(() => props.form.type === 'bank_transfer')
     <VCol cols="12">
       <TranslatableTextarea
         v-model="form.instructions"
+        :maxlength="5000"
         field="instructions"
         :label="t('finance.fields.instructions')"
         :errors="form.errors"
@@ -118,6 +133,7 @@ const showsBankDetails = computed(() => props.form.type === 'bank_transfer')
     <VCol cols="12" md="6">
       <VTextField
         v-model.number="form.display_order"
+        inputmode="numeric"
         type="number"
         min="0"
         :label="t('finance.fields.display_order')"

@@ -3,11 +3,23 @@
 namespace Modules\Auth\Http\Requests;
 
 use Illuminate\Validation\Rule;
+use Modules\Auth\Enums\Theme;
+use Modules\Auth\Http\Requests\Concerns\AccountFieldRules;
 use Modules\Core\Abstracts\BaseRequest;
 use Modules\Setting\Services\LanguageService;
 
 class UpdateProfileRequest extends BaseRequest
 {
+    use AccountFieldRules;
+
+    /**
+     * Anyone with a login edits their own profile here — student, guardian and
+     * staff alike — so the age range has to be the widest of them.
+     */
+    private const MIN_AGE = 2;
+
+    private const MAX_AGE = 120;
+
     /**
      * @return array<string, mixed>
      */
@@ -16,16 +28,23 @@ class UpdateProfileRequest extends BaseRequest
         $userId = $this->user()->id;
 
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
-            'username' => ['required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($userId)],
-            'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->ignore($userId)],
-            'gender' => ['nullable', 'string', 'in:male,female'],
-            'birth_date' => ['nullable', 'date', 'before:today'],
-            'national_id' => ['nullable', 'string', 'max:20'],
+            'name' => $this->nameRules(),
+            'email' => $this->emailRules($userId),
+            'username' => $this->usernameRules($userId),
+            'phone' => $this->phoneRules($userId),
+            'gender' => $this->genderRules(required: false),
+            'birth_date' => $this->birthDateRules(self::MIN_AGE, self::MAX_AGE),
+            'national_id' => $this->nationalIdRules($userId),
             'language' => ['required', 'string', Rule::in(app(LanguageService::class)->activeLocales())],
-            'theme' => ['required', 'string', 'in:light,dark'],
-            'timezone' => ['required', 'string', 'max:50'],
+            'theme' => ['required', 'string', Rule::enum(Theme::class)],
+
+            /*
+             * `timezone` validates against PHP's own identifier list. The
+             * previous `max:50` accepted "Mars/Olympus", which then made every
+             * date this user sees fall back to the app default with no
+             * indication that the setting had not taken.
+             */
+            'timezone' => ['required', 'string', 'timezone'],
         ];
     }
 
@@ -46,5 +65,13 @@ class UpdateProfileRequest extends BaseRequest
             'theme' => __('auth::account.fields.theme'),
             'timezone' => __('auth::account.fields.timezone'),
         ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return $this->accountFieldMessages();
     }
 }

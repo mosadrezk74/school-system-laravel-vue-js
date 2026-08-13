@@ -8,6 +8,9 @@ use Modules\Promotion\Enums\PromotionStatus;
 
 class StorePromotionRequest extends BaseRequest
 {
+    /** A batch covers a cohort; beyond this it is a malformed payload. */
+    private const MAX_DECISIONS = 2000;
+
     /**
      * Deliberately accepts no source academic year or class: those are read
      * from the academic context and from each student's own record, so the
@@ -32,9 +35,12 @@ class StorePromotionRequest extends BaseRequest
 
             'to_semester_id' => ['nullable', 'integer', Rule::exists('semesters', 'id')],
 
-            'decisions' => ['required', 'array', 'min:1'],
-            'decisions.*.student_id' => ['required', 'integer', Rule::exists('student_profiles', 'id')],
-            'decisions.*.status' => ['required', 'string', Rule::in(PromotionStatus::values())],
+            // A promotion batch covers a cohort, not the whole school twice over.
+            'decisions' => ['required', 'array', 'min:1', 'max:'.self::MAX_DECISIONS],
+            // `distinct` stops one student appearing twice in a batch, which would
+            // otherwise write two promotion rows for the same move.
+            'decisions.*.student_id' => ['required', 'integer', 'distinct', Rule::exists('student_profiles', 'id')],
+            'decisions.*.status' => ['required', 'string', Rule::enum(PromotionStatus::class)],
 
             'decisions.*.target_class_id' => ['nullable', 'integer', Rule::exists('classes', 'id')],
             'decisions.*.remarks' => ['nullable', 'string', 'max:1000'],

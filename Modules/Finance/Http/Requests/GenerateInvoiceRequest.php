@@ -13,7 +13,7 @@ class GenerateInvoiceRequest extends BaseRequest
     {
         return [
             'student_id' => ['required', 'integer', 'exists:student_profiles,id'],
-            'issue_date' => ['required', 'date'],
+            'issue_date' => ['required', 'date', 'before_or_equal:today'],
             'due_date' => ['required', 'date', 'after_or_equal:issue_date'],
             'notes' => ['nullable', 'string', 'max:5000'],
         ];

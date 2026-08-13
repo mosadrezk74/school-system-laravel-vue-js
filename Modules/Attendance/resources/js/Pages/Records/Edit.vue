@@ -4,6 +4,8 @@ import { useI18n } from 'vue-i18n'
 import AttendanceForm from './_Form.vue'
 
 const props = defineProps({
+  /** Sent by the controller from the same enum the rules validate against. */
+  attendanceStatuses: { type: Array, default: () => [] },
   record: { type: Object, required: true },
   roster: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
@@ -47,6 +49,7 @@ function submit() {
           :semesters="semesters"
           :classes="classes"
           :subjects="subjects"
+          :attendance-statuses="attendanceStatuses"
           is-edit
         />
       </form>

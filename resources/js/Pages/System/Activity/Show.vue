@@ -171,6 +171,12 @@ const asJson = value => JSON.stringify(value, null, 2)
 }
 
 .text-break {
-  overflow-wrap: anywhere;
+  /*
+    `break-word` rather than `anywhere`: this span is a flex item, whose
+    automatic minimum size is its min-content width. `anywhere` folds every
+    character into that measurement, so a long unbroken value can squeeze the
+    column down to one character per line once the row runs short of space.
+  */
+  overflow-wrap: break-word;
 }
 </style>

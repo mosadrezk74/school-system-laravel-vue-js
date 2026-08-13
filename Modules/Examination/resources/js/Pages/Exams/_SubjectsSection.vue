@@ -168,6 +168,9 @@ function remove(examSubject) {
           <VCol cols="12" md="6">
             <VTextField
               v-model="form.total_marks"
+              inputmode="decimal"
+              max="9999.99"
+              step="0.01"
               type="number"
               min="0"
               :label="t('exams.subjectTotalMarks')"
@@ -177,6 +180,9 @@ function remove(examSubject) {
           <VCol cols="12" md="6">
             <VTextField
               v-model="form.passing_marks"
+              inputmode="decimal"
+              max="9999.99"
+              step="0.01"
               type="number"
               min="0"
               :label="t('exams.passingMarks')"
@@ -201,6 +207,8 @@ function remove(examSubject) {
           <VCol cols="12" md="4">
             <VTextField
               v-model="form.room"
+              maxlength="100"
+              :counter="100"
               :label="t('exams.room')"
               :error-messages="form.errors.room"
             />

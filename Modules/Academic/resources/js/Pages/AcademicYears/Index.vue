@@ -146,6 +146,7 @@ function goToPage(page) {
     <template #filters>
       <VTextField
         v-model="search"
+        maxlength="100"
         :label="t('academicYears.search')"
         prepend-inner-icon="bx-search"
         clearable
@@ -211,6 +212,7 @@ function goToPage(page) {
           >
             <VTextField
               v-model="form.name"
+              autocomplete="name"
               :label="required(t('academicYears.name'))"
               :error-messages="form.errors.name"
               maxlength="20"

@@ -114,6 +114,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.amount"
+            inputmode="decimal"
+            max="99999999.99"
             type="number"
             step="0.01"
             min="0"
@@ -128,6 +130,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.discount_amount"
+            inputmode="decimal"
+            max="99999999.99"
             type="number"
             step="0.01"
             min="0"

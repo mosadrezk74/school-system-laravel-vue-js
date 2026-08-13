@@ -114,6 +114,7 @@ const eventColor = event => ({
         <VCol cols="12" md="5">
           <VTextField
             v-model="search"
+            maxlength="100"
             :label="t('systemActivity.search')"
             prepend-inner-icon="bx-search"
             clearable

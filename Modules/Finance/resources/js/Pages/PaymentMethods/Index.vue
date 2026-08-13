@@ -107,6 +107,7 @@ function goToPage(page) {
         <VCol cols="12" md="6">
           <VTextField
             v-model="search"
+            maxlength="100"
             :label="t('finance.search_payment_methods')"
             prepend-inner-icon="bx-search"
             clearable

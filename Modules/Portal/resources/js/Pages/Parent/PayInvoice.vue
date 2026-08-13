@@ -160,6 +160,8 @@ function submit() {
 
             <VTextarea
               v-model="form.notes"
+              maxlength="5000"
+              :counter="5000"
               :label="t('finance.fields.notes')"
               rows="2"
               :error-messages="form.errors.notes"

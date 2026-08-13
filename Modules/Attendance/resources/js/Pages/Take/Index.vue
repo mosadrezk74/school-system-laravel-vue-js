@@ -164,6 +164,8 @@ function submit() {
             <td>
               <VTextField
                 v-model="student.notes"
+                maxlength="500"
+                :counter="500"
                 :error-messages="form.errors[`students.${index}.notes`]"
                 density="compact"
                 hide-details="auto"

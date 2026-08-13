@@ -173,6 +173,7 @@ function goToPage(page) {
     <template #filters>
       <VTextField
         v-model="search"
+        maxlength="100"
         :label="t('finance.searchInvoice')"
         prepend-inner-icon="bx-search"
         clearable
@@ -294,6 +295,8 @@ function goToPage(page) {
           <VCol cols="12">
             <VTextarea
               v-model="generateForm.notes"
+              maxlength="5000"
+              :counter="5000"
               rows="2"
               :label="t('finance.fields.notes')"
               :error-messages="generateForm.errors.notes"

@@ -14,8 +14,9 @@ class AttendanceReportRequest extends BaseRequest
         return [
             'class_id' => ['required', 'integer', 'exists:classes,id'],
             'semester_id' => ['nullable', 'integer', 'exists:semesters,id'],
-            'date_from' => ['nullable', 'date'],
-            'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
+            // There is no attendance to report on for a day that has not happened.
+            'date_from' => ['nullable', 'date', 'before_or_equal:today'],
+            'date_to' => ['nullable', 'date', 'after_or_equal:date_from', 'before_or_equal:today'],
         ];
     }
 

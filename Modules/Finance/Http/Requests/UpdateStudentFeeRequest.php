@@ -16,7 +16,7 @@ class UpdateStudentFeeRequest extends BaseRequest
         return [
             'amount' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
             'discount_amount' => ['nullable', 'numeric', 'min:0', 'max:99999999.99', 'lte:amount'],
-            'status' => ['required', 'string', Rule::in(StudentFeeStatus::values())],
+            'status' => ['required', 'string', Rule::enum(StudentFeeStatus::class)],
         ];
     }
 

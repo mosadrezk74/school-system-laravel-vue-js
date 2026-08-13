@@ -61,6 +61,7 @@ function submit() {
               <VCol cols="12" md="6">
                 <TranslatableTextInput
                   v-model="form.title"
+                  :maxlength="150"
                   field="title"
                   :label="t('portal.teacher.homeworkTitle')"
                   :errors="form.errors"
@@ -89,6 +90,7 @@ function submit() {
               <VCol cols="12">
                 <TranslatableTextarea
                   v-model="form.description"
+                  :maxlength="2000"
                   field="description"
                   :label="t('portal.teacher.description')"
                   :errors="form.errors"
@@ -106,6 +108,8 @@ function submit() {
               <VCol cols="12" md="4">
                 <VTextField
                   v-model="form.max_score"
+                  inputmode="decimal"
+                  max="9999.99"
                   type="number"
                   min="0"
                   step="0.5"

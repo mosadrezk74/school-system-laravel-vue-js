@@ -59,4 +59,16 @@ return [
     'confirmArchive' => 'أرشفة هذا المعلم؟ سيتم تعطيل حساب الدخول.',
     'search' => 'البحث بالاسم أو البريد أو رقم الموظف',
     'empty' => 'لا يوجد معلمين بعد.',
+
+    'validation' => [
+        'joining_before_birth' => 'يجب أن يكون تاريخ الالتحاق بعد تاريخ الميلاد.',
+        'joining_in_future' => 'لا يمكن أن يكون تاريخ الالتحاق في المستقبل.',
+    ],
+
+    /** Labels for Modules\Teacher\Enums\SalaryType. */
+    'salaryTypes' => [
+        'fixed' => 'ثابت',
+        'hourly' => 'بالساعة',
+        'contract' => 'بعقد',
+    ],
 ];

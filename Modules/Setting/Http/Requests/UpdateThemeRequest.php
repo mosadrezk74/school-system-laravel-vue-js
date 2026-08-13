@@ -2,6 +2,8 @@
 
 namespace Modules\Setting\Http\Requests;
 
+use Illuminate\Validation\Rule;
+use Modules\Auth\Enums\Theme;
 use Modules\Core\Abstracts\BaseRequest;
 
 class UpdateThemeRequest extends BaseRequest
@@ -12,7 +14,7 @@ class UpdateThemeRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'theme' => ['required', 'string', 'in:light,dark'],
+            'theme' => ['required', 'string', Rule::enum(Theme::class)],
         ];
     }
 }

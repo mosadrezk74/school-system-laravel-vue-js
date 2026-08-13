@@ -12,10 +12,16 @@ class UpdateSchoolInfoRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'school_name' => ['required', 'string', 'max:255'],
-            'school_code' => ['nullable', 'string', 'max:50'],
+            'school_name' => ['required', 'string', 'min:2', 'max:255'],
+            'school_code' => ['nullable', 'string', 'max:50', 'regex:/^[A-Za-z0-9_-]+$/'],
             'timezone' => ['nullable', 'string', 'timezone'],
-            'currency' => ['nullable', 'string', 'max:10'],
+
+            /*
+             * ISO 4217, three uppercase letters. `max:10` accepted anything at
+             * all, and this value is what every invoice and receipt is priced
+             * in, so a stray character propagates through the whole ledger.
+             */
+            'currency' => ['nullable', 'string', 'size:3', 'regex:/^[A-Z]{3}$/'],
             'currency_symbol' => ['nullable', 'string', 'max:10'],
             'logo' => ['nullable', 'image', 'max:2048'],
         ];

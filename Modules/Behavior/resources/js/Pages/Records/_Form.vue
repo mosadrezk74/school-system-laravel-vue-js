@@ -4,6 +4,8 @@ import { useI18n } from 'vue-i18n'
 import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
+  /** Sent by the controller from the same enum the rules validate against. */
+  recordStatuses: { type: Array, default: () => [] },
   form: { type: Object, required: true },
   students: { type: Array, default: () => [] },
   categories: { type: Array, default: () => [] },
@@ -30,10 +32,6 @@ const categoryOptions = computed(() => props.categories.map(category => ({
   value: category.id,
 })))
 
-const statusOptions = computed(() => [
-  { title: 'Reported', value: 'reported' },
-  { title: 'Reviewed', value: 'reviewed' },
-])
 </script>
 
 <template>
@@ -90,7 +88,7 @@ const statusOptions = computed(() => [
     <VCol v-if="isEdit" cols="12" md="6">
       <VSelect
         v-model="form.status"
-        :items="statusOptions"
+        :items="recordStatuses"
         :label="required(t('behaviorRecords.status'))"
         :hint="$t('behaviorRecords.hints.status')"
         persistent-hint
@@ -102,6 +100,8 @@ const statusOptions = computed(() => [
     <VCol cols="12">
       <VTextarea
         v-model="form.description"
+        maxlength="1000"
+        :counter="1000"
         :label="$t('behaviorRecords.description')"
         :hint="$t('behaviorRecords.hints.description')"
         persistent-hint

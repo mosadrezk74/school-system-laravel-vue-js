@@ -48,6 +48,9 @@ const { t } = useI18n()
     >
       <VTextField
         v-model="form.name"
+        autocomplete="name"
+        maxlength="100"
+        :counter="100"
         :label="t('roles.fields.name')"
         :hint="t('roles.hints.name')"
         persistent-hint

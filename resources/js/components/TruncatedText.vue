@@ -112,8 +112,17 @@ const displayText = computed(() => {
   /*
     The tooltip is the only place the full value exists, so it must be allowed
     to wrap onto as many lines as it needs rather than overflowing its box.
+
+    `break-word`, not `anywhere`. The two behave identically once a width is
+    settled, but `anywhere` also lets the break opportunities count towards the
+    element's min-content size — which for an unbroken string like an email
+    address is a single character. The tooltip is an absolutely positioned
+    overlay, so it is sized shrink-to-fit from that intrinsic width, and it
+    collapsed into a one-character-per-line vertical ribbon. `break-word` still
+    breaks a long word that would overflow, but leaves min-content alone.
   */
+  display: block;
   white-space: pre-wrap;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 </style>

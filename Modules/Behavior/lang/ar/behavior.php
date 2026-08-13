@@ -24,4 +24,16 @@ return [
         'status' => 'الحالة',
         'reviewed_by' => 'تمت المراجعة بواسطة',
     ],
+
+    /** Labels for Modules\Behavior\Enums\BehaviorType. */
+    'types' => [
+        'merit' => 'إيجابي',
+        'violation' => 'مخالفة',
+    ],
+
+    /** Labels for Modules\Behavior\Enums\BehaviorRecordStatus. */
+    'statuses' => [
+        'reported' => 'تم الإبلاغ',
+        'reviewed' => 'تمت المراجعة',
+    ],
 ];

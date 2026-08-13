@@ -34,6 +34,8 @@ function submit() {
       <VCol cols="12" md="6">
         <VTextField
           v-model="form.school_name"
+          maxlength="255"
+          :counter="255"
           :label="`${t('onboarding.fields.schoolName')} *`"
           :error-messages="form.errors.school_name"
           required
@@ -43,6 +45,8 @@ function submit() {
       <VCol cols="12" md="6">
         <VTextField
           v-model="form.school_code"
+          maxlength="50"
+          :counter="50"
           :label="t('onboarding.fields.schoolCode')"
           :error-messages="form.errors.school_code"
         />
@@ -60,6 +64,8 @@ function submit() {
       <VCol cols="12" md="4">
         <VTextField
           v-model="form.currency"
+          maxlength="3"
+          :counter="3"
           :label="t('onboarding.fields.currency')"
           :error-messages="form.errors.currency"
           placeholder="SAR"
@@ -69,6 +75,8 @@ function submit() {
       <VCol cols="12" md="4">
         <VTextField
           v-model="form.currency_symbol"
+          maxlength="10"
+          :counter="10"
           :label="t('onboarding.fields.currencySymbol')"
           :error-messages="form.errors.currency_symbol"
         />

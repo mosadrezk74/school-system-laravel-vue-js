@@ -4,6 +4,7 @@ namespace Modules\GuardianProfile\Http\Requests;
 
 use Illuminate\Validation\Rule;
 use Modules\Core\Abstracts\BaseRequest;
+use Modules\GuardianProfile\Enums\RelationshipType;
 
 class LinkStudentRequest extends BaseRequest
 {
@@ -18,7 +19,13 @@ class LinkStudentRequest extends BaseRequest
                 'integer',
                 Rule::exists('student_profiles', 'id')->whereNull('deleted_at'),
             ],
-            'relationship' => ['required', 'string', 'max:50'],
+            /*
+             * A fixed set rather than 50 characters of free text: the same
+             * person was previously filed as "Father", "father" and "dad"
+             * across different links, which made the relationship unusable for
+             * anything but display.
+             */
+            'relationship' => ['required', 'string', Rule::enum(RelationshipType::class)],
             'is_primary_contact' => ['sometimes', 'boolean'],
             'can_pickup' => ['sometimes', 'boolean'],
             'receives_notifications' => ['sometimes', 'boolean'],

@@ -6,6 +6,10 @@ import AppDateField from '@/components/AppDateField.vue'
 const props = defineProps({
   form: { type: Object, required: true },
   subjects: { type: Array, default: () => [] },
+
+  /** Both come from the same enums the rules validate against. */
+  genders: { type: Array, default: () => [] },
+  salaryTypeOptions: { type: Array, default: () => [] },
   isEdit: { type: Boolean, default: false },
 })
 
@@ -23,12 +27,6 @@ const tabFields = {
 }
 
 const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[field])
-
-const salaryTypes = computed(() => [
-  { title: t('teacher.salaryTypes.fixed'), value: 'fixed' },
-  { title: t('teacher.salaryTypes.hourly'), value: 'hourly' },
-  { title: t('teacher.salaryTypes.contract'), value: 'contract' },
-])
 
 const subjectsOptions = computed(() =>
   props.subjects.map(subject => ({
@@ -83,6 +81,7 @@ const subjectsOptions = computed(() =>
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.name"
+            autocomplete="name"
             :label="required(t('teacher.fields.name'))"
             :hint="$t('teacher.hints.name')"
             persistent-hint
@@ -96,6 +95,8 @@ const subjectsOptions = computed(() =>
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.email"
+            autocomplete="email"
+            inputmode="email"
             type="email"
             :label="required(t('teacher.fields.email'))"
             :hint="$t('teacher.hints.email')"
@@ -110,6 +111,7 @@ const subjectsOptions = computed(() =>
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.username"
+            autocomplete="username"
             :label="required(t('teacher.fields.username'))"
             :hint="$t('teacher.hints.username')"
             persistent-hint
@@ -123,6 +125,8 @@ const subjectsOptions = computed(() =>
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.password"
+            autocomplete="new-password"
+            maxlength="255"
             type="password"
             :label="isEdit ? t('teacher.fields.password') : required(t('teacher.fields.password'))"
             :hint="isEdit ? $t('teacher.hints.passwordHint') : $t('teacher.hints.password')"
@@ -135,10 +139,7 @@ const subjectsOptions = computed(() =>
         <VCol cols="12" md="4">
           <VSelect
             v-model="form.gender"
-            :items="[
-              { title: $t('students.male'), value: 'male' },
-              { title: $t('students.female'), value: 'female' },
-            ]"
+            :items="genders"
             :label="required(t('teacher.fields.gender'))"
             :hint="$t('teacher.hints.gender')"
             persistent-hint
@@ -160,6 +161,7 @@ const subjectsOptions = computed(() =>
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.national_id"
+            inputmode="numeric"
             :label="$t('students.nationalId')"
             :hint="$t('students.hints.nationalId')"
             persistent-hint
@@ -172,6 +174,8 @@ const subjectsOptions = computed(() =>
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.phone"
+            autocomplete="tel"
+            inputmode="tel"
             :label="$t('students.phone')"
             persistent-hint
             :error-messages="form.errors.phone"
@@ -244,6 +248,8 @@ const subjectsOptions = computed(() =>
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.experience_years"
+            inputmode="numeric"
+            step="1"
             type="number"
             min="0"
             max="50"
@@ -295,7 +301,7 @@ const subjectsOptions = computed(() =>
           <VSelect
             v-model="form.salary_type"
             clearable
-            :items="salaryTypes"
+            :items="salaryTypeOptions"
             :label="$t('teacher.fields.salary_type')"
             :hint="$t('teacher.hints.salary_type')"
             persistent-hint
@@ -306,6 +312,7 @@ const subjectsOptions = computed(() =>
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.salary_base"
+            inputmode="decimal"
             type="number"
             step="0.01"
             min="0"

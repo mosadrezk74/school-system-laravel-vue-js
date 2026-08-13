@@ -3,7 +3,11 @@ import { Head, Link } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
-  class: { type: Object, required: true },
+  /*
+   * Named `schoolClass`, not `class`: Vue reserves `class` as an attribute
+   * and normalizeClass() would flatten the object into a class string.
+   */
+  schoolClass: { type: Object, required: true },
   roster: { type: Array, default: () => [] },
 })
 
@@ -12,12 +16,12 @@ const { t } = useI18n()
 // Academic years are managed on a single index page (no per-item show
 // route), so this action opens that index rather than a specific record.
 const quickActions = [
-  { key: 'edit', icon: 'bx-edit', href: `/academic/classes/${props.class.id}/edit` },
+  { key: 'edit', icon: 'bx-edit', href: `/academic/classes/${props.schoolClass.id}/edit` },
 ]
 </script>
 
 <template>
-  <Head :title="$props.class.name" />
+  <Head :title="$props.schoolClass.name" />
 
   <VRow>
     <!-- 👉 Header banner -->
@@ -31,20 +35,20 @@ const quickActions = [
           <div class="flex-grow-1">
             <div class="d-flex align-center gap-3 flex-wrap">
               <h5 class="text-h5 mb-0">
-                {{ $props.class.name }}
+                {{ $props.schoolClass.name }}
               </h5>
-              <VChip :color="$props.class.is_active ? 'success' : 'secondary'" size="small">
-                {{ $props.class.is_active ? t('classes.active') : t('classes.inactive') }}
+              <VChip :color="$props.schoolClass.is_active ? 'success' : 'secondary'" size="small">
+                {{ $props.schoolClass.is_active ? t('classes.active') : t('classes.inactive') }}
               </VChip>
             </div>
             <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
-              {{ $props.class.grade_level?.name ?? '—' }}
+              {{ $props.schoolClass.grade_level?.name ?? '—' }}
             </p>
           </div>
 
           <VBtn
             prepend-icon="bx-edit"
-            :href="`/academic/classes/${$props.class.id}/edit`"
+            :href="`/academic/classes/${$props.schoolClass.id}/edit`"
             :as="Link"
           >
             {{ t('common.edit') }}
@@ -70,7 +74,7 @@ const quickActions = [
                   {{ t('classes.gradeLevel') }}
                 </VListItemTitle>
                 <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ $props.class.grade_level?.name ?? '—' }}
+                  {{ $props.schoolClass.grade_level?.name ?? '—' }}
                 </VListItemSubtitle>
               </VListItem>
             </VCol>
@@ -80,7 +84,7 @@ const quickActions = [
                   {{ t('classes.classroom') }}
                 </VListItemTitle>
                 <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ $props.class.classroom?.name ?? '—' }}
+                  {{ $props.schoolClass.classroom?.name ?? '—' }}
                 </VListItemSubtitle>
               </VListItem>
             </VCol>
@@ -90,7 +94,7 @@ const quickActions = [
                   {{ t('classes.capacity') }}
                 </VListItemTitle>
                 <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ $props.class.capacity }}
+                  {{ $props.schoolClass.capacity }}
                 </VListItemSubtitle>
               </VListItem>
             </VCol>

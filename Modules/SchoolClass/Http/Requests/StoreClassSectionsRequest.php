@@ -7,6 +7,12 @@ use Modules\Core\Abstracts\BaseRequest;
 
 class StoreClassSectionsRequest extends BaseRequest
 {
+    /** Well beyond any real section, but low enough to catch a mistyped digit. */
+    private const CAPACITY_MAX = 500;
+
+    /** One grade split into more than 26 sections is a mistake, not a school. */
+    private const MAX_SECTIONS = 26;
+
     /**
      * @return array<string, mixed>
      */
@@ -15,7 +21,9 @@ class StoreClassSectionsRequest extends BaseRequest
         return [
             'grade_level_id' => ['required', 'integer', 'exists:grade_levels,id'],
 
-            'sections' => ['required', 'array', 'min:1'],
+            // A single submission creating more than 26 sections for one grade is a
+            // mistake, not a school.
+            'sections' => ['required', 'array', 'min:1', 'max:'.self::MAX_SECTIONS],
 
             /*
              * `distinct` catches two rows named "3-A" in the same submission,
@@ -33,7 +41,12 @@ class StoreClassSectionsRequest extends BaseRequest
                         ->whereNull('deleted_at')),
             ],
 
-            'sections.*.capacity' => ['required', 'integer', 'min:1'],
+            /*
+             * `classes.capacity` is a smallint, so the column alone would
+             * accept 32767 students in one section. 500 is already far beyond
+             * any real class and keeps a mistyped extra digit out.
+             */
+            'sections.*.capacity' => ['required', 'integer', 'min:1', 'max:'.self::CAPACITY_MAX],
             'sections.*.classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
             'sections.*.is_active' => ['sometimes', 'boolean'],
         ];

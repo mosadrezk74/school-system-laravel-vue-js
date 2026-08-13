@@ -20,7 +20,7 @@ class UpdateErrorReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', 'string', Rule::in(ErrorReportStatus::values())],
+            'status' => ['required', 'string', Rule::enum(ErrorReportStatus::class)],
         ];
     }
 

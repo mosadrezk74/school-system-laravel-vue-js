@@ -189,6 +189,13 @@ class AttendanceController extends BaseInertiaController
                 ])
                 ->values(),
             'roster' => $request->filled('class_id') ? $this->rosterForClass((int) $request->input('class_id')) : [],
+
+            /*
+             * From the same enum the rule validates against. The form kept its
+             * own list, which had drifted: it never offered `other`, even
+             * though StoreAttendanceRequest accepts it.
+             */
+            'attendanceStatuses' => AttendanceStatus::selectOptions(),
         ]);
     }
 
@@ -247,6 +254,7 @@ class AttendanceController extends BaseInertiaController
                     'academic_year_id' => $semester->academic_year_id,
                 ])
                 ->values(),
+            'attendanceStatuses' => AttendanceStatus::selectOptions(),
         ]);
     }
 

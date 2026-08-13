@@ -13,6 +13,7 @@ use Modules\Assignment\Actions\UpdateAssignmentAction;
 use Modules\Assignment\DTOs\AssignmentFilterDTO;
 use Modules\Assignment\DTOs\CreateAssignmentDTO;
 use Modules\Assignment\DTOs\UpdateAssignmentDTO;
+use Modules\Assignment\Enums\AssignmentType;
 use Modules\Assignment\Http\Requests\StoreAssignmentRequest;
 use Modules\Assignment\Http\Requests\UpdateAssignmentRequest;
 use Modules\Assignment\Models\Assignment;
@@ -153,6 +154,13 @@ class AssignmentController extends BaseInertiaController
                 ->values(),
 
             'currentSemester' => $semester ? ['id' => $semester->id, 'name' => $semester->name] : null,
+
+            /*
+             * From the same enum the rule validates against. This was a free
+             * text box seeded with an empty string, so it held whatever each
+             * teacher happened to type.
+             */
+            'assignmentTypes' => AssignmentType::selectOptions(),
         ];
     }
 }

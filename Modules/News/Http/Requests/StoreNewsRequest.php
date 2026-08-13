@@ -9,6 +9,11 @@ use Modules\News\Enums\NewsStatus;
 
 class StoreNewsRequest extends BaseRequest
 {
+    /** The title feeds `news.slug`, a varchar(180), so it is kept comfortably under that. The body is an article. */
+    private const TITLE_MAX = 150;
+
+    private const BODY_MAX = 20000;
+
     /**
      * @return array<string, mixed>
      */
@@ -20,11 +25,11 @@ class StoreNewsRequest extends BaseRequest
              * language is detected and the remaining active locales are filled
              * in by BaseRequest once validation passes.
              */
-            ...$this->translatableRules('title'),
-            ...$this->translatableRules('body'),
+            ...$this->translatableRules('title', max: self::TITLE_MAX),
+            ...$this->translatableRules('body', max: self::BODY_MAX),
 
-            'audience' => ['required', 'string', Rule::in(NewsAudience::values())],
-            'status' => ['required', 'string', Rule::in(NewsStatus::values())],
+            'audience' => ['required', 'string', Rule::enum(NewsAudience::class)],
+            'status' => ['required', 'string', Rule::enum(NewsStatus::class)],
 
             // A future date schedules the item rather than hiding it forever.
             'published_at' => ['nullable', 'date'],

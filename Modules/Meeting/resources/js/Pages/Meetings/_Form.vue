@@ -33,6 +33,8 @@ const required = label => `${label} *`
     <VCol cols="12">
       <VTextField
         v-model="form.title"
+        maxlength="255"
+        :counter="255"
         :label="required(t('meetings.titleField'))"
         :hint="t('meetings.hints.title')"
         persistent-hint
@@ -45,6 +47,7 @@ const required = label => `${label} *`
     <VCol cols="12">
       <TranslatableTextarea
         v-model="form.description"
+        :maxlength="2000"
         field="description"
         :label="t('meetings.description')"
         :errors="form.errors"
@@ -69,6 +72,9 @@ const required = label => `${label} *`
     <VCol cols="12" md="4">
       <VTextField
         v-model="form.duration_minutes"
+        inputmode="numeric"
+        max="600"
+        step="1"
         type="number"
         min="1"
         :label="required(t('meetings.durationMinutes'))"

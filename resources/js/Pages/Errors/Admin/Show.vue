@@ -179,6 +179,14 @@ function setStatus(status) {
 }
 
 .text-break {
-  overflow-wrap: anywhere;
+  /*
+    `break-word` rather than `anywhere`: this span is a flex item, whose
+    automatic minimum size is its min-content width. `anywhere` folds every
+    character into that measurement, so a long unbroken value (a URL, a file
+    path) can squeeze the column down to one character per line once the row
+    runs short of space. `break-word` still wraps the value instead of letting
+    it overflow, without feeding back into the sizing.
+  */
+  overflow-wrap: break-word;
 }
 </style>

@@ -39,6 +39,9 @@ const { t } = useI18n()
     >
       <VTextField
         v-model="form.name"
+        autocomplete="name"
+        maxlength="255"
+        :counter="255"
         :label="t('admins.fields.name')"
         :error-messages="form.errors.name"
       />
@@ -50,6 +53,10 @@ const { t } = useI18n()
     >
       <VTextField
         v-model="form.email"
+        autocomplete="email"
+        inputmode="email"
+        maxlength="255"
+        :counter="255"
         type="email"
         :label="t('admins.fields.email')"
         :error-messages="form.errors.email"
@@ -62,6 +69,9 @@ const { t } = useI18n()
     >
       <VTextField
         v-model="form.username"
+        autocomplete="username"
+        maxlength="100"
+        :counter="100"
         :label="t('admins.fields.username')"
         :hint="t('admins.hints.username')"
         persistent-hint
@@ -75,6 +85,10 @@ const { t } = useI18n()
     >
       <VTextField
         v-model="form.phone"
+        autocomplete="tel"
+        inputmode="tel"
+        maxlength="20"
+        :counter="20"
         :label="t('admins.fields.phone')"
         :error-messages="form.errors.phone"
       />
@@ -86,6 +100,7 @@ const { t } = useI18n()
     >
       <VTextField
         v-model="form.password"
+        maxlength="255"
         type="password"
         autocomplete="new-password"
         :label="t('admins.fields.password')"
@@ -101,6 +116,7 @@ const { t } = useI18n()
     >
       <VTextField
         v-model="form.password_confirmation"
+        maxlength="255"
         type="password"
         autocomplete="new-password"
         :label="t('admins.fields.password_confirmation')"

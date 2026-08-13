@@ -17,7 +17,7 @@ class GenerateReportRequest extends BaseRequest
         return [
             'code' => ['required', 'string', Rule::in(app(ReportRegistry::class)->codes())],
             'filters' => ['nullable', 'array'],
-            'format' => ['nullable', 'string', Rule::in(ReportFormat::values())],
+            'format' => ['nullable', 'string', Rule::enum(ReportFormat::class)],
             'persist' => ['boolean'],
         ];
     }

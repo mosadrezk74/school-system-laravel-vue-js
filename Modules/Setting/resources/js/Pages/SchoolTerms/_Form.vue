@@ -36,6 +36,7 @@ const { t } = useI18n()
   -->
   <TranslatableTextInput
     v-model="form.title"
+    :maxlength="200"
     field="title"
     :label="t('schoolTerms.fields.title')"
     :errors="form.errors"
@@ -45,6 +46,7 @@ const { t } = useI18n()
 
   <TranslatableTextarea
     v-model="form.content"
+    :maxlength="50000"
     field="content"
     :label="t('schoolTerms.fields.content')"
     :errors="form.errors"

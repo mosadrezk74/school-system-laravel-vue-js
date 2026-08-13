@@ -30,6 +30,9 @@ const required = label => `${label} *`
     <VCol cols="12" md="4">
       <VTextField
         v-model="form.period_number"
+        inputmode="numeric"
+        max="127"
+        step="1"
         type="number"
         min="1"
         :label="required(t('timetables.periods.periodNumber'))"
@@ -63,6 +66,7 @@ const required = label => `${label} *`
 
   <TranslatableTextInput
     v-model="form.name"
+    :maxlength="50"
     field="name"
     :label="t('timetables.periods.name')"
     :errors="form.errors"

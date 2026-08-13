@@ -9,17 +9,22 @@ use Modules\News\Enums\NewsStatus;
 
 class UpdateNewsRequest extends BaseRequest
 {
+    /** The title feeds `news.slug`, a varchar(180), so it is kept comfortably under that. The body is an article. */
+    private const TITLE_MAX = 150;
+
+    private const BODY_MAX = 20000;
+
     /**
      * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
-            ...$this->translatableRules('title'),
-            ...$this->translatableRules('body'),
+            ...$this->translatableRules('title', max: self::TITLE_MAX),
+            ...$this->translatableRules('body', max: self::BODY_MAX),
 
-            'audience' => ['required', 'string', Rule::in(NewsAudience::values())],
-            'status' => ['required', 'string', Rule::in(NewsStatus::values())],
+            'audience' => ['required', 'string', Rule::enum(NewsAudience::class)],
+            'status' => ['required', 'string', Rule::enum(NewsStatus::class)],
             'published_at' => ['nullable', 'date'],
             'is_pinned' => ['sometimes', 'boolean'],
         ];

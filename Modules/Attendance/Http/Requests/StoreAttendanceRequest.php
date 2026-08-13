@@ -8,6 +8,12 @@ use Modules\Core\Abstracts\BaseRequest;
 
 class StoreAttendanceRequest extends BaseRequest
 {
+    /** Matches the class capacity ceiling the SchoolClass requests enforce. */
+    private const MAX_STUDENTS = 500;
+
+    /** `attendance_records.session` is a tinyint; no timetable runs more than this in a day. */
+    private const MAX_SESSIONS = 20;
+
     /**
      * @return array<string, mixed>
      */
@@ -17,15 +23,20 @@ class StoreAttendanceRequest extends BaseRequest
             'class_id' => ['required', 'integer', 'exists:classes,id'],
             'subject_id' => ['nullable', 'integer', 'exists:subjects,id'],
             'semester_id' => ['nullable', 'integer', 'exists:semesters,id'],
-            'date' => ['required', 'date'],
-            'session' => ['required', 'integer', 'min:1'],
+            // Attendance is recorded for a day that has happened; `session` is a
+            // tinyint and no school runs more than a couple of dozen a day.
+            'date' => ['required', 'date', 'before_or_equal:today'],
+            'session' => ['required', 'integer', 'min:1', 'max:'.self::MAX_SESSIONS],
 
-            'students' => ['required', 'array', 'min:1'],
-            'students.*.student_id' => ['required', 'integer', 'exists:student_profiles,id'],
-            'students.*.status' => ['required', 'string', Rule::in(AttendanceStatus::values())],
+            // One submission covers one class, and no class is larger than this.
+            'students' => ['required', 'array', 'min:1', 'max:'.self::MAX_STUDENTS],
+            // `distinct` stops the same student appearing twice in one submission,
+            // which would otherwise write two rows and double-count the day.
+            'students.*.student_id' => ['required', 'integer', 'distinct', 'exists:student_profiles,id'],
+            'students.*.status' => ['required', 'string', Rule::enum(AttendanceStatus::class)],
             'students.*.notes' => ['nullable', 'string', 'max:500'],
             'students.*.check_in_time' => ['nullable', 'date_format:H:i'],
-            'students.*.check_out_time' => ['nullable', 'date_format:H:i'],
+            'students.*.check_out_time' => ['nullable', 'date_format:H:i', 'after:students.*.check_in_time'],
         ];
     }
 

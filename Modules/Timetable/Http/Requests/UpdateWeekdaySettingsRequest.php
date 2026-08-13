@@ -12,8 +12,10 @@ class UpdateWeekdaySettingsRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'active_weekdays' => ['required', 'array', 'min:1'],
-            'active_weekdays.*' => ['integer', 'between:0,6'],
+            // There are seven weekdays and a day cannot be active twice, so the array
+            // is bounded by the domain itself rather than left open.
+            'active_weekdays' => ['required', 'array', 'min:1', 'max:7'],
+            'active_weekdays.*' => ['integer', 'between:0,6', 'distinct'],
         ];
     }
 

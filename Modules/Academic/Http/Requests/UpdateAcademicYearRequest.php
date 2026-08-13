@@ -13,7 +13,7 @@ class UpdateAcademicYearRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'required', 'string', 'max:100'],
+            'name' => ['sometimes', 'required', 'string', 'min:2', 'max:100'],
             'start_date' => ['sometimes', 'required', 'date'],
             'end_date' => ['sometimes', 'required', 'date'],
             'is_current' => ['sometimes', 'boolean'],

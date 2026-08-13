@@ -10,6 +10,9 @@ const props = defineProps({
   languageOptions: { type: Array, default: () => [] },
   themes: { type: Array, default: () => [] },
   timezones: { type: Array, default: () => [] },
+
+  /** Sent by the controller from the same enum the rule validates against. */
+  genders: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -101,6 +104,9 @@ const tabHasError = (form, fields) => fields.some(field => !!form.errors[field])
               <VCol cols="12" md="6">
                 <VTextField
                   v-model="profileForm.name"
+                  autocomplete="name"
+                  maxlength="255"
+                  :counter="255"
                   :label="required(t('accountSettings.fields.name'))"
                   :error-messages="profileForm.errors.name"
                   required
@@ -110,6 +116,10 @@ const tabHasError = (form, fields) => fields.some(field => !!form.errors[field])
               <VCol cols="12" md="6">
                 <VTextField
                   v-model="profileForm.email"
+                  autocomplete="email"
+                  inputmode="email"
+                  maxlength="255"
+                  :counter="255"
                   type="email"
                   :label="required(t('accountSettings.fields.email'))"
                   :error-messages="profileForm.errors.email"
@@ -120,6 +130,9 @@ const tabHasError = (form, fields) => fields.some(field => !!form.errors[field])
               <VCol cols="12" md="6">
                 <VTextField
                   v-model="profileForm.username"
+                  autocomplete="username"
+                  maxlength="100"
+                  :counter="100"
                   :label="required(t('accountSettings.fields.username'))"
                   :error-messages="profileForm.errors.username"
                   required
@@ -129,6 +142,10 @@ const tabHasError = (form, fields) => fields.some(field => !!form.errors[field])
               <VCol cols="12" md="6">
                 <VTextField
                   v-model="profileForm.phone"
+                  autocomplete="tel"
+                  inputmode="tel"
+                  maxlength="20"
+                  :counter="20"
                   :label="t('accountSettings.fields.phone')"
                   :error-messages="profileForm.errors.phone"
                 />
@@ -138,10 +155,7 @@ const tabHasError = (form, fields) => fields.some(field => !!form.errors[field])
                 <VSelect
                   v-model="profileForm.gender"
                   clearable
-                  :items="[
-                    { title: t('accountSettings.male'), value: 'male' },
-                    { title: t('accountSettings.female'), value: 'female' },
-                  ]"
+                  :items="genders"
                   :label="t('accountSettings.fields.gender')"
                   :error-messages="profileForm.errors.gender"
                 />
@@ -158,6 +172,9 @@ const tabHasError = (form, fields) => fields.some(field => !!form.errors[field])
               <VCol cols="12" md="4">
                 <VTextField
                   v-model="profileForm.national_id"
+                  inputmode="numeric"
+                  maxlength="20"
+                  :counter="20"
                   :label="t('accountSettings.fields.national_id')"
                   :error-messages="profileForm.errors.national_id"
                 />
@@ -212,6 +229,8 @@ const tabHasError = (form, fields) => fields.some(field => !!form.errors[field])
               <VCol cols="12" md="4">
                 <VTextField
                   v-model="passwordForm.current_password"
+                  autocomplete="current-password"
+                  maxlength="255"
                   type="password"
                   :label="required(t('accountSettings.fields.current_password'))"
                   :error-messages="passwordForm.errors.current_password"
@@ -222,6 +241,8 @@ const tabHasError = (form, fields) => fields.some(field => !!form.errors[field])
               <VCol cols="12" md="4">
                 <VTextField
                   v-model="passwordForm.password"
+                  autocomplete="new-password"
+                  maxlength="255"
                   type="password"
                   :label="required(t('accountSettings.fields.password'))"
                   :error-messages="passwordForm.errors.password"
@@ -232,6 +253,8 @@ const tabHasError = (form, fields) => fields.some(field => !!form.errors[field])
               <VCol cols="12" md="4">
                 <VTextField
                   v-model="passwordForm.password_confirmation"
+                  autocomplete="new-password"
+                  maxlength="255"
                   type="password"
                   :label="required(t('accountSettings.fields.password_confirmation'))"
                   required
@@ -268,6 +291,8 @@ const tabHasError = (form, fields) => fields.some(field => !!form.errors[field])
 
       <VTextField
         v-model="deleteForm.password"
+        autocomplete="new-password"
+        maxlength="255"
         type="password"
         :disabled="!confirmDelete"
         :label="required(t('accountSettings.fields.password'))"

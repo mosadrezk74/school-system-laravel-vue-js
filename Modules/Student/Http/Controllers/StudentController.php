@@ -5,9 +5,11 @@ namespace Modules\Student\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
+use Modules\Auth\Enums\Gender;
 use Modules\Behavior\Models\BehaviorRecord;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\GuardianProfile\Enums\RelationshipType;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\Student\Actions\ArchiveStudentAction;
 use Modules\Student\Actions\CreateStudentAction;
@@ -16,6 +18,7 @@ use Modules\Student\Actions\UpdateStudentAction;
 use Modules\Student\DTOs\CreateStudentDTO;
 use Modules\Student\DTOs\StudentFilterDTO;
 use Modules\Student\DTOs\UpdateStudentDTO;
+use Modules\Student\Enums\BloodGroup;
 use Modules\Student\Http\Requests\StoreStudentRequest;
 use Modules\Student\Http\Requests\UpdateStudentRequest;
 use Modules\Student\Models\StudentProfile;
@@ -148,11 +151,13 @@ class StudentController extends BaseInertiaController
                 ->get(['id', 'name', 'grade_level_id']),
 
             /*
-             * Taken from the rule's own constant rather than retyped in the
-             * Vue, so the dropdown can never offer a value that validation
-             * would then reject.
+             * Taken from the same enums the rules validate against rather than
+             * retyped in the Vue, so a dropdown can never offer a value that
+             * validation would then reject.
              */
-            'bloodGroups' => StoreStudentRequest::BLOOD_GROUPS,
+            'bloodGroups' => BloodGroup::selectOptions(),
+            'genders' => Gender::selectOptions(),
+            'relationships' => RelationshipType::selectOptions(),
         ];
     }
 }

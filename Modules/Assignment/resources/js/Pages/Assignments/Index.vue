@@ -105,6 +105,7 @@ function goToPage(page) {
     <template #filters>
       <VTextField
         v-model="search"
+        maxlength="100"
         :label="t('assignments.search')"
         prepend-inner-icon="bx-search"
         clearable

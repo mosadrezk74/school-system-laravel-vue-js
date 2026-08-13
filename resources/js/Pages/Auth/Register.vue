@@ -54,6 +54,8 @@ const submit = () => form.post('/register', {
           <div class="d-flex flex-column gap-4">
             <VTextField
               v-model="form.name"
+              maxlength="255"
+              :counter="255"
               autofocus
               :label="t('auth.name')"
               autocomplete="name"
@@ -63,6 +65,9 @@ const submit = () => form.post('/register', {
 
             <VTextField
               v-model="form.email"
+              inputmode="email"
+              maxlength="255"
+              :counter="255"
               :label="t('auth.email')"
               type="email"
               autocomplete="username"
@@ -72,6 +77,7 @@ const submit = () => form.post('/register', {
 
             <VTextField
               v-model="form.password"
+              maxlength="255"
               :label="t('auth.password')"
               :type="isPasswordVisible ? 'text' : 'password'"
               autocomplete="new-password"
@@ -83,6 +89,7 @@ const submit = () => form.post('/register', {
 
             <VTextField
               v-model="form.password_confirmation"
+              maxlength="255"
               :label="t('auth.confirmPassword')"
               :type="isPasswordVisible ? 'text' : 'password'"
               autocomplete="new-password"

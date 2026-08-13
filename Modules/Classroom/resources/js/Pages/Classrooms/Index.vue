@@ -141,6 +141,7 @@ const filterOptions = {
         <VCol cols="12" md="3">
           <VTextField
             v-model="search"
+            maxlength="100"
             :label="t('classroom.search')"
             prepend-inner-icon="bx-search"
             clearable

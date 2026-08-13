@@ -8,6 +8,9 @@ const props = defineProps({
   form: { type: Object, required: true },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
+
+  /** Sent by the controller from the same enum the rules validate against. */
+  examTypes: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -24,13 +27,6 @@ const semesterOptions = computed(() => props.semesters.map(s => ({
   value: s.id,
 })))
 
-
-const examTypeOptions = [
-  { title: t('exams.types.midterm'), value: 'midterm' },
-  { title: t('exams.types.final'), value: 'final' },
-  { title: t('exams.types.quiz'), value: 'quiz' },
-  { title: t('exams.types.unit_test'), value: 'unit_test' },
-]
 
 const activeTab = ref('details')
 
@@ -85,6 +81,7 @@ const tabHasError = tab => tabFields[tab].some(field =>
 
       <TranslatableTextInput
         v-model="form.name"
+        :maxlength="100"
         field="name"
         :label="t('exams.name')"
         :errors="form.errors"
@@ -98,7 +95,7 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="4">
           <VSelect
             v-model="form.exam_type"
-            :items="examTypeOptions"
+            :items="examTypes"
             :label="required(t('exams.examType'))"
             :hint="$t('exams.hints.examType')"
             persistent-hint
@@ -192,6 +189,9 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.passing_grade"
+            inputmode="decimal"
+            max="999.99"
+            step="0.01"
             type="number"
             min="0"
             :label="$t('exams.passingGrade')"
@@ -204,6 +204,9 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.total_marks"
+            inputmode="decimal"
+            max="9999.99"
+            step="0.01"
             type="number"
             min="0"
             :label="$t('exams.totalMarks')"
@@ -216,6 +219,9 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.weightage"
+            inputmode="decimal"
+            max="99.99"
+            step="0.01"
             type="number"
             min="0"
             :label="$t('exams.weightage')"

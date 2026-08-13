@@ -24,4 +24,16 @@ return [
         'status' => 'Status',
         'reviewed_by' => 'Reviewed By',
     ],
+
+    /** Labels for Modules\Behavior\Enums\BehaviorType. */
+    'types' => [
+        'merit' => 'Merit',
+        'violation' => 'Violation',
+    ],
+
+    /** Labels for Modules\Behavior\Enums\BehaviorRecordStatus. */
+    'statuses' => [
+        'reported' => 'Reported',
+        'reviewed' => 'Reviewed',
+    ],
 ];

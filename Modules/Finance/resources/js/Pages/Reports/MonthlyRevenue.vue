@@ -75,6 +75,7 @@ const months = computed(() => {
     <VCardText class="d-flex flex-wrap gap-4 align-center">
       <VTextField
         v-model="year"
+        inputmode="numeric"
         type="number"
         :label="t('finance.fields.year')"
         density="compact"

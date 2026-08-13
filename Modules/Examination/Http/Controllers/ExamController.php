@@ -18,6 +18,7 @@ use Modules\Examination\DTOs\CreateExamDTO;
 use Modules\Examination\DTOs\EnterExamResultsDTO;
 use Modules\Examination\DTOs\ExamFilterDTO;
 use Modules\Examination\DTOs\UpdateExamDTO;
+use Modules\Examination\Enums\ExamType;
 use Modules\Examination\Http\Requests\StoreExamRequest;
 use Modules\Examination\Http\Requests\StoreExamResultsRequest;
 use Modules\Examination\Http\Requests\UpdateExamRequest;
@@ -190,6 +191,13 @@ class ExamController extends BaseInertiaController
             'classes' => SchoolClass::query()->where('is_active', true)
                 ->get(['id', 'name']),
             'subjects' => Subject::query()->get()->map(fn (Subject $subject) => ['id' => $subject->id, 'name' => $subject->name])->values(),
+
+            /*
+             * From the same enum the rule validates against. The form used to
+             * keep its own hard-coded list, which had drifted: it offered
+             * `unit_test` and no practical or oral option at all.
+             */
+            'examTypes' => ExamType::selectOptions(),
         ];
     }
 }

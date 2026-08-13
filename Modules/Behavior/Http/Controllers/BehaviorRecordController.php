@@ -11,6 +11,7 @@ use Modules\Behavior\Actions\UpdateBehaviorRecordAction;
 use Modules\Behavior\DTOs\BehaviorRecordFilterDTO;
 use Modules\Behavior\DTOs\CreateBehaviorRecordDTO;
 use Modules\Behavior\DTOs\UpdateBehaviorRecordDTO;
+use Modules\Behavior\Enums\BehaviorRecordStatus;
 use Modules\Behavior\Http\Requests\StoreBehaviorRecordRequest;
 use Modules\Behavior\Http\Requests\UpdateBehaviorRecordRequest;
 use Modules\Behavior\Models\BehaviorCategory;
@@ -52,6 +53,13 @@ class BehaviorRecordController extends BaseInertiaController
             'students' => $this->studentOptions(),
             'categories' => $this->activeCategoryOptions(),
             'studentId' => $request->filled('student_id') ? (int) $request->input('student_id') : null,
+
+            /*
+             * From the same enum the rule validates against. The form hard-coded
+             * these two options with untranslated English labels, so an Arabic
+             * user saw "Reported" and "Reviewed" regardless of locale.
+             */
+            'recordStatuses' => BehaviorRecordStatus::selectOptions(),
         ]);
     }
 
@@ -88,6 +96,7 @@ class BehaviorRecordController extends BaseInertiaController
             'record' => new BehaviorRecordResource($record),
             'students' => $this->studentOptions(),
             'categories' => $this->activeCategoryOptions(),
+            'recordStatuses' => BehaviorRecordStatus::selectOptions(),
         ]);
     }
 

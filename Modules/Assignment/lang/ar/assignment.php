@@ -26,5 +26,16 @@ return [
     'validation' => [
         'subject_not_taught_by_class' => 'المادة المختارة غير مرتبطة بهذا الفصل.',
         'teacher_not_assigned_to_class_subject' => 'المعلم المحدد غير مسند لتدريس هذه المادة في هذا الفصل.',
+        'score_above_max' => 'لا يمكن أن تتجاوز الدرجة الحد الأقصى للواجب وهو :max.',
+    ],
+
+    /** Labels for Modules\Assignment\Enums\AssignmentType. */
+    'types' => [
+        'homework' => 'واجب منزلي',
+        'project' => 'مشروع',
+        'essay' => 'مقال',
+        'presentation' => 'عرض تقديمي',
+        'practical' => 'تطبيق عملي',
+        'reading' => 'قراءة',
     ],
 ];

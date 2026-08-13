@@ -142,6 +142,7 @@ function goToPage(page) {
     <template #filters>
       <VTextField
         v-model="search"
+        maxlength="100"
         :label="t('behaviorCategories.search')"
         prepend-inner-icon="bx-search"
         clearable
@@ -193,6 +194,7 @@ function goToPage(page) {
       <VCardText>
         <TranslatableTextInput
           v-model="form.name"
+          :maxlength="100"
           field="name"
           :label="t('behaviorCategories.name')"
           :errors="form.errors"
@@ -215,7 +217,11 @@ function goToPage(page) {
           <VCol cols="12" md="6">
             <VTextField
               v-model.number="form.points"
+              inputmode="numeric"
               type="number"
+              min="-1000"
+              max="1000"
+              step="1"
               :label="required(t('behaviorCategories.points'))"
               :hint="t('behaviorCategories.hints.points')"
               persistent-hint

@@ -48,12 +48,6 @@ const quickActions = [
                 {{ t('students.isGraduated') }}
               </VChip>
             </div>
-            <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
-              {{ student.admission_number ?? '—' }} · {{ student.academic_year?.name ?? '—' }}
-              <template v-if="student.current_class">
-                · {{ student.current_class.name }}
-              </template>
-            </p>
           </div>
 
           <VBtn
@@ -84,14 +78,6 @@ const quickActions = [
               </VListItemTitle>
               <VListItemSubtitle class="text-body-1 text-high-emphasis">
                 {{ student.email }}
-              </VListItemSubtitle>
-            </VListItem>
-            <VListItem>
-              <VListItemTitle class="text-medium-emphasis text-caption">
-                {{ t('students.username') }}
-              </VListItemTitle>
-              <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                {{ student.username }}
               </VListItemSubtitle>
             </VListItem>
             <VRow no-gutters>
@@ -198,16 +184,6 @@ const quickActions = [
                 </VListItemSubtitle>
               </VListItem>
             </VCol>
-            <VCol cols="6">
-              <VListItem>
-                <VListItemTitle class="text-medium-emphasis text-caption">
-                  {{ t('students.rollNumber') }}
-                </VListItemTitle>
-                <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ student.roll_number ?? '—' }}
-                </VListItemSubtitle>
-              </VListItem>
-            </VCol>
           </VRow>
         </VCardText>
       </VCard>
@@ -249,142 +225,5 @@ const quickActions = [
       </VCard>
     </VCol>
 
-    <!-- 👉 Medical & Emergency -->
-    <VCol cols="12" md="6">
-      <VCard>
-        <VCardItem>
-          <template #prepend>
-            <VIcon icon="bx-first-aid" />
-          </template>
-          <VCardTitle>{{ t('students.sections.medical') }}</VCardTitle>
-        </VCardItem>
-        <VCardText>
-          <VRow no-gutters>
-            <VCol cols="6">
-              <VListItem>
-                <VListItemTitle class="text-medium-emphasis text-caption">
-                  {{ t('students.bloodGroup') }}
-                </VListItemTitle>
-                <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ student.blood_group ?? '—' }}
-                </VListItemSubtitle>
-              </VListItem>
-            </VCol>
-            <VCol cols="6">
-              <VListItem>
-                <VListItemTitle class="text-medium-emphasis text-caption">
-                  {{ t('students.allergies') }}
-                </VListItemTitle>
-                <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ student.allergies ?? '—' }}
-                </VListItemSubtitle>
-              </VListItem>
-            </VCol>
-            <VCol cols="12">
-              <VListItem>
-                <VListItemTitle class="text-medium-emphasis text-caption">
-                  {{ t('students.medicalConditions') }}
-                </VListItemTitle>
-                <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ student.medical_conditions ?? '—' }}
-                </VListItemSubtitle>
-              </VListItem>
-            </VCol>
-            <VCol cols="12">
-              <VListItem>
-                <VListItemTitle class="text-medium-emphasis text-caption">
-                  {{ t('students.emergencyContactName') }}
-                </VListItemTitle>
-                <VListItemSubtitle class="text-body-1 text-high-emphasis">
-                  {{ student.emergency_contact_name ?? '—' }} ({{ student.emergency_contact_phone ?? '—' }})
-                </VListItemSubtitle>
-              </VListItem>
-            </VCol>
-          </VRow>
-        </VCardText>
-      </VCard>
-    </VCol>
-
-    <!-- 👉 Quick Actions -->
-    <VCol cols="12" md="4">
-      <VCard>
-        <VCardItem>
-          <template #prepend>
-            <VIcon icon="bx-bolt-circle" />
-          </template>
-          <VCardTitle>{{ t('students.quickActions') }}</VCardTitle>
-        </VCardItem>
-        <VList density="compact" class="pa-0">
-          <VListItem
-            v-for="action in quickActions"
-            :key="action.key"
-            :disabled="!action.href"
-            :href="action.href"
-            :as="action.href ? Link : 'div'"
-          >
-            <template #prepend>
-              <VIcon :icon="action.icon" size="20" />
-            </template>
-            <VListItemTitle>{{ t(`students.quickAction.${action.key}`) }}</VListItemTitle>
-          </VListItem>
-        </VList>
-      </VCard>
-    </VCol>
-
-    <!-- 👉 Recent Behavior Records -->
-    <VCol cols="12" md="4">
-      <VCard>
-        <VCardItem>
-          <template #prepend>
-            <VIcon icon="bx-shield-quarter" />
-          </template>
-          <VCardTitle>{{ t('students.behavior') }}</VCardTitle>
-
-          <template #append>
-            <IconBtn :href="`/behavior/records/create?student_id=${student.id}`" :as="Link">
-              <VIcon icon="bx-plus" />
-            </IconBtn>
-          </template>
-        </VCardItem>
-
-        <VCardText v-if="!recentBehaviorRecords || recentBehaviorRecords.length === 0" class="text-disabled">
-          {{ t('students.notAvailableYet') }}
-        </VCardText>
-
-        <VList v-else density="compact" class="pa-0">
-          <VListItem
-            v-for="record in recentBehaviorRecords"
-            :key="record.id"
-            :href="`/behavior/records/${record.id}`"
-            :as="Link"
-          >
-            <VListItemTitle>{{ record.behavior_category?.name }}</VListItemTitle>
-            <VListItemSubtitle>
-              {{ record.date }} · {{ record.points >= 0 ? '+' : '' }}{{ record.points }}
-            </VListItemSubtitle>
-          </VListItem>
-        </VList>
-      </VCard>
-    </VCol>
-
-    <!-- 👉 Modules not yet connected -->
-    <VCol
-      v-for="section in emptySections"
-      :key="section.key"
-      cols="12"
-      md="4"
-    >
-      <VCard>
-        <VCardItem>
-          <template #prepend>
-            <VIcon :icon="section.icon" />
-          </template>
-          <VCardTitle>{{ t(`students.${section.key}`) }}</VCardTitle>
-        </VCardItem>
-        <VCardText class="text-disabled">
-          {{ t('students.notAvailableYet') }}
-        </VCardText>
-      </VCard>
-    </VCol>
   </VRow>
 </template>

@@ -6,6 +6,14 @@ use Modules\Core\Abstracts\BaseRequest;
 
 class StoreExamResultsRequest extends BaseRequest
 {
+    /** Matches the class capacity ceiling the SchoolClass requests enforce. */
+    private const MAX_RESULTS = 500;
+
+    /** `exam_results.obtained_marks` is decimal(6,2); `remarks` is text, so its cap is a domain choice. */
+    private const MARKS_MAX = 9999.99;
+
+    private const REMARKS_MAX = 1000;
+
     /**
      * @return array<string, mixed>
      */
@@ -15,10 +23,16 @@ class StoreExamResultsRequest extends BaseRequest
             'exam_id' => ['required', 'integer', 'exists:exams,id'],
             'subject_id' => ['required', 'integer', 'exists:subjects,id'],
             'class_id' => ['required', 'integer', 'exists:classes,id'],
-            'results' => ['required', 'array', 'min:1'],
-            'results.*.student_id' => ['required', 'integer', 'exists:student_profiles,id'],
-            'results.*.obtained_marks' => ['nullable', 'numeric', 'min:0'],
-            'results.*.remarks' => ['nullable', 'string'],
+            // One submission covers one class sitting one paper.
+            'results' => ['required', 'array', 'min:1', 'max:'.self::MAX_RESULTS],
+            'results.*.student_id' => ['required', 'integer', 'distinct', 'exists:student_profiles,id'],
+            /*
+             * `exam_results.obtained_marks` is decimal(6,2) and `remarks` is a
+             * text column that had no cap at all, so a paste of a whole essay
+             * went straight into the database.
+             */
+            'results.*.obtained_marks' => ['nullable', 'numeric', 'min:0', 'max:'.self::MARKS_MAX],
+            'results.*.remarks' => ['nullable', 'string', 'max:'.self::REMARKS_MAX],
         ];
     }
 

@@ -4,7 +4,11 @@ import { useI18n } from 'vue-i18n'
 import ClassForm from './_Form.vue'
 
 const props = defineProps({
-  class: {
+  /*
+   * Named `schoolClass`, not `class`: Vue reserves `class` as an attribute
+   * and normalizeClass() would flatten the object into a class string.
+   */
+  schoolClass: {
     type: Object,
     required: true,
   },
@@ -21,15 +25,15 @@ const props = defineProps({
 const { t } = useI18n()
 
 const form = useForm({
-  grade_level_id: props.class.grade_level_id,
-  classroom_id: props.class.classroom_id,
-  name: props.class.name,
-  capacity: props.class.capacity,
-  is_active: props.class.is_active,
+  grade_level_id: props.schoolClass.grade_level_id,
+  classroom_id: props.schoolClass.classroom_id,
+  name: props.schoolClass.name,
+  capacity: props.schoolClass.capacity,
+  is_active: props.schoolClass.is_active,
 })
 
 function submit() {
-  form.put(`/academic/classes/${props.class.id}`)
+  form.put(`/academic/classes/${props.schoolClass.id}`)
 }
 </script>
 
@@ -43,7 +47,7 @@ function submit() {
       </VCardTitle>
 
       <VCardSubtitle>
-        {{ $props.class.name }}
+        {{ $props.schoolClass.name }}
       </VCardSubtitle>
     </VCardItem>
 

@@ -104,6 +104,7 @@ function goToPage(page) {
         <VCardText class="d-flex flex-wrap gap-4">
           <VTextField
             v-model="search"
+            maxlength="100"
             :label="t('portal.teacher.searchHomework')"
             prepend-inner-icon="bx-search"
             density="compact"

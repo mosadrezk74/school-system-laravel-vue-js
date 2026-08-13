@@ -126,6 +126,7 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="6">
           <TranslatableTextInput
             v-model="form.name"
+            :maxlength="100"
             field="name"
             :label="t('finance.fields.name')"
             :errors="form.errors"
@@ -242,6 +243,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.amount"
+            inputmode="decimal"
+            max="99999999.99"
             type="number"
             step="0.01"
             min="0"
@@ -268,6 +271,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.due_day"
+            inputmode="numeric"
+            step="1"
             type="number"
             min="1"
             max="31"
@@ -311,6 +316,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.late_fee_amount"
+            inputmode="decimal"
+            max="99999999.99"
             type="number"
             step="0.01"
             min="0"
@@ -324,6 +331,9 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.late_fee_days"
+            inputmode="numeric"
+            max="127"
+            step="1"
             type="number"
             min="0"
             :label="t('finance.fields.late_fee_days')"

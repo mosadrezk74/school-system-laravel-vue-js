@@ -40,6 +40,25 @@ trait BaseEnum
         );
     }
 
+    /**
+     * The same pairs in the shape Vuetify's VSelect reads by default, so a
+     * controller can hand an enum straight to a form without the page having
+     * to remap it. `options()` is kept as-is for the API resources that
+     * already consume its `label` key.
+     *
+     * @return array<int, array{title: string, value: string|int}>
+     */
+    public static function selectOptions(): array
+    {
+        return array_map(
+            static fn (self $case): array => [
+                'title' => $case->label(),
+                'value' => $case->value,
+            ],
+            self::cases(),
+        );
+    }
+
     public function label(): string
     {
         return __(str_replace('_', ' ', ucfirst((string) $this->value)));

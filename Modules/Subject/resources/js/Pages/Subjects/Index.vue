@@ -117,6 +117,7 @@ function restore(item) {
         <VCol cols="12" md="6">
           <VTextField
             v-model="search"
+            maxlength="100"
             :label="t('subject.search')"
             prepend-inner-icon="bx-search"
             clearable

@@ -12,13 +12,18 @@ use Modules\Timetable\Models\Timetable;
 
 class UpdateTimetableEntriesRequest extends BaseRequest
 {
+    /** Seven weekdays times the `periods.period_number` tinyint ceiling. */
+    private const MAX_ENTRIES = 7 * 127;
+
     /**
      * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
-            'entries' => ['present', 'array'],
+            // Seven days times the tinyint period ceiling is the largest grid the
+            // schema can express; anything beyond it is a malformed payload.
+            'entries' => ['present', 'array', 'max:'.self::MAX_ENTRIES],
             'entries.*.day_of_week' => ['required', 'integer', 'between:0,6'],
             'entries.*.period_id' => ['required', 'integer', 'exists:periods,id'],
             'entries.*.is_break' => ['sometimes', 'boolean'],

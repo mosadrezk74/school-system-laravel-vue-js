@@ -33,6 +33,7 @@ const { t } = useI18n()
   -->
   <TranslatableTextInput
     v-model="form.name"
+    :maxlength="100"
     field="name"
     :label="t('gradeLevels.fields.name')"
     :errors="form.errors"
@@ -42,6 +43,7 @@ const { t } = useI18n()
 
   <TranslatableTextarea
     v-model="form.description"
+    :maxlength="500"
     field="description"
     :label="t('gradeLevels.fields.description')"
     :errors="form.errors"
@@ -52,6 +54,9 @@ const { t } = useI18n()
     <VCol cols="12" md="6">
       <VTextField
         v-model="form.display_order"
+        inputmode="numeric"
+        max="32767"
+        step="1"
         type="number"
         min="0"
         :label="t('gradeLevels.fields.displayOrder')"

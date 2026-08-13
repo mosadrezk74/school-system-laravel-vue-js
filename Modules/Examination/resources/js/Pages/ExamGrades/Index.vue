@@ -141,6 +141,7 @@ function remove(grade) {
     <VCardText class="d-flex flex-wrap gap-4">
       <VTextField
         v-model="search"
+        maxlength="100"
         :label="t('examGrades.search')"
         prepend-inner-icon="bx-search"
         clearable
@@ -225,6 +226,8 @@ function remove(grade) {
           <VCol cols="12" md="4">
             <VTextField
               v-model="form.grade_name"
+              maxlength="10"
+              :counter="10"
               :label="t('examGrades.gradeName')"
               :error-messages="form.errors.grade_name"
             />
@@ -232,6 +235,9 @@ function remove(grade) {
           <VCol cols="12" md="4">
             <VTextField
               v-model="form.grade_point"
+              inputmode="decimal"
+              max="9.99"
+              step="0.01"
               type="number"
               min="0"
               :label="t('examGrades.gradePoint')"
@@ -247,6 +253,8 @@ function remove(grade) {
           <VCol cols="12" md="6">
             <VTextField
               v-model="form.min_percentage"
+              inputmode="decimal"
+              step="0.01"
               type="number"
               min="0"
               max="100"
@@ -257,6 +265,8 @@ function remove(grade) {
           <VCol cols="12" md="6">
             <VTextField
               v-model="form.max_percentage"
+              inputmode="decimal"
+              step="0.01"
               type="number"
               min="0"
               max="100"

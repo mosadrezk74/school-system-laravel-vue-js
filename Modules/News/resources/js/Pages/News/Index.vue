@@ -108,6 +108,7 @@ const formatDate = value => (value ? new Date(value).toLocaleString() : '—')
         >
           <VTextField
             v-model="filters.search.value"
+            maxlength="100"
             :label="t('news.search')"
             prepend-inner-icon="bx-search"
             clearable

@@ -3,6 +3,8 @@
 return [
 
     'phone' => 'Please enter a valid international phone number (e.g. +966501234567).',
+    'phone_max' => 'A phone number may not be longer than :max characters.',
+    'phone_min_digits' => 'A phone number must contain at least :min digits.',
     'email' => 'Please enter a valid, usable email address.',
     'password' => [
         'min' => 'The password must be at least 8 characters long.',

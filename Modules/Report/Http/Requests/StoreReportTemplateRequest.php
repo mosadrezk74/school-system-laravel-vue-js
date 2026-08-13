@@ -8,15 +8,18 @@ use Modules\Report\Enums\ReportCategory;
 
 class StoreReportTemplateRequest extends BaseRequest
 {
+    /** `report_templates.name` is JSON, so this is a domain limit. */
+    private const NAME_MAX = 100;
+
     /**
      * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
-            ...$this->translatableRules('name'),
-            'code' => ['nullable', 'string', 'max:50'],
-            'category' => ['nullable', 'string', 'max:15', Rule::in(ReportCategory::values())],
+            ...$this->translatableRules('name', max: self::NAME_MAX),
+            'code' => ['nullable', 'string', 'max:50', 'regex:/^[A-Za-z0-9_-]+$/'],
+            'category' => ['nullable', 'string', 'max:15', Rule::enum(ReportCategory::class)],
             'query_data' => ['nullable', 'array'],
             'columns' => ['nullable', 'array'],
             'filters' => ['nullable', 'array'],

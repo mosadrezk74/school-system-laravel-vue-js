@@ -57,6 +57,7 @@ const academicYearOptions = computed(() => props.academicYears.map(year => ({
       -->
       <TranslatableTextInput
         v-model="form.name"
+        :maxlength="100"
         field="name"
         :label="t('semesters.fields.name')"
         :errors="form.errors"
@@ -67,6 +68,9 @@ const academicYearOptions = computed(() => props.academicYears.map(year => ({
     <VCol cols="12" md="6">
       <VTextField
         v-model="form.sequence"
+        inputmode="numeric"
+        max="127"
+        step="1"
         type="number"
         min="1"
         :label="required(t('semesters.fields.sequence'))"

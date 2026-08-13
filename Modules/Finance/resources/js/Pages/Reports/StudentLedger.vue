@@ -98,6 +98,7 @@ const headers = computed(() => [
     <VCardText class="d-flex flex-wrap gap-4">
       <VTextField
         v-model="studentId"
+        inputmode="numeric"
         type="number"
         :label="t('finance.studentIdFilter')"
         density="compact"

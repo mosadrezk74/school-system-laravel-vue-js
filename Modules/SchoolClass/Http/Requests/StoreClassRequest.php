@@ -7,6 +7,9 @@ use Modules\Core\Abstracts\BaseRequest;
 
 class StoreClassRequest extends BaseRequest
 {
+    /** Well beyond any real section, but low enough to catch a mistyped digit. */
+    private const CAPACITY_MAX = 500;
+
     /**
      * @return array<string, mixed>
      */
@@ -29,7 +32,12 @@ class StoreClassRequest extends BaseRequest
                         ->where('grade_level_id', $this->input('grade_level_id'))
                         ->whereNull('deleted_at')),
             ],
-            'capacity' => ['required', 'integer', 'min:1'],
+            /*
+             * `classes.capacity` is a smallint, so the column alone would
+             * accept 32767 students in one section. 500 is already far beyond
+             * any real class and keeps a mistyped extra digit out.
+             */
+            'capacity' => ['required', 'integer', 'min:1', 'max:'.self::CAPACITY_MAX],
             'is_active' => ['sometimes', 'boolean'],
         ];
     }

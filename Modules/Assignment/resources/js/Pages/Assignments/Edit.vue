@@ -9,6 +9,7 @@ const props = defineProps({
   classes: { type: Array, default: () => [] },
   classSubjects: { type: Array, default: () => [] },
   currentSemester: { type: Object, default: null },
+  assignmentTypes: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -48,6 +49,7 @@ function submit() {
           :classes="classes"
           :class-subjects="classSubjects"
           :current-semester="currentSemester"
+          :assignment-types="assignmentTypes"
           is-edit
         />
       </form>

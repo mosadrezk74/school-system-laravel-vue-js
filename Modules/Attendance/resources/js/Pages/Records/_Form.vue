@@ -4,6 +4,8 @@ import { useI18n } from 'vue-i18n'
 import AppDateField from '@/components/AppDateField.vue'
 
 const props = defineProps({
+  /** Sent by the controller from the same enum the rules validate against. */
+  attendanceStatuses: { type: Array, default: () => [] },
   form: { type: Object, required: true },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
@@ -16,13 +18,6 @@ const emit = defineEmits(['class-change'])
 const { t } = useI18n()
 
 const required = label => `${label} *`
-
-const statusOptions = computed(() => [
-  { title: t('attendanceRecords.statuses.present'), value: 'present' },
-  { title: t('attendanceRecords.statuses.absent'), value: 'absent' },
-  { title: t('attendanceRecords.statuses.late'), value: 'late' },
-  { title: t('attendanceRecords.statuses.excused'), value: 'excused' },
-])
 
 const classOptions = computed(() => props.classes.map(c => ({
   title: c.name,
@@ -88,6 +83,9 @@ function onClassChange(value) {
     <VCol cols="12" md="4">
       <VTextField
         v-model="form.session"
+        inputmode="numeric"
+        max="20"
+        step="1"
         type="number"
         min="1"
         :label="required(t('attendanceRecords.session'))"
@@ -121,7 +119,7 @@ function onClassChange(value) {
         <td>
           <VSelect
             v-model="form.students[index].status"
-            :items="statusOptions"
+            :items="attendanceStatuses"
             density="compact"
             hide-details
             style="max-inline-size: 160px;"

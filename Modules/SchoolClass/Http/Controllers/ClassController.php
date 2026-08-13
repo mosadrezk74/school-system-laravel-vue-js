@@ -94,7 +94,14 @@ class ClassController extends BaseInertiaController
             ->get();
 
         return $this->render('SchoolClass::Classes/Show', [
-            'class' => new ClassResource($class),
+            /*
+             * Not `class`: Vue reserves that prop name. createVNode() runs
+             * normalizeClass() over any non-string `class` prop, which turns
+             * this resource object into a space-separated string of its own
+             * truthy keys before the page ever sees it — so every field on the
+             * page rendered blank.
+             */
+            'schoolClass' => new ClassResource($class),
             'roster' => $roster->map(fn (StudentProfile $student) => [
                 'id' => $student->id,
                 'name' => $student->user->name,
@@ -108,7 +115,8 @@ class ClassController extends BaseInertiaController
         $this->authorize('update', $class);
 
         return $this->render('SchoolClass::Classes/Edit', [
-            'class' => new ClassResource($class),
+            // See show(): `class` is a reserved Vue prop name.
+            'schoolClass' => new ClassResource($class),
             ...$this->lookups(),
         ]);
     }

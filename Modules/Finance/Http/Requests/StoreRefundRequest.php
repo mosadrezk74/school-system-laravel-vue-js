@@ -21,8 +21,9 @@ class StoreRefundRequest extends BaseRequest
         return [
             'payment_id' => ['required', 'integer', 'exists:payments,id'],
             'amount' => ['required', 'numeric', 'gt:0', 'max:99999999.99'],
-            'refund_date' => ['required', 'date'],
-            'refund_method' => ['nullable', 'string', Rule::in(PaymentMethod::values())],
+            // A refund cannot be dated in the future.
+            'refund_date' => ['required', 'date', 'before_or_equal:today'],
+            'refund_method' => ['nullable', 'string', Rule::enum(PaymentMethod::class)],
             'reason' => ['nullable', 'string', 'max:5000'],
             'notes' => ['nullable', 'string', 'max:5000'],
         ];

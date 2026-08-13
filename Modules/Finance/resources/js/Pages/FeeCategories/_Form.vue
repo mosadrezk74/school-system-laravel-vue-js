@@ -53,6 +53,7 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="6">
           <TranslatableTextInput
             v-model="form.name"
+            :maxlength="100"
             field="name"
             :label="t('finance.fields.name')"
             :errors="form.errors"
@@ -66,6 +67,8 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="6">
           <VTextField
             v-model="form.code"
+            maxlength="50"
+            :counter="50"
             :label="t('finance.fields.code')"
             :hint="t('finance.hints.code')"
             persistent-hint
@@ -76,6 +79,7 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12">
           <TranslatableTextarea
             v-model="form.description"
+            :maxlength="500"
             field="description"
             :label="t('finance.fields.description')"
             :errors="form.errors"

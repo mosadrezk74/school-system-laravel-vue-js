@@ -6,6 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Auth\Enums\Gender;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
 use Modules\Subject\Models\Subject;
@@ -16,6 +17,7 @@ use Modules\Teacher\Actions\UpdateTeacherAction;
 use Modules\Teacher\DTOs\CreateTeacherDTO;
 use Modules\Teacher\DTOs\TeacherFilterDTO;
 use Modules\Teacher\DTOs\UpdateTeacherDTO;
+use Modules\Teacher\Enums\SalaryType;
 use Modules\Teacher\Http\Requests\StoreTeacherRequest;
 use Modules\Teacher\Http\Requests\UpdateTeacherRequest;
 use Modules\Teacher\Models\TeacherProfile;
@@ -63,6 +65,14 @@ class TeacherController extends BaseInertiaController
                     'name' => $subject->name,
                 ])
                 ->values(),
+
+            /*
+             * From the same enums the rules validate against. The form used to
+             * build both lists itself, and reached into the Student module's
+             * translation keys to label the gender options.
+             */
+            'genders' => Gender::selectOptions(),
+            'salaryTypeOptions' => SalaryType::selectOptions(),
         ]);
     }
 
@@ -102,6 +112,14 @@ class TeacherController extends BaseInertiaController
                     'name' => $subject->name,
                 ])
                 ->values(),
+
+            /*
+             * From the same enums the rules validate against. The form used to
+             * build both lists itself, and reached into the Student module's
+             * translation keys to label the gender options.
+             */
+            'genders' => Gender::selectOptions(),
+            'salaryTypeOptions' => SalaryType::selectOptions(),
         ]);
     }
 

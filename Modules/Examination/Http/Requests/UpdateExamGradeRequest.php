@@ -7,6 +7,9 @@ use Modules\Core\Abstracts\BaseRequest;
 
 class UpdateExamGradeRequest extends BaseRequest
 {
+    /** `exam_grades.grade_point` is decimal(3,2). */
+    private const GRADE_POINT_MAX = 9.99;
+
     /**
      * @return array<string, mixed>
      */
@@ -18,15 +21,17 @@ class UpdateExamGradeRequest extends BaseRequest
             'grade_level_id' => ['required', 'integer', 'exists:grade_levels,id'],
             'subject_id' => ['nullable', 'integer', 'exists:subjects,id'],
             'grade_name' => [
-                'required', 'string', 'max:10',
+                'required', 'string', 'min:1', 'max:10',
                 Rule::unique('exam_grades')->where(function ($query) {
                     $query->where('grade_level_id', $this->input('grade_level_id'))
                         ->where('subject_id', $this->input('subject_id'));
                 })->ignore($grade?->id),
             ],
-            'grade_point' => ['required', 'numeric', 'min:0'],
+            // `exam_grades.grade_point` is decimal(3,2), so 9.99 is the ceiling.
+            'grade_point' => ['required', 'numeric', 'min:0', 'max:'.self::GRADE_POINT_MAX],
             'min_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
-            'max_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
+            // A band cannot end below where it starts, which would make it match nothing.
+            'max_percentage' => ['required', 'numeric', 'min:0', 'max:100', 'gte:min_percentage'],
             'is_passing' => ['sometimes', 'boolean'],
         ];
     }

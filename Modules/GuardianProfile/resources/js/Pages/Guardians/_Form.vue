@@ -33,6 +33,9 @@ const required = label => `${label} *`
     <VCol cols="12" md="6">
       <VTextField
         v-model="form.name"
+        autocomplete="name"
+        maxlength="255"
+        :counter="255"
         :label="required(t('guardians.name'))"
         :hint="$t('guardians.hints.name')"
         persistent-hint
@@ -44,6 +47,10 @@ const required = label => `${label} *`
     <VCol cols="12" md="6">
       <VTextField
         v-model="form.email"
+        autocomplete="email"
+        inputmode="email"
+        maxlength="255"
+        :counter="255"
         type="email"
         :label="required(t('guardians.email'))"
         :hint="$t('guardians.hints.email')"
@@ -56,6 +63,9 @@ const required = label => `${label} *`
     <VCol cols="12" md="6">
       <VTextField
         v-model="form.username"
+        autocomplete="username"
+        maxlength="100"
+        :counter="100"
         :label="required(t('guardians.username'))"
         :hint="$t('guardians.hints.username')"
         persistent-hint
@@ -67,6 +77,8 @@ const required = label => `${label} *`
     <VCol cols="12" md="6">
       <VTextField
         v-model="form.password"
+        autocomplete="new-password"
+        maxlength="255"
         type="password"
         :label="isEdit ? t('guardians.password') : required(t('guardians.password'))"
         :hint="isEdit ? $t('guardians.hints.passwordHint') : $t('guardians.hints.password')"
@@ -79,6 +91,10 @@ const required = label => `${label} *`
     <VCol cols="12" md="4">
       <VTextField
         v-model="form.phone"
+        autocomplete="tel"
+        inputmode="tel"
+        maxlength="20"
+        :counter="20"
         :label="$t('guardians.phone')"
         :hint="$t('guardians.hints.phone')"
         persistent-hint
@@ -89,6 +105,9 @@ const required = label => `${label} *`
     <VCol cols="12" md="4">
       <VTextField
         v-model="form.national_id"
+        inputmode="numeric"
+        maxlength="20"
+        :counter="20"
         :label="$t('guardians.nationalId')"
         :hint="$t('guardians.hints.nationalId')"
         persistent-hint
@@ -99,6 +118,8 @@ const required = label => `${label} *`
     <VCol cols="12" md="4">
       <VTextField
         v-model="form.occupation"
+        maxlength="255"
+        :counter="255"
         :label="$t('guardians.occupation')"
         :hint="$t('guardians.hints.occupation')"
         persistent-hint

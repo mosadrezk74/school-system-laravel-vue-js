@@ -106,6 +106,7 @@ const isConfirmOpen = computed({
         >
           <VTextField
             v-model="filters.search.value"
+            maxlength="100"
             :label="t('gradeLevels.search')"
             prepend-inner-icon="bx-search"
             clearable

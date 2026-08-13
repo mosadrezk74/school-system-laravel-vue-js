@@ -8,13 +8,16 @@ use Modules\Finance\Enums\FeeFrequency;
 
 class UpdateFeeStructureRequest extends BaseRequest
 {
+    /** `fee_structures.name` is JSON, so this is a domain limit. */
+    private const NAME_MAX = 100;
+
     /**
      * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
-            ...$this->translatableRules('name'),
+            ...$this->translatableRules('name', max: self::NAME_MAX),
             'fee_category_id' => ['required', 'integer', 'exists:fee_categories,id'],
             'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
 
@@ -34,7 +37,7 @@ class UpdateFeeStructureRequest extends BaseRequest
             'grade_level_id' => ['nullable', 'integer', 'exists:grade_levels,id', 'prohibits:classroom_id'],
             'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
             'amount' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
-            'frequency' => ['required', 'string', Rule::in(FeeFrequency::values())],
+            'frequency' => ['required', 'string', Rule::enum(FeeFrequency::class)],
             'is_optional' => ['boolean'],
             'due_day' => ['nullable', 'integer', 'min:1', 'max:31'],
             'late_fee_amount' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],

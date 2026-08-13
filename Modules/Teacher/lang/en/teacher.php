@@ -59,4 +59,16 @@ return [
     'confirmArchive' => 'Archive this teacher? The login will be disabled.',
     'search' => 'Search by name, email, or employee ID',
     'empty' => 'No teachers yet.',
+
+    'validation' => [
+        'joining_before_birth' => 'The joining date must be after the date of birth.',
+        'joining_in_future' => 'The joining date cannot be in the future.',
+    ],
+
+    /** Labels for Modules\Teacher\Enums\SalaryType. */
+    'salaryTypes' => [
+        'fixed' => 'Fixed',
+        'hourly' => 'Hourly',
+        'contract' => 'Contract',
+    ],
 ];

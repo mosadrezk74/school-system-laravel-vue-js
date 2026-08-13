@@ -2,36 +2,45 @@
 
 namespace Modules\Teacher\Http\Requests;
 
+use Modules\Auth\Http\Requests\Concerns\AccountFieldRules;
 use Modules\Core\Abstracts\BaseRequest;
+use Modules\Teacher\Http\Requests\Concerns\TeacherProfileRules;
 
 class StoreTeacherRequest extends BaseRequest
 {
+    use AccountFieldRules;
+    use TeacherProfileRules;
+
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
-            'password' => ['required', 'string', 'min:8'],
-            'gender' => ['required', 'string', 'in:male,female'],
-            'birth_date' => ['nullable', 'date', 'before:today'],
-            'national_id' => ['nullable', 'string', 'max:20'],
-            'phone' => ['nullable', 'string', 'max:20'],
+            /*
+             * Account. Limits come from AccountFieldRules so they match the
+             * `users` columns — the username rule here used to allow 255
+             * characters into a varchar(100).
+             */
+            'name' => $this->nameRules(),
+            'email' => $this->emailRules(),
+            'username' => $this->usernameRules(),
+            'password' => ['required', 'string', 'min:8', 'max:255'],
+            'gender' => $this->genderRules(),
+            'birth_date' => $this->birthDateRules(self::MIN_AGE, self::MAX_AGE),
+            'national_id' => $this->nationalIdRules(),
+            'phone' => $this->phoneRules(),
             'is_active' => ['sometimes', 'boolean'],
-            'employee_id' => ['nullable', 'string', 'digits:7', 'unique:teacher_profiles,employee_id'],
-            'qualification' => ['nullable', 'string', 'max:255'],
-            'specialization' => ['nullable', 'string', 'max:255'],
-            'experience_years' => ['nullable', 'integer', 'min:0', 'max:50'],
-            'joining_date' => ['nullable', 'date'],
-            'subject_ids' => ['nullable', 'array'],
-            'subject_ids.*' => ['integer', 'exists:subjects,id'],
-            'position' => ['nullable', 'string', 'max:100'],
-            'salary_type' => ['nullable', 'string', 'in:fixed,hourly,contract'],
-            'salary_base' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],
-            'primary_subjects' => ['nullable', 'array'],
+
+            'employee_id' => $this->employeeIdRules(),
+
+            ...$this->teacherProfileRules(),
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function attributes(): array
     {
         return [
@@ -43,5 +52,13 @@ class StoreTeacherRequest extends BaseRequest
             'employee_id' => __('teacher::teacher.fields.employee_id'),
             'subject_ids' => __('teacher::teacher.fields.subject_ids'),
         ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return $this->teacherMessages();
     }
 }

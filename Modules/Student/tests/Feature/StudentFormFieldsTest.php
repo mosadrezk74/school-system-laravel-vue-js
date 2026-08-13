@@ -3,6 +3,7 @@
 use App\Models\User;
 use Modules\Auth\Database\Seeders\RolePermissionSeeder;
 use Modules\Auth\Enums\UserRole;
+use Modules\Student\Enums\BloodGroup;
 use Modules\Student\Http\Requests\StoreStudentRequest;
 use Modules\Student\Http\Requests\UpdateStudentRequest;
 use Modules\Student\Models\StudentProfile;
@@ -85,7 +86,7 @@ test('the create form is given the blood groups the rules accept', function () {
             ->component('Student::Students/Create')
             // The same list the rule validates against, so the dropdown can
             // never offer a value the request would reject.
-            ->where('bloodGroups', StoreStudentRequest::BLOOD_GROUPS)
+            ->where('bloodGroups', BloodGroup::selectOptions())
         );
 });
 
@@ -97,7 +98,7 @@ test('the edit form is given them too', function () {
         ->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('Student::Students/Edit')
-            ->where('bloodGroups', StoreStudentRequest::BLOOD_GROUPS)
+            ->where('bloodGroups', BloodGroup::selectOptions())
         );
 });
 
@@ -106,7 +107,7 @@ test('every offered blood group passes validation', function (string $group) {
         ->from(route('students.create'))
         ->post(route('students.store'), ['blood_group' => $group])
         ->assertSessionDoesntHaveErrors('blood_group');
-})->with(StoreStudentRequest::BLOOD_GROUPS);
+})->with(BloodGroup::values());
 
 test('a blood group outside the list is rejected', function () {
     $this->actingAs(studentFormAdmin())

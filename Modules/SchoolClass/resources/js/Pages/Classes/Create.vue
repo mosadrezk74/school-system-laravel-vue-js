@@ -131,6 +131,9 @@ function submit() {
                 <VCol cols="12" md="4">
                   <VTextField
                     v-model="section.name"
+                    autocomplete="name"
+                    maxlength="100"
+                    :counter="100"
                     :label="required(t('classes.sectionName'))"
                     :error-messages="sectionError(index, 'name')
                       || (isDuplicate(section) ? t('classes.duplicateSectionName') : undefined)"
@@ -140,6 +143,7 @@ function submit() {
                 <VCol cols="12" md="2">
                   <VTextField
                     v-model.number="section.capacity"
+                    inputmode="numeric"
                     type="number"
                     min="1"
                     :label="required(t('classes.capacity'))"

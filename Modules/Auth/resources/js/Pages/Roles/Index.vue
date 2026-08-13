@@ -94,6 +94,7 @@ const canDelete = item => !item.is_system && item.users_count === 0
         >
           <VTextField
             v-model="filters.search.value"
+            maxlength="100"
             :label="t('roles.search')"
             prepend-inner-icon="bx-search"
             clearable

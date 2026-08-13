@@ -41,6 +41,7 @@ function submit() {
       <form @submit.prevent="submit">
         <TranslatableTextInput
           v-model="form.title"
+          :maxlength="150"
           field="title"
           :label="t('communication.fields.title')"
           :errors="form.errors"
@@ -50,6 +51,7 @@ function submit() {
 
         <TranslatableTextarea
           v-model="form.body"
+          :maxlength="5000"
           field="body"
           :label="t('communication.fields.body')"
           :errors="form.errors"

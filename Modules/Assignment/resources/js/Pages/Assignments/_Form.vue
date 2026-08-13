@@ -11,6 +11,9 @@ const props = defineProps({
   /** Real teaching assignments: class -> subject -> teacher. */
   classSubjects: { type: Array, default: () => [] },
   currentSemester: { type: Object, default: null },
+
+  /** Sent by the controller from the same enum the rules validate against. */
+  assignmentTypes: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -129,6 +132,7 @@ const tabHasError = tab => tabFields[tab].some(field =>
 
       <TranslatableTextInput
         v-model="form.title"
+        :maxlength="150"
         field="title"
         :label="t('assignments.titleField')"
         :errors="form.errors"
@@ -138,6 +142,7 @@ const tabHasError = tab => tabFields[tab].some(field =>
 
       <TranslatableTextarea
         v-model="form.description"
+        :maxlength="2000"
         field="description"
         :label="t('assignments.description')"
         :errors="form.errors"
@@ -222,6 +227,9 @@ const tabHasError = tab => tabFields[tab].some(field =>
         <VCol cols="12" md="4">
           <VTextField
             v-model="form.max_score"
+            inputmode="decimal"
+            max="9999.99"
+            step="0.01"
             type="number"
             min="0"
             :label="required(t('assignments.maxScore'))"
@@ -245,8 +253,10 @@ const tabHasError = tab => tabFields[tab].some(field =>
         </VCol>
 
         <VCol cols="12" md="4">
-          <VTextField
+          <VSelect
             v-model="form.assignment_type"
+            :items="assignmentTypes"
+            clearable
             :label="$t('assignments.assignmentType')"
             :hint="$t('assignments.hints.assignmentType')"
             persistent-hint

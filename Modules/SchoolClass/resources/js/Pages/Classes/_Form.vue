@@ -53,6 +53,7 @@ const classroomOptions = computed(() => props.classrooms.map(c => ({
     <VCol cols="12" md="8">
       <VTextField
         v-model="form.name"
+        autocomplete="name"
         :label="required(t('classes.name'))"
         :hint="$t('classes.hints.name')"
         persistent-hint
@@ -66,6 +67,9 @@ const classroomOptions = computed(() => props.classrooms.map(c => ({
     <VCol cols="12" md="4">
       <VTextField
         v-model="form.capacity"
+        inputmode="numeric"
+        max="500"
+        step="1"
         type="number"
         min="1"
         :label="required(t('classes.capacity'))"

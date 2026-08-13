@@ -27,7 +27,7 @@ class StoreRoleRequest extends BaseRequest
             ],
 
             'permissions' => ['sometimes', 'array'],
-            'permissions.*' => ['string', Rule::exists('permissions', 'name')],
+            'permissions.*' => ['string', 'distinct', Rule::exists('permissions', 'name')],
         ];
     }
 

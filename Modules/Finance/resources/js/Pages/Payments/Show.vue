@@ -175,6 +175,7 @@ function cancelPayment() {
             <VCol cols="12" md="4">
               <VTextField
                 v-model.number="refundForm.amount"
+                inputmode="decimal"
                 type="number"
                 step="0.01"
                 min="0"
@@ -195,6 +196,8 @@ function cancelPayment() {
             <VCol cols="12" md="4">
               <VTextField
                 v-model="refundForm.reason"
+                maxlength="5000"
+                :counter="5000"
                 :label="t('finance.fields.reason')"
                 :error-messages="refundForm.errors.reason"
               />
@@ -203,6 +206,8 @@ function cancelPayment() {
             <VCol cols="12">
               <VTextarea
                 v-model="refundForm.notes"
+                maxlength="5000"
+                :counter="5000"
                 rows="2"
                 :label="t('finance.fields.notes')"
                 :error-messages="refundForm.errors.notes"

@@ -5,6 +5,8 @@ import BehaviorRecordForm from './_Form.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 
 const props = defineProps({
+  /** Sent by the controller from the same enum the rules validate against. */
+  recordStatuses: { type: Array, default: () => [] },
   record: { type: Object, required: true },
   students: { type: Array, default: () => [] },
   categories: { type: Array, default: () => [] },
@@ -41,6 +43,7 @@ function submit() {
         :form="form"
         :students="students"
         :categories="categories"
+        :record-statuses="recordStatuses"
         is-edit
       />
     </VCardText>

@@ -13,6 +13,7 @@ use Modules\Classroom\Actions\UpdateClassroomAction;
 use Modules\Classroom\DTOs\ClassroomFilterDTO;
 use Modules\Classroom\DTOs\CreateClassroomDTO;
 use Modules\Classroom\DTOs\UpdateClassroomDTO;
+use Modules\Classroom\Enums\RoomType;
 use Modules\Classroom\Http\Requests\StoreClassroomRequest;
 use Modules\Classroom\Http\Requests\UpdateClassroomRequest;
 use Modules\Classroom\Models\Classroom;
@@ -52,17 +53,7 @@ class ClassroomController extends BaseInertiaController
         $this->authorize('create', Classroom::class);
 
         return Inertia::render('Classroom::Classrooms/Create', [
-            'roomTypes' => [
-                ['title' => __('classroom::classroom.types.classroom'), 'value' => 'classroom'],
-                ['title' => __('classroom::classroom.types.lab'), 'value' => 'lab'],
-                ['title' => __('classroom::classroom.types.library'), 'value' => 'library'],
-                ['title' => __('classroom::classroom.types.auditorium'), 'value' => 'auditorium'],
-                ['title' => __('classroom::classroom.types.gym'), 'value' => 'gym'],
-                ['title' => __('classroom::classroom.types.music_room'), 'value' => 'music_room'],
-                ['title' => __('classroom::classroom.types.art_room'), 'value' => 'art_room'],
-                ['title' => __('classroom::classroom.types.computer_lab'), 'value' => 'computer_lab'],
-                ['title' => __('classroom::classroom.types.science_lab'), 'value' => 'science_lab'],
-            ],
+            'roomTypes' => RoomType::selectOptions(),
         ]);
     }
 
@@ -79,7 +70,6 @@ class ClassroomController extends BaseInertiaController
     {
         $this->authorize('view', $classroom);
 
-        
         return Inertia::render('Classroom::Classrooms/Show', [
             'classroom' => new ClassroomResource($classroom),
         ]);
@@ -89,20 +79,9 @@ class ClassroomController extends BaseInertiaController
     {
         $this->authorize('update', $classroom);
 
-        
         return Inertia::render('Classroom::Classrooms/Edit', [
             'classroom' => new ClassroomResource($classroom),
-            'roomTypes' => [
-                ['title' => __('classroom::classroom.types.classroom'), 'value' => 'classroom'],
-                ['title' => __('classroom::classroom.types.lab'), 'value' => 'lab'],
-                ['title' => __('classroom::classroom.types.library'), 'value' => 'library'],
-                ['title' => __('classroom::classroom.types.auditorium'), 'value' => 'auditorium'],
-                ['title' => __('classroom::classroom.types.gym'), 'value' => 'gym'],
-                ['title' => __('classroom::classroom.types.music_room'), 'value' => 'music_room'],
-                ['title' => __('classroom::classroom.types.art_room'), 'value' => 'art_room'],
-                ['title' => __('classroom::classroom.types.computer_lab'), 'value' => 'computer_lab'],
-                ['title' => __('classroom::classroom.types.science_lab'), 'value' => 'science_lab'],
-            ],
+            'roomTypes' => RoomType::selectOptions(),
         ]);
     }
 

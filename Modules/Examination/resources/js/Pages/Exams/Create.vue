@@ -7,6 +7,7 @@ import AppPageHeader from '@/components/AppPageHeader.vue'
 defineProps({
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
+  examTypes: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -45,6 +46,7 @@ function submit() {
           :form="form"
           :semesters="semesters"
           :classes="classes"
+          :exam-types="examTypes"
         />
       </form>
     </VCardText>

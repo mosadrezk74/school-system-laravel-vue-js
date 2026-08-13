@@ -47,4 +47,14 @@ return [
         'weightage' => 'Optional. Weight of this exam relative to others, defaults to 1.',
         'isPublished' => 'Controls visibility to students. Unpublished exams are only visible to staff.',
     ],
+
+    /** Labels for Modules\Examination\Enums\ExamType. */
+    'types' => [
+        'quiz' => 'Quiz',
+        'unit_test' => 'Unit Test',
+        'midterm' => 'Midterm',
+        'final' => 'Final',
+        'practical' => 'Practical',
+        'oral' => 'Oral',
+    ],
 ];
