@@ -10,7 +10,6 @@ use Modules\Auth\Actions\CreateAdminAction;
 use Modules\Auth\Actions\DeleteAdminAction;
 use Modules\Auth\Actions\ToggleAdminActivationAction;
 use Modules\Auth\Actions\UpdateAdminAction;
-use Modules\Auth\DTOs\AdminFilterDTO;
 use Modules\Auth\DTOs\CreateAdminDTO;
 use Modules\Auth\DTOs\UpdateAdminDTO;
 use Modules\Auth\Enums\UserRole;
@@ -21,6 +20,8 @@ use Modules\Auth\Queries\AdminQuery;
 use Modules\Auth\Transformers\AdminResource;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 
 class AdminController extends BaseInertiaController
 {
@@ -28,19 +29,25 @@ class AdminController extends BaseInertiaController
     {
         $this->authorize('viewAny', User::class);
 
-        $filters = AdminFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $admins = (new AdminQuery)
-            ->withRoles()
+        $query = (new AdminQuery)->withRoles();
+
+        $admins = $query
             ->search($filters->search)
-            ->isActive($filters->isActive)
-            ->accountRole($filters->accountRole)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
         return $this->render('Auth::Admins/Index', [
             'admins' => AdminResource::collection($admins),
-            'filters' => $request->only([Pagination::SEARCH_PARAM, 'is_active', 'account_role']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'role_id' => FilterOptions::fromModels(Role::query()->get()),
+            ]),
             'currentUserId' => $request->user()?->getKey(),
         ]);
     }

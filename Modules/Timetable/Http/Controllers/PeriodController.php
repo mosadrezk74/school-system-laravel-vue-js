@@ -6,6 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
+use Modules\Core\DTOs\ListQueryDTO;
 use Modules\Setting\Services\SettingsService;
 use Modules\Timetable\Actions\CreatePeriodAction;
 use Modules\Timetable\Actions\DeletePeriodAction;
@@ -28,7 +29,18 @@ class PeriodController extends BaseInertiaController
     {
         $this->authorize('viewAny', Period::class);
 
-        $periods = (new PeriodQuery)->sort('period_number')->get();
+        $filters = ListQueryDTO::fromRequest($request);
+
+        /*
+         * Not paginated and not given a filter bar: the period list is a fixed
+         * handful of rows shown in teaching order, where scanning beats
+         * filtering. The definitions are still honoured so a linked or
+         * bookmarked `?is_break=` narrows the list.
+         */
+        $periods = (new PeriodQuery)
+            ->where($filters->values)
+            ->sort('period_number', 'asc')
+            ->get();
 
         return $this->render('Timetable::Periods/Index', [
             'periods' => PeriodResource::collection($periods),

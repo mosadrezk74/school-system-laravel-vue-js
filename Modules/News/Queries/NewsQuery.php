@@ -5,21 +5,31 @@ namespace Modules\News\Queries;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Auth\Enums\UserRole;
 use Modules\Core\Abstracts\BaseQuery;
+use Modules\Core\Support\Filters\BooleanFilter;
+use Modules\Core\Support\Filters\DateRangeFilter;
+use Modules\Core\Support\Filters\EnumFilter;
+use Modules\Core\Support\Filters\ExactFilter;
+use Modules\Core\Support\Filters\Filter;
+use Modules\Core\Support\Filters\TranslatableFilter;
 use Modules\News\Enums\NewsAudience;
 use Modules\News\Enums\NewsStatus;
 use Modules\News\Models\News;
-use Modules\Setting\Services\LanguageService;
 
-/**
- * Reading news.
- *
- * The portal rules — published only, dated at or before now, and matching the
- * reader's audience — live here rather than in each portal controller, so one
- * shared feed serves students, guardians and teachers without three copies of
- * the filtering and no chance of a new screen forgetting a clause.
- */
 class NewsQuery extends BaseQuery
 {
+    /**
+     * `title` and `body` are JSON keyed by locale, matched through each
+     * enabled language.
+     *
+     * @var array<int, string>
+     */
+    protected array $translatableSearchFields = ['title', 'body'];
+
+    /** @var array<string, array<int, string>> */
+    protected array $searchableRelations = [
+        'author' => ['name'],
+    ];
+
     /** @var array<int, string> */
     protected array $sortableFields = ['created_at', 'published_at', 'status', 'is_pinned'];
 
@@ -29,48 +39,23 @@ class NewsQuery extends BaseQuery
     }
 
     /**
-     * `title` and `body` are JSON keyed by locale, so the term is matched
-     * against each enabled language's value. The locale list comes from
-     * LanguageService so adding a language makes it searchable with no change
-     * here.
+     * `slug` is left out: it is derived from the title, so filtering by it
+     * duplicates the title filter while exposing a routing detail.
+     *
+     * @return array<string, Filter>
      */
-    public function search(?string $term): self
+    protected function allowedFilters(): array
     {
-        if (! $term) {
-            return $this;
-        }
-
-        $locales = app(LanguageService::class)->activeLocales();
-
-        $this->query->where(function (Builder $query) use ($term, $locales): void {
-            foreach ($locales as $locale) {
-                $query->orWhere("title->{$locale}", 'LIKE', "%{$term}%")
-                    ->orWhere("body->{$locale}", 'LIKE', "%{$term}%");
-            }
-        });
-
-        return $this;
+        return [
+            'status' => EnumFilter::make(NewsStatus::class)->label('news.fields.status'),
+            'audience' => EnumFilter::make(NewsAudience::class)->label('news.fields.audience'),
+            'is_pinned' => BooleanFilter::make()->label('news.fields.isPinned'),
+            'author_id' => ExactFilter::make()->label('news.fields.author')->nullable(),
+            'title' => TranslatableFilter::make()->label('news.fields.title'),
+            'published' => DateRangeFilter::make()->column('published_at')->label('news.fields.publishedAt'),
+        ];
     }
 
-    public function status(?string $status): self
-    {
-        if ($status !== null && NewsStatus::tryFrom($status) instanceof NewsStatus) {
-            $this->query->where('status', $status);
-        }
-
-        return $this;
-    }
-
-    public function audience(?string $audience): self
-    {
-        if ($audience !== null && NewsAudience::tryFrom($audience) instanceof NewsAudience) {
-            $this->query->where('audience', $audience);
-        }
-
-        return $this;
-    }
-
-    /** Published, and not scheduled for a date still in the future. */
     public function live(): self
     {
         $this->query->live();
@@ -81,6 +66,9 @@ class NewsQuery extends BaseQuery
     /**
      * Restricts to what this account type may read. Staff pass null and see
      * every audience.
+     *
+     * Audience scoping, not a user-facing filter, so it stays a method rather
+     * than joining allowedFilters().
      */
     public function visibleTo(?UserRole $role): self
     {

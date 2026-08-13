@@ -3,20 +3,23 @@
 namespace Modules\Behavior\Queries;
 
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Behavior\Enums\BehaviorType;
 use Modules\Behavior\Models\BehaviorCategory;
 use Modules\Core\Abstracts\BaseQuery;
+use Modules\Core\Support\Filters\BooleanFilter;
+use Modules\Core\Support\Filters\EnumFilter;
+use Modules\Core\Support\Filters\Filter;
+use Modules\Core\Support\Filters\NumericFilter;
+use Modules\Core\Support\Filters\TranslatableFilter;
 
 class BehaviorCategoryQuery extends BaseQuery
 {
     /**
-     * `name` is a Spatie-translatable JSON column. A LIKE against it matches
-     * the stored JSON, which still finds the typed text for any locale — it
-     * is the only searchable column left now that `code` is gone.
+     * `name` is JSON keyed by locale, matched through each enabled language.
+     *
+     * @var array<int, string>
      */
-    protected array $searchableFields = ['name'];
-
-    /** @var array<int, string> */
-    protected array $filterableFields = ['type', 'is_active'];
+    protected array $translatableSearchFields = ['name'];
 
     /** @var array<int, string> */
     protected array $sortableFields = ['type', 'points', 'is_active', 'created_at'];
@@ -24,5 +27,18 @@ class BehaviorCategoryQuery extends BaseQuery
     protected function baseQuery(): Builder
     {
         return BehaviorCategory::query();
+    }
+
+    /**
+     * @return array<string, Filter>
+     */
+    protected function allowedFilters(): array
+    {
+        return [
+            'type' => EnumFilter::make(BehaviorType::class)->label('behaviorCategories.type'),
+            'is_active' => BooleanFilter::make()->label('behaviorCategories.active'),
+            'name' => TranslatableFilter::make()->label('behaviorCategories.name'),
+            'points' => NumericFilter::make()->label('behaviorCategories.points'),
+        ];
     }
 }

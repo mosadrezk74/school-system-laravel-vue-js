@@ -11,9 +11,11 @@ use Modules\Communication\Http\Requests\StoreMessageRequest;
 use Modules\Communication\Models\BroadcastMessage;
 use Modules\Communication\Queries\MessageQuery;
 use Modules\Communication\Services\AudienceOptionsService;
+use Modules\Communication\Services\RecipientResolverService;
 use Modules\Communication\Transformers\MessageResource;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 
 class MessageController extends BaseInertiaController
 {
@@ -21,19 +23,31 @@ class MessageController extends BaseInertiaController
     {
         $this->authorize('viewAny', BroadcastMessage::class);
 
-        $search = $request->string(Pagination::SEARCH_PARAM)->toString() ?: null;
-        $status = $request->string('status')->toString() ?: null;
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $query = (new MessageQuery)
-            ->searchTerm($search)
-            ->status($status)
-            ->sort(Pagination::DEFAULT_SORT, Pagination::DEFAULT_ORDER);
+        $query = new MessageQuery;
 
-        $messages = $query->paginate($request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE));
+        $messages = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Communication::Messages/Index', [
             'messages' => MessageResource::collection($messages),
-            'filters' => $request->only([Pagination::SEARCH_PARAM, 'status']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'target_type' => array_map(
+                    static fn (string $type): array => [
+                        'title' => __("communication::communication.targets.{$type}"),
+                        'value' => $type,
+                    ],
+                    RecipientResolverService::TYPES,
+                ),
+            ]),
         ]);
     }
 

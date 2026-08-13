@@ -276,6 +276,12 @@ const truncatedHeaders = computed(() =>
       margin: 0;
     }
 
+    /* AppFilterBar takes its own row beneath whatever search field the page
+       renders alongside it. */
+    :deep(> .app-filter-bar) {
+      flex: 1 1 100%;
+    }
+
     :deep(> .v-input) {
       flex: 0 0 auto;
       inline-size: 100%;

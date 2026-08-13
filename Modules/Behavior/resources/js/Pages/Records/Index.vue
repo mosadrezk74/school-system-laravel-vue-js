@@ -1,53 +1,40 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   records: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
-const statusFilter = ref(props.filters.status ?? null)
-const typeFilter = ref(props.filters.type ?? null)
-const studentIdFilter = ref(props.filters.student_id ?? null)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/behavior/records',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
+})
 
-// Omit each key entirely when cleared, rather than sending an empty string:
-// $request->has('status') would still be true for '', so the backend would
-// read that as an explicit filter instead of "no filter".
-function buildQuery(extra = {}) {
-  const query = { ...extra }
 
-  if (statusFilter.value !== null)
-    query.status = statusFilter.value
 
-  if (typeFilter.value !== null)
-    query.type = typeFilter.value
 
-  if (studentIdFilter.value !== null)
-    query.student_id = studentIdFilter.value
-
-  return query
-}
-
-function applyFilters() {
-  router.get('/behavior/records', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-watch([statusFilter, typeFilter, studentIdFilter], applyFilters)
 
 const headers = computed(() => [
   { title: t('behaviorRecords.student'), key: 'student' },
@@ -78,12 +65,6 @@ function remove(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/behavior/records', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -114,24 +95,21 @@ function goToPage(page) {
     @page="goToPage"
   >
     <template #filters>
-      <VRow>
-        <VCol cols="12" md="4">
-          <VSelect
-            v-model="statusFilter"
-            :items="statusOptions"
-            :label="t('behaviorRecords.status')"
-            clearable
-          />
-        </VCol>
-        <VCol cols="12" md="4">
-          <VSelect
-            v-model="typeFilter"
-            :items="typeOptions"
-            :label="t('behaviorCategories.type')"
-            clearable
-          />
-        </VCol>
-      </VRow>
+      <VTextField
+        v-model="filters.search.value"
+        maxlength="100"
+        :label="t('behaviorRecords.search')"
+        prepend-inner-icon="bx-search"
+        clearable
+      />
+
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
+      />
     </template>
 
       <template #item.student="{ item }">

@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 use Modules\Setting\Actions\CreateSchoolTermAction;
 use Modules\Setting\Actions\DeleteSchoolTermAction;
 use Modules\Setting\Actions\PublishSchoolTermAction;
 use Modules\Setting\Actions\UpdateSchoolTermAction;
 use Modules\Setting\DTOs\CreateSchoolTermDTO;
-use Modules\Setting\DTOs\SchoolTermFilterDTO;
 use Modules\Setting\DTOs\UpdateSchoolTermDTO;
 use Modules\Setting\Enums\SchoolTermStatus;
 use Modules\Setting\Http\Requests\StoreSchoolTermRequest;
@@ -27,19 +27,23 @@ class SchoolTermController extends BaseInertiaController
     {
         $this->authorize('viewAny', SchoolTerm::class);
 
-        $filters = SchoolTermFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $terms = (new SchoolTermQuery)
-            ->withAuthor()
-            ->withAcceptanceCount()
+        $query = (new SchoolTermQuery)->withAuthor()->withAcceptanceCount();
+
+        $terms = $query
             ->search($filters->search)
-            ->status($filters->status)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
         return $this->render('Setting::SchoolTerms/Index', [
             'terms' => SchoolTermResource::collection($terms),
-            'filters' => $request->only([Pagination::SEARCH_PARAM, 'status']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
             'statusOptions' => SchoolTermStatus::options(),
         ]);
     }

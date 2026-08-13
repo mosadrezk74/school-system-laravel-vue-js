@@ -5,10 +5,15 @@ namespace Modules\Timetable\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
+use Modules\Academic\Models\AcademicYear;
+use Modules\Academic\Models\GradeLevel;
+use Modules\Academic\Models\Semester;
 use Modules\Academic\Services\AcademicContextService;
 use Modules\Classroom\Models\Classroom;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\Setting\Services\SettingsService;
 use Modules\Subject\Models\Subject;
@@ -35,17 +40,38 @@ class TimetableController extends BaseInertiaController
     {
         $this->authorize('viewAny', Timetable::class);
 
-        $query = (new TimetableQuery)
-            ->classId($request->integer('class_id') ?: null)
-            ->academicYearId(AcademicContextService::yearId())
-            ->isActive($request->has('is_active') ? $request->boolean('is_active') : null)
-            ->sort('created_at', 'desc');
+        $filters = ListQueryDTO::fromRequest($request, [
+            'academic_year_id' => AcademicContextService::yearId(),
+        ]);
 
-        $timetables = $query->paginate((int) $request->input(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE));
+        $query = new TimetableQuery;
+
+        $timetables = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Timetable::Timetables/Index', [
             'timetables' => TimetableResource::collection($timetables),
-            'filters' => $request->only(['class_id', 'is_active']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'class_id' => FilterOptions::fromModels(
+                    SchoolClass::query()->where('is_active', true)->orderBy('name')->get(),
+                ),
+                'academic_year_id' => FilterOptions::fromModels(
+                    AcademicYear::query()->orderByDesc('start_date')->get(),
+                ),
+                'semester_id' => FilterOptions::withNotSet(
+                    FilterOptions::fromModels(Semester::query()->get()),
+                ),
+                'grade_level_id' => FilterOptions::fromModels(
+                    GradeLevel::query()->where('is_active', true)->orderBy('display_order')->get(),
+                ),
+            ]),
         ]);
     }
 
@@ -53,7 +79,7 @@ class TimetableController extends BaseInertiaController
     {
         $this->authorize('create', Timetable::class);
 
-        return $this->render('Timetable::Timetables/Create', $this->classAndYearLookups());
+        return $this->render('Timetable::Timetables/Create', $this->classLookups());
     }
 
     public function store(StoreTimetableRequest $request, CreateTimetableAction $action): RedirectResponse
@@ -155,14 +181,23 @@ class TimetableController extends BaseInertiaController
     }
 
     /**
+     * Classes for the create form's picker.
+     *
+     * Deliberately not scoped to an academic year: `classes.academic_year_id`
+     * was dropped, because a class is year-independent. The timetable takes its
+     * own year from the academic context when it is saved, so filtering the
+     * picker by year would narrow it on a column that no longer exists — which
+     * is what made this page fail with "Unknown column 'academic_year_id'".
+     *
      * @return array<string, mixed>
      */
-    protected function classAndYearLookups(): array
+    protected function classLookups(): array
     {
         return [
-            'classes' => SchoolClass::query()->where('is_active', true)->where('academic_year_id', AcademicContextService::yearId())
+            'classes' => SchoolClass::query()
+                ->where('is_active', true)
                 ->with(['gradeLevel:id,name'])
-                ->get(['id', 'name', 'grade_level_id', 'academic_year_id']),
+                ->get(['id', 'name', 'grade_level_id']),
         ];
     }
 

@@ -2,15 +2,17 @@
 
 namespace Modules\Assignment\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
+use Modules\Academic\Models\AcademicYear;
+use Modules\Academic\Models\Semester;
 use Modules\Academic\Services\AcademicContextService;
 use Modules\Assignment\Actions\ArchiveAssignmentAction;
 use Modules\Assignment\Actions\CreateAssignmentAction;
 use Modules\Assignment\Actions\RestoreAssignmentAction;
 use Modules\Assignment\Actions\UpdateAssignmentAction;
-use Modules\Assignment\DTOs\AssignmentFilterDTO;
 use Modules\Assignment\DTOs\CreateAssignmentDTO;
 use Modules\Assignment\DTOs\UpdateAssignmentDTO;
 use Modules\Assignment\Enums\AssignmentType;
@@ -19,8 +21,11 @@ use Modules\Assignment\Http\Requests\UpdateAssignmentRequest;
 use Modules\Assignment\Models\Assignment;
 use Modules\Assignment\Queries\AssignmentQuery;
 use Modules\Assignment\Transformers\AssignmentResource;
+use Modules\Auth\Enums\UserRole;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\SchoolClass\Models\ClassSubject;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\Subject\Models\Subject;
@@ -31,30 +36,27 @@ class AssignmentController extends BaseInertiaController
     {
         $this->authorize('viewAny', Assignment::class);
 
-        $filters = AssignmentFilterDTO::fromRequest($request);
+        // The current year is a default, not a lock: `academic_year_id` stays
+        // an explicit historical filter the user can move.
+        $filters = ListQueryDTO::fromRequest($request, [
+            'academic_year_id' => AcademicContextService::yearId(),
+        ]);
 
-        $query = (new AssignmentQuery)
-            ->searchTitle($filters->search)
-            ->classId($filters->classId)
-            ->subjectId($filters->subjectId)
-            ->teacherId($filters->teacherId)
-            ->academicYearId($filters->academicYearId)
-            ->semesterId($filters->semesterId)
-            ->isPublished($filters->isPublished)
-            ->sort($filters->sortBy, $filters->sortOrder);
+        $query = new AssignmentQuery;
 
-        $assignments = $query->paginate($filters->perPage);
+        $assignments = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Assignment::Assignments/Index', [
             'assignments' => AssignmentResource::collection($assignments),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'class_id',
-                'subject_id',
-                'teacher_id',
-                'semester_id',
-                'is_published',
-            ]),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema($this->filterOptions()),
         ]);
     }
 
@@ -161,6 +163,33 @@ class AssignmentController extends BaseInertiaController
              * teacher happened to type.
              */
             'assignmentTypes' => AssignmentType::selectOptions(),
+        ];
+    }
+
+    /**
+     * Option lists for the filter bar's selects.
+     *
+     * @return array<string, array<int, array{title: string, value: mixed}>>
+     */
+    private function filterOptions(): array
+    {
+        return [
+            'class_id' => FilterOptions::fromModels(
+                SchoolClass::query()->where('is_active', true)->orderBy('name')->get(),
+            ),
+            'subject_id' => FilterOptions::fromModels(
+                Subject::query()->where('is_active', true)->get(),
+            ),
+            'teacher_id' => FilterOptions::from(
+                User::query()->where('role', UserRole::Teacher->value)->get(),
+                fn (User $teacher): string => (string) $teacher->name,
+            ),
+            'academic_year_id' => FilterOptions::fromModels(
+                AcademicYear::query()->orderByDesc('start_date')->get(),
+            ),
+            'semester_id' => FilterOptions::withNotSet(
+                FilterOptions::fromModels(Semester::query()->get()),
+            ),
         ];
     }
 }

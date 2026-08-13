@@ -4,18 +4,19 @@ namespace Modules\Auth\Queries;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Auth\Enums\Gender;
 use Modules\Auth\Enums\UserRole;
 use Modules\Core\Abstracts\BaseQuery;
+use Modules\Core\Support\Filters\BooleanFilter;
+use Modules\Core\Support\Filters\EnumFilter;
+use Modules\Core\Support\Filters\Filter;
+use Modules\Core\Support\Filters\RelationFilter;
 
-/**
- * Administrative accounts only.
- *
- * "Admin" is not a profile table — it is a user whose account type is owner
- * or admin, so this query is the boundary that keeps the screen from turning
- * into a general user browser that lists every student in the school.
- */
 class AdminQuery extends BaseQuery
 {
+    /** @var array<int, string> */
+    protected array $searchableFields = ['name', 'email', 'username'];
+
     /** @var array<int, string> */
     protected array $sortableFields = ['name', 'email', 'is_active', 'created_at'];
 
@@ -27,38 +28,29 @@ class AdminQuery extends BaseQuery
         ]);
     }
 
-    public function search(?string $term): self
+    /**
+     * Authentication columns are deliberately absent. `password`,
+     * `remember_token`, `two_factor_secret` and the rest are never filterable:
+     * narrowing a user list by a credential column is a way to probe it, and
+     * no administrator has a reason to.
+     *
+     * `national_id` and `birth_date` are also left out — they identify a
+     * specific person rather than describing an account, and the search box
+     * already covers looking someone up.
+     *
+     * @return array<string, Filter>
+     */
+    protected function allowedFilters(): array
     {
-        if (! $term) {
-            return $this;
-        }
+        return [
+            // Restricted to the two staff roles by the base query, so the
+            // enum's other cases simply match nothing.
+            'account_role' => EnumFilter::make(UserRole::class)->column('role')->label('admins.accountRole'),
 
-        $this->query->where(function (Builder $query) use ($term): void {
-            foreach (['name', 'email', 'username', 'phone'] as $column) {
-                $query->orWhere($column, 'LIKE', "%{$term}%");
-            }
-        });
-
-        return $this;
-    }
-
-    public function isActive(?bool $isActive): self
-    {
-        if ($isActive !== null) {
-            $this->query->where('is_active', $isActive);
-        }
-
-        return $this;
-    }
-
-    /** Narrows to one account type; anything else is ignored. */
-    public function accountRole(?string $role): self
-    {
-        if (in_array($role, [UserRole::Owner->value, UserRole::Admin->value], true)) {
-            $this->query->where('role', $role);
-        }
-
-        return $this;
+            'is_active' => BooleanFilter::make()->label('admins.active'),
+            'gender' => EnumFilter::make(Gender::class)->label('admins.gender'),
+            'role_id' => RelationFilter::make('roles', 'roles.id')->label('admins.role'),
+        ];
     }
 
     public function withRoles(): self

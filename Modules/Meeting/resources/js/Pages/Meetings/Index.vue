@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import MeetingCard from '../../components/MeetingCard.vue'
@@ -7,52 +8,34 @@ import AppPagination from '@/components/AppPagination.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppDateField from '@/components/AppDateField.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   meetings: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
   teachers: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
-const search = ref(props.filters.search ?? '')
-const teacherId = ref(props.filters.teacher_id ?? null)
-const status = ref(props.filters.status ?? null)
-const date = ref(props.filters.date ?? null)
-
-function buildQuery(extra = {}) {
-  return {
-    search: search.value,
-    teacher_id: teacherId.value,
-    status: status.value,
-    date: date.value,
-    ...extra,
-  }
-}
-
-function applyFilters() {
-  router.get('/meetings/meetings', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/meetings/meetings',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
 })
 
-watch([teacherId, status, date], applyFilters)
 
-function goToPage(page) {
-  router.get('/meetings/meetings', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
+
+
+
+
 </script>
 
 <template>
@@ -77,38 +60,21 @@ function goToPage(page) {
 
     <VDivider />
 
-    <VCardText class="d-flex flex-wrap gap-4">
+    <VCardText class="d-flex flex-column gap-4">
       <VTextField
-        v-model="search"
+        v-model="filters.search.value"
         maxlength="100"
         :label="t('meetings.search')"
         prepend-inner-icon="bx-search"
         clearable
-        density="compact"
-        style="max-inline-size: 320px; flex: 1 1 240px;"
       />
 
-
-      <VSelect
-        v-model="status"
-        :label="t('meetings.status')"
-        :items="[
-          { title: t('meetings.statuses.scheduled'), value: 'scheduled' },
-          { title: t('meetings.statuses.live'), value: 'live' },
-          { title: t('meetings.statuses.finished'), value: 'finished' },
-          { title: t('meetings.statuses.cancelled'), value: 'cancelled' },
-        ]"
-        density="compact"
-        clearable
-        style="max-inline-size: 180px;"
-      />
-
-      <AppDateField
-        v-model="date"
-        :label="t('meetings.date')"
-        density="compact"
-        clearable
-        style="max-inline-size: 180px;"
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
       />
     </VCardText>
 

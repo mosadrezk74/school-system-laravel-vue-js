@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 use Modules\Finance\Actions\ArchiveFeeCategoryAction;
 use Modules\Finance\Actions\CreateFeeCategoryAction;
 use Modules\Finance\Actions\RestoreFeeCategoryAction;
 use Modules\Finance\Actions\UpdateFeeCategoryAction;
 use Modules\Finance\DTOs\CreateFeeCategoryDTO;
-use Modules\Finance\DTOs\FeeCategoryFilterDTO;
 use Modules\Finance\DTOs\UpdateFeeCategoryDTO;
 use Modules\Finance\Http\Requests\StoreFeeCategoryRequest;
 use Modules\Finance\Http\Requests\UpdateFeeCategoryRequest;
@@ -26,17 +26,23 @@ class FeeCategoryController extends BaseInertiaController
     {
         $this->authorize('viewAny', FeeCategory::class);
 
-        $filters = FeeCategoryFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $feeCategories = (new FeeCategoryQuery)
-            ->searchTerm($filters->search)
-            ->isActive($filters->isActive)
+        $query = new FeeCategoryQuery;
+
+        $feeCategories = $query
+            ->search($filters->search)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
         return $this->render('Finance::FeeCategories/Index', [
             'feeCategories' => FeeCategoryResource::collection($feeCategories),
-            'filters' => $request->only([Pagination::SEARCH_PARAM, 'is_active']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
         ]);
     }
 

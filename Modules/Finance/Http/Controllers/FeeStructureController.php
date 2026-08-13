@@ -11,12 +11,13 @@ use Modules\Academic\Models\Semester;
 use Modules\Classroom\Models\Classroom;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\Finance\Actions\ArchiveFeeStructureAction;
 use Modules\Finance\Actions\CreateFeeStructureAction;
 use Modules\Finance\Actions\RestoreFeeStructureAction;
 use Modules\Finance\Actions\UpdateFeeStructureAction;
 use Modules\Finance\DTOs\CreateFeeStructureDTO;
-use Modules\Finance\DTOs\FeeStructureFilterDTO;
 use Modules\Finance\DTOs\UpdateFeeStructureDTO;
 use Modules\Finance\Enums\FeeFrequency;
 use Modules\Finance\Http\Requests\StoreFeeStructureRequest;
@@ -32,28 +33,23 @@ class FeeStructureController extends BaseInertiaController
     {
         $this->authorize('viewAny', FeeStructure::class);
 
-        $filters = FeeStructureFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $feeStructures = (new FeeStructureQuery)
-            ->searchName($filters->search)
-            ->feeCategoryId($filters->feeCategoryId)
-            ->gradeLevelId($filters->gradeLevelId)
-            ->classroomId($filters->classroomId)
-            ->frequency($filters->frequency)
-            ->isOptional($filters->isOptional)
+        $query = new FeeStructureQuery;
+
+        $feeStructures = $query
+            ->search($filters->search)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
         return $this->render('Finance::FeeStructures/Index', [
             'feeStructures' => FeeStructureResource::collection($feeStructures),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'fee_category_id',
-                'grade_level_id',
-                'classroom_id',
-                'frequency',
-                'is_optional',
-            ]),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema($this->scopeFilterOptions()),
             ...$this->lookups(),
         ]);
     }
@@ -169,6 +165,34 @@ class FeeStructureController extends BaseInertiaController
                     'start_date' => $semester->start_date?->toDateString(),
                     'end_date' => $semester->end_date?->toDateString(),
                 ])->values(),
+        ];
+    }
+
+    /**
+     * The scope pickers a fee structure is narrowed by. Both are nullable on
+     * the table — a structure can apply school-wide — so each list carries the
+     * "not set" choice.
+     *
+     * @return array<string, array<int, array{title: string, value: mixed}>>
+     */
+    private function scopeFilterOptions(): array
+    {
+        return [
+            'academic_year_id' => FilterOptions::withNotSet(
+                FilterOptions::fromModels(AcademicYear::query()->orderByDesc('start_date')->get()),
+            ),
+            'semester_id' => FilterOptions::withNotSet(
+                FilterOptions::fromModels(Semester::query()->get()),
+            ),
+            'fee_category_id' => FilterOptions::fromModels(
+                FeeCategory::query()->where('is_active', true)->get(),
+            ),
+            'grade_level_id' => FilterOptions::withNotSet(
+                FilterOptions::fromModels(GradeLevel::query()->where('is_active', true)->get()),
+            ),
+            'classroom_id' => FilterOptions::withNotSet(
+                FilterOptions::fromModels(Classroom::query()->where('is_active', true)->get()),
+            ),
         ];
     }
 }

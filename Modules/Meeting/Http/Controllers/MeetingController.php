@@ -12,6 +12,8 @@ use Modules\Academic\Services\AcademicContextService;
 use Modules\Auth\Enums\UserRole;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\Meeting\Actions\CancelMeetingAction;
 use Modules\Meeting\Actions\CreateMeetingAction;
 use Modules\Meeting\Actions\DeleteMeetingAction;
@@ -20,7 +22,6 @@ use Modules\Meeting\Actions\StartMeetingAction;
 use Modules\Meeting\Actions\StartMeetingForSessionAction;
 use Modules\Meeting\Actions\UpdateMeetingAction;
 use Modules\Meeting\DTOs\CreateMeetingDTO;
-use Modules\Meeting\DTOs\MeetingFilterDTO;
 use Modules\Meeting\DTOs\UpdateMeetingDTO;
 use Modules\Meeting\Http\Requests\StoreMeetingRequest;
 use Modules\Meeting\Http\Requests\UpdateMeetingRequest;
@@ -30,6 +31,8 @@ use Modules\Meeting\Services\JitsiRoomFactory;
 use Modules\Meeting\Services\MeetingAccessGuard;
 use Modules\Meeting\Services\MeetingMediaDefaults;
 use Modules\Meeting\Transformers\MeetingResource;
+use Modules\SchoolClass\Models\SchoolClass;
+use Modules\Subject\Models\Subject;
 use Modules\Timetable\Models\TimetableEntry;
 
 class MeetingController extends BaseInertiaController
@@ -38,28 +41,57 @@ class MeetingController extends BaseInertiaController
     {
         $this->authorize('viewAny', Meeting::class);
 
-        $filters = MeetingFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
         $user = $request->user();
-        $teacherId = $user->role === UserRole::Teacher ? $user->id : $filters->teacherId;
-        $status = $user->role === UserRole::Student ? 'live' : $filters->status;
+        $isTeacher = $user->role === UserRole::Teacher;
+        $isStudent = $user->role === UserRole::Student;
 
-        $query = (new MeetingQuery)
-            ->searchTerm($filters->search)
-            ->teacherId($teacherId)
-            ->status($status)
-            ->date($filters->date)
-            ->sort($filters->sortBy, $filters->sortOrder);
+        $query = new MeetingQuery;
 
-        $meetings = $query->paginate($filters->perPage);
+        /*
+         * Role scoping is applied to the query itself, and the keys it decides
+         * are dropped from the filter input — otherwise a teacher could pass
+         * ?teacher_id= to read another teacher's meetings, or a student
+         * ?status= to see ones that are not live.
+         */
+        $values = $filters->values;
+
+        if ($isTeacher) {
+            $query->teacherId($user->id);
+            unset($values['teacher_id']);
+        }
+
+        if ($isStudent) {
+            $query->status('live');
+            unset($values['status']);
+        }
+
+        $meetings = $query
+            ->search($filters->search)
+            ->where($values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Meeting::Meetings/Index', [
             'meetings' => MeetingResource::collection($meetings),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'teacher_id',
-                'status',
-                'date',
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'teacher_id' => FilterOptions::from(
+                    User::query()->where('role', UserRole::Teacher->value)->get(),
+                    fn (User $teacher): string => (string) $teacher->name,
+                ),
+                'subject_id' => FilterOptions::withNotSet(
+                    FilterOptions::fromModels(Subject::query()->where('is_active', true)->get()),
+                ),
+                'school_class_id' => FilterOptions::withNotSet(
+                    FilterOptions::fromModels(
+                        SchoolClass::query()->where('is_active', true)->orderBy('name')->get(),
+                    ),
+                ),
             ]),
             'teachers' => User::query()->where('role', UserRole::Teacher->value)->get(['id', 'name']),
         ]);

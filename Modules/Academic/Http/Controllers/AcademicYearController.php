@@ -17,31 +17,31 @@ use Modules\Academic\Queries\AcademicYearQuery;
 use Modules\Academic\Transformers\AcademicYearResource;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 
 class AcademicYearController extends BaseInertiaController
 {
     public function index(Request $request): Response
     {
+        $filters = ListQueryDTO::fromRequest($request);
+
         $query = new AcademicYearQuery;
 
-        if ($search = $request->string(Pagination::SEARCH_PARAM)->toString()) {
-            $query->search($search);
-        }
-
-        $query->sort(
-            $request->string(Pagination::SORT_PARAM, Pagination::DEFAULT_SORT)->toString(),
-            $request->string(Pagination::ORDER_PARAM, Pagination::DEFAULT_ORDER)->toString(),
-        );
-
-        $years = $query->paginate(
-            $request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE),
-        );
+        $years = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Academic::AcademicYears/Index', [
             'years' => AcademicYearResource::collection($years),
 
-            // Echoed back so the search box survives a reload or shared link.
-            'filters' => $request->only([Pagination::SEARCH_PARAM]),
+            // Echoed back so filters survive a reload or a shared link.
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
         ]);
     }
 

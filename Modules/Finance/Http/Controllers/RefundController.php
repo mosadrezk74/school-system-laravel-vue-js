@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 use Modules\Finance\Actions\RecordRefundAction;
 use Modules\Finance\DTOs\CreateRefundDTO;
 use Modules\Finance\Enums\PaymentMethod;
@@ -21,14 +22,23 @@ class RefundController extends BaseInertiaController
     {
         $this->authorize('viewAny', Refund::class);
 
-        $refunds = (new RefundQuery)
-            ->paymentId($request->integer('payment_id') ?: null)
-            ->sort('refund_date', 'desc')
-            ->paginate($request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE));
+        $filters = ListQueryDTO::fromRequest($request);
+
+        $query = new RefundQuery;
+
+        $refunds = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Finance::Refunds/Index', [
             'refunds' => RefundResource::collection($refunds),
-            'filters' => $request->only(['payment_id']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
             'refundMethods' => PaymentMethod::options(),
         ]);
     }

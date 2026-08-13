@@ -21,7 +21,7 @@ class StudentMeetingController extends BaseInertiaController
 
         $meetings = (new MeetingQuery)
             ->classIds($this->scope->accessibleClassIds())
-            ->searchTerm($request->string(Pagination::SEARCH_PARAM)->toString() ?: null)
+            ->search($request->string(Pagination::SEARCH_PARAM)->toString() ?: null)
             ->status($request->string('status')->toString() ?: null)
             ->sort('scheduled_at', 'desc')
             ->paginate($request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE));

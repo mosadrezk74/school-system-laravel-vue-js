@@ -1,17 +1,22 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   feeCategories: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -19,38 +24,25 @@ const { t } = useI18n()
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 const { formatDate } = useMoney()
 
-const search = ref(props.filters.search ?? '')
-const isActive = ref(props.filters.is_active ?? null)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/finance/fee-categories',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
+})
+
 
 const statusOptions = computed(() => [
   { title: t('finance.active'), value: '1' },
   { title: t('finance.inactive'), value: '0' },
 ])
 
-function buildQuery(extra = {}) {
-  const query = { search: search.value, ...extra }
 
-  if (isActive.value !== null && isActive.value !== undefined)
-    query.is_active = isActive.value
 
-  return query
-}
 
-function applyFilters() {
-  router.get('/finance/fee-categories', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
-})
-
-watch(isActive, applyFilters)
 
 const headers = computed(() => [
   { title: t('finance.fields.name'), key: 'name' },
@@ -71,12 +63,6 @@ function archive(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/finance/fee-categories', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -108,18 +94,19 @@ function goToPage(page) {
   >
     <template #filters>
       <VTextField
-        v-model="search"
+        v-model="filters.search.value"
         maxlength="100"
         :label="t('finance.searchByName')"
         prepend-inner-icon="bx-search"
         clearable
       />
 
-      <VSelect
-        v-model="isActive"
-        :label="t('finance.fields.is_active')"
-        :items="statusOptions"
-        clearable
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
       />
     </template>
 

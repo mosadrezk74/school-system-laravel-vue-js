@@ -1,52 +1,41 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   guardians: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
-const search = ref(props.filters.search ?? '')
-const status = ref(props.filters.is_active ?? null)
-
-// Omit the key entirely when cleared, rather than sending an empty string:
-// $request->has('is_active') would still be true for '', so the backend
-// would read that as an explicit "false" instead of "no filter".
-function buildQuery(extra = {}) {
-  const query = { search: search.value, ...extra }
-
-  if (status.value !== null)
-    query.is_active = status.value
-
-  return query
-}
-
-function applyFilters() {
-  router.get('/user-management/guardians', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/user-management/guardians',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
 })
 
-watch(status, applyFilters)
+
+
+
+
 
 const headers = computed(() => [
   { title: t('guardians.name'), key: 'name' },
@@ -67,12 +56,6 @@ function archive(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/user-management/guardians', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -105,22 +88,19 @@ function goToPage(page) {
   >
     <template #filters>
       <VTextField
-        v-model="search"
+        v-model="filters.search.value"
         maxlength="100"
         :label="t('guardians.search')"
         prepend-inner-icon="bx-search"
         clearable
       />
 
-      <VSelect
-        v-model="status"
-        :label="t('common.filter')"
-        :items="[
-          { title: t('common.all'), value: null },
-          { title: t('guardians.active'), value: true },
-          { title: t('guardians.inactive'), value: false },
-        ]"
-        clearable
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
       />
     </template>
 

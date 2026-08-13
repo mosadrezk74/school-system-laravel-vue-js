@@ -23,8 +23,10 @@ class ParentHomeworkController extends BaseInertiaController
         $child = $this->selectedChild($request);
 
         $assignments = (new AssignmentQuery)
-            ->classId($child?->current_class_id ?? -1)
-            ->isPublished(true)
+            ->where([
+                'class_id' => $child?->current_class_id ?? -1,
+                'is_published' => true,
+            ])
             ->sort('deadline', 'desc')
             ->paginate($request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE));
 

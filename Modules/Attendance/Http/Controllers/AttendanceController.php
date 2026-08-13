@@ -13,7 +13,6 @@ use Modules\Attendance\Actions\DeleteAttendanceRecordAction;
 use Modules\Attendance\Actions\GenerateAttendanceReportAction;
 use Modules\Attendance\Actions\MarkAttendanceAction;
 use Modules\Attendance\DTOs\AttendanceDashboardFilterDTO;
-use Modules\Attendance\DTOs\AttendanceFilterDTO;
 use Modules\Attendance\DTOs\AttendanceReportFilterDTO;
 use Modules\Attendance\DTOs\MarkAttendanceDTO;
 use Modules\Attendance\DTOs\StudentAttendanceFilterDTO;
@@ -28,6 +27,8 @@ use Modules\Attendance\Transformers\AttendanceReportRowResource;
 use Modules\Attendance\Transformers\StudentAttendanceProfileResource;
 use Modules\Attendance\Transformers\StudentAttendanceTimelineResource;
 use Modules\Core\Abstracts\BaseInertiaController;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\Student\Models\StudentProfile;
 use Modules\Subject\Models\Subject;
@@ -144,23 +145,28 @@ class AttendanceController extends BaseInertiaController
     {
         $this->authorize('viewAny', AttendanceRecord::class);
 
-        $filters = AttendanceFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request, [
+            'academic_year_id' => AcademicContextService::yearId(),
+        ]);
 
-        $query = (new AttendanceQuery)
-            ->classId($filters->classId)
-            ->subjectId($filters->subjectId)
-            ->academicYearId($filters->academicYearId)
-            ->semesterId($filters->semesterId)
-            ->session($filters->session)
-            ->dateBetween($filters->dateFrom, $filters->dateTo)
-            ->sort($filters->sortBy, $filters->sortOrder);
+        $query = new AttendanceQuery;
 
-        $records = $query->paginate($filters->perPage);
+        $records = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Attendance::Records/Index', [
             'records' => AttendanceRecordResource::collection($records),
-            'filters' => $request->only([
-                'class_id', 'subject_id', 'semester_id', 'session', 'date_from', 'date_to',
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'class_id' => FilterOptions::fromModels(
+                    SchoolClass::query()->where('is_active', true)->orderBy('name')->get(),
+                ),
             ]),
             'classes' => $this->activeClasses(),
             'subjects' => $this->subjectOptions(),

@@ -8,12 +8,12 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 use Modules\Subject\Actions\ArchiveSubjectAction;
 use Modules\Subject\Actions\CreateSubjectAction;
 use Modules\Subject\Actions\RestoreSubjectAction;
 use Modules\Subject\Actions\UpdateSubjectAction;
 use Modules\Subject\DTOs\CreateSubjectDTO;
-use Modules\Subject\DTOs\SubjectFilterDTO;
 use Modules\Subject\DTOs\UpdateSubjectDTO;
 use Modules\Subject\Http\Requests\StoreSubjectRequest;
 use Modules\Subject\Http\Requests\UpdateSubjectRequest;
@@ -27,21 +27,23 @@ class SubjectController extends BaseInertiaController
     {
         $this->authorize('viewAny', Subject::class);
 
-        $filters = SubjectFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $query = (new SubjectQuery)
+        $query = new SubjectQuery;
+
+        $subjects = $query
             ->search($filters->search)
-            ->isActive($filters->isActive)
-            ->sort($filters->sortBy, $filters->sortOrder);
-
-        $subjects = $query->paginate($filters->perPage);
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return Inertia::render('Subject::Subjects/Index', [
             'subjects' => SubjectResource::collection($subjects),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'is_active',
-            ]),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
         ]);
     }
 

@@ -1,18 +1,23 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
 import AppDateField from '@/components/AppDateField.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   payments: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
   invoices: { type: Array, default: () => [] },
   paymentMethods: { type: Array, default: () => [] },
   statuses: { type: Array, default: () => [] },
@@ -23,48 +28,23 @@ const { t } = useI18n()
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 const { formatMoney, formatDateTime } = useMoney()
 
-const search = ref(props.filters.search ?? '')
-const paymentMethod = ref(props.filters.payment_method ?? null)
-const paidFrom = ref(props.filters.paid_from ?? '')
-const paidTo = ref(props.filters.paid_to ?? '')
-const status = ref(props.filters.status ?? null)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/finance/payments',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
+})
+
 
 const paymentMethodOptions = computed(() => props.paymentMethods.map(m => ({ title: m.label, value: m.value })))
 const statusOptions = computed(() => props.statuses.map(s => ({ title: s.label, value: s.value })))
 
-function buildQuery(extra = {}) {
-  const query = { search: search.value, ...extra }
 
-  if (paymentMethod.value)
-    query.payment_method = paymentMethod.value
 
-  if (paidFrom.value)
-    query.paid_from = paidFrom.value
 
-  if (paidTo.value)
-    query.paid_to = paidTo.value
-
-  if (status.value)
-    query.status = status.value
-
-  return query
-}
-
-function applyFilters() {
-  router.get('/finance/payments', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
-})
-
-watch([paymentMethod, paidFrom, paidTo, status], applyFilters)
 
 const headers = computed(() => [
   { title: t('finance.fields.paid_at'), key: 'paid_at' },
@@ -116,12 +96,6 @@ function archive(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/finance/payments', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -153,37 +127,19 @@ function goToPage(page) {
   >
     <template #filters>
       <VTextField
-        v-model="search"
+        v-model="filters.search.value"
         maxlength="100"
         :label="t('finance.searchPayment')"
         prepend-inner-icon="bx-search"
         clearable
       />
 
-      <VSelect
-        v-model="paymentMethod"
-        :label="t('finance.fields.payment_method')"
-        :items="paymentMethodOptions"
-        clearable
-      />
-
-      <VSelect
-        v-model="status"
-        :label="t('finance.fields.status')"
-        :items="statusOptions"
-        clearable
-      />
-
-      <AppDateField
-        v-model="paidFrom"
-        :label="t('finance.paidFrom')"
-        clearable
-      />
-
-      <AppDateField
-        v-model="paidTo"
-        :label="t('finance.paidTo')"
-        clearable
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
       />
     </template>
 

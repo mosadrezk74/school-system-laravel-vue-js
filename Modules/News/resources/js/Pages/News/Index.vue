@@ -3,6 +3,7 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
@@ -11,27 +12,25 @@ import { useIndexFilters } from '@/composables/useIndexFilters'
 const props = defineProps({
   news: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
   statusOptions: { type: Array, default: () => [] },
   audienceOptions: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
-const { filters, goToPage } = useIndexFilters({
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
   url: '/communication/news',
-  initial: {
-    search: props.filters.search ?? null,
-    status: props.filters.status ?? null,
-    audience: props.filters.audience ?? null,
-  },
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
 })
 
 const headers = computed(() => [
   { title: t('news.fields.title'), key: 'title', sortable: false },
   { title: t('news.fields.audience'), key: 'audience', sortable: false },
   { title: t('news.fields.status'), key: 'status', sortable: false },
-  { title: t('news.fields.publishedAt'), key: 'published_at', sortable: false },
-  { title: t('news.fields.author'), key: 'author', sortable: false },
   { title: '', key: 'actions', sortable: false, align: 'end' },
 ])
 
@@ -101,42 +100,21 @@ const formatDate = value => (value ? new Date(value).toLocaleString() : '—')
     @page="goToPage"
   >
     <template #filters>
-      <VRow dense>
-        <VCol
-          cols="12"
-          md="5"
-        >
-          <VTextField
-            v-model="filters.search.value"
-            maxlength="100"
-            :label="t('news.search')"
-            prepend-inner-icon="bx-search"
-            clearable
-          />
-        </VCol>
+      <VTextField
+        v-model="filters.search.value"
+        maxlength="100"
+        :label="t('news.search')"
+        prepend-inner-icon="bx-search"
+        clearable
+      />
 
-        <VCol
-          cols="12"
-          md="3"
-        >
-          <VSelect
-            v-model="filters.status.value"
-            :items="withAll(statusOptions)"
-            :label="t('news.fields.status')"
-          />
-        </VCol>
-
-        <VCol
-          cols="12"
-          md="3"
-        >
-          <VSelect
-            v-model="filters.audience.value"
-            :items="withAll(audienceOptions)"
-            :label="t('news.fields.audience')"
-          />
-        </VCol>
-      </VRow>
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
+      />
     </template>
 
     <template #item.title="{ item }">

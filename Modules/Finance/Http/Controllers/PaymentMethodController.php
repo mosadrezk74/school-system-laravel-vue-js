@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 use Modules\Finance\Actions\ArchivePaymentMethodAction;
 use Modules\Finance\Actions\CreatePaymentMethodAction;
 use Modules\Finance\Actions\RestorePaymentMethodAction;
@@ -26,16 +27,23 @@ class PaymentMethodController extends BaseInertiaController
     {
         $this->authorize('viewAny', PaymentMethod::class);
 
-        $paymentMethods = (new PaymentMethodQuery)
-            ->searchTerm($request->string(Pagination::SEARCH_PARAM)->toString() ?: null)
-            ->isActive($request->has('is_active') ? $request->boolean('is_active') : null)
-            ->type($request->string('type')->toString() ?: null)
-            ->sort('display_order', 'asc')
-            ->paginate($request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE));
+        $filters = ListQueryDTO::fromRequest($request);
+
+        $query = new PaymentMethodQuery;
+
+        $paymentMethods = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Finance::PaymentMethods/Index', [
             'paymentMethods' => PaymentMethodResource::collection($paymentMethods),
-            'filters' => $request->only([Pagination::SEARCH_PARAM, 'is_active', 'type']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
             'types' => PaymentMethodType::options(),
         ]);
     }

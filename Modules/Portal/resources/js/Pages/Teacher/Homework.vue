@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TeacherLayout from '@modules/Portal/resources/js/layouts/teacher.vue'
 import PortalHeader from '@modules/Portal/resources/js/components/PortalHeader.vue'
@@ -21,35 +21,19 @@ const { t } = useI18n()
 
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
-const search = ref(props.filters.search ?? '')
-const classId = ref(props.filters.class_id ?? null)
-
-const classOptions = computed(() => props.classes.map(c => ({ title: c.name, value: c.id })))
-
-function buildQuery(extra = {}) {
-  const query = { search: search.value, ...extra }
-
-  if (classId.value)
-    query.class_id = classId.value
-
-  return query
-}
-
-function applyFilters() {
-  router.get('/teacher/homework', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
+/*
+ * URL state, debounce and paging come from the shared composable rather than
+ * a per-page copy of all three.
+ */
+const { filters, goToPage } = useIndexFilters({
+  url: '/teacher/homework',
+  initial: {
+    search: props.filters.search ?? null,
+    class_id: props.filters.class_id ?? null,
+  },
 })
 
-watch(classId, applyFilters)
+const classOptions = computed(() => props.classes.map(c => ({ title: c.name, value: c.id })))
 
 const headers = computed(() => [
   { title: t('portal.teacher.homeworkTitle'), key: 'title' },
@@ -73,12 +57,6 @@ function archive(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/teacher/homework', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -103,7 +81,7 @@ function goToPage(page) {
       <VCard>
         <VCardText class="d-flex flex-wrap gap-4">
           <VTextField
-            v-model="search"
+            v-model="filters.search.value"
             maxlength="100"
             :label="t('portal.teacher.searchHomework')"
             prepend-inner-icon="bx-search"
@@ -114,7 +92,7 @@ function goToPage(page) {
           />
 
           <VSelect
-            v-model="classId"
+            v-model="filters.class_id.value"
             :items="classOptions"
             :label="t('portal.teacher.selectClass')"
             density="compact"

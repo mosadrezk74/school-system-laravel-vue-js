@@ -5,10 +5,13 @@ namespace Modules\Examination\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
+use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\Semester;
 use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\Examination\Actions\ArchiveExamAction;
 use Modules\Examination\Actions\CreateExamAction;
 use Modules\Examination\Actions\EnterExamResultsAction;
@@ -16,7 +19,6 @@ use Modules\Examination\Actions\RestoreExamAction;
 use Modules\Examination\Actions\UpdateExamAction;
 use Modules\Examination\DTOs\CreateExamDTO;
 use Modules\Examination\DTOs\EnterExamResultsDTO;
-use Modules\Examination\DTOs\ExamFilterDTO;
 use Modules\Examination\DTOs\UpdateExamDTO;
 use Modules\Examination\Enums\ExamType;
 use Modules\Examination\Http\Requests\StoreExamRequest;
@@ -37,28 +39,25 @@ class ExamController extends BaseInertiaController
     {
         $this->authorize('viewAny', Exam::class);
 
-        $filters = ExamFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request, [
+            'academic_year_id' => AcademicContextService::yearId(),
+        ]);
 
-        $query = (new ExamQuery)
-            ->searchNameOrCode($filters->search)
-            ->academicYearId($filters->academicYearId)
-            ->semesterId($filters->semesterId)
-            ->classId($filters->classId)
-            ->examType($filters->examType)
-            ->isPublished($filters->isPublished)
-            ->sort($filters->sortBy, $filters->sortOrder);
+        $query = new ExamQuery;
 
-        $exams = $query->paginate($filters->perPage);
+        $exams = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Examination::Exams/Index', [
             'exams' => ExamResource::collection($exams),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'semester_id',
-                'class_id',
-                'exam_type',
-                'is_published',
-            ]),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema($this->filterOptions()),
         ]);
     }
 
@@ -198,6 +197,28 @@ class ExamController extends BaseInertiaController
              * `unit_test` and no practical or oral option at all.
              */
             'examTypes' => ExamType::selectOptions(),
+        ];
+    }
+
+    /**
+     * Option lists for the filter bar's selects.
+     *
+     * @return array<string, array<int, array{title: string, value: mixed}>>
+     */
+    private function filterOptions(): array
+    {
+        return [
+            'academic_year_id' => FilterOptions::fromModels(
+                AcademicYear::query()->orderByDesc('start_date')->get(),
+            ),
+            'semester_id' => FilterOptions::withNotSet(
+                FilterOptions::fromModels(Semester::query()->get()),
+            ),
+            'class_id' => FilterOptions::withNotSet(
+                FilterOptions::fromModels(
+                    SchoolClass::query()->where('is_active', true)->orderBy('name')->get(),
+                ),
+            ),
         ];
     }
 }

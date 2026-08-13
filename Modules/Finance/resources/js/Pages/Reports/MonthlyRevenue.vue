@@ -1,8 +1,9 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   rows: { type: Array, default: () => [] },
@@ -12,17 +13,14 @@ const props = defineProps({
 const { t } = useI18n()
 const { formatMoney } = useMoney()
 
-const year = ref(props.filters.year ?? new Date().getFullYear())
-
-function applyFilters() {
-  router.get('/finance/reports/monthly-revenue', { year: year.value }, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-watch(year, applyFilters)
+/*
+ * The year defines the report rather than narrowing a list, but the URL state
+ * behaves identically — so it comes from the shared composable.
+ */
+const { filters } = useIndexFilters({
+  url: '/finance/reports/monthly-revenue',
+  initial: { year: props.filters.year ?? new Date().getFullYear() },
+})
 
 const monthNames = computed(() => Array.from({ length: 12 }, (_, index) =>
   new Date(2000, index, 1).toLocaleString(undefined, { month: 'long' })))
@@ -74,7 +72,7 @@ const months = computed(() => {
 
     <VCardText class="d-flex flex-wrap gap-4 align-center">
       <VTextField
-        v-model="year"
+        v-model="filters.year.value"
         inputmode="numeric"
         type="number"
         :label="t('finance.fields.year')"

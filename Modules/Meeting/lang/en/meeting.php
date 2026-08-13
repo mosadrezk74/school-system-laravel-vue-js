@@ -21,4 +21,10 @@ return [
         'academic_year_id' => 'Academic Year',
         'semester_id' => 'Semester',
     ],
+    'statuses' => [
+        'scheduled' => 'Scheduled',
+        'live' => 'Live',
+        'finished' => 'Finished',
+        'cancelled' => 'Cancelled',
+    ],
 ];

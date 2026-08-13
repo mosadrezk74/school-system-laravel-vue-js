@@ -1,11 +1,12 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DynamicFilters from '@modules/Report/resources/js/components/DynamicFilters.vue'
 import DynamicTable from '@modules/Report/resources/js/components/DynamicTable.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppEmptyState from '@/components/AppEmptyState.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   reports: { type: Array, default: () => [] },
@@ -15,37 +16,24 @@ const props = defineProps({
 
 const { t } = useI18n()
 
-const search = ref(props.filters.search ?? '')
-const category = ref(props.filters.category ?? null)
+/*
+ * This page lists report *providers* from an in-memory registry rather than a
+ * paginated Query, so there is no filter schema to publish. It still uses the
+ * shared composable for its URL state and debounce instead of keeping its own
+ * copy of both.
+ */
+const { filters } = useIndexFilters({
+  url: '/reports',
+  initial: {
+    search: props.filters.search ?? null,
+    category: props.filters.category ?? null,
+  },
+})
 
 const categoryOptions = computed(() => props.categories.map(item => ({
   title: item.label,
   value: item.value,
 })))
-
-function applyFilters() {
-  const query = {}
-
-  if (search.value)
-    query.search = search.value
-
-  if (category.value)
-    query.category = category.value
-
-  router.get('/reports', query, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
-})
-
-watch(category, applyFilters)
 
 const selected = ref(null)
 const filterValues = ref({})
@@ -136,7 +124,7 @@ async function run() {
 
         <VCardText class="d-flex flex-wrap gap-4">
           <VTextField
-            v-model="search"
+            v-model="filters.search.value"
             maxlength="100"
             :label="t('report.searchReports')"
             prepend-inner-icon="bx-search"
@@ -146,7 +134,7 @@ async function run() {
           />
 
           <VSelect
-            v-model="category"
+            v-model="filters.category.value"
             :label="t('report.fields.category')"
             :items="categoryOptions"
             density="compact"

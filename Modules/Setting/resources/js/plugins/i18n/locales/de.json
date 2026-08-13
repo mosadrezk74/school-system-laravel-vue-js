@@ -310,7 +310,9 @@
     "invoices": "Rechnungen",
     "behavior": "Verhaltensaufzeichnung",
     "transport": "Schultransport",
-    "library": "Bibliothek"
+    "library": "Bibliothek",
+    "gradeLevel": "Klassenstufe",
+    "hasGuardian": "Hat einen Erziehungsberechtigten"
   },
   "classes": {
     "title": "Klassen",
@@ -356,7 +358,8 @@
     "sectionsHint": "Wählen Sie die Klassenstufe einmal und fügen Sie dann je eine Klasse hinzu.",
     "sections": {
       "details": "Details"
-    }
+    },
+    "hasStudents": "Hat eingeschriebene Schüler"
   },
   "teachers": {
     "title": "Lehrer",
@@ -636,7 +639,10 @@
       "edit": "Edit Fee Category",
       "empty": "No fee categories yet. Add your first category to get started.",
       "sectionTitle": "Category Details",
-      "sectionDesc": "Name, code and description of the category."
+      "sectionDesc": "Name, code and description of the category.",
+      "active": "Aktiv",
+      "code": "Code",
+      "name": "Name"
     },
     "feeStructures": {
       "title": "Fee Structures",
@@ -646,7 +652,17 @@
       "empty": "No fee structures yet. Add your first structure to get started.",
       "sectionDesc": "Name, category and who this fee applies to.",
       "amountDesc": "How much is charged and how often.",
-      "lateFeeDesc": "Optional penalty applied after the due date."
+      "lateFeeDesc": "Optional penalty applied after the due date.",
+      "academicYear": "Schuljahr",
+      "active": "Aktiv",
+      "amount": "Betrag",
+      "category": "Gebührenkategorie",
+      "classroom": "Klassenraum",
+      "frequency": "Häufigkeit",
+      "gradeLevel": "Klassenstufe",
+      "name": "Name",
+      "optional": "Optional",
+      "semester": "Semester"
     },
     "feeDiscounts": {
       "title": "Fee Discounts",
@@ -656,7 +672,15 @@
       "empty": "No discounts yet. Add your first discount to get started.",
       "sectionDesc": "Name, type and value of the discount.",
       "scopeDesc": "Limit the discount to a grade level or classroom.",
-      "validityDesc": "Date range and usage limits."
+      "validityDesc": "Date range and usage limits.",
+      "active": "Aktiv",
+      "classroom": "Klassenraum",
+      "endDate": "Enddatum",
+      "gradeLevel": "Klassenstufe",
+      "startDate": "Startdatum",
+      "type": "Rabattart",
+      "usedCount": "Verwendungen",
+      "value": "Rabattwert"
     },
     "studentFees": {
       "title": "Student Fees",
@@ -665,7 +689,13 @@
       "edit": "Edit Student Fee",
       "empty": "No fees assigned yet. Assign a fee to get started.",
       "sectionTitle": "Fee Assignment",
-      "sectionDesc": "Student, fee structure and the amount to charge."
+      "sectionDesc": "Student, fee structure and the amount to charge.",
+      "discount": "Rabatt",
+      "feeCategory": "Gebührenkategorie",
+      "feeStructure": "Gebührenordnung",
+      "finalAmount": "Endbetrag",
+      "status": "Status",
+      "student": "Schüler"
     },
     "invoices": {
       "title": "Invoices",
@@ -678,7 +708,14 @@
       "addItem": "Add Item",
       "noItems": "No items added yet.",
       "generate": "Generate from Fees",
-      "generateDesc": "Creates one invoice from every pending fee assigned to the student."
+      "generateDesc": "Creates one invoice from every pending fee assigned to the student.",
+      "balance": "Offener Betrag",
+      "overdueOnly": "Nur überfällige",
+      "status": "Status",
+      "student": "Schüler",
+      "total": "Gesamtbetrag",
+      "dueDate": "Fälligkeitsdatum",
+      "issueDate": "Ausstellungsdatum"
     },
     "payments": {
       "title": "Payments",
@@ -686,7 +723,17 @@
       "addNew": "Record Payment",
       "empty": "No payments recorded yet.",
       "sectionTitle": "Payment Details",
-      "sectionDesc": "Invoice, amount and how the payment was made."
+      "sectionDesc": "Invoice, amount and how the payment was made.",
+      "amount": "Betrag",
+      "invoice": "Rechnung",
+      "method": "Zahlungsmethode",
+      "methodRecord": "Hinterlegte Zahlungsart",
+      "reference": "Referenznummer",
+      "refunded": "Erstatteter Betrag",
+      "status": "Status",
+      "student": "Schüler",
+      "confirmedAt": "Bestätigt am",
+      "paidAt": "Zahlungsdatum"
     },
     "dashboard": {
       "title": "Finanz-Dashboard",
@@ -775,7 +822,20 @@
     "original_amount": "Ursprünglicher Betrag",
     "amount_due": "Fälliger Betrag",
     "requested_at": "Angefragt am",
-    "payment_url_missing": "Kein Zahlungslink konfiguriert — Familien können nicht weitergeleitet werden."
+    "payment_url_missing": "Kein Zahlungslink konfiguriert — Familien können nicht weitergeleitet werden.",
+    "paymentMethods": {
+      "active": "Aktiv",
+      "code": "Code",
+      "name": "Name",
+      "type": "Zahlungsart"
+    },
+    "refunds": {
+      "amount": "Betrag",
+      "date": "Erstattungsdatum",
+      "method": "Erstattungsart",
+      "payment": "Zahlung",
+      "student": "Schüler"
+    }
   },
   "report": {
     "title": "Berichte",
@@ -818,7 +878,12 @@
       "subtitle": "Save report configurations for reuse.",
       "addNew": "New Template",
       "edit": "Edit Template",
-      "empty": "No templates yet. Create your first template to get started."
+      "empty": "No templates yet. Create your first template to get started.",
+      "active": "Aktiv",
+      "author": "Erstellt von",
+      "category": "Kategorie",
+      "code": "Code",
+      "name": "Name"
     },
     "summary": {
       "students": "Students",
@@ -1081,7 +1146,13 @@
     "searchStudents": "Search students",
     "searchStudentsHint": "{total} matching students",
     "noStudentsFound": "No students match your search.",
-    "alreadyLinked": "This student is already linked to this guardian."
+    "alreadyLinked": "This student is already linked to this guardian.",
+    "active": "Aktiv",
+    "occupation": "Beruf",
+    "relationship": "Verwandtschaftsverhältnis",
+    "gender": "Geschlecht",
+    "hasStudents": "Mit Schüler verknüpft",
+    "student": "Schüler"
   },
   "semesters": {
     "title": "Semester",
@@ -1114,7 +1185,15 @@
     "sections": {
       "details": "Semesterdetails",
       "detailsDesc": "Termine, Reihenfolge und Prüfungszeitraum."
-    }
+    },
+    "academicYear": "Schuljahr",
+    "endDate": "Enddatum",
+    "examStartDate": "Prüfungsbeginn",
+    "isActive": "Aktiv",
+    "isCurrent": "Aktuell",
+    "name": "Name",
+    "sequence": "Reihenfolge",
+    "startDate": "Startdatum"
   },
   "gradeLevels": {
     "title": "Klassenstufen",
@@ -1222,7 +1301,12 @@
       "new": "Neu",
       "reviewed": "Geprüft",
       "resolved": "Gelöst"
-    }
+    },
+    "level": "Stufe",
+    "method": "HTTP-Methode",
+    "route": "Route",
+    "status": "Status",
+    "statusCode": "Statuscode"
   },
   "systemActivity": {
     "title": "Aktivitätsprotokoll",
@@ -1254,7 +1338,12 @@
       "properties": "Eigenschaften",
       "academicYear": "Schuljahr",
       "semester": "Semester"
-    }
+    },
+    "causer": "Ausgeführt von",
+    "date": "Datum",
+    "event": "Ereignis",
+    "logName": "Protokoll",
+    "subjectType": "Datensatztyp"
   },
   "meetings": {
     "subject": "Fach",
@@ -1269,7 +1358,14 @@
       "participants": "Teilnehmer",
       "insecure": "Diese Besprechung erfordert eine sichere (HTTPS-)Verbindung, damit der Browser auf Kamera und Mikrofon zugreifen kann.",
       "ended": "Diese Besprechung wurde beendet."
-    }
+    },
+    "academicYear": "Schuljahr",
+    "class": "Klasse",
+    "date": "Datum",
+    "duration": "Dauer (Minuten)",
+    "semester": "Semester",
+    "status": "Status",
+    "teacher": "Lehrkraft"
   },
   "notification": {
     "title": "Benachrichtigungen",
@@ -1278,7 +1374,9 @@
     "unread_only": "Nur ungelesene",
     "mark_read": "Als gelesen markieren",
     "mark_all_read": "Alle als gelesen markieren",
-    "unread": "Ungelesen"
+    "unread": "Ungelesen",
+    "date": "Datum",
+    "type": "Benachrichtigungstyp"
   },
   "roles": {
     "title": "Rollen",
@@ -1307,7 +1405,8 @@
     "sections": {
       "details": "Rollendetails",
       "detailsDesc": "Benennen Sie die Rolle und wählen Sie die Berechtigungen."
-    }
+    },
+    "name": "Rollenname"
   },
   "admins": {
     "title": "Administratoren",
@@ -1345,7 +1444,11 @@
       "accountDesc": "Anmeldedaten und Kontaktinformationen.",
       "access": "Zugriff",
       "accessDesc": "Kontotyp und Rollen, die Berechtigungen gewähren."
-    }
+    },
+    "active": "Aktiv",
+    "gender": "Geschlecht",
+    "accountRole": "Kontotyp",
+    "role": "Rolle"
   },
   "schoolTerms": {
     "title": "Geschäftsbedingungen",
@@ -1384,7 +1487,11 @@
       "agreeLabel": "Ich stimme den Geschäftsbedingungen der Schule zu",
       "accept": "Akzeptieren",
       "alreadyAccepted": "Sie haben diese Version am {date} akzeptiert."
-    }
+    },
+    "author": "Erstellt von",
+    "publishedAt": "Veröffentlicht am",
+    "status": "Status",
+    "version": "Version"
   },
   "reportCard": {
     "title": "Zeugnis",
@@ -1456,7 +1563,16 @@
       "targetSemester": "Das Halbjahr, in dem die Schüler beginnen."
     },
     "noTargetSemesters": "Keine Halbjahre im Zieljahr",
-    "missingTargetSemester": "Wählen Sie ein Zielhalbjahr."
+    "missingTargetSemester": "Wählen Sie ein Zielhalbjahr.",
+    "fromClass": "Von Klasse",
+    "fromYear": "Von Schuljahr",
+    "promotedAt": "Datum der Versetzung",
+    "promotedBy": "Versetzt von",
+    "status": "Status",
+    "student": "Schüler",
+    "toClass": "In Klasse",
+    "toYear": "In Schuljahr",
+    "wasGraduated": "Absolviert"
   },
   "news": {
     "title": "Neuigkeiten",
@@ -1488,5 +1604,132 @@
       "details": "Details der Neuigkeit",
       "detailsDesc": "Verfassen Sie die Ankündigung und wählen Sie die Zielgruppe."
     }
+  },
+  "filters": {
+    "title": "Filter",
+    "apply": "Anwenden",
+    "clear": "Zurücksetzen",
+    "clearAll": "Alle zurücksetzen",
+    "active": "Aktive Filter",
+    "more": "Weitere Filter",
+    "from": "Von",
+    "to": "Bis",
+    "any": "Alle",
+    "yes": "Ja",
+    "no": "Nein",
+    "operators": {
+      "contains": "Enthält",
+      "starts_with": "Beginnt mit",
+      "ends_with": "Endet mit",
+      "equals": "Gleich",
+      "not_equals": "Ungleich",
+      "gt": "Größer als",
+      "gte": "Größer oder gleich",
+      "lt": "Kleiner als",
+      "lte": "Kleiner oder gleich",
+      "between": "Zwischen",
+      "before": "Vor",
+      "after": "Nach",
+      "in": "Eines von",
+      "is_null": "Ist leer",
+      "is_not_null": "Ist nicht leer",
+      "exists": "Hat",
+      "not_exists": "Hat nicht"
+    },
+    "operator": "Bedingung"
+  },
+  "behaviorRecords": {
+    "type": "Verhaltenstyp",
+    "isReviewed": "Überprüft",
+    "category": "Kategorie",
+    "date": "Datum",
+    "points": "Punkte",
+    "reportedBy": "Gemeldet von",
+    "status": "Status",
+    "student": "Schüler"
+  },
+  "assignments": {
+    "academicYear": "Schuljahr",
+    "class": "Klasse",
+    "deadline": "Abgabefrist",
+    "groupWork": "Gruppenarbeit",
+    "maxScore": "Maximale Punktzahl",
+    "published": "Veröffentlicht",
+    "semester": "Semester",
+    "subject": "Fach",
+    "teacher": "Lehrkraft",
+    "title": "Aufgaben",
+    "type": "Aufgabentyp"
+  },
+  "attendanceRecords": {
+    "absent": "Abwesend",
+    "academicYear": "Schuljahr",
+    "class": "Klasse",
+    "date": "Datum",
+    "late": "Verspätet",
+    "session": "Unterrichtsstunde",
+    "student": "Schüler"
+  },
+  "behaviorCategories": {
+    "active": "Aktiv",
+    "name": "Name",
+    "points": "Punkte",
+    "type": "Typ"
+  },
+  "classroom": {
+    "fields": {
+      "building": "Gebäude",
+      "capacity": "Kapazität",
+      "floor": "Etage",
+      "has_projector": "Mit Projektor",
+      "has_smartboard": "Mit Smartboard",
+      "is_active": "Aktiv",
+      "room_type": "Raumtyp"
+    }
+  },
+  "communication": {
+    "failedCount": "Fehlgeschlagene Zustellungen",
+    "sender": "Absender",
+    "status": "Status",
+    "targetType": "Empfänger",
+    "title": "Titel",
+    "scheduledAt": "Geplant für",
+    "sentAt": "Gesendet am"
+  },
+  "examGrades": {
+    "gradeLevel": "Klassenstufe",
+    "gradeName": "Notenbezeichnung",
+    "gradePoint": "Notenpunkte",
+    "isPassing": "Bestanden",
+    "minPercentage": "Mindestprozentsatz",
+    "subject": "Fach"
+  },
+  "exams": {
+    "academicYear": "Schuljahr",
+    "class": "Klasse",
+    "endDate": "Enddatum",
+    "name": "Name",
+    "published": "Veröffentlicht",
+    "semester": "Semester",
+    "startDate": "Startdatum",
+    "totalMarks": "Gesamtpunktzahl",
+    "type": "Prüfungsart"
+  },
+  "subject": {
+    "fields": {
+      "is_active": "Aktiv",
+      "name": "Name"
+    }
+  },
+  "timetables": {
+    "academicYear": "Schuljahr",
+    "active": "Aktiv",
+    "class": "Klasse",
+    "gradeLevel": "Klassenstufe",
+    "isBreak": "Pause",
+    "periodActive": "Aktiv",
+    "periodName": "Name der Stunde",
+    "periodNumber": "Stundennummer",
+    "semester": "Semester"
   }
 }

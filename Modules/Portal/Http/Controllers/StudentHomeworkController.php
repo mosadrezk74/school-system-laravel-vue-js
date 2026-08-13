@@ -25,9 +25,13 @@ class StudentHomeworkController extends BaseInertiaController
         $classIds = $this->scope->accessibleClassIds() ?? [];
 
         $assignments = (new AssignmentQuery)
-            ->classId($classIds === [] ? -1 : $classIds[0])
-            ->isPublished(true)
-            ->searchTitle($request->string(Pagination::SEARCH_PARAM)->toString() ?: null)
+            ->search($request->string(Pagination::SEARCH_PARAM)->toString() ?: null)
+            // Scope values, supplied here rather than read from the request,
+            // so a portal user cannot widen them from the URL.
+            ->where([
+                'class_id' => $classIds === [] ? -1 : $classIds[0],
+                'is_published' => true,
+            ])
             ->sort('deadline', 'desc')
             ->paginate($request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE));
 

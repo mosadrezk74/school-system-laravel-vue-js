@@ -8,6 +8,8 @@ use Inertia\Response;
 use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\Finance\Actions\ArchiveInvoiceAction;
 use Modules\Finance\Actions\CancelInvoiceAction;
 use Modules\Finance\Actions\CreateInvoiceAction;
@@ -15,7 +17,6 @@ use Modules\Finance\Actions\GenerateInvoiceFromStudentFeesAction;
 use Modules\Finance\Actions\RestoreInvoiceAction;
 use Modules\Finance\Actions\UpdateInvoiceAction;
 use Modules\Finance\DTOs\CreateInvoiceDTO;
-use Modules\Finance\DTOs\InvoiceFilterDTO;
 use Modules\Finance\DTOs\UpdateInvoiceDTO;
 use Modules\Finance\Enums\InvoiceStatus;
 use Modules\Finance\Http\Requests\GenerateInvoiceRequest;
@@ -33,27 +34,24 @@ class InvoiceController extends BaseInertiaController
     {
         $this->authorize('viewAny', Invoice::class);
 
-        $filters = InvoiceFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $invoices = (new InvoiceQuery)
-            ->academicYearId(AcademicContextService::yearId())
-            ->searchNumber($filters->search)
-            ->studentId($filters->studentId)
-            ->status($filters->status)
-            ->issuedBetween($filters->issuedFrom, $filters->issuedTo)
-            ->overdueOnly($filters->overdueOnly)
+        $query = (new InvoiceQuery)->academicYearId(AcademicContextService::yearId());
+
+        $invoices = $query
+            ->search($filters->search)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
         return $this->render('Finance::Invoices/Index', [
             'invoices' => InvoiceResource::collection($invoices),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'student_id',
-                'status',
-                'issued_from',
-                'issued_to',
-                'overdue_only',
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'student_id' => $this->studentFilterOptions(),
             ]),
             ...$this->lookups(),
         ]);
@@ -174,5 +172,23 @@ class InvoiceController extends BaseInertiaController
                 ])->values(),
             'statuses' => InvoiceStatus::options(),
         ];
+    }
+
+    /**
+     * Students for the filter bar's picker, scoped to the active academic year
+     * the same way the list itself is.
+     *
+     * @return array<int, array{title: string, value: mixed}>
+     */
+    private function studentFilterOptions(): array
+    {
+        return FilterOptions::from(
+            StudentProfile::query()
+                ->where('academic_year_id', AcademicContextService::yearId())
+                ->where('is_active', true)
+                ->with('user:id,name')
+                ->get(),
+            fn (StudentProfile $student): string => $student->user?->name ?? (string) $student->admission_number,
+        );
     }
 }

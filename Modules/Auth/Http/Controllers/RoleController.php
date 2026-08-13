@@ -9,7 +9,6 @@ use Modules\Auth\Actions\CreateRoleAction;
 use Modules\Auth\Actions\DeleteRoleAction;
 use Modules\Auth\Actions\UpdateRoleAction;
 use Modules\Auth\DTOs\CreateRoleDTO;
-use Modules\Auth\DTOs\RoleFilterDTO;
 use Modules\Auth\DTOs\UpdateRoleDTO;
 use Modules\Auth\Http\Requests\StoreRoleRequest;
 use Modules\Auth\Http\Requests\UpdateRoleRequest;
@@ -20,6 +19,7 @@ use Modules\Auth\Transformers\PermissionResource;
 use Modules\Auth\Transformers\RoleResource;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 
 class RoleController extends BaseInertiaController
 {
@@ -27,18 +27,23 @@ class RoleController extends BaseInertiaController
     {
         $this->authorize('viewAny', Role::class);
 
-        $filters = RoleFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $roles = (new RoleQuery)
-            ->withCounts()
+        $query = (new RoleQuery)->withCounts();
+
+        $roles = $query
             ->search($filters->search)
-            ->isSystem($filters->isSystem)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
         return $this->render('Auth::Roles/Index', [
             'roles' => RoleResource::collection($roles),
-            'filters' => $request->only([Pagination::SEARCH_PARAM, 'is_system']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
         ]);
     }
 

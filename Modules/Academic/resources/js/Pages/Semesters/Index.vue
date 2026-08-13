@@ -1,59 +1,43 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   semesters: { type: Object, required: true },
   academicYears: { type: Array, default: () => [] },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
-const search = ref(props.filters.search ?? '')
-const academicYearFilter = ref(props.filters.academic_year_id ?? null)
-const isActiveFilter = ref(props.filters.is_active ?? null)
-
-// Debounced so typing does not fire a request per keystroke.
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/academic/semesters',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
 })
 
-watch([academicYearFilter, isActiveFilter], applyFilters)
 
-function currentParams(extra = {}) {
-  return {
-    search: search.value || undefined,
-    academic_year_id: academicYearFilter.value || undefined,
-    is_active: isActiveFilter.value !== null ? isActiveFilter.value : undefined,
-    ...extra,
-  }
-}
 
-function applyFilters() {
-  router.get('/academic/semesters', currentParams(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
 
-function goToPage(page) {
-  router.get('/academic/semesters', currentParams({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
+
+
 
 // Set a semester as current
 function setCurrent(item) {
@@ -126,34 +110,21 @@ function restore(item) {
     @page="goToPage"
   >
     <template #filters>
-      <VRow>
-        <VCol cols="12" md="4">
-          <VTextField
-            v-model="search"
-            maxlength="100"
-            :label="t('semesters.search')"
-            prepend-inner-icon="bx-search"
-            clearable
-          />
-        </VCol>
+      <VTextField
+        v-model="filters.search.value"
+        maxlength="100"
+        :label="t('semesters.search')"
+        prepend-inner-icon="bx-search"
+        clearable
+      />
 
-        <VCol cols="12" md="4">
-          <VSelect
-            v-model="academicYearFilter"
-            :items="academicYearOptions"
-            :label="t('semesters.fields.academicYear')"
-            clearable
-          />
-        </VCol>
-
-        <VCol cols="12" md="4">
-          <VSelect
-            v-model="isActiveFilter"
-            :items="activeOptions"
-            :label="t('semesters.fields.isActive')"
-          />
-        </VCol>
-      </VRow>
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
+      />
     </template>
 
     <template #item.name="{ item }">

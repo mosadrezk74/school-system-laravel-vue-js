@@ -8,7 +8,6 @@ use Inertia\Response;
 use Modules\Behavior\Actions\CreateBehaviorRecordAction;
 use Modules\Behavior\Actions\DeleteBehaviorRecordAction;
 use Modules\Behavior\Actions\UpdateBehaviorRecordAction;
-use Modules\Behavior\DTOs\BehaviorRecordFilterDTO;
 use Modules\Behavior\DTOs\CreateBehaviorRecordDTO;
 use Modules\Behavior\DTOs\UpdateBehaviorRecordDTO;
 use Modules\Behavior\Enums\BehaviorRecordStatus;
@@ -19,6 +18,9 @@ use Modules\Behavior\Models\BehaviorRecord;
 use Modules\Behavior\Queries\BehaviorRecordQuery;
 use Modules\Behavior\Transformers\BehaviorRecordResource;
 use Modules\Core\Abstracts\BaseInertiaController;
+use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\Student\Models\StudentProfile;
 
 class BehaviorRecordController extends BaseInertiaController
@@ -27,21 +29,27 @@ class BehaviorRecordController extends BaseInertiaController
     {
         $this->authorize('viewAny', BehaviorRecord::class);
 
-        $filters = BehaviorRecordFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $query = (new BehaviorRecordQuery)
-            ->studentId($filters->studentId)
-            ->status($filters->status)
-            ->type($filters->type)
-            ->dateFrom($filters->dateFrom)
-            ->dateTo($filters->dateTo)
-            ->sort($filters->sortBy, $filters->sortOrder);
+        $query = new BehaviorRecordQuery;
 
-        $records = $query->paginate($filters->perPage);
+        $records = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Behavior::Records/Index', [
             'records' => BehaviorRecordResource::collection($records),
-            'filters' => $request->only(['student_id', 'status', 'type', 'date_from', 'date_to']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'behavior_category_id' => FilterOptions::fromModels(
+                    BehaviorCategory::query()->where('is_active', true)->get(),
+                ),
+            ]),
         ]);
     }
 

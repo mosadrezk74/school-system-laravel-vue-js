@@ -3,16 +3,38 @@
 namespace Modules\Student\Queries;
 
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Auth\Enums\Gender;
 use Modules\Core\Abstracts\BaseQuery;
+use Modules\Core\Support\Filters\BooleanFilter;
+use Modules\Core\Support\Filters\DateRangeFilter;
+use Modules\Core\Support\Filters\EnumFilter;
+use Modules\Core\Support\Filters\ExactFilter;
+use Modules\Core\Support\Filters\Filter;
+use Modules\Core\Support\Filters\RelationFilter;
+use Modules\Core\Support\Filters\TextFilter;
+use Modules\Student\Enums\BloodGroup;
 use Modules\Student\Models\StudentProfile;
 
 class StudentQuery extends BaseQuery
 {
     /** @var array<int, string> */
-    protected array $searchableFields = ['admission_number', 'roll_number'];
+    protected array $searchableFields = [
+        'admission_number',
+        'roll_number',
+        'guardian_phone',
+        'father_phone',
+        'mother_phone',
+    ];
 
-    /** @var array<int, string> */
-    protected array $filterableFields = ['academic_year_id', 'current_class_id', 'is_active'];
+    /**
+     * Name and email live on the related user, which is why every list of
+     * students had to search two tables.
+     *
+     * @var array<string, array<int, string>>
+     */
+    protected array $searchableRelations = [
+        'user' => ['name', 'email', 'username', 'national_id'],
+    ];
 
     /** @var array<int, string> */
     protected array $sortableFields = [
@@ -29,77 +51,31 @@ class StudentQuery extends BaseQuery
     }
 
     /**
-     * BaseQuery's search() only matches columns on student_profiles itself;
-     * name/email/username live on the related user, so this searches both.
+     * Medical notes, emergency contacts and the address are deliberately absent:
+     * they are free-text support data, not axes anyone lists students along, and
+     * `allergies` / `medical_conditions` should not become a way to enumerate
+     * students by health information.
+     *
+     * @return array<string, Filter>
      */
-    public function searchUser(?string $term): self
+    protected function allowedFilters(): array
     {
-        if (! $term) {
-            return $this;
-        }
+        return [
+            // Defaulted by the controller to the current academic context, and
+            // overridable so past years stay reachable.
+            'academic_year_id' => ExactFilter::make()->label('students.academicYear')->required(),
 
-        $this->query->where(function (Builder $query) use ($term) {
-            foreach ($this->searchableFields as $field) {
-                $query->orWhere($field, 'LIKE', "%{$term}%");
-            }
-
-            $query->orWhereHas('user', function (Builder $userQuery) use ($term) {
-                $userQuery->where('name', 'LIKE', "%{$term}%")
-                    ->orWhere('email', 'LIKE', "%{$term}%")
-                    ->orWhere('username', 'LIKE', "%{$term}%");
-            });
-        });
-
-        return $this;
-    }
-
-    public function academicYearId(?int $academicYearId): self
-    {
-        if ($academicYearId) {
-            $this->query->where('academic_year_id', $academicYearId);
-        }
-
-        return $this;
-    }
-
-    public function currentClassId(?int $currentClassId): self
-    {
-        if ($currentClassId) {
-            $this->query->where('current_class_id', $currentClassId);
-        }
-
-        return $this;
-    }
-
-    public function gradeLevelId(?int $gradeLevelId): self
-    {
-        if ($gradeLevelId) {
-            $this->query->whereHas('currentClass', function (Builder $query) use ($gradeLevelId) {
-                $query->where('grade_level_id', $gradeLevelId);
-            });
-        }
-
-        return $this;
-    }
-
-
-    public function isActive(?bool $isActive): self
-    {
-        if ($isActive !== null) {
-            $this->query->where('is_active', $isActive);
-        }
-
-        return $this;
-    }
-
-    public function gender(?string $gender): self
-    {
-        if ($gender) {
-            $this->query->whereHas('user', function (Builder $query) use ($gender) {
-                $query->where('gender', $gender);
-            });
-        }
-
-        return $this;
+            // `nullable()` is what backs the "not yet assigned to a class"
+            // choice the controller adds to the option list.
+            'current_class_id' => ExactFilter::make()->label('students.currentClass')->nullable(),
+            'grade_level_id' => RelationFilter::make('currentClass', 'grade_level_id')->label('students.gradeLevel'),
+            'gender' => EnumFilter::make(Gender::class)->on('user')->label('students.gender'),
+            'blood_group' => EnumFilter::make(BloodGroup::class)->label('students.bloodGroup'),
+            'is_active' => BooleanFilter::make()->label('students.active'),
+            'is_graduated' => BooleanFilter::make()->label('students.isGraduated'),
+            'admission_date' => DateRangeFilter::make()->label('students.admissionDate'),
+            'city' => TextFilter::make()->label('students.city'),
+            'has_guardian' => RelationFilter::make('guardians')->label('students.hasGuardian'),
+        ];
     }
 }

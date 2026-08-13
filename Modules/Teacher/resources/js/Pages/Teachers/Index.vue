@@ -1,63 +1,40 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   teachers: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
-const search = ref(props.filters.search ?? '')
-const isActiveFilter = ref(props.filters.is_active ?? null)
-const genderFilter = ref(props.filters.gender ?? null)
-
-let searchTimer
-watch(search, value => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(() => {
-    applyFilters()
-  }, 350)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/user-management/teachers',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
 })
 
-watch([isActiveFilter, genderFilter], () => {
-  applyFilters()
-})
 
-// Omit each key entirely when cleared, rather than sending an empty string:
-// $request->has('is_active') would still be true for '', so the backend
-// would read that as an explicit filter instead of "no filter".
-function buildQuery(extra = {}) {
-  const query = { ...extra }
 
-  if (search.value)
-    query.search = search.value
 
-  if (isActiveFilter.value !== null)
-    query.is_active = isActiveFilter.value
-
-  if (genderFilter.value)
-    query.gender = genderFilter.value
-
-  return query
-}
-
-function applyFilters() {
-  router.get('/user-management/teachers', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
 
 const headers = computed(() => [
   { title: t('teacher.fields.name'), key: 'name' },
@@ -88,25 +65,7 @@ function restore(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/user-management/teachers', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 
-const filterOptions = {
-  active: [
-    { title: t('common.all'), value: null },
-    { title: t('common.yes'), value: true },
-    { title: t('common.no'), value: false },
-  ],
-  gender: [
-    { title: t('common.all'), value: null },
-    { title: t('students.male'), value: 'male' },
-    { title: t('students.female'), value: 'female' },
-  ],
-}
 </script>
 
 <template>
@@ -138,46 +97,21 @@ const filterOptions = {
     @page="goToPage"
   >
     <template #filters>
-      <VRow>
-        <VCol cols="12" md="4">
-          <VTextField
-            v-model="search"
-            maxlength="100"
-            :label="t('teacher.search')"
-            prepend-inner-icon="bx-search"
-            clearable
-          />
-        </VCol>
+      <VTextField
+        v-model="filters.search.value"
+        maxlength="100"
+        :label="t('teacher.search')"
+        prepend-inner-icon="bx-search"
+        clearable
+      />
 
-        <VCol cols="12" md="2">
-          <VSelect
-            v-model="isActiveFilter"
-            :items="filterOptions.active"
-            :label="t('teacher.fields.is_active')"
-            clearable
-          />
-        </VCol>
-
-        <VCol cols="12" md="3">
-          <VSelect
-            v-model="genderFilter"
-            :items="filterOptions.gender"
-            :label="t('teacher.fields.gender')"
-            clearable
-          />
-        </VCol>
-
-        <VCol cols="12" md="2">
-          <VBtn
-            variant="tonal"
-            color="secondary"
-            size="small"
-            @click="applyFilters"
-          >
-            {{ t('common.filter') }}
-          </VBtn>
-        </VCol>
-      </VRow>
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
+      />
     </template>
 
       <template #item.name="{ item }">

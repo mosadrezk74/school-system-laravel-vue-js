@@ -21,4 +21,10 @@ return [
         'academic_year_id' => 'العام الدراسي',
         'semester_id' => 'الفصل الدراسي',
     ],
+    'statuses' => [
+        'scheduled' => 'مجدول',
+        'live' => 'جارٍ الآن',
+        'finished' => 'منتهٍ',
+        'cancelled' => 'ملغى',
+    ],
 ];

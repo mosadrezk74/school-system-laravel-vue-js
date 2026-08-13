@@ -4,15 +4,23 @@ namespace Modules\Finance\Queries;
 
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Core\Abstracts\BaseQuery;
+use Modules\Core\Support\Filters\BooleanFilter;
+use Modules\Core\Support\Filters\Filter;
+use Modules\Core\Support\Filters\TextFilter;
+use Modules\Core\Support\Filters\TranslatableFilter;
 use Modules\Finance\Models\FeeCategory;
 
 class FeeCategoryQuery extends BaseQuery
 {
     /** @var array<int, string> */
-    protected array $searchableFields = ['code', 'name'];
+    protected array $searchableFields = ['code'];
 
-    /** @var array<int, string> */
-    protected array $filterableFields = ['is_active'];
+    /**
+     * `name` and `description` are JSON keyed by locale.
+     *
+     * @var array<int, string>
+     */
+    protected array $translatableSearchFields = ['name', 'description'];
 
     /** @var array<int, string> */
     protected array $sortableFields = ['code', 'is_active', 'created_at'];
@@ -22,26 +30,15 @@ class FeeCategoryQuery extends BaseQuery
         return FeeCategory::query();
     }
 
-    public function searchTerm(?string $term): self
+    /**
+     * @return array<string, Filter>
+     */
+    protected function allowedFilters(): array
     {
-        if (! $term) {
-            return $this;
-        }
-
-        $this->query->where(function (Builder $query) use ($term) {
-            $query->where('code', 'LIKE', "%{$term}%")
-                ->orWhere('name', 'LIKE', "%{$term}%");
-        });
-
-        return $this;
-    }
-
-    public function isActive(?bool $isActive): self
-    {
-        if ($isActive !== null) {
-            $this->query->where('is_active', $isActive);
-        }
-
-        return $this;
+        return [
+            'is_active' => BooleanFilter::make()->label('finance.feeCategories.active'),
+            'name' => TranslatableFilter::make()->label('finance.feeCategories.name'),
+            'code' => TextFilter::make()->label('finance.feeCategories.code'),
+        ];
     }
 }

@@ -1,6 +1,6 @@
 <script setup>
 import { Head, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDateField from '@/components/AppDateField.vue'
@@ -15,24 +15,18 @@ const props = defineProps({
 
 const { t } = useI18n()
 
-const semesterId = ref(props.filters.semester_id ?? null)
-const dateFrom = ref(props.filters.date_from ?? null)
-const dateTo = ref(props.filters.date_to ?? null)
-
-let filterTimer
-
-function applyFilters() {
-  router.get(`/attendance/students/${props.student.id}`, {
-    semester_id: semesterId.value || undefined,
-    date_from: dateFrom.value || undefined,
-    date_to: dateTo.value || undefined,
-  }, { preserveState: true, preserveScroll: true, replace: true })
-}
-
-watch([semesterId], applyFilters)
-watch([dateFrom, dateTo], () => {
-  clearTimeout(filterTimer)
-  filterTimer = setTimeout(applyFilters, 350)
+/*
+ * These parameters define the report rather than narrow a list, but the URL
+ * state, debounce and paging behaviour are the same — so they come from the
+ * shared composable instead of a per-page copy.
+ */
+const { filters, goToPage } = useIndexFilters({
+  url: `/attendance/students/${props.student.id}`,
+  initial: {
+    semester_id: props.filters.semester_id ?? null,
+    date_from: props.filters.date_from ?? null,
+    date_to: props.filters.date_to ?? null,
+  },
 })
 
 const semesterOptions = computed(() =>
@@ -105,7 +99,7 @@ const statusColor = status => ({
         <VCardText class="d-flex flex-wrap gap-4">
 
           <VSelect
-            v-model="semesterId"
+            v-model="filters.semester_id.value"
             :label="t('attendanceRecords.semester')"
             :items="semesterOptions"
             density="compact"
@@ -114,7 +108,7 @@ const statusColor = status => ({
           />
 
           <AppDateField
-            v-model="dateFrom"
+            v-model="filters.date_from.value"
             :label="t('attendanceRecords.dateFrom')"
             density="compact"
             clearable
@@ -122,7 +116,7 @@ const statusColor = status => ({
           />
 
           <AppDateField
-            v-model="dateTo"
+            v-model="filters.date_to.value"
             :label="t('attendanceRecords.dateTo')"
             density="compact"
             clearable

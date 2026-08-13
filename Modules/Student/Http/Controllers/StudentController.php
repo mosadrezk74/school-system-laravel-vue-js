@@ -5,10 +5,15 @@ namespace Modules\Student\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
+use Modules\Academic\Models\AcademicYear;
+use Modules\Academic\Models\GradeLevel;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Auth\Enums\Gender;
 use Modules\Behavior\Models\BehaviorRecord;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\GuardianProfile\Enums\RelationshipType;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\Student\Actions\ArchiveStudentAction;
@@ -16,7 +21,6 @@ use Modules\Student\Actions\CreateStudentAction;
 use Modules\Student\Actions\RestoreStudentAction;
 use Modules\Student\Actions\UpdateStudentAction;
 use Modules\Student\DTOs\CreateStudentDTO;
-use Modules\Student\DTOs\StudentFilterDTO;
 use Modules\Student\DTOs\UpdateStudentDTO;
 use Modules\Student\Enums\BloodGroup;
 use Modules\Student\Http\Requests\StoreStudentRequest;
@@ -31,29 +35,58 @@ class StudentController extends BaseInertiaController
     {
         $this->authorize('viewAny', StudentProfile::class);
 
-        $filters = StudentFilterDTO::fromRequest($request);
+        /*
+         * The current academic year is a default, not a lock: it keeps the
+         * list scoped the way it has always been, while leaving
+         * `academic_year_id` an explicit historical filter the user can move.
+         */
+        $filters = ListQueryDTO::fromRequest($request, [
+            'academic_year_id' => AcademicContextService::yearId(),
+        ]);
 
-        $query = (new StudentQuery)
-            ->searchUser($filters->search)
-            ->academicYearId($filters->academicYearId)
-            ->currentClassId($filters->currentClassId)
-            ->gradeLevelId($filters->gradeLevelId)
-            ->isActive($filters->isActive)
-            ->gender($filters->gender)
-            ->sort($filters->sortBy, $filters->sortOrder);
+        $query = new StudentQuery;
 
-        $students = $query->paginate($filters->perPage);
+        $students = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Student::Students/Index', [
             'students' => StudentResource::collection($students),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'current_class_id',
-                'grade_level_id',
-                'is_active',
-                'gender',
-            ]),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema($this->filterOptions()),
         ]);
+    }
+
+    /**
+     * Option lists for the filter bar's selects.
+     *
+     * Kept separate from `formOptions()`: a form offers only the classes a
+     * student may be moved into, whereas the filter offers every class the
+     * list could contain, plus the "no class yet" case.
+     *
+     * @return array<string, array<int, array{title: string, value: mixed}>>
+     */
+    protected function filterOptions(): array
+    {
+        return [
+            'academic_year_id' => FilterOptions::fromModels(
+                AcademicYear::query()->orderByDesc('start_date')->get(),
+            ),
+            'current_class_id' => FilterOptions::withNotSet(
+                FilterOptions::fromModels(
+                    SchoolClass::query()->where('is_active', true)->orderBy('name')->get(),
+                ),
+                __('student::student.noClass'),
+            ),
+            'grade_level_id' => FilterOptions::fromModels(
+                GradeLevel::query()->where('is_active', true)->orderBy('display_order')->get(),
+            ),
+        ];
     }
 
     public function create(): Response

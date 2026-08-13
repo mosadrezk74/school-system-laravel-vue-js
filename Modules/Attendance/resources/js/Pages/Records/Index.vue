@@ -1,17 +1,22 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
 import AppDateField from '@/components/AppDateField.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   records: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
   subjects: { type: Array, default: () => [] },
 })
@@ -20,39 +25,14 @@ const { t } = useI18n()
 
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
-const classId = ref(props.filters.class_id ?? null)
-const subjectId = ref(props.filters.subject_id ?? null)
-const dateFrom = ref(props.filters.date_from ?? null)
-const dateTo = ref(props.filters.date_to ?? null)
-
-function buildQuery(extra = {}) {
-  const query = { ...extra }
-
-  if (classId.value)
-    query.class_id = classId.value
-  if (subjectId.value)
-    query.subject_id = subjectId.value
-  if (dateFrom.value)
-    query.date_from = dateFrom.value
-  if (dateTo.value)
-    query.date_to = dateTo.value
-
-  return query
-}
-
-function applyFilters() {
-  router.get('/attendance/records', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-let filterTimer
-watch([classId, subjectId], applyFilters)
-watch([dateFrom, dateTo], () => {
-  clearTimeout(filterTimer)
-  filterTimer = setTimeout(applyFilters, 350)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/attendance/records',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
 })
 
 const headers = computed(() => [
@@ -77,12 +57,6 @@ function destroy(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/attendance/records', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -114,31 +88,12 @@ function goToPage(page) {
     @page="goToPage"
   >
     <template #filters>
-      <VSelect
-        v-model="classId"
-        :label="t('attendanceRecords.class')"
-        :items="classes.map(c => ({ title: c.name, value: c.id }))"
-        clearable
-      />
-
-      <VSelect
-        v-model="subjectId"
-        :label="t('attendanceRecords.subject')"
-        :items="subjects.map(s => ({ title: s.name, value: s.id }))"
-        clearable
-      />
-
-
-      <AppDateField
-        v-model="dateFrom"
-        :label="t('attendanceRecords.dateFrom')"
-        clearable
-      />
-
-      <AppDateField
-        v-model="dateTo"
-        :label="t('attendanceRecords.dateTo')"
-        clearable
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
       />
     </template>
 

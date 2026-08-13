@@ -1,26 +1,36 @@
 <script setup>
 import { Head, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PortalHeader from '@modules/Portal/resources/js/components/PortalHeader.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppPagination from '@/components/AppPagination.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   notifications: { type: Object, required: true },
   unreadCount: { type: Number, default: 0 },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by NotificationQuery::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
-const unreadOnly = ref(Boolean(props.filters.unread))
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/notifications',
+  initial: { ...props.filters, unread: props.filters.unread ? 1 : null },
+  definitions: props.filterDefinitions,
+})
 
-watch(unreadOnly, value => {
-  router.get('/notifications', value ? { unread: 1 } : {}, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
+/*
+ * The switch is a boolean; the parameter has always been `?unread=1`, so the
+ * mapping stays here rather than changing a URL that already works.
+ */
+const unreadOnly = computed({
+  get: () => Boolean(filters.unread.value),
+  set: value => { filters.unread.value = value ? 1 : null },
 })
 
 const items = computed(() => props.notifications.data ?? [])
@@ -35,13 +45,6 @@ function markAllRead() {
 
 function formatDateTime(value) {
   return value ? new Date(value).toLocaleString() : '—'
-}
-
-function goToPage(page) {
-  router.get('/notifications', { ...(unreadOnly.value ? { unread: 1 } : {}), page }, {
-    preserveState: true,
-    preserveScroll: true,
-  })
 }
 </script>
 
@@ -77,6 +80,21 @@ function goToPage(page) {
           </div>
         </template>
       </PortalHeader>
+    </VCol>
+
+    <VCol
+      v-if="filterDefinitions.length"
+      cols="12"
+    >
+      <VCard class="pa-4">
+        <AppFilterBar
+          :definitions="filterDefinitions"
+          :filters="filters"
+          :active-keys="activeKeys"
+          @clear="clear"
+          @clear-all="reset"
+        />
+      </VCard>
     </VCol>
 
     <VCol cols="12">

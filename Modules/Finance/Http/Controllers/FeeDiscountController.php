@@ -9,12 +9,13 @@ use Modules\Academic\Models\GradeLevel;
 use Modules\Classroom\Models\Classroom;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\Finance\Actions\ArchiveFeeDiscountAction;
 use Modules\Finance\Actions\CreateFeeDiscountAction;
 use Modules\Finance\Actions\RestoreFeeDiscountAction;
 use Modules\Finance\Actions\UpdateFeeDiscountAction;
 use Modules\Finance\DTOs\CreateFeeDiscountDTO;
-use Modules\Finance\DTOs\FeeDiscountFilterDTO;
 use Modules\Finance\DTOs\UpdateFeeDiscountDTO;
 use Modules\Finance\Enums\DiscountType;
 use Modules\Finance\Http\Requests\StoreFeeDiscountRequest;
@@ -29,25 +30,29 @@ class FeeDiscountController extends BaseInertiaController
     {
         $this->authorize('viewAny', FeeDiscount::class);
 
-        $filters = FeeDiscountFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $feeDiscounts = (new FeeDiscountQuery)
-            ->searchTerm($filters->search)
-            ->discountType($filters->discountType)
-            ->gradeLevelId($filters->gradeLevelId)
-            ->classroomId($filters->classroomId)
-            ->isActive($filters->isActive)
+        $query = new FeeDiscountQuery;
+
+        $feeDiscounts = $query
+            ->search($filters->search)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
         return $this->render('Finance::FeeDiscounts/Index', [
             'feeDiscounts' => FeeDiscountResource::collection($feeDiscounts),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'discount_type',
-                'grade_level_id',
-                'classroom_id',
-                'is_active',
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'grade_level_id' => FilterOptions::withNotSet(
+                    FilterOptions::fromModels(GradeLevel::query()->where('is_active', true)->get()),
+                ),
+                'classroom_id' => FilterOptions::withNotSet(
+                    FilterOptions::fromModels(Classroom::query()->where('is_active', true)->get()),
+                ),
             ]),
             ...$this->lookups(),
         ]);

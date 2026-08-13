@@ -34,7 +34,7 @@ class TeacherMeetingController extends BaseInertiaController
         $meetings = (new MeetingQuery)
             ->teacherId($this->scope->teacherUserId())
             ->status($request->string('status')->toString() ?: null)
-            ->searchTerm($request->string(Pagination::SEARCH_PARAM)->toString() ?: null)
+            ->search($request->string(Pagination::SEARCH_PARAM)->toString() ?: null)
             ->sort('scheduled_at', 'desc')
             ->paginate($request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE));
 

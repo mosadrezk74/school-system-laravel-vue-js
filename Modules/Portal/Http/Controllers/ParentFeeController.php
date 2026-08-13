@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 use Modules\Finance\Enums\InvoiceStatus;
 use Modules\Finance\Queries\InvoiceQuery;
 use Modules\Finance\Queries\PaymentQuery;
@@ -22,17 +23,24 @@ class ParentFeeController extends BaseInertiaController
 
     public function index(Request $request): Response
     {
-        $childIds = $this->scope->guardianChildIds();
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $invoices = (new InvoiceQuery)
-            ->studentIds($childIds)
-            ->status($request->string('status')->toString() ?: null)
+        /*
+         * The guardian scope is applied to the query itself, before any
+         * request-driven filter is resolved against it. A parent narrowing by
+         * another family's student therefore gets an empty list rather than a
+         * wider one — the scope is an AND, never something a filter can widen.
+         */
+        $query = (new InvoiceQuery)->studentIds($this->scope->guardianChildIds());
+
+        $invoices = $query
+            ->where($filters->values)
             ->sort('issue_date', 'desc')
-            ->paginate($request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE));
+            ->paginate($filters->perPage);
 
         return $this->render('Portal::Parent/Fees', [
             'invoices' => InvoiceResource::collection($invoices),
-            'filters' => $request->only(['status']),
+            'filters' => $query->activeFilters($filters->values),
             'statuses' => InvoiceStatus::options(),
             'children' => $this->childOptions(),
         ]);

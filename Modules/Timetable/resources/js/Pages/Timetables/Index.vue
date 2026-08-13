@@ -6,11 +6,16 @@ import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   timetables: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -35,12 +40,6 @@ function archive(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/schedule/timetables', { ...props.filters, page }, {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -70,6 +69,16 @@ function goToPage(page) {
     :empty-title="t('timetables.empty')"
     @page="goToPage"
   >
+    <template #filters>
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
+      />
+    </template>
+
       <template #item.class="{ item }">
         <AppTableLink :href="`/schedule/timetables/${item.id}`">
           {{ item.class?.name ?? '—' }}

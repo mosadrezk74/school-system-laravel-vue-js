@@ -84,11 +84,26 @@ const displayText = computed(() => {
   >
     {{ displayText }}
 
+    <!--
+      These two are pixels, and must stay pixels.
+
+      Vuetify reads them with `parseFloat`, which keeps the number and throws
+      the unit away: `max-width="24rem"` reached the overlay as `max-width:24px`
+      — about one character wide. The full value then wrapped at every character
+      and the tooltip rendered as a vertical ribbon of single letters running
+      down the page. Any unit here is silently reinterpreted as px, so a bare
+      number is the only honest way to write it.
+
+      `min-width` is the floor of the same clamp
+      (`clamp(availableWidth, minWidth, maxWidth)`), which keeps the tooltip
+      readable when it opens near a viewport edge and little width is going.
+    -->
     <VTooltip
       activator="parent"
       location="top"
       open-on-focus
-      max-width="24rem"
+      :min-width="240"
+      :max-width="384"
     >
       <span class="app-truncated-text__full">{{ normalized }}</span>
     </VTooltip>
@@ -113,13 +128,11 @@ const displayText = computed(() => {
     The tooltip is the only place the full value exists, so it must be allowed
     to wrap onto as many lines as it needs rather than overflowing its box.
 
-    `break-word`, not `anywhere`. The two behave identically once a width is
-    settled, but `anywhere` also lets the break opportunities count towards the
-    element's min-content size — which for an unbroken string like an email
-    address is a single character. The tooltip is an absolutely positioned
-    overlay, so it is sized shrink-to-fit from that intrinsic width, and it
-    collapsed into a one-character-per-line vertical ribbon. `break-word` still
-    breaks a long word that would overflow, but leaves min-content alone.
+    `break-word`, not `anywhere`: an unbroken string like an email address has
+    no break opportunity, and without this it would overflow the tooltip
+    instead of wrapping inside it. `anywhere` would also drag the element's
+    min-content size down to a single character, which is not wanted even
+    though the width now comes from the tooltip's own max-width.
   */
   display: block;
   white-space: pre-wrap;

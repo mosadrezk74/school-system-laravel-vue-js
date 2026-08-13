@@ -1,36 +1,36 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   messages: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
-const search = ref(props.filters.search ?? '')
-const status = ref(props.filters.status ?? null)
-
-function applyFilters() {
-  router.get('/communication/messages', { search: search.value, status: status.value }, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/communication/messages',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
 })
 
-watch(status, applyFilters)
+
+
+
 
 const headers = computed(() => [
   { title: t('communication.fields.title'), key: 'title' },
@@ -44,12 +44,6 @@ const headers = computed(() => [
    */
 ])
 
-function goToPage(page) {
-  router.get('/communication/messages', { search: search.value, status: status.value, page }, {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -81,21 +75,19 @@ function goToPage(page) {
   >
     <template #filters>
       <VTextField
-        v-model="search"
+        v-model="filters.search.value"
         maxlength="100"
         :label="t('communication.messages.search')"
         prepend-inner-icon="bx-search"
         clearable
       />
 
-      <VSelect
-        v-model="status"
-        :label="t('communication.messages.status')"
-        :items="[
-          { title: t('communication.messages.statuses.pending'), value: 'pending' },
-          { title: t('communication.messages.statuses.sent'), value: 'sent' },
-        ]"
-        clearable
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
       />
     </template>
 

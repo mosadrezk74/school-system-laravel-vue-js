@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
 import AppEmptyState from '@/components/AppEmptyState.vue'
@@ -14,35 +14,18 @@ const props = defineProps({
 const { t } = useI18n()
 const { formatMoney, formatDate } = useMoney()
 
-const studentId = ref(props.filters.student_id ?? '')
-const dateFrom = ref(props.filters.date_from ?? '')
-const dateTo = ref(props.filters.date_to ?? '')
-
-function applyFilters() {
-  const query = {}
-
-  if (studentId.value)
-    query.student_id = studentId.value
-
-  if (dateFrom.value)
-    query.date_from = dateFrom.value
-
-  if (dateTo.value)
-    query.date_to = dateTo.value
-
-  router.get('/finance/reports/student-ledger', query, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-watch([dateFrom, dateTo], applyFilters)
-
-let studentTimer
-watch(studentId, () => {
-  clearTimeout(studentTimer)
-  studentTimer = setTimeout(applyFilters, 350)
+/*
+ * These parameters define the report rather than narrow a list, but the URL
+ * state, debounce and paging behaviour are the same — so they come from the
+ * shared composable instead of a per-page copy.
+ */
+const { filters, goToPage } = useIndexFilters({
+  url: '/finance/reports/student-ledger',
+  initial: {
+    student_id: props.filters.student_id ?? null,
+    date_from: props.filters.date_from ?? null,
+    date_to: props.filters.date_to ?? null,
+  },
 })
 
 const items = computed(() => props.rows.data ?? [])
@@ -97,7 +80,7 @@ const headers = computed(() => [
 
     <VCardText class="d-flex flex-wrap gap-4">
       <VTextField
-        v-model="studentId"
+        v-model="filters.student_id.value"
         inputmode="numeric"
         type="number"
         :label="t('finance.studentIdFilter')"
@@ -107,7 +90,7 @@ const headers = computed(() => [
       />
 
       <AppDateField
-        v-model="dateFrom"
+        v-model="filters.date_from.value"
         :label="t('finance.dateFrom')"
         density="compact"
         clearable
@@ -115,7 +98,7 @@ const headers = computed(() => [
       />
 
       <AppDateField
-        v-model="dateTo"
+        v-model="filters.date_to.value"
         :label="t('finance.dateTo')"
         density="compact"
         clearable

@@ -1,17 +1,22 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   feeStructures: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
   feeCategories: { type: Array, default: () => [] },
   gradeLevels: { type: Array, default: () => [] },
   classrooms: { type: Array, default: () => [] },
@@ -23,50 +28,25 @@ const { t } = useI18n()
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 const { formatMoney } = useMoney()
 
-const search = ref(props.filters.search ?? '')
-const feeCategoryId = ref(props.filters.fee_category_id ?? null)
-const gradeLevelId = ref(props.filters.grade_level_id ?? null)
-const classroomId = ref(props.filters.classroom_id ?? null)
-const frequency = ref(props.filters.frequency ?? null)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/finance/fee-structures',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
+})
+
 
 const feeCategoryOptions = computed(() => props.feeCategories.map(c => ({ title: c.name, value: c.id })))
 const gradeLevelOptions = computed(() => props.gradeLevels.map(g => ({ title: g.name, value: g.id })))
 const classroomOptions = computed(() => props.classrooms.map(c => ({ title: c.name, value: c.id })))
 const frequencyOptions = computed(() => props.frequencies.map(f => ({ title: f.label, value: f.value })))
 
-function buildQuery(extra = {}) {
-  const query = { search: search.value, ...extra }
 
-  if (feeCategoryId.value)
-    query.fee_category_id = feeCategoryId.value
 
-  if (gradeLevelId.value)
-    query.grade_level_id = gradeLevelId.value
 
-  if (classroomId.value)
-    query.classroom_id = classroomId.value
-
-  if (frequency.value)
-    query.frequency = frequency.value
-
-  return query
-}
-
-function applyFilters() {
-  router.get('/finance/fee-structures', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
-})
-
-watch([feeCategoryId, gradeLevelId, classroomId, frequency], applyFilters)
 
 const headers = computed(() => [
   { title: t('finance.fields.name'), key: 'name' },
@@ -98,12 +78,6 @@ function archive(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/finance/fee-structures', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -135,39 +109,19 @@ function goToPage(page) {
   >
     <template #filters>
       <VTextField
-        v-model="search"
+        v-model="filters.search.value"
         maxlength="100"
         :label="t('finance.searchByName')"
         prepend-inner-icon="bx-search"
         clearable
       />
 
-      <VSelect
-        v-model="feeCategoryId"
-        :label="t('finance.fields.fee_category_id')"
-        :items="feeCategoryOptions"
-        clearable
-      />
-
-      <VSelect
-        v-model="gradeLevelId"
-        :label="t('finance.fields.grade_level_id')"
-        :items="gradeLevelOptions"
-        clearable
-      />
-
-      <VSelect
-        v-model="classroomId"
-        :label="t('finance.fields.classroom_id')"
-        :items="classroomOptions"
-        clearable
-      />
-
-      <VSelect
-        v-model="frequency"
-        :label="t('finance.fields.frequency')"
-        :items="frequencyOptions"
-        clearable
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
       />
     </template>
 

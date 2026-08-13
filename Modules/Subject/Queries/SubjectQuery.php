@@ -4,13 +4,22 @@ namespace Modules\Subject\Queries;
 
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Core\Abstracts\BaseQuery;
-use Modules\Setting\Services\LanguageService;
+use Modules\Core\Support\Filters\BooleanFilter;
+use Modules\Core\Support\Filters\Filter;
+use Modules\Core\Support\Filters\TranslatableFilter;
 use Modules\Subject\Models\Subject;
 
 class SubjectQuery extends BaseQuery
 {
-    /** @var array<int, string> */
-    protected array $filterableFields = ['is_active'];
+    /**
+     * `name` and `description` are JSON keyed by locale, so they are matched
+     * through each enabled language rather than as plain columns. The locale
+     * list comes from the Language settings, so enabling a language makes it
+     * searchable without touching this class.
+     *
+     * @var array<int, string>
+     */
+    protected array $translatableSearchFields = ['name', 'description'];
 
     /*
      * `name` is absent: it is a JSON column, so ordering by it would sort by
@@ -25,35 +34,13 @@ class SubjectQuery extends BaseQuery
     }
 
     /**
-     * `name` and `description` are JSON keyed by locale, so the term is matched
-     * against each enabled language's value rather than the raw column. The
-     * locale list comes from LanguageService, so adding a language in the
-     * settings makes it searchable without touching this class.
+     * @return array<string, Filter>
      */
-    public function search(?string $term): self
+    protected function allowedFilters(): array
     {
-        if (! $term) {
-            return $this;
-        }
-
-        $locales = app(LanguageService::class)->activeLocales();
-
-        $this->query->where(function (Builder $query) use ($term, $locales): void {
-            foreach ($locales as $locale) {
-                $query->orWhere("name->{$locale}", 'LIKE', "%{$term}%")
-                    ->orWhere("description->{$locale}", 'LIKE', "%{$term}%");
-            }
-        });
-
-        return $this;
-    }
-
-    public function isActive(?bool $isActive): self
-    {
-        if ($isActive !== null) {
-            $this->query->where('is_active', $isActive);
-        }
-
-        return $this;
+        return [
+            'is_active' => BooleanFilter::make()->label('subject.fields.is_active'),
+            'name' => TranslatableFilter::make()->label('subject.fields.name'),
+        ];
     }
 }

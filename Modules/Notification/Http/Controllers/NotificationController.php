@@ -6,7 +6,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
-use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Notification\Queries\NotificationQuery;
 use Modules\Notification\Repositories\NotificationRepositoryInterface;
 use Modules\Notification\Transformers\NotificationResource;
 
@@ -18,16 +19,30 @@ class NotificationController extends BaseInertiaController
     {
         $user = $request->user();
 
-        $notifications = $this->repository->paginateFor(
-            $user,
-            $request->boolean('unread') ?: null,
-            $request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE),
-        );
+        $filters = ListQueryDTO::fromRequest($request);
+
+        /*
+         * forUser() is the ownership scope and is applied to the query itself,
+         * so no request parameter can reach another account's notifications.
+         * `?unread=1` keeps working alongside the schema's `is_read` control.
+         */
+        $query = (new NotificationQuery)
+            ->forUser($user)
+            ->unreadOnly($request->boolean('unread') ?: null);
+
+        $notifications = $query
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Notification::Notifications/Index', [
             'notifications' => NotificationResource::collection($notifications),
             'unreadCount' => $this->repository->unreadCountFor($user),
-            'filters' => ['unread' => $request->boolean('unread')],
+            'filters' => [
+                'unread' => $request->boolean('unread'),
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
         ]);
     }
 

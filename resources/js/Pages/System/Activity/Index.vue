@@ -1,14 +1,19 @@
 <script setup>
 import { Head, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   activities: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
 
   /**
    * The academic year and semester the log was read under, resolved
@@ -20,38 +25,15 @@ const props = defineProps({
 
 const { t } = useI18n()
 
-const search = ref(props.filters.search ?? '')
-const eventFilter = ref(props.filters.event ?? null)
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/system/activity',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
 })
-
-watch(eventFilter, () => applyFilters())
-
-// Cleared filters are omitted rather than sent empty, matching the other
-// index pages so the backend never reads '' as an explicit filter.
-function buildQuery(extra = {}) {
-  const query = { ...extra }
-
-  if (search.value)
-    query.search = search.value
-
-  if (eventFilter.value)
-    query.event = eventFilter.value
-
-  return query
-}
-
-function applyFilters() {
-  router.get('/system/activity', buildQuery(), { preserveState: true, replace: true })
-}
-
-function goToPage(page) {
-  router.get('/system/activity', buildQuery({ page }), { preserveState: true })
-}
 
 const eventOptions = computed(() => [
   { title: t('systemActivity.events.created'), value: 'created' },
@@ -110,26 +92,21 @@ const eventColor = event => ({
     @page="goToPage"
   >
     <template #filters>
-      <VRow>
-        <VCol cols="12" md="5">
-          <VTextField
-            v-model="search"
-            maxlength="100"
-            :label="t('systemActivity.search')"
-            prepend-inner-icon="bx-search"
-            clearable
-          />
-        </VCol>
+      <VTextField
+        v-model="filters.search.value"
+        maxlength="100"
+        :label="t('systemActivity.search')"
+        prepend-inner-icon="bx-search"
+        clearable
+      />
 
-        <VCol cols="12" md="3">
-          <VSelect
-            v-model="eventFilter"
-            :items="eventOptions"
-            :label="t('systemActivity.fields.event')"
-            clearable
-          />
-        </VCol>
-      </VRow>
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
+      />
     </template>
 
     <template #item.description="{ item }">

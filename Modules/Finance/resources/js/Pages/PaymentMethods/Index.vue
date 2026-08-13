@@ -1,16 +1,21 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   paymentMethods: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
   types: { type: Array, default: () => [] },
 })
 
@@ -18,35 +23,22 @@ const { t } = useI18n()
 
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
-const search = ref(props.filters.search ?? '')
-const type = ref(props.filters.type ?? null)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/finance/payment-methods',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
+})
+
 
 const typeOptions = computed(() => props.types.map(item => ({ title: item.label, value: item.value })))
 
-function buildQuery(extra = {}) {
-  const query = { search: search.value, ...extra }
 
-  if (type.value)
-    query.type = type.value
 
-  return query
-}
 
-function applyFilters() {
-  router.get('/finance/payment-methods', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
-})
-
-watch(type, applyFilters)
 
 const headers = computed(() => [
   { title: t('finance.fields.name'), key: 'name' },
@@ -67,12 +59,6 @@ function archive(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/finance/payment-methods', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -103,26 +89,21 @@ function goToPage(page) {
     @page="goToPage"
   >
     <template #filters>
-      <VRow>
-        <VCol cols="12" md="6">
-          <VTextField
-            v-model="search"
-            maxlength="100"
-            :label="t('finance.search_payment_methods')"
-            prepend-inner-icon="bx-search"
-            clearable
-          />
-        </VCol>
+      <VTextField
+        v-model="filters.search.value"
+        maxlength="100"
+        :label="t('finance.search_payment_methods')"
+        prepend-inner-icon="bx-search"
+        clearable
+      />
 
-        <VCol cols="12" md="4">
-          <VSelect
-            v-model="type"
-            :label="t('finance.fields.type')"
-            :items="typeOptions"
-            clearable
-          />
-        </VCol>
-      </VRow>
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
+      />
     </template>
 
     <template #item.name="{ item }">

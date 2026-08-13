@@ -4,16 +4,24 @@ namespace Modules\Finance\Queries;
 
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Core\Abstracts\BaseQuery;
+use Modules\Core\Support\Filters\DateRangeFilter;
+use Modules\Core\Support\Filters\EnumFilter;
+use Modules\Core\Support\Filters\ExactFilter;
+use Modules\Core\Support\Filters\Filter;
+use Modules\Core\Support\Filters\NumericFilter;
 use Modules\Finance\Enums\InvoiceStatus;
 use Modules\Finance\Models\Invoice;
+use Modules\Finance\Support\Filters\OverdueInvoiceFilter;
 
 class InvoiceQuery extends BaseQuery
 {
     /** @var array<int, string> */
     protected array $searchableFields = ['invoice_number'];
 
-    /** @var array<int, string> */
-    protected array $filterableFields = ['student_id', 'status'];
+    /** @var array<string, array<int, string>> */
+    protected array $searchableRelations = [
+        'student.user' => ['name'],
+    ];
 
     /** @var array<int, string> */
     protected array $sortableFields = [
@@ -32,6 +40,30 @@ class InvoiceQuery extends BaseQuery
     }
 
     /**
+     * `notes` and `currency` are left out: notes are free-text bookkeeping
+     * rather than an axis anyone lists along, and the school bills in one
+     * currency, so the column would filter nothing.
+     *
+     * @return array<string, Filter>
+     */
+    protected function allowedFilters(): array
+    {
+        return [
+            'student_id' => ExactFilter::make()->label('finance.invoices.student'),
+            'status' => EnumFilter::make(InvoiceStatus::class)->label('finance.invoices.status'),
+
+            // `issued_*` / `due_*` rather than `issue_date_*`: these are the
+            // parameter names the page has always sent.
+            'issued' => DateRangeFilter::make()->column('issue_date')->label('finance.invoices.issueDate'),
+            'due' => DateRangeFilter::make()->column('due_date')->label('finance.invoices.dueDate'),
+
+            'total_amount' => NumericFilter::make()->label('finance.invoices.total'),
+            'balance_due' => NumericFilter::make()->label('finance.invoices.balance'),
+            'overdue_only' => OverdueInvoiceFilter::make()->label('finance.invoices.overdueOnly'),
+        ];
+    }
+
+    /**
      * Invoices no longer store an academic year; they inherit it from the
      * student they bill, so the active year is applied through that relation.
      */
@@ -46,34 +78,13 @@ class InvoiceQuery extends BaseQuery
         return $this;
     }
 
-    public function searchNumber(?string $term): self
-    {
-        if (! $term) {
-            return $this;
-        }
-
-        $this->query->where(function (Builder $query) use ($term) {
-            $query->where('invoice_number', 'LIKE', "%{$term}%")
-                ->orWhereHas('student.user', function (Builder $userQuery) use ($term) {
-                    $userQuery->where('name', 'LIKE', "%{$term}%");
-                });
-        });
-
-        return $this;
-    }
-
-    public function studentId(?int $studentId): self
-    {
-        if ($studentId) {
-            $this->query->where('student_id', $studentId);
-        }
-
-        return $this;
-    }
-
     /**
      * Restricts to a fixed set of students. An empty array means "none",
      * never "unfiltered", so a guardian with no linked children sees nothing.
+     *
+     * Portal scoping, not a user-facing filter: it must not be reachable from
+     * the query string, which is why it stays a method rather than joining
+     * allowedFilters().
      *
      * @param  array<int, int>|null  $studentIds
      */
@@ -86,40 +97,6 @@ class InvoiceQuery extends BaseQuery
         $studentIds === []
             ? $this->query->whereRaw('1 = 0')
             : $this->query->whereIn('student_id', $studentIds);
-
-        return $this;
-    }
-
-    public function status(?string $status): self
-    {
-        if ($status) {
-            $this->query->where('status', $status);
-        }
-
-        return $this;
-    }
-
-    public function issuedBetween(?string $from, ?string $to): self
-    {
-        if ($from) {
-            $this->query->whereDate('issue_date', '>=', $from);
-        }
-
-        if ($to) {
-            $this->query->whereDate('issue_date', '<=', $to);
-        }
-
-        return $this;
-    }
-
-    public function overdueOnly(?bool $overdueOnly): self
-    {
-        if ($overdueOnly) {
-            $this->query
-                ->whereDate('due_date', '<', now()->toDateString())
-                ->where('balance_due', '>', 0)
-                ->whereNotIn('status', [InvoiceStatus::Paid->value, InvoiceStatus::Cancelled->value]);
-        }
 
         return $this;
     }

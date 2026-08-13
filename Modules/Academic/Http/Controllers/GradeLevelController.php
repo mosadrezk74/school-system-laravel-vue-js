@@ -10,7 +10,6 @@ use Modules\Academic\Actions\CreateGradeLevelAction;
 use Modules\Academic\Actions\RestoreGradeLevelAction;
 use Modules\Academic\Actions\UpdateGradeLevelAction;
 use Modules\Academic\DTOs\CreateGradeLevelDTO;
-use Modules\Academic\DTOs\GradeLevelFilterDTO;
 use Modules\Academic\DTOs\UpdateGradeLevelDTO;
 use Modules\Academic\Http\Requests\StoreGradeLevelRequest;
 use Modules\Academic\Http\Requests\UpdateGradeLevelRequest;
@@ -19,6 +18,7 @@ use Modules\Academic\Queries\GradeLevelQuery;
 use Modules\Academic\Transformers\GradeLevelResource;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 
 class GradeLevelController extends BaseInertiaController
 {
@@ -26,12 +26,13 @@ class GradeLevelController extends BaseInertiaController
     {
         $this->authorize('viewAny', GradeLevel::class);
 
-        $filters = GradeLevelFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $gradeLevels = (new GradeLevelQuery)
-            ->withArchived()
+        $query = (new GradeLevelQuery)->withArchived();
+
+        $gradeLevels = $query
             ->search($filters->search)
-            ->isActive($filters->isActive)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
@@ -39,10 +40,11 @@ class GradeLevelController extends BaseInertiaController
             'gradeLevels' => GradeLevelResource::collection($gradeLevels),
 
             // Echoed back so filters survive a reload or a shared link.
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'is_active',
-            ]),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
         ]);
     }
 

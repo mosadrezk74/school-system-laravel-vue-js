@@ -1,16 +1,21 @@
 <script setup>
 import { Head, router, useForm } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppDateField from '@/components/AppDateField.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   years: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -22,21 +27,17 @@ const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirm
 // "Optional" marker to maintain in sync.
 const required = label => `${label} *`
 
-const search = ref(props.filters.search ?? '')
-
-// Debounced so typing doesn't fire a visit per keystroke. preserveState keeps
-// the field focused; replace avoids stacking history entries.
-let searchTimer
-watch(search, value => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(() => {
-    router.get('/academic/academic-years', { search: value }, {
-      preserveState: true,
-      preserveScroll: true,
-      replace: true,
-    })
-  }, 350)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/academic/academic-years',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
 })
+
+
 
 const dialog = ref(false)
 const editing = ref(null)
@@ -110,12 +111,6 @@ function remove(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/academic/academic-years', { page, search: search.value }, {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -145,11 +140,19 @@ function goToPage(page) {
   >
     <template #filters>
       <VTextField
-        v-model="search"
+        v-model="filters.search.value"
         maxlength="100"
         :label="t('academicYears.search')"
         prepend-inner-icon="bx-search"
         clearable
+      />
+
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
       />
     </template>
 

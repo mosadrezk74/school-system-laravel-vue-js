@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
 import AppEmptyState from '@/components/AppEmptyState.vue'
@@ -16,26 +16,18 @@ const { formatMoney, formatDateTime } = useMoney()
 
 const today = new Date().toISOString().slice(0, 10)
 
-const dateFrom = ref(props.filters.date_from ?? today)
-const dateTo = ref(props.filters.date_to ?? today)
-
-function applyFilters() {
-  const query = {}
-
-  if (dateFrom.value)
-    query.date_from = dateFrom.value
-
-  if (dateTo.value)
-    query.date_to = dateTo.value
-
-  router.get('/finance/reports/daily-payments', query, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-watch([dateFrom, dateTo], applyFilters)
+/*
+ * These parameters define the report rather than narrow a list, but the URL
+ * state, debounce and paging behaviour are the same — so they come from the
+ * shared composable instead of a per-page copy.
+ */
+const { filters, goToPage } = useIndexFilters({
+  url: '/finance/reports/daily-payments',
+  initial: {
+    date_from: props.filters.date_from ?? today,
+    date_to: props.filters.date_to ?? today,
+  },
+})
 
 const items = computed(() => props.rows.data ?? [])
 
@@ -88,14 +80,14 @@ const headers = computed(() => [
 
     <VCardText class="d-flex flex-wrap gap-4 align-center">
       <AppDateField
-        v-model="dateFrom"
+        v-model="filters.date_from.value"
         :label="t('finance.dateFrom')"
         density="compact"
         style="max-inline-size: 200px;"
       />
 
       <AppDateField
-        v-model="dateTo"
+        v-model="filters.date_to.value"
         :label="t('finance.dateTo')"
         density="compact"
         style="max-inline-size: 200px;"

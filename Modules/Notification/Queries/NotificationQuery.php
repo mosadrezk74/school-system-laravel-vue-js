@@ -5,19 +5,42 @@ namespace Modules\Notification\Queries;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Core\Abstracts\BaseQuery;
+use Modules\Core\Support\Filters\DateRangeFilter;
+use Modules\Core\Support\Filters\Filter;
+use Modules\Core\Support\Filters\TextFilter;
 use Modules\Notification\Models\Notification;
 
 class NotificationQuery extends BaseQuery
 {
-    /** @var array<int, string> */
-    protected array $filterableFields = ['type', 'read_at'];
-
     /** @var array<int, string> */
     protected array $sortableFields = ['created_at', 'read_at', 'type'];
 
     protected function baseQuery(): Builder
     {
         return Notification::query();
+    }
+
+    /**
+     * `notifiable_type` / `notifiable_id` are the ownership columns, set by
+     * forUser() and never filterable — letting them through would be a way to
+     * read another account's notifications.
+     *
+     * `data` is the rendered payload, read per-notification rather than
+     * narrowed across a list.
+     *
+     * Read state is deliberately absent: the page's existing `?unread=1`
+     * toggle already expresses it through unreadOnly(), and adding a second
+     * control for the same thing is exactly the duplication this system is
+     * meant to remove.
+     *
+     * @return array<string, Filter>
+     */
+    protected function allowedFilters(): array
+    {
+        return [
+            'type' => TextFilter::make()->label('notification.type'),
+            'created_at' => DateRangeFilter::make()->label('notification.date'),
+        ];
     }
 
     /**
@@ -43,15 +66,6 @@ class NotificationQuery extends BaseQuery
     {
         if ($unreadOnly) {
             $this->query->whereNull('read_at');
-        }
-
-        return $this;
-    }
-
-    public function type(?string $type): self
-    {
-        if ($type) {
-            $this->query->where('type', $type);
         }
 
         return $this;

@@ -8,11 +8,12 @@ use Inertia\Response;
 use Modules\Academic\Models\GradeLevel;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\Examination\Actions\CreateExamGradeAction;
 use Modules\Examination\Actions\DeleteExamGradeAction;
 use Modules\Examination\Actions\UpdateExamGradeAction;
 use Modules\Examination\DTOs\CreateExamGradeDTO;
-use Modules\Examination\DTOs\ExamGradeFilterDTO;
 use Modules\Examination\DTOs\UpdateExamGradeDTO;
 use Modules\Examination\Http\Requests\StoreExamGradeRequest;
 use Modules\Examination\Http\Requests\UpdateExamGradeRequest;
@@ -27,22 +28,27 @@ class ExamGradeController extends BaseInertiaController
     {
         $this->authorize('viewAny', ExamGrade::class);
 
-        $filters = ExamGradeFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $query = (new ExamGradeQuery)
-            ->searchGradeName($filters->search)
-            ->gradeLevelId($filters->gradeLevelId)
-            ->subjectId($filters->subjectId)
-            ->sort($filters->sortBy, $filters->sortOrder);
+        $query = new ExamGradeQuery;
 
-        $grades = $query->paginate($filters->perPage);
+        $grades = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Examination::ExamGrades/Index', [
             'rows' => ExamGradeResource::collection($grades),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'grade_level_id',
-                'subject_id',
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'grade_level_id' => FilterOptions::fromModels(GradeLevel::query()->get()),
+                'subject_id' => FilterOptions::withNotSet(
+                    FilterOptions::fromModels(Subject::query()->get()),
+                ),
             ]),
             'gradeLevels' => GradeLevel::query()->get()->map(fn (GradeLevel $gradeLevel) => ['id' => $gradeLevel->id, 'name' => $gradeLevel->name])->values(),
             'subjects' => Subject::query()->get()->map(fn (Subject $subject) => ['id' => $subject->id, 'name' => $subject->name])->values(),

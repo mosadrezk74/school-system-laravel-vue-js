@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 use Modules\Report\Actions\CreateReportTemplateAction;
 use Modules\Report\Actions\DeleteReportTemplateAction;
 use Modules\Report\Actions\RestoreReportTemplateAction;
 use Modules\Report\Actions\UpdateReportTemplateAction;
 use Modules\Report\DTOs\CreateReportTemplateDTO;
-use Modules\Report\DTOs\ReportTemplateFilterDTO;
 use Modules\Report\DTOs\UpdateReportTemplateDTO;
 use Modules\Report\Enums\ReportCategory;
 use Modules\Report\Http\Requests\StoreReportTemplateRequest;
@@ -30,18 +30,23 @@ class ReportTemplateController extends BaseInertiaController
     {
         $this->authorize('viewAny', ReportTemplate::class);
 
-        $filters = ReportTemplateFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $templates = (new ReportTemplateQuery)
-            ->searchTerm($filters->search)
-            ->category($filters->category)
-            ->isActive($filters->isActive)
+        $query = new ReportTemplateQuery;
+
+        $templates = $query
+            ->search($filters->search)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
         return $this->render('Report::Reports/Templates/Index', [
             'templates' => ReportTemplateResource::collection($templates),
-            'filters' => $request->only([Pagination::SEARCH_PARAM, 'category', 'is_active']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
             ...$this->lookups(),
         ]);
     }

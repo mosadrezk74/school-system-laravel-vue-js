@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 use Modules\News\Actions\CreateNewsAction;
 use Modules\News\Actions\DeleteNewsAction;
 use Modules\News\Actions\PublishNewsAction;
@@ -14,7 +15,6 @@ use Modules\News\Actions\TogglePinNewsAction;
 use Modules\News\Actions\UnpublishNewsAction;
 use Modules\News\Actions\UpdateNewsAction;
 use Modules\News\DTOs\CreateNewsDTO;
-use Modules\News\DTOs\NewsFilterDTO;
 use Modules\News\DTOs\UpdateNewsDTO;
 use Modules\News\Enums\NewsAudience;
 use Modules\News\Enums\NewsStatus;
@@ -34,18 +34,23 @@ class NewsController extends BaseInertiaController
     {
         $this->authorize('viewAny', News::class);
 
-        $filters = NewsFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $news = (new NewsQuery)
+        $query = new NewsQuery;
+
+        $news = $query
             ->search($filters->search)
-            ->status($filters->status)
-            ->audience($filters->audience)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
         return $this->render('News::News/Index', [
             'news' => NewsResource::collection($news),
-            'filters' => $request->only([Pagination::SEARCH_PARAM, 'status', 'audience']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
             'statusOptions' => $this->statusOptions(),
             'audienceOptions' => $this->audienceOptions(),
         ]);

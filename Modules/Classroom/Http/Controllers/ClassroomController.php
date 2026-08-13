@@ -10,7 +10,6 @@ use Modules\Classroom\Actions\ArchiveClassroomAction;
 use Modules\Classroom\Actions\CreateClassroomAction;
 use Modules\Classroom\Actions\RestoreClassroomAction;
 use Modules\Classroom\Actions\UpdateClassroomAction;
-use Modules\Classroom\DTOs\ClassroomFilterDTO;
 use Modules\Classroom\DTOs\CreateClassroomDTO;
 use Modules\Classroom\DTOs\UpdateClassroomDTO;
 use Modules\Classroom\Enums\RoomType;
@@ -21,6 +20,7 @@ use Modules\Classroom\Queries\ClassroomQuery;
 use Modules\Classroom\Transformers\ClassroomResource;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 
 class ClassroomController extends BaseInertiaController
 {
@@ -28,23 +28,23 @@ class ClassroomController extends BaseInertiaController
     {
         $this->authorize('viewAny', Classroom::class);
 
-        $filters = ClassroomFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $query = (new ClassroomQuery)
+        $query = new ClassroomQuery;
+
+        $classrooms = $query
             ->search($filters->search)
-            ->roomType($filters->roomType)
-            ->isActive($filters->isActive)
-            ->sort($filters->sortBy, $filters->sortOrder);
-
-        $classrooms = $query->paginate($filters->perPage);
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return Inertia::render('Classroom::Classrooms/Index', [
             'classrooms' => ClassroomResource::collection($classrooms),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'room_type',
-                'is_active',
-            ]),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
         ]);
     }
 

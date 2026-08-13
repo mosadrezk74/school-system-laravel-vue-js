@@ -5,11 +5,16 @@ import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   refunds: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -23,12 +28,6 @@ const headers = computed(() => [
   { title: t('finance.fields.reason'), key: 'reason' },
 ])
 
-function goToPage(page) {
-  router.get('/finance/refunds', { ...props.filters, page }, {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -48,6 +47,16 @@ function goToPage(page) {
     :empty-title="t('finance.refunds_empty')"
     @page="goToPage"
   >
+    <template #filters>
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
+      />
+    </template>
+
     <template #item.student="{ item }">
       <AppTableLink :href="`/finance/payments/${item.payment_id}`">
         {{ item.student?.name ?? '—' }}

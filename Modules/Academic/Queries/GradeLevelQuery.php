@@ -5,12 +5,22 @@ namespace Modules\Academic\Queries;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Academic\Models\GradeLevel;
 use Modules\Core\Abstracts\BaseQuery;
-use Modules\Setting\Services\LanguageService;
+use Modules\Core\Support\Filters\BooleanFilter;
+use Modules\Core\Support\Filters\Filter;
+use Modules\Core\Support\Filters\NumericFilter;
+use Modules\Core\Support\Filters\TranslatableFilter;
 
 class GradeLevelQuery extends BaseQuery
 {
-    /** @var array<int, string> */
-    protected array $filterableFields = ['is_active'];
+    /**
+     * `name` and `description` are JSON keyed by locale, so the term is matched
+     * against each enabled language's value rather than the raw column. The
+     * locale list comes from the Language settings, so adding a language makes
+     * it searchable without touching this class.
+     *
+     * @var array<int, string>
+     */
+    protected array $translatableSearchFields = ['name', 'description'];
 
     /** @var array<int, string> */
     protected array $sortableFields = [
@@ -25,36 +35,15 @@ class GradeLevelQuery extends BaseQuery
     }
 
     /**
-     * `name` and `description` are JSON keyed by locale, so the term is matched
-     * against each enabled language's value rather than the raw column. The
-     * locale list comes from LanguageService so adding a language to the
-     * settings makes it searchable without touching this class.
+     * @return array<string, Filter>
      */
-    public function search(?string $term): self
+    protected function allowedFilters(): array
     {
-        if (! $term) {
-            return $this;
-        }
-
-        $locales = app(LanguageService::class)->activeLocales();
-
-        $this->query->where(function (Builder $query) use ($term, $locales): void {
-            foreach ($locales as $locale) {
-                $query->orWhere("name->{$locale}", 'LIKE', "%{$term}%")
-                    ->orWhere("description->{$locale}", 'LIKE', "%{$term}%");
-            }
-        });
-
-        return $this;
-    }
-
-    public function isActive(?bool $isActive): self
-    {
-        if ($isActive !== null) {
-            $this->query->where('is_active', $isActive);
-        }
-
-        return $this;
+        return [
+            'is_active' => BooleanFilter::make()->label('gradeLevels.fields.isActive'),
+            'name' => TranslatableFilter::make()->label('gradeLevels.fields.name'),
+            'display_order' => NumericFilter::make()->label('gradeLevels.fields.displayOrder'),
+        ];
     }
 
     /** Archived rows are listed alongside live ones so they can be restored. */

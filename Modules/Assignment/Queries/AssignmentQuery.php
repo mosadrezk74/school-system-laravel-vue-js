@@ -3,28 +3,30 @@
 namespace Modules\Assignment\Queries;
 
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Assignment\Enums\AssignmentType;
 use Modules\Assignment\Models\Assignment;
 use Modules\Core\Abstracts\BaseQuery;
+use Modules\Core\Support\Filters\BooleanFilter;
+use Modules\Core\Support\Filters\DateRangeFilter;
+use Modules\Core\Support\Filters\EnumFilter;
+use Modules\Core\Support\Filters\ExactFilter;
+use Modules\Core\Support\Filters\Filter;
+use Modules\Core\Support\Filters\NumericFilter;
+use Modules\Core\Support\Filters\TranslatableFilter;
 
 class AssignmentQuery extends BaseQuery
 {
     /**
-     * `title` is a Spatie-translatable JSON column now; a LIKE against it
-     * matches raw JSON text rather than the human-readable value, but it's
-     * kept here since it's the only searchable field this query has (same
-     * tradeoff already accepted by ExamQuery/BehaviorCategoryQuery).
+     * `title` and `description` became translatable JSON columns.
      *
      * @var array<int, string>
      */
-    protected array $searchableFields = ['title'];
+    protected array $translatableSearchFields = ['title', 'description'];
 
     /** @var array<int, string> */
-    protected array $filterableFields = [
-        'class_id', 'subject_id', 'teacher_id', 'academic_year_id', 'semester_id', 'is_published',
-    ];
+    protected array $sortableFields = ['deadline', 'max_score', 'published_at', 'created_at'];
 
-    /** @var array<int, string> */
-    protected array $sortableFields = ['deadline', 'max_score', 'created_at'];
+    protected string $defaultSortField = 'deadline';
 
     protected function baseQuery(): Builder
     {
@@ -32,31 +34,33 @@ class AssignmentQuery extends BaseQuery
     }
 
     /**
-     * BaseQuery::search() applies its where() unconditionally, which would
-     * turn an empty term into a no-op `LIKE '%%'` clause; guarding here keeps
-     * the query plan clean when no search term was submitted.
+     * The academic year is a real column here — an assignment is set in a
+     * specific year — so it stays an explicit historical filter rather than
+     * being substituted with the current context.
+     *
+     * @return array<string, Filter>
      */
-    public function searchTitle(?string $term): self
+    protected function allowedFilters(): array
     {
-        if ($term) {
-            $this->search($term);
-        }
-
-        return $this;
-    }
-
-    public function classId(?int $classId): self
-    {
-        if ($classId) {
-            $this->query->where('class_id', $classId);
-        }
-
-        return $this;
+        return [
+            'class_id' => ExactFilter::make()->label('assignments.class'),
+            'subject_id' => ExactFilter::make()->label('assignments.subject'),
+            'teacher_id' => ExactFilter::make()->label('assignments.teacher'),
+            'academic_year_id' => ExactFilter::make()->label('assignments.academicYear'),
+            'semester_id' => ExactFilter::make()->label('assignments.semester')->nullable(),
+            'assignment_type' => EnumFilter::make(AssignmentType::class)->label('assignments.type'),
+            'is_published' => BooleanFilter::make()->label('assignments.published'),
+            'is_group_work' => BooleanFilter::make()->label('assignments.groupWork'),
+            'deadline' => DateRangeFilter::make()->label('assignments.deadline'),
+            'max_score' => NumericFilter::make()->label('assignments.maxScore'),
+            'title' => TranslatableFilter::make()->label('assignments.title'),
+        ];
     }
 
     /**
-     * Restricts to a fixed set of classes. An empty array means "none",
-     * never "unfiltered", so a portal user with no classes sees nothing.
+     * Restricts to a fixed set of classes. An empty array means "none", never
+     * "unfiltered" — portal scoping, so it stays a method rather than joining
+     * allowedFilters().
      *
      * @param  array<int, int>|null  $classIds
      */
@@ -69,51 +73,6 @@ class AssignmentQuery extends BaseQuery
         $classIds === []
             ? $this->query->whereRaw('1 = 0')
             : $this->query->whereIn('class_id', $classIds);
-
-        return $this;
-    }
-
-    public function subjectId(?int $subjectId): self
-    {
-        if ($subjectId) {
-            $this->query->where('subject_id', $subjectId);
-        }
-
-        return $this;
-    }
-
-    public function teacherId(?int $teacherId): self
-    {
-        if ($teacherId) {
-            $this->query->where('teacher_id', $teacherId);
-        }
-
-        return $this;
-    }
-
-    public function academicYearId(?int $academicYearId): self
-    {
-        if ($academicYearId) {
-            $this->query->where('academic_year_id', $academicYearId);
-        }
-
-        return $this;
-    }
-
-    public function semesterId(?int $semesterId): self
-    {
-        if ($semesterId) {
-            $this->query->where('semester_id', $semesterId);
-        }
-
-        return $this;
-    }
-
-    public function isPublished(?bool $isPublished): self
-    {
-        if ($isPublished !== null) {
-            $this->query->where('is_published', $isPublished);
-        }
 
         return $this;
     }

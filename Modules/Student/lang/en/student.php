@@ -69,4 +69,5 @@ return [
         'birth_date_too_old' => 'Please enter a realistic birth date.',
         'admission_before_birth' => 'The admission date must be after the birth date.',
     ],
+    'noClass' => 'No class assigned',
 ];

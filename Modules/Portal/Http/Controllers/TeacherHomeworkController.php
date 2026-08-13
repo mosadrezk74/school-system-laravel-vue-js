@@ -30,9 +30,12 @@ class TeacherHomeworkController extends BaseInertiaController
         $classId = $request->filled('class_id') ? (int) $request->input('class_id') : null;
 
         $assignments = (new AssignmentQuery)
-            ->teacherId($this->scope->teacherUserId())
-            ->classId($this->scope->canAccessClass($classId) ? $classId : null)
-            ->searchTitle($request->string(Pagination::SEARCH_PARAM)->toString() ?: null)
+            ->search($request->string(Pagination::SEARCH_PARAM)->toString() ?: null)
+            // The class is only honoured once the scope has vouched for it.
+            ->where([
+                'teacher_id' => $this->scope->teacherUserId(),
+                'class_id' => $this->scope->canAccessClass($classId) ? $classId : null,
+            ])
             ->sort('deadline', 'desc')
             ->paginate($request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE));
 

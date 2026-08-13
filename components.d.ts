@@ -11,6 +11,8 @@ declare module 'vue' {
     AppDataTable: typeof import('./resources/js/components/AppDataTable.vue')['default']
     AppDateField: typeof import('./resources/js/components/AppDateField.vue')['default']
     AppEmptyState: typeof import('./resources/js/components/AppEmptyState.vue')['default']
+    AppFilterBar: typeof import('./resources/js/components/AppFilterBar.vue')['default']
+    AppFilterControl: typeof import('./resources/js/components/AppFilterControl.vue')['default']
     AppFormSection: typeof import('./resources/js/components/AppFormSection.vue')['default']
     AppPageHeader: typeof import('./resources/js/components/AppPageHeader.vue')['default']
     AppPagination: typeof import('./resources/js/components/AppPagination.vue')['default']

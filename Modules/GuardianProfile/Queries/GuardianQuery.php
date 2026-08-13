@@ -3,7 +3,14 @@
 namespace Modules\GuardianProfile\Queries;
 
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Auth\Enums\Gender;
 use Modules\Core\Abstracts\BaseQuery;
+use Modules\Core\Support\Filters\BooleanFilter;
+use Modules\Core\Support\Filters\EnumFilter;
+use Modules\Core\Support\Filters\Filter;
+use Modules\Core\Support\Filters\RelationFilter;
+use Modules\Core\Support\Filters\TextFilter;
+use Modules\GuardianProfile\Enums\RelationshipType;
 use Modules\GuardianProfile\Models\GuardianProfile;
 
 class GuardianQuery extends BaseQuery
@@ -11,8 +18,15 @@ class GuardianQuery extends BaseQuery
     /** @var array<int, string> */
     protected array $searchableFields = ['occupation'];
 
-    /** @var array<int, string> */
-    protected array $filterableFields = ['is_active'];
+    /**
+     * Name, email and phone live on the related user, which is why every list
+     * of guardians had to search two tables.
+     *
+     * @var array<string, array<int, string>>
+     */
+    protected array $searchableRelations = [
+        'user' => ['name', 'email', 'username', 'phone', 'national_id'],
+    ];
 
     /** @var array<int, string> */
     protected array $sortableFields = ['occupation', 'is_active', 'created_at'];
@@ -23,36 +37,24 @@ class GuardianQuery extends BaseQuery
     }
 
     /**
-     * BaseQuery's search() only matches columns on parent_profiles itself;
-     * name/email/username live on the related user, so this searches both.
+     * @return array<string, Filter>
      */
-    public function searchUser(?string $term): self
+    protected function allowedFilters(): array
     {
-        if (! $term) {
-            return $this;
-        }
+        return [
+            'is_active' => BooleanFilter::make()->label('guardians.active'),
+            'gender' => EnumFilter::make(Gender::class)->on('user')->label('guardians.gender'),
+            'occupation' => TextFilter::make()->label('guardians.occupation'),
 
-        $this->query->where(function (Builder $query) use ($term) {
-            foreach ($this->searchableFields as $field) {
-                $query->orWhere($field, 'LIKE', "%{$term}%");
-            }
-
-            $query->orWhereHas('user', function (Builder $userQuery) use ($term) {
-                $userQuery->where('name', 'LIKE', "%{$term}%")
-                    ->orWhere('email', 'LIKE', "%{$term}%")
-                    ->orWhere('username', 'LIKE', "%{$term}%");
-            });
-        });
-
-        return $this;
-    }
-
-    public function isActive(?bool $isActive): self
-    {
-        if ($isActive !== null) {
-            $this->query->where('is_active', $isActive);
-        }
-
-        return $this;
+            // Which children a guardian is linked to, and whether they are
+            // linked to any at all — an unlinked guardian account is the thing
+            // office staff go looking for.
+            'student_id' => RelationFilter::make('students', 'student_id')->label('guardians.student'),
+            'relationship' => EnumFilter::make(RelationshipType::class)
+                ->on('students')
+                ->column('relationship')
+                ->label('guardians.relationship'),
+            'has_students' => RelationFilter::make('students')->label('guardians.hasStudents'),
+        ];
     }
 }

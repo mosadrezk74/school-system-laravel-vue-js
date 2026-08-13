@@ -3,6 +3,7 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useIndexFilters } from '@/composables/useIndexFilters'
@@ -11,16 +12,17 @@ import AppTableLink from '@/components/AppTableLink.vue'
 const props = defineProps({
   gradeLevels: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
-const { filters, goToPage } = useIndexFilters({
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
   url: '/academic/grade-levels',
-  initial: {
-    search: props.filters.search ?? null,
-    is_active: props.filters.is_active ?? null,
-  },
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
 })
 
 const headers = computed(() => [
@@ -99,31 +101,21 @@ const isConfirmOpen = computed({
     @page="goToPage"
   >
     <template #filters>
-      <VRow dense>
-        <VCol
-          cols="12"
-          md="6"
-        >
-          <VTextField
-            v-model="filters.search.value"
-            maxlength="100"
-            :label="t('gradeLevels.search')"
-            prepend-inner-icon="bx-search"
-            clearable
-          />
-        </VCol>
+      <VTextField
+        v-model="filters.search.value"
+        maxlength="100"
+        :label="t('gradeLevels.search')"
+        prepend-inner-icon="bx-search"
+        clearable
+      />
 
-        <VCol
-          cols="12"
-          md="4"
-        >
-          <VSelect
-            v-model="filters.is_active.value"
-            :items="activeOptions"
-            :label="t('gradeLevels.fields.isActive')"
-          />
-        </VCol>
-      </VRow>
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
+      />
     </template>
 
     <template #item.name="{ item }">

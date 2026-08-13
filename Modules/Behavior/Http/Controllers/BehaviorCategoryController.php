@@ -16,6 +16,7 @@ use Modules\Behavior\Queries\BehaviorCategoryQuery;
 use Modules\Behavior\Transformers\BehaviorCategoryResource;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 
 class BehaviorCategoryController extends BaseInertiaController
 {
@@ -23,24 +24,23 @@ class BehaviorCategoryController extends BaseInertiaController
     {
         $this->authorize('viewAny', BehaviorCategory::class);
 
+        $filters = ListQueryDTO::fromRequest($request);
+
         $query = new BehaviorCategoryQuery;
 
-        if ($search = $request->string(Pagination::SEARCH_PARAM)->toString()) {
-            $query->search($search);
-        }
-
-        $query->sort(
-            $request->string(Pagination::SORT_PARAM, Pagination::DEFAULT_SORT)->toString(),
-            $request->string(Pagination::ORDER_PARAM, Pagination::DEFAULT_ORDER)->toString(),
-        );
-
-        $categories = $query->paginate(
-            $request->integer(Pagination::PER_PAGE_PARAM, Pagination::DEFAULT_PER_PAGE),
-        );
+        $categories = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('Behavior::Categories/Index', [
             'categories' => BehaviorCategoryResource::collection($categories),
-            'filters' => $request->only([Pagination::SEARCH_PARAM]),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
         ]);
     }
 

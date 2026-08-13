@@ -9,12 +9,13 @@ use Modules\Academic\Models\GradeLevel;
 use Modules\Classroom\Models\Classroom;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\SchoolClass\Actions\ArchiveClassAction;
 use Modules\SchoolClass\Actions\CreateClassAction;
 use Modules\SchoolClass\Actions\CreateClassesForGradeLevelAction;
 use Modules\SchoolClass\Actions\RestoreClassAction;
 use Modules\SchoolClass\Actions\UpdateClassAction;
-use Modules\SchoolClass\DTOs\ClassFilterDTO;
 use Modules\SchoolClass\DTOs\CreateClassDTO;
 use Modules\SchoolClass\DTOs\CreateClassSectionsDTO;
 use Modules\SchoolClass\DTOs\UpdateClassDTO;
@@ -32,22 +33,31 @@ class ClassController extends BaseInertiaController
     {
         $this->authorize('viewAny', SchoolClass::class);
 
-        $filters = ClassFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $query = (new ClassQuery)
-            ->search($filters->search ?? '')
-            ->gradeLevelId($filters->gradeLevelId)
-            ->isActive($filters->isActive)
-            ->sort($filters->sortBy, $filters->sortOrder);
+        $query = new ClassQuery;
 
-        $classes = $query->paginate($filters->perPage);
+        $classes = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('SchoolClass::Classes/Index', [
             'classes' => ClassResource::collection($classes),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'grade_level_id',
-                'is_active',
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'grade_level_id' => FilterOptions::fromModels(
+                    GradeLevel::query()->where('is_active', true)->orderBy('display_order')->get(),
+                ),
+                'classroom_id' => FilterOptions::withNotSet(
+                    FilterOptions::fromModels(
+                        Classroom::query()->where('is_active', true)->get(),
+                    ),
+                ),
             ]),
         ]);
     }

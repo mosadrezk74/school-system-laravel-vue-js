@@ -4,13 +4,25 @@ namespace Modules\Promotion\Queries;
 
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Core\Abstracts\BaseQuery;
+use Modules\Core\Support\Filters\BooleanFilter;
+use Modules\Core\Support\Filters\DateRangeFilter;
+use Modules\Core\Support\Filters\EnumFilter;
+use Modules\Core\Support\Filters\ExactFilter;
+use Modules\Core\Support\Filters\Filter;
 use Modules\Promotion\Enums\PromotionStatus;
 use Modules\Promotion\Models\StudentPromotion;
 
 class PromotionQuery extends BaseQuery
 {
+    /** Student names live on users, so the search reaches through the profile. */
+    protected array $searchableRelations = [
+        'student.user' => ['name'],
+    ];
+
     /** @var array<int, string> */
     protected array $sortableFields = ['promoted_at', 'status', 'created_at'];
+
+    protected string $defaultSortField = 'promoted_at';
 
     protected function baseQuery(): Builder
     {
@@ -25,57 +37,34 @@ class PromotionQuery extends BaseQuery
         ]);
     }
 
-    /** Student names live on users, so the search reaches through the profile. */
-    public function search(?string $term): self
+    /**
+     * Source and target years are both filterable and both historical: a
+     * promotion is precisely the record of moving between two years, so
+     * neither is ever substituted with the current context.
+     *
+     * `remarks` is free text staff write when overriding a decision — searched
+     * rather than filtered.
+     *
+     * @return array<string, Filter>
+     */
+    protected function allowedFilters(): array
     {
-        if (! $term) {
-            return $this;
-        }
-
-        $this->query->whereHas('student.user', fn (Builder $query) => $query->where('name', 'LIKE', "%{$term}%"));
-
-        return $this;
-    }
-
-    public function status(?string $status): self
-    {
-        if ($status !== null && PromotionStatus::tryFrom($status) instanceof PromotionStatus) {
-            $this->query->where('status', $status);
-        }
-
-        return $this;
-    }
-
-    public function fromAcademicYear(?int $academicYearId): self
-    {
-        if ($academicYearId !== null) {
-            $this->query->where('from_academic_year_id', $academicYearId);
-        }
-
-        return $this;
-    }
-
-    public function toAcademicYear(?int $academicYearId): self
-    {
-        if ($academicYearId !== null) {
-            $this->query->where('to_academic_year_id', $academicYearId);
-        }
-
-        return $this;
-    }
-
-    public function forStudent(?int $studentId): self
-    {
-        if ($studentId !== null) {
-            $this->query->where('student_id', $studentId);
-        }
-
-        return $this;
+        return [
+            'status' => EnumFilter::make(PromotionStatus::class)->label('promotions.status'),
+            'student_id' => ExactFilter::make()->label('promotions.student'),
+            'from_academic_year_id' => ExactFilter::make()->label('promotions.fromYear'),
+            'to_academic_year_id' => ExactFilter::make()->label('promotions.toYear')->nullable(),
+            'from_class_id' => ExactFilter::make()->label('promotions.fromClass')->nullable(),
+            'to_class_id' => ExactFilter::make()->label('promotions.toClass')->nullable(),
+            'was_graduated' => BooleanFilter::make()->label('promotions.wasGraduated'),
+            'promoted_by' => ExactFilter::make()->label('promotions.promotedBy')->nullable(),
+            'promoted' => DateRangeFilter::make()->column('promoted_at')->label('promotions.promotedAt'),
+        ];
     }
 
     public function latestFirst(): self
     {
-        $this->query->orderByDesc('promoted_at')->orderByDesc('id');
+        $this->query->latest('promoted_at');
 
         return $this;
     }

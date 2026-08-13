@@ -343,7 +343,9 @@
       "edit": "Edit Student",
       "addBehaviorRecord": "Add Behavior Record",
       "viewClass": "View Class"
-    }
+    },
+    "gradeLevel": "Grade Level",
+    "hasGuardian": "Has a guardian"
   },
   "guardians": {
     "title": "Guardians",
@@ -397,7 +399,10 @@
     "searchStudents": "Search students",
     "searchStudentsHint": "{total} matching students",
     "noStudentsFound": "No students match your search.",
-    "alreadyLinked": "This student is already linked to this guardian."
+    "alreadyLinked": "This student is already linked to this guardian.",
+    "gender": "Gender",
+    "hasStudents": "Linked to a student",
+    "student": "Student"
   },
   "classes": {
     "title": "Classes",
@@ -451,7 +456,8 @@
     "removeSection": "Remove Section",
     "createClasses": "Create Classes",
     "duplicateSectionName": "This section name is repeated.",
-    "sectionsHint": "Choose the grade level once, then add a section for each class."
+    "sectionsHint": "Choose the grade level once, then add a section for each class.",
+    "hasStudents": "Has enrolled students"
   },
   "teachers": {
     "title": "Teachers",
@@ -637,7 +643,9 @@
       "date": "Required. The date the behavior occurred.",
       "description": "Optional. Additional details about the incident.",
       "status": "Required. Mark as reviewed once a staff member has confirmed this record."
-    }
+    },
+    "type": "Behavior Type",
+    "isReviewed": "Reviewed"
   },
   "subject": {
     "title": "Subjects",
@@ -758,7 +766,9 @@
     "quickActions": "Quick Actions",
     "quickAction": {
       "edit": "Edit Assignment"
-    }
+    },
+    "groupWork": "Group Work",
+    "type": "Assignment Type"
   },
   "attendanceRecords": {
     "title": "Attendance Records",
@@ -955,7 +965,8 @@
     "quickActions": "Quick Actions",
     "quickAction": {
       "edit": "Edit Exam"
-    }
+    },
+    "type": "Exam Type"
   },
   "examGrades": {
     "title": "Grading Scale",
@@ -1036,7 +1047,13 @@
       "hints": {
         "periodNumber": "The order this period appears in the daily schedule."
       }
-    }
+    },
+    "active": "Active",
+    "gradeLevel": "Grade Level",
+    "isBreak": "Break",
+    "periodActive": "Active",
+    "periodName": "Period Name",
+    "periodNumber": "Period Number"
   },
   "onboarding": {
     "title": "Setup Wizard",
@@ -1153,7 +1170,9 @@
       "participants": "Participants",
       "insecure": "This meeting requires a secure (HTTPS) connection so the browser can access your camera and microphone.",
       "ended": "This meeting has ended."
-    }
+    },
+    "class": "Class",
+    "duration": "Duration (minutes)"
   },
   "communication": {
     "fields": {
@@ -1190,7 +1209,14 @@
       "title": "Send Email",
       "subtitle": "Send an email broadcast to a targeted audience.",
       "send": "Send Email"
-    }
+    },
+    "failedCount": "Failed Deliveries",
+    "sender": "Sender",
+    "status": "Status",
+    "targetType": "Recipients",
+    "title": "Title",
+    "scheduledAt": "Scheduled For",
+    "sentAt": "Sent At"
   },
   "attendanceTake": {
     "title": "Take Attendance",
@@ -1361,7 +1387,10 @@
       "edit": "Edit Fee Category",
       "empty": "No fee categories yet. Add your first category to get started.",
       "sectionTitle": "Category Details",
-      "sectionDesc": "Name, code and description of the category."
+      "sectionDesc": "Name, code and description of the category.",
+      "active": "Active",
+      "code": "Code",
+      "name": "Name"
     },
     "feeStructures": {
       "title": "Fee Structures",
@@ -1371,7 +1400,17 @@
       "empty": "No fee structures yet. Add your first structure to get started.",
       "sectionDesc": "Name, category and who this fee applies to.",
       "amountDesc": "How much is charged and how often.",
-      "lateFeeDesc": "Optional penalty applied after the due date."
+      "lateFeeDesc": "Optional penalty applied after the due date.",
+      "academicYear": "Academic Year",
+      "active": "Active",
+      "amount": "Amount",
+      "category": "Fee Category",
+      "classroom": "Classroom",
+      "frequency": "Frequency",
+      "gradeLevel": "Grade Level",
+      "name": "Name",
+      "optional": "Optional",
+      "semester": "Semester"
     },
     "feeDiscounts": {
       "title": "Fee Discounts",
@@ -1381,7 +1420,15 @@
       "empty": "No discounts yet. Add your first discount to get started.",
       "sectionDesc": "Name, type and value of the discount.",
       "scopeDesc": "Limit the discount to a grade level or classroom.",
-      "validityDesc": "Date range and usage limits."
+      "validityDesc": "Date range and usage limits.",
+      "active": "Active",
+      "classroom": "Classroom",
+      "endDate": "End Date",
+      "gradeLevel": "Grade Level",
+      "startDate": "Start Date",
+      "type": "Discount Type",
+      "usedCount": "Times Used",
+      "value": "Discount Value"
     },
     "studentFees": {
       "title": "Student Fees",
@@ -1390,7 +1437,13 @@
       "edit": "Edit Student Fee",
       "empty": "No fees assigned yet. Assign a fee to get started.",
       "sectionTitle": "Fee Assignment",
-      "sectionDesc": "Student, fee structure and the amount to charge."
+      "sectionDesc": "Student, fee structure and the amount to charge.",
+      "discount": "Discount",
+      "feeCategory": "Fee Category",
+      "feeStructure": "Fee Structure",
+      "finalAmount": "Final Amount",
+      "status": "Status",
+      "student": "Student"
     },
     "invoices": {
       "title": "Invoices",
@@ -1403,7 +1456,14 @@
       "addItem": "Add Item",
       "noItems": "No items added yet.",
       "generate": "Generate from Fees",
-      "generateDesc": "Creates one invoice from every pending fee assigned to the student."
+      "generateDesc": "Creates one invoice from every pending fee assigned to the student.",
+      "balance": "Balance Due",
+      "overdueOnly": "Overdue Only",
+      "status": "Status",
+      "student": "Student",
+      "total": "Total Amount",
+      "dueDate": "Due Date",
+      "issueDate": "Issue Date"
     },
     "payments": {
       "title": "Payments",
@@ -1411,7 +1471,17 @@
       "addNew": "Record Payment",
       "empty": "No payments recorded yet.",
       "sectionTitle": "Payment Details",
-      "sectionDesc": "Invoice, amount and how the payment was made."
+      "sectionDesc": "Invoice, amount and how the payment was made.",
+      "amount": "Amount",
+      "invoice": "Invoice",
+      "method": "Payment Method",
+      "methodRecord": "Configured Method",
+      "reference": "Reference Number",
+      "refunded": "Refunded Amount",
+      "status": "Status",
+      "student": "Student",
+      "confirmedAt": "Confirmed At",
+      "paidAt": "Payment Date"
     },
     "dashboard": {
       "title": "Finance Dashboard",
@@ -1500,7 +1570,20 @@
     "original_amount": "Original amount",
     "amount_due": "Amount due",
     "requested_at": "Requested at",
-    "payment_url_missing": "No payment link configured — parents cannot be sent anywhere."
+    "payment_url_missing": "No payment link configured — parents cannot be sent anywhere.",
+    "paymentMethods": {
+      "active": "Active",
+      "code": "Code",
+      "name": "Name",
+      "type": "Method Type"
+    },
+    "refunds": {
+      "amount": "Amount",
+      "date": "Refund Date",
+      "method": "Refund Method",
+      "payment": "Payment",
+      "student": "Student"
+    }
   },
   "report": {
     "title": "Reports",
@@ -1543,7 +1626,12 @@
       "subtitle": "Save report configurations for reuse.",
       "addNew": "New Template",
       "edit": "Edit Template",
-      "empty": "No templates yet. Create your first template to get started."
+      "empty": "No templates yet. Create your first template to get started.",
+      "active": "Active",
+      "author": "Created By",
+      "category": "Category",
+      "code": "Code",
+      "name": "Name"
     },
     "summary": {
       "students": "Students",
@@ -1833,7 +1921,15 @@
     "sections": {
       "details": "Semester Details",
       "detailsDesc": "Term dates, ordering and exam window."
-    }
+    },
+    "academicYear": "Academic Year",
+    "endDate": "End Date",
+    "examStartDate": "Exams Start",
+    "isActive": "Active",
+    "isCurrent": "Current",
+    "name": "Name",
+    "sequence": "Order",
+    "startDate": "Start Date"
   },
   "gradeLevels": {
     "title": "Grade Levels",
@@ -1941,7 +2037,12 @@
       "new": "New",
       "reviewed": "Reviewed",
       "resolved": "Resolved"
-    }
+    },
+    "level": "Level",
+    "method": "HTTP Method",
+    "route": "Route",
+    "status": "Status",
+    "statusCode": "Status Code"
   },
   "systemActivity": {
     "title": "Activity Log",
@@ -1973,7 +2074,12 @@
       "properties": "Properties",
       "academicYear": "Academic year",
       "semester": "Semester"
-    }
+    },
+    "causer": "Performed By",
+    "date": "Date",
+    "event": "Event",
+    "logName": "Log",
+    "subjectType": "Record Type"
   },
   "notification": {
     "title": "Notifications",
@@ -1982,7 +2088,9 @@
     "unread_only": "Unread only",
     "mark_read": "Mark as read",
     "mark_all_read": "Mark all as read",
-    "unread": "Unread"
+    "unread": "Unread",
+    "date": "Date",
+    "type": "Notification Type"
   },
   "roles": {
     "title": "Roles",
@@ -2011,7 +2119,8 @@
     "sections": {
       "details": "Role details",
       "detailsDesc": "Name the role and choose the permissions it grants."
-    }
+    },
+    "name": "Role Name"
   },
   "admins": {
     "title": "Administrators",
@@ -2049,7 +2158,11 @@
       "accountDesc": "Sign-in details and contact information.",
       "access": "Access",
       "accessDesc": "Account type and the roles that grant permissions."
-    }
+    },
+    "active": "Active",
+    "gender": "Gender",
+    "accountRole": "Account Type",
+    "role": "Role"
   },
   "schoolTerms": {
     "title": "Terms & Conditions",
@@ -2088,7 +2201,11 @@
       "agreeLabel": "I agree to the school's terms and conditions",
       "accept": "Accept",
       "alreadyAccepted": "You accepted this version on {date}."
-    }
+    },
+    "author": "Created By",
+    "publishedAt": "Published At",
+    "status": "Status",
+    "version": "Version"
   },
   "reportCard": {
     "title": "Report card",
@@ -2160,7 +2277,16 @@
       "targetSemester": "The term students will start in."
     },
     "noTargetSemesters": "No semesters in the target year",
-    "missingTargetSemester": "Choose a target semester."
+    "missingTargetSemester": "Choose a target semester.",
+    "fromClass": "From Class",
+    "fromYear": "From Academic Year",
+    "promotedAt": "Promotion Date",
+    "promotedBy": "Promoted By",
+    "status": "Status",
+    "student": "Student",
+    "toClass": "To Class",
+    "toYear": "To Academic Year",
+    "wasGraduated": "Graduated"
   },
   "news": {
     "title": "News",
@@ -2192,5 +2318,38 @@
       "details": "News details",
       "detailsDesc": "Write the announcement and choose who sees it."
     }
+  },
+  "filters": {
+    "title": "Filters",
+    "apply": "Apply",
+    "clear": "Clear",
+    "clearAll": "Clear all",
+    "active": "Active filters",
+    "more": "More filters",
+    "from": "From",
+    "to": "To",
+    "any": "Any",
+    "yes": "Yes",
+    "no": "No",
+    "operators": {
+      "contains": "Contains",
+      "starts_with": "Starts with",
+      "ends_with": "Ends with",
+      "equals": "Equals",
+      "not_equals": "Does not equal",
+      "gt": "Greater than",
+      "gte": "Greater than or equal",
+      "lt": "Less than",
+      "lte": "Less than or equal",
+      "between": "Between",
+      "before": "Before",
+      "after": "After",
+      "in": "Any of",
+      "is_null": "Is empty",
+      "is_not_null": "Is not empty",
+      "exists": "Has",
+      "not_exists": "Does not have"
+    },
+    "operator": "Condition"
   }
 }

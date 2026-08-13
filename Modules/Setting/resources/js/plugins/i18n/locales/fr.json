@@ -310,7 +310,9 @@
     "invoices": "Factures",
     "behavior": "Registre de comportement",
     "transport": "Transport scolaire",
-    "library": "Bibliothèque"
+    "library": "Bibliothèque",
+    "gradeLevel": "Niveau scolaire",
+    "hasGuardian": "A un tuteur"
   },
   "classes": {
     "title": "Classes",
@@ -356,7 +358,8 @@
     "sectionsHint": "Choisissez le niveau une seule fois, puis ajoutez une section par classe.",
     "sections": {
       "details": "Détails"
-    }
+    },
+    "hasStudents": "A des élèves inscrits"
   },
   "teachers": {
     "title": "Enseignants",
@@ -636,7 +639,10 @@
       "edit": "Edit Fee Category",
       "empty": "No fee categories yet. Add your first category to get started.",
       "sectionTitle": "Category Details",
-      "sectionDesc": "Name, code and description of the category."
+      "sectionDesc": "Name, code and description of the category.",
+      "active": "Actif",
+      "code": "Code",
+      "name": "Nom"
     },
     "feeStructures": {
       "title": "Fee Structures",
@@ -646,7 +652,17 @@
       "empty": "No fee structures yet. Add your first structure to get started.",
       "sectionDesc": "Name, category and who this fee applies to.",
       "amountDesc": "How much is charged and how often.",
-      "lateFeeDesc": "Optional penalty applied after the due date."
+      "lateFeeDesc": "Optional penalty applied after the due date.",
+      "academicYear": "Année scolaire",
+      "active": "Actif",
+      "amount": "Montant",
+      "category": "Catégorie de frais",
+      "classroom": "Salle",
+      "frequency": "Fréquence",
+      "gradeLevel": "Niveau scolaire",
+      "name": "Nom",
+      "optional": "Facultatif",
+      "semester": "Semestre"
     },
     "feeDiscounts": {
       "title": "Fee Discounts",
@@ -656,7 +672,15 @@
       "empty": "No discounts yet. Add your first discount to get started.",
       "sectionDesc": "Name, type and value of the discount.",
       "scopeDesc": "Limit the discount to a grade level or classroom.",
-      "validityDesc": "Date range and usage limits."
+      "validityDesc": "Date range and usage limits.",
+      "active": "Actif",
+      "classroom": "Salle",
+      "endDate": "Date de fin",
+      "gradeLevel": "Niveau scolaire",
+      "startDate": "Date de début",
+      "type": "Type de remise",
+      "usedCount": "Utilisations",
+      "value": "Valeur de la remise"
     },
     "studentFees": {
       "title": "Student Fees",
@@ -665,7 +689,13 @@
       "edit": "Edit Student Fee",
       "empty": "No fees assigned yet. Assign a fee to get started.",
       "sectionTitle": "Fee Assignment",
-      "sectionDesc": "Student, fee structure and the amount to charge."
+      "sectionDesc": "Student, fee structure and the amount to charge.",
+      "discount": "Remise",
+      "feeCategory": "Catégorie de frais",
+      "feeStructure": "Barème de frais",
+      "finalAmount": "Montant final",
+      "status": "Statut",
+      "student": "Élève"
     },
     "invoices": {
       "title": "Invoices",
@@ -678,7 +708,14 @@
       "addItem": "Add Item",
       "noItems": "No items added yet.",
       "generate": "Generate from Fees",
-      "generateDesc": "Creates one invoice from every pending fee assigned to the student."
+      "generateDesc": "Creates one invoice from every pending fee assigned to the student.",
+      "balance": "Solde dû",
+      "overdueOnly": "En retard uniquement",
+      "status": "Statut",
+      "student": "Élève",
+      "total": "Montant total",
+      "dueDate": "Date d’échéance",
+      "issueDate": "Date d’émission"
     },
     "payments": {
       "title": "Payments",
@@ -686,7 +723,17 @@
       "addNew": "Record Payment",
       "empty": "No payments recorded yet.",
       "sectionTitle": "Payment Details",
-      "sectionDesc": "Invoice, amount and how the payment was made."
+      "sectionDesc": "Invoice, amount and how the payment was made.",
+      "amount": "Montant",
+      "invoice": "Facture",
+      "method": "Moyen de paiement",
+      "methodRecord": "Moyen configuré",
+      "reference": "Numéro de référence",
+      "refunded": "Montant remboursé",
+      "status": "Statut",
+      "student": "Élève",
+      "confirmedAt": "Confirmé le",
+      "paidAt": "Date de paiement"
     },
     "dashboard": {
       "title": "Tableau de bord financier",
@@ -775,7 +822,20 @@
     "original_amount": "Montant initial",
     "amount_due": "Montant dû",
     "requested_at": "Demandé le",
-    "payment_url_missing": "Aucun lien de paiement configuré — les familles ne peuvent être redirigées."
+    "payment_url_missing": "Aucun lien de paiement configuré — les familles ne peuvent être redirigées.",
+    "paymentMethods": {
+      "active": "Actif",
+      "code": "Code",
+      "name": "Nom",
+      "type": "Type de moyen"
+    },
+    "refunds": {
+      "amount": "Montant",
+      "date": "Date de remboursement",
+      "method": "Mode de remboursement",
+      "payment": "Paiement",
+      "student": "Élève"
+    }
   },
   "report": {
     "title": "Rapports",
@@ -818,7 +878,12 @@
       "subtitle": "Save report configurations for reuse.",
       "addNew": "New Template",
       "edit": "Edit Template",
-      "empty": "No templates yet. Create your first template to get started."
+      "empty": "No templates yet. Create your first template to get started.",
+      "active": "Actif",
+      "author": "Créé par",
+      "category": "Catégorie",
+      "code": "Code",
+      "name": "Nom"
     },
     "summary": {
       "students": "Students",
@@ -1081,7 +1146,13 @@
     "searchStudents": "Search students",
     "searchStudentsHint": "{total} matching students",
     "noStudentsFound": "No students match your search.",
-    "alreadyLinked": "This student is already linked to this guardian."
+    "alreadyLinked": "This student is already linked to this guardian.",
+    "active": "Actif",
+    "occupation": "Profession",
+    "relationship": "Lien de parenté",
+    "gender": "Genre",
+    "hasStudents": "Lié à un élève",
+    "student": "Élève"
   },
   "semesters": {
     "title": "Semestres",
@@ -1114,7 +1185,15 @@
     "sections": {
       "details": "Détails du semestre",
       "detailsDesc": "Dates, ordre et période d'examens."
-    }
+    },
+    "academicYear": "Année scolaire",
+    "endDate": "Date de fin",
+    "examStartDate": "Début des examens",
+    "isActive": "Actif",
+    "isCurrent": "Actuel",
+    "name": "Nom",
+    "sequence": "Ordre",
+    "startDate": "Date de début"
   },
   "gradeLevels": {
     "title": "Niveaux scolaires",
@@ -1222,7 +1301,12 @@
       "new": "Nouveau",
       "reviewed": "Examiné",
       "resolved": "Résolu"
-    }
+    },
+    "level": "Niveau",
+    "method": "Méthode HTTP",
+    "route": "Route",
+    "status": "Statut",
+    "statusCode": "Code de statut"
   },
   "systemActivity": {
     "title": "Journal d'activité",
@@ -1254,7 +1338,12 @@
       "properties": "Propriétés",
       "academicYear": "Année académique",
       "semester": "Semestre"
-    }
+    },
+    "causer": "Effectué par",
+    "date": "Date",
+    "event": "Événement",
+    "logName": "Journal",
+    "subjectType": "Type d’enregistrement"
   },
   "meetings": {
     "subject": "Matière",
@@ -1269,7 +1358,14 @@
       "participants": "Participants",
       "insecure": "Cette réunion nécessite une connexion sécurisée (HTTPS) pour que le navigateur puisse accéder à votre caméra et à votre microphone.",
       "ended": "Cette réunion est terminée."
-    }
+    },
+    "academicYear": "Année scolaire",
+    "class": "Classe",
+    "date": "Date",
+    "duration": "Durée (minutes)",
+    "semester": "Semestre",
+    "status": "Statut",
+    "teacher": "Enseignant"
   },
   "notification": {
     "title": "Notifications",
@@ -1278,7 +1374,9 @@
     "unread_only": "Non lues uniquement",
     "mark_read": "Marquer comme lue",
     "mark_all_read": "Tout marquer comme lu",
-    "unread": "Non lue"
+    "unread": "Non lue",
+    "date": "Date",
+    "type": "Type de notification"
   },
   "roles": {
     "title": "Rôles",
@@ -1307,7 +1405,8 @@
     "sections": {
       "details": "Détails du rôle",
       "detailsDesc": "Nommez le rôle et choisissez les permissions qu'il accorde."
-    }
+    },
+    "name": "Nom du rôle"
   },
   "admins": {
     "title": "Administrateurs",
@@ -1345,7 +1444,11 @@
       "accountDesc": "Identifiants de connexion et coordonnées.",
       "access": "Accès",
       "accessDesc": "Type de compte et rôles accordant les permissions."
-    }
+    },
+    "active": "Actif",
+    "gender": "Genre",
+    "accountRole": "Type de compte",
+    "role": "Rôle"
   },
   "schoolTerms": {
     "title": "Conditions générales",
@@ -1384,7 +1487,11 @@
       "agreeLabel": "J'accepte les conditions générales de l'école",
       "accept": "Accepter",
       "alreadyAccepted": "Vous avez accepté cette version le {date}."
-    }
+    },
+    "author": "Créé par",
+    "publishedAt": "Date de publication",
+    "status": "Statut",
+    "version": "Version"
   },
   "reportCard": {
     "title": "Bulletin",
@@ -1456,7 +1563,16 @@
       "targetSemester": "Le semestre dans lequel les élèves commenceront."
     },
     "noTargetSemesters": "Aucun semestre dans l'année cible",
-    "missingTargetSemester": "Choisissez un semestre cible."
+    "missingTargetSemester": "Choisissez un semestre cible.",
+    "fromClass": "Classe d’origine",
+    "fromYear": "Année d’origine",
+    "promotedAt": "Date de promotion",
+    "promotedBy": "Promu par",
+    "status": "Statut",
+    "student": "Élève",
+    "toClass": "Classe de destination",
+    "toYear": "Année de destination",
+    "wasGraduated": "Diplômé"
   },
   "news": {
     "title": "Actualités",
@@ -1488,5 +1604,132 @@
       "details": "Détails de l'actualité",
       "detailsDesc": "Rédigez l'annonce et choisissez son public."
     }
+  },
+  "filters": {
+    "title": "Filtres",
+    "apply": "Appliquer",
+    "clear": "Effacer",
+    "clearAll": "Tout effacer",
+    "active": "Filtres actifs",
+    "more": "Plus de filtres",
+    "from": "De",
+    "to": "À",
+    "any": "Tous",
+    "yes": "Oui",
+    "no": "Non",
+    "operators": {
+      "contains": "Contient",
+      "starts_with": "Commence par",
+      "ends_with": "Se termine par",
+      "equals": "Égal à",
+      "not_equals": "Différent de",
+      "gt": "Supérieur à",
+      "gte": "Supérieur ou égal à",
+      "lt": "Inférieur à",
+      "lte": "Inférieur ou égal à",
+      "between": "Entre",
+      "before": "Avant",
+      "after": "Après",
+      "in": "L'un de",
+      "is_null": "Est vide",
+      "is_not_null": "N'est pas vide",
+      "exists": "Possède",
+      "not_exists": "Ne possède pas"
+    },
+    "operator": "Condition"
+  },
+  "behaviorRecords": {
+    "type": "Type de comportement",
+    "isReviewed": "Examiné",
+    "category": "Catégorie",
+    "date": "Date",
+    "points": "Points",
+    "reportedBy": "Signalé par",
+    "status": "Statut",
+    "student": "Élève"
+  },
+  "assignments": {
+    "academicYear": "Année scolaire",
+    "class": "Classe",
+    "deadline": "Date limite",
+    "groupWork": "Travail de groupe",
+    "maxScore": "Note maximale",
+    "published": "Publié",
+    "semester": "Semestre",
+    "subject": "Matière",
+    "teacher": "Enseignant",
+    "title": "Devoirs",
+    "type": "Type de devoir"
+  },
+  "attendanceRecords": {
+    "absent": "Absents",
+    "academicYear": "Année scolaire",
+    "class": "Classe",
+    "date": "Date",
+    "late": "Retards",
+    "session": "Séance",
+    "student": "Élève"
+  },
+  "behaviorCategories": {
+    "active": "Actif",
+    "name": "Nom",
+    "points": "Points",
+    "type": "Type"
+  },
+  "classroom": {
+    "fields": {
+      "building": "Bâtiment",
+      "capacity": "Capacité",
+      "floor": "Étage",
+      "has_projector": "Avec projecteur",
+      "has_smartboard": "Avec tableau interactif",
+      "is_active": "Actif",
+      "room_type": "Type de salle"
+    }
+  },
+  "communication": {
+    "failedCount": "Échecs d’envoi",
+    "sender": "Expéditeur",
+    "status": "Statut",
+    "targetType": "Destinataires",
+    "title": "Titre",
+    "scheduledAt": "Programmé pour",
+    "sentAt": "Envoyé le"
+  },
+  "examGrades": {
+    "gradeLevel": "Niveau scolaire",
+    "gradeName": "Mention",
+    "gradePoint": "Points de la mention",
+    "isPassing": "Réussite",
+    "minPercentage": "Pourcentage minimal",
+    "subject": "Matière"
+  },
+  "exams": {
+    "academicYear": "Année scolaire",
+    "class": "Classe",
+    "endDate": "Date de fin",
+    "name": "Nom",
+    "published": "Publié",
+    "semester": "Semestre",
+    "startDate": "Date de début",
+    "totalMarks": "Note totale",
+    "type": "Type d’examen"
+  },
+  "subject": {
+    "fields": {
+      "is_active": "Actif",
+      "name": "Nom"
+    }
+  },
+  "timetables": {
+    "academicYear": "Année scolaire",
+    "active": "Actif",
+    "class": "Classe",
+    "gradeLevel": "Niveau scolaire",
+    "isBreak": "Pause",
+    "periodActive": "Actif",
+    "periodName": "Nom de la période",
+    "periodNumber": "Numéro de période",
+    "semester": "Semestre"
   }
 }

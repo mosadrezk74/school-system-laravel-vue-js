@@ -8,7 +8,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
-use Modules\Core\DTOs\ErrorReportFilterDTO;
+use Modules\Core\DTOs\ListQueryDTO;
 use Modules\Core\Enums\ErrorReportStatus;
 use Modules\Core\Http\Requests\UpdateErrorReportRequest;
 use Modules\Core\Models\ErrorReport;
@@ -21,18 +21,23 @@ class ErrorReportController extends BaseInertiaController
     {
         $this->authorize('viewAny', ErrorReport::class);
 
-        $filters = ErrorReportFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $reports = (new ErrorReportQuery)
+        $query = new ErrorReportQuery;
+
+        $reports = $query
             ->search($filters->search)
-            ->status($filters->status)
-            ->level($filters->level)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
         return Inertia::render('Errors/Admin/Index', [
             'reports' => ErrorReportResource::collection($reports),
-            'filters' => $request->only([Pagination::SEARCH_PARAM, 'status', 'level']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
             'statuses' => ErrorReportStatus::options(),
         ]);
     }

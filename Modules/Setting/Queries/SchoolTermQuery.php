@@ -4,12 +4,24 @@ namespace Modules\Setting\Queries;
 
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Core\Abstracts\BaseQuery;
+use Modules\Core\Support\Filters\DateRangeFilter;
+use Modules\Core\Support\Filters\EnumFilter;
+use Modules\Core\Support\Filters\ExactFilter;
+use Modules\Core\Support\Filters\Filter;
+use Modules\Core\Support\Filters\NumericFilter;
+use Modules\Core\Support\Filters\TranslatableFilter;
 use Modules\Setting\Enums\SchoolTermStatus;
 use Modules\Setting\Models\SchoolTerm;
-use Modules\Setting\Services\LanguageService;
 
 class SchoolTermQuery extends BaseQuery
 {
+    /**
+     * `title` is JSON keyed by locale, matched through each enabled language.
+     *
+     * @var array<int, string>
+     */
+    protected array $translatableSearchFields = ['title'];
+
     /** @var array<int, string> */
     protected array $sortableFields = ['version', 'status', 'published_at', 'created_at'];
 
@@ -19,34 +31,21 @@ class SchoolTermQuery extends BaseQuery
     }
 
     /**
-     * `title` is JSON keyed by locale, so the term is matched against each
-     * enabled language's value. The locale list comes from LanguageService so
-     * adding a language makes it searchable without touching this class.
+     * `content` is not filterable: it is the full body of the terms document,
+     * so matching against it would scan long text for no useful narrowing that
+     * the title does not already give.
+     *
+     * @return array<string, Filter>
      */
-    public function search(?string $term): self
+    protected function allowedFilters(): array
     {
-        if (! $term) {
-            return $this;
-        }
-
-        $locales = app(LanguageService::class)->activeLocales();
-
-        $this->query->where(function (Builder $query) use ($term, $locales): void {
-            foreach ($locales as $locale) {
-                $query->orWhere("title->{$locale}", 'LIKE', "%{$term}%");
-            }
-        });
-
-        return $this;
-    }
-
-    public function status(?string $status): self
-    {
-        if ($status !== null && SchoolTermStatus::tryFrom($status) instanceof SchoolTermStatus) {
-            $this->query->where('status', $status);
-        }
-
-        return $this;
+        return [
+            'status' => EnumFilter::make(SchoolTermStatus::class)->label('schoolTerms.status'),
+            'title' => TranslatableFilter::make()->label('schoolTerms.title'),
+            'version' => NumericFilter::make()->label('schoolTerms.version'),
+            'created_by' => ExactFilter::make()->label('schoolTerms.author')->nullable(),
+            'published' => DateRangeFilter::make()->column('published_at')->label('schoolTerms.publishedAt'),
+        ];
     }
 
     public function withAuthor(): self

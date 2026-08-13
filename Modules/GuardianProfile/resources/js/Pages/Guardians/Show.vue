@@ -20,19 +20,11 @@ const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirm
  * The picker queries the server as the admin types: the student table is far
  * too large to ship into the page, so only one page of matches is loaded.
  */
-const studentSearch = ref('')
-
-let searchTimer
-watch(studentSearch, value => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(() => {
-    router.get(`/user-management/guardians/${props.guardian.id}`, { student_search: value }, {
-      preserveState: true,
-      preserveScroll: true,
-      replace: true,
-      only: ['students'],
-    })
-  }, 350)
+const { filters: studentFilters } = useIndexFilters({
+  url: `/user-management/guardians/${props.guardian.id}`,
+  initial: { student_search: null },
+  debounced: ['student_search'],
+  only: ['students'],
 })
 
 const linkedIds = computed(() => (props.guardian.students ?? []).map(row => row.student_id))
@@ -278,7 +270,7 @@ const quickActions = [
             <VRow>
               <VCol cols="12" md="6">
                 <VTextField
-                  v-model="studentSearch"
+                  v-model="studentFilters.student_search.value"
                   maxlength="100"
                   :label="t('guardians.searchStudents')"
                   prepend-inner-icon="bx-search"

@@ -3,7 +3,6 @@
 namespace Modules\Report\Reports;
 
 use App\Models\User;
-use Modules\Academic\Services\AcademicContextService;
 use Modules\Auth\Enums\UserRole;
 use Modules\Report\Contracts\ReportProviderInterface;
 use Modules\Report\Enums\ReportColumnType;
@@ -49,12 +48,19 @@ abstract class AbstractReportProvider implements ReportProviderInterface
     }
 
     /**
+     * Classes offered by the reports that filter on one.
+     *
+     * Not scoped to an academic year: `classes.academic_year_id` was dropped
+     * because a class is year-independent. Narrowing on it here raised
+     * "Unknown column 'academic_year_id'" for every report carrying a class
+     * filter. The report's own year filter still constrains the rows it
+     * returns; this list is only the picker.
+     *
      * @return array<int, array{value: int, label: string}>
      */
     protected function classOptions(): array
     {
         return SchoolClass::query()
-            ->where('academic_year_id', AcademicContextService::yearId())
             ->get(['id', 'name'])
             ->map(fn (SchoolClass $class): array => [
                 'value' => $class->id,

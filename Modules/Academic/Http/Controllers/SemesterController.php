@@ -12,7 +12,6 @@ use Modules\Academic\Actions\RestoreSemesterAction;
 use Modules\Academic\Actions\SetCurrentSemesterAction;
 use Modules\Academic\Actions\UpdateSemesterAction;
 use Modules\Academic\DTOs\CreateSemesterDTO;
-use Modules\Academic\DTOs\SemesterFilterDTO;
 use Modules\Academic\DTOs\UpdateSemesterDTO;
 use Modules\Academic\Http\Requests\StoreSemesterRequest;
 use Modules\Academic\Http\Requests\UpdateSemesterRequest;
@@ -22,6 +21,8 @@ use Modules\Academic\Queries\SemesterQuery;
 use Modules\Academic\Transformers\SemesterResource;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 
 class SemesterController extends BaseInertiaController
 {
@@ -29,13 +30,13 @@ class SemesterController extends BaseInertiaController
     {
         $this->authorize('viewAny', Semester::class);
 
-        $filters = SemesterFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $semesters = (new SemesterQuery)
-            ->withArchived()
+        $query = (new SemesterQuery)->withArchived();
+
+        $semesters = $query
             ->search($filters->search)
-            ->academicYear($filters->academicYearId)
-            ->isActive($filters->isActive)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
@@ -44,10 +45,14 @@ class SemesterController extends BaseInertiaController
             'academicYears' => $this->academicYearOptions(),
 
             // Echoed back so filters survive a reload or a shared link.
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'academic_year_id',
-                'is_active',
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'academic_year_id' => FilterOptions::fromModels(
+                    AcademicYear::query()->orderByDesc('start_date')->get(),
+                ),
             ]),
         ]);
     }

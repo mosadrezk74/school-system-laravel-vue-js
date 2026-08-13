@@ -3,6 +3,7 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useIndexFilters } from '@/composables/useIndexFilters'
@@ -10,19 +11,19 @@ import { useIndexFilters } from '@/composables/useIndexFilters'
 const props = defineProps({
   promotions: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
   statusOptions: { type: Array, default: () => [] },
   academicYears: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
-const { filters, goToPage } = useIndexFilters({
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
   url: '/user-management/promotions',
-  initial: {
-    search: props.filters.search ?? null,
-    status: props.filters.status ?? null,
-    from_academic_year_id: props.filters.from_academic_year_id ?? null,
-  },
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
 })
 
 const headers = computed(() => [
@@ -97,42 +98,21 @@ const dash = value => value || '—'
     @page="goToPage"
   >
     <template #filters>
-      <VRow dense>
-        <VCol
-          cols="12"
-          md="4"
-        >
-          <VTextField
-            v-model="filters.search.value"
-            maxlength="100"
-            :label="t('promotions.search')"
-            prepend-inner-icon="bx-search"
-            clearable
-          />
-        </VCol>
+      <VTextField
+        v-model="filters.search.value"
+        maxlength="100"
+        :label="t('promotions.search')"
+        prepend-inner-icon="bx-search"
+        clearable
+      />
 
-        <VCol
-          cols="12"
-          md="3"
-        >
-          <VSelect
-            v-model="filters.status.value"
-            :items="statusFilterOptions"
-            :label="t('promotions.fields.status')"
-          />
-        </VCol>
-
-        <VCol
-          cols="12"
-          md="3"
-        >
-          <VSelect
-            v-model="filters.from_academic_year_id.value"
-            :items="yearFilterOptions"
-            :label="t('promotions.fields.fromYear')"
-          />
-        </VCol>
-      </VRow>
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
+      />
     </template>
 
     <template #item.student_name="{ item }">

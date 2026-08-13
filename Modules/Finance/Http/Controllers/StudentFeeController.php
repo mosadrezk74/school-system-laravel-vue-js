@@ -7,16 +7,19 @@ use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseInertiaController;
+use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\Finance\Actions\ArchiveStudentFeeAction;
 use Modules\Finance\Actions\AssignStudentFeeAction;
 use Modules\Finance\Actions\RestoreStudentFeeAction;
 use Modules\Finance\Actions\UpdateStudentFeeAction;
 use Modules\Finance\DTOs\CreateStudentFeeDTO;
-use Modules\Finance\DTOs\StudentFeeFilterDTO;
 use Modules\Finance\DTOs\UpdateStudentFeeDTO;
 use Modules\Finance\Enums\StudentFeeStatus;
 use Modules\Finance\Http\Requests\StoreStudentFeeRequest;
 use Modules\Finance\Http\Requests\UpdateStudentFeeRequest;
+use Modules\Finance\Models\FeeCategory;
 use Modules\Finance\Models\FeeStructure;
 use Modules\Finance\Models\StudentFee;
 use Modules\Finance\Queries\StudentFeeQuery;
@@ -29,18 +32,36 @@ class StudentFeeController extends BaseInertiaController
     {
         $this->authorize('viewAny', StudentFee::class);
 
-        $filters = StudentFeeFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $studentFees = (new StudentFeeQuery)
-            ->studentId($filters->studentId)
-            ->feeStructureId($filters->feeStructureId)
-            ->status($filters->status)
+        $query = new StudentFeeQuery;
+
+        $studentFees = $query
+            ->search($filters->search)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
         return $this->render('Finance::StudentFees/Index', [
             'studentFees' => StudentFeeResource::collection($studentFees),
-            'filters' => $request->only(['student_id', 'fee_structure_id', 'status']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'student_id' => FilterOptions::from(
+                    StudentProfile::query()
+                        ->where('academic_year_id', AcademicContextService::yearId())
+                        ->where('is_active', true)
+                        ->with('user:id,name')
+                        ->get(),
+                    fn (StudentProfile $student): string => $student->user?->name ?? (string) $student->admission_number,
+                ),
+                'fee_structure_id' => FilterOptions::fromModels(FeeStructure::query()->get()),
+                'fee_category_id' => FilterOptions::fromModels(
+                    FeeCategory::query()->where('is_active', true)->get(),
+                ),
+            ]),
             ...$this->lookups(),
         ]);
     }

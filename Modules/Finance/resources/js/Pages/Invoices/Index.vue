@@ -1,18 +1,23 @@
 <script setup>
 import { Head, Link, router, useForm } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
 import AppDateField from '@/components/AppDateField.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   invoices: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
   students: { type: Array, default: () => [] },
   statuses: { type: Array, default: () => [] },
 })
@@ -22,11 +27,16 @@ const { t } = useI18n()
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 const { formatMoney, formatDate } = useMoney()
 
-const search = ref(props.filters.search ?? '')
-const studentId = ref(props.filters.student_id ?? null)
-const status = ref(props.filters.status ?? null)
-const issuedFrom = ref(props.filters.issued_from ?? '')
-const issuedTo = ref(props.filters.issued_to ?? '')
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/finance/invoices',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
+})
+
 
 const studentOptions = computed(() => props.students.map(s => ({
   title: s.admission_number ? `${s.name} (${s.admission_number})` : s.name,
@@ -43,39 +53,9 @@ const statusColors = {
   overdue: 'error',
 }
 
-function buildQuery(extra = {}) {
-  const query = { search: search.value, ...extra }
 
-  if (studentId.value)
-    query.student_id = studentId.value
 
-  if (status.value)
-    query.status = status.value
 
-  if (issuedFrom.value)
-    query.issued_from = issuedFrom.value
-
-  if (issuedTo.value)
-    query.issued_to = issuedTo.value
-
-  return query
-}
-
-function applyFilters() {
-  router.get('/finance/invoices', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
-})
-
-watch([studentId, status, issuedFrom, issuedTo], applyFilters)
 
 const headers = computed(() => [
   { title: t('finance.fields.invoice_number'), key: 'invoice_number' },
@@ -125,12 +105,6 @@ function submitGenerate() {
   })
 }
 
-function goToPage(page) {
-  router.get('/finance/invoices', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -172,37 +146,19 @@ function goToPage(page) {
   >
     <template #filters>
       <VTextField
-        v-model="search"
+        v-model="filters.search.value"
         maxlength="100"
         :label="t('finance.searchInvoice')"
         prepend-inner-icon="bx-search"
         clearable
       />
 
-      <VSelect
-        v-model="studentId"
-        :label="t('finance.fields.student_id')"
-        :items="studentOptions"
-        clearable
-      />
-
-      <VSelect
-        v-model="status"
-        :label="t('finance.fields.status')"
-        :items="statusOptions"
-        clearable
-      />
-
-      <AppDateField
-        v-model="issuedFrom"
-        :label="t('finance.issuedFrom')"
-        clearable
-      />
-
-      <AppDateField
-        v-model="issuedTo"
-        :label="t('finance.issuedTo')"
-        clearable
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
       />
     </template>
 

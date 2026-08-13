@@ -1,17 +1,22 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   studentFees: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
   students: { type: Array, default: () => [] },
   feeStructures: { type: Array, default: () => [] },
   statuses: { type: Array, default: () => [] },
@@ -24,7 +29,16 @@ const { formatMoney } = useMoney()
 
 const studentId = ref(props.filters.student_id ?? null)
 const feeStructureId = ref(props.filters.fee_structure_id ?? null)
-const status = ref(props.filters.status ?? null)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/finance/student-fees',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
+})
+
 
 const studentOptions = computed(() => props.students.map(s => ({
   title: s.admission_number ? `${s.name} (${s.admission_number})` : s.name,
@@ -41,30 +55,8 @@ const statusColors = {
   cancelled: 'secondary',
 }
 
-function buildQuery(extra = {}) {
-  const query = { ...extra }
 
-  if (studentId.value)
-    query.student_id = studentId.value
 
-  if (feeStructureId.value)
-    query.fee_structure_id = feeStructureId.value
-
-  if (status.value)
-    query.status = status.value
-
-  return query
-}
-
-function applyFilters() {
-  router.get('/finance/student-fees', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-watch([studentId, feeStructureId, status], applyFilters)
 
 const headers = computed(() => [
   { title: t('finance.fields.student_id'), key: 'student' },
@@ -86,12 +78,6 @@ function archive(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/finance/student-fees', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -122,25 +108,12 @@ function goToPage(page) {
     @page="goToPage"
   >
     <template #filters>
-      <VSelect
-        v-model="studentId"
-        :label="t('finance.fields.student_id')"
-        :items="studentOptions"
-        clearable
-      />
-
-      <VSelect
-        v-model="feeStructureId"
-        :label="t('finance.fields.fee_structure_id')"
-        :items="feeStructureOptions"
-        clearable
-      />
-
-      <VSelect
-        v-model="status"
-        :label="t('finance.fields.status')"
-        :items="statusOptions"
-        clearable
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
       />
     </template>
 

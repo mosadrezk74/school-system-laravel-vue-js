@@ -1,51 +1,33 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   reports: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
   statuses: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
-const search = ref(props.filters.search ?? '')
-const statusFilter = ref(props.filters.status ?? null)
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/system/errors',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
 })
-
-watch(statusFilter, () => applyFilters())
-
-// Cleared filters are omitted rather than sent empty, matching the other
-// index pages so the backend never reads '' as an explicit filter.
-function buildQuery(extra = {}) {
-  const query = { ...extra }
-
-  if (search.value)
-    query.search = search.value
-
-  if (statusFilter.value)
-    query.status = statusFilter.value
-
-  return query
-}
-
-function applyFilters() {
-  router.get('/system/errors', buildQuery(), { preserveState: true, replace: true })
-}
-
-function goToPage(page) {
-  router.get('/system/errors', buildQuery({ page }), { preserveState: true })
-}
 
 const statusOptions = computed(() =>
   props.statuses.map(option => ({ title: option.label, value: option.value }))
@@ -82,26 +64,21 @@ const formatDate = value => value ? new Date(value).toLocaleString() : '—'
     @page="goToPage"
   >
     <template #filters>
-      <VRow>
-        <VCol cols="12" md="5">
-          <VTextField
-            v-model="search"
-            maxlength="100"
-            :label="t('systemErrors.search')"
-            prepend-inner-icon="bx-search"
-            clearable
-          />
-        </VCol>
+      <VTextField
+        v-model="filters.search.value"
+        maxlength="100"
+        :label="t('systemErrors.search')"
+        prepend-inner-icon="bx-search"
+        clearable
+      />
 
-        <VCol cols="12" md="3">
-          <VSelect
-            v-model="statusFilter"
-            :items="statusOptions"
-            :label="t('systemErrors.fields.status')"
-            clearable
-          />
-        </VCol>
-      </VRow>
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
+      />
     </template>
 
     <template #item.status="{ item }">

@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TeacherLayout from '@modules/Portal/resources/js/layouts/teacher.vue'
 import PortalHeader from '@modules/Portal/resources/js/components/PortalHeader.vue'
@@ -20,24 +20,16 @@ const { t } = useI18n()
 
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
-const search = ref(props.filters.search ?? '')
-
-function buildQuery(extra = {}) {
-  return { search: search.value, ...extra }
-}
-
-function applyFilters() {
-  router.get('/teacher/meetings', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
+/*
+ * URL state, debounce and paging come from the shared composable rather than
+ * a per-page copy of all three.
+ */
+const { filters, goToPage } = useIndexFilters({
+  url: '/teacher/meetings',
+  initial: {
+    search: props.filters.search ?? null,
+    status: props.filters.status ?? null,
+  },
 })
 
 const statusColors = {
@@ -87,12 +79,6 @@ function finish(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/teacher/meetings', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -117,7 +103,7 @@ function goToPage(page) {
       <VCard>
         <VCardText>
           <VTextField
-            v-model="search"
+            v-model="filters.search.value"
             maxlength="100"
             :label="t('portal.teacher.searchMeetings')"
             prepend-inner-icon="bx-search"

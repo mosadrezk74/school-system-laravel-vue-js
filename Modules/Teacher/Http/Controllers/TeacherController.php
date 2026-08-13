@@ -9,13 +9,14 @@ use Inertia\Response;
 use Modules\Auth\Enums\Gender;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\Subject\Models\Subject;
 use Modules\Teacher\Actions\ArchiveTeacherAction;
 use Modules\Teacher\Actions\CreateTeacherAction;
 use Modules\Teacher\Actions\RestoreTeacherAction;
 use Modules\Teacher\Actions\UpdateTeacherAction;
 use Modules\Teacher\DTOs\CreateTeacherDTO;
-use Modules\Teacher\DTOs\TeacherFilterDTO;
 use Modules\Teacher\DTOs\UpdateTeacherDTO;
 use Modules\Teacher\Enums\SalaryType;
 use Modules\Teacher\Http\Requests\StoreTeacherRequest;
@@ -30,24 +31,26 @@ class TeacherController extends BaseInertiaController
     {
         $this->authorize('viewAny', TeacherProfile::class);
 
-        $filters = TeacherFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $query = (new TeacherQuery)
-            ->searchUser($filters->search)
-            ->isActive($filters->isActive)
-            ->subjectId($filters->subjectId)
-            ->gender($filters->gender)
-            ->sort($filters->sortBy, $filters->sortOrder);
+        $query = new TeacherQuery;
 
-        $teachers = $query->paginate($filters->perPage);
+        $teachers = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return Inertia::render('Teacher::Teachers/Index', [
             'teachers' => TeacherResource::collection($teachers),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'is_active',
-                'subject_id',
-                'gender',
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'subject_id' => FilterOptions::fromModels(
+                    Subject::query()->where('is_active', true)->get(),
+                ),
             ]),
         ]);
     }

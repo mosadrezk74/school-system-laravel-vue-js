@@ -10,10 +10,11 @@ use Modules\Academic\Models\Semester;
 use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\Promotion\Actions\PromoteStudentsAction;
 use Modules\Promotion\Actions\RevertPromotionAction;
 use Modules\Promotion\DTOs\PromoteStudentsDTO;
-use Modules\Promotion\DTOs\PromotionFilterDTO;
 use Modules\Promotion\Enums\PromotionStatus;
 use Modules\Promotion\Http\Requests\StorePromotionRequest;
 use Modules\Promotion\Models\StudentPromotion;
@@ -30,19 +31,29 @@ class PromotionController extends BaseInertiaController
     {
         $this->authorize('viewAny', StudentPromotion::class);
 
-        $filters = PromotionFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $promotions = (new PromotionQuery)
+        $query = (new PromotionQuery)->latestFirst();
+
+        $promotions = $query
             ->search($filters->search)
-            ->status($filters->status)
-            ->fromAcademicYear($filters->fromAcademicYearId)
-            ->toAcademicYear($filters->toAcademicYearId)
-            ->latestFirst()
+            ->where($filters->values)
             ->paginate($filters->perPage);
+
+        $years = FilterOptions::fromModels(
+            AcademicYear::query()->orderByDesc('start_date')->get(),
+        );
 
         return $this->render('Promotion::Promotions/Index', [
             'promotions' => PromotionResource::collection($promotions),
-            'filters' => $request->only([Pagination::SEARCH_PARAM, 'status', 'from_academic_year_id']),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'from_academic_year_id' => $years,
+                'to_academic_year_id' => FilterOptions::withNotSet($years),
+            ]),
             'statusOptions' => $this->statusOptions(),
             'academicYears' => $this->academicYearOptions(),
         ]);

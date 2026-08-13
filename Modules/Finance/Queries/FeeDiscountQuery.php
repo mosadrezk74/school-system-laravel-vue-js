@@ -4,6 +4,13 @@ namespace Modules\Finance\Queries;
 
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Core\Abstracts\BaseQuery;
+use Modules\Core\Support\Filters\BooleanFilter;
+use Modules\Core\Support\Filters\DateRangeFilter;
+use Modules\Core\Support\Filters\EnumFilter;
+use Modules\Core\Support\Filters\ExactFilter;
+use Modules\Core\Support\Filters\Filter;
+use Modules\Core\Support\Filters\NumericFilter;
+use Modules\Finance\Enums\DiscountType;
 use Modules\Finance\Models\FeeDiscount;
 
 class FeeDiscountQuery extends BaseQuery
@@ -12,63 +19,32 @@ class FeeDiscountQuery extends BaseQuery
     protected array $searchableFields = ['name', 'code'];
 
     /** @var array<int, string> */
-    protected array $filterableFields = ['discount_type', 'grade_level_id', 'classroom_id', 'is_active'];
-
-    /** @var array<int, string> */
-    protected array $sortableFields = ['discount_value', 'start_date', 'end_date', 'is_active', 'created_at'];
+    protected array $sortableFields = ['name', 'discount_value', 'start_date', 'end_date', 'is_active', 'created_at'];
 
     protected function baseQuery(): Builder
     {
         return FeeDiscount::query()->with(['gradeLevel', 'classroom']);
     }
 
-    public function searchTerm(?string $term): self
+    /**
+     * `used_count` is filterable but `usage_limit` is not: how many times a
+     * discount has been taken up is something staff look for ("which ones are
+     * unused?"), whereas the configured cap is a property of the record they
+     * would open it to see.
+     *
+     * @return array<string, Filter>
+     */
+    protected function allowedFilters(): array
     {
-        if (! $term) {
-            return $this;
-        }
-
-        $this->query->where(function (Builder $query) use ($term) {
-            $query->where('name', 'LIKE', "%{$term}%")
-                ->orWhere('code', 'LIKE', "%{$term}%");
-        });
-
-        return $this;
-    }
-
-    public function discountType(?string $discountType): self
-    {
-        if ($discountType) {
-            $this->query->where('discount_type', $discountType);
-        }
-
-        return $this;
-    }
-
-    public function gradeLevelId(?int $gradeLevelId): self
-    {
-        if ($gradeLevelId) {
-            $this->query->where('grade_level_id', $gradeLevelId);
-        }
-
-        return $this;
-    }
-
-    public function classroomId(?int $classroomId): self
-    {
-        if ($classroomId) {
-            $this->query->where('classroom_id', $classroomId);
-        }
-
-        return $this;
-    }
-
-    public function isActive(?bool $isActive): self
-    {
-        if ($isActive !== null) {
-            $this->query->where('is_active', $isActive);
-        }
-
-        return $this;
+        return [
+            'discount_type' => EnumFilter::make(DiscountType::class)->label('finance.feeDiscounts.type'),
+            'grade_level_id' => ExactFilter::make()->label('finance.feeDiscounts.gradeLevel')->nullable(),
+            'classroom_id' => ExactFilter::make()->label('finance.feeDiscounts.classroom')->nullable(),
+            'is_active' => BooleanFilter::make()->label('finance.feeDiscounts.active'),
+            'discount_value' => NumericFilter::make()->label('finance.feeDiscounts.value'),
+            'used_count' => NumericFilter::make()->label('finance.feeDiscounts.usedCount'),
+            'start_date' => DateRangeFilter::make()->label('finance.feeDiscounts.startDate'),
+            'end_date' => DateRangeFilter::make()->label('finance.feeDiscounts.endDate'),
+        ];
     }
 }

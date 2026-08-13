@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
 use Modules\GuardianProfile\Actions\ArchiveGuardianAction;
 use Modules\GuardianProfile\Actions\CreateGuardianAction;
 use Modules\GuardianProfile\Actions\LinkStudentToGuardianAction;
@@ -14,7 +15,6 @@ use Modules\GuardianProfile\Actions\RestoreGuardianAction;
 use Modules\GuardianProfile\Actions\UnlinkStudentFromGuardianAction;
 use Modules\GuardianProfile\Actions\UpdateGuardianAction;
 use Modules\GuardianProfile\DTOs\CreateGuardianDTO;
-use Modules\GuardianProfile\DTOs\GuardianFilterDTO;
 use Modules\GuardianProfile\DTOs\LinkGuardianStudentDTO;
 use Modules\GuardianProfile\DTOs\UpdateGuardianDTO;
 use Modules\GuardianProfile\Enums\RelationshipType;
@@ -33,21 +33,23 @@ class GuardianController extends BaseInertiaController
     {
         $this->authorize('viewAny', GuardianProfile::class);
 
-        $filters = GuardianFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $query = (new GuardianQuery)
-            ->searchUser($filters->search)
-            ->isActive($filters->isActive)
-            ->sort($filters->sortBy, $filters->sortOrder);
+        $query = new GuardianQuery;
 
-        $guardians = $query->paginate($filters->perPage);
+        $guardians = $query
+            ->search($filters->search)
+            ->where($filters->values)
+            ->sort($filters->sortBy, $filters->sortOrder)
+            ->paginate($filters->perPage);
 
         return $this->render('GuardianProfile::Guardians/Index', [
             'guardians' => GuardianResource::collection($guardians),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'is_active',
-            ]),
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema(),
         ]);
     }
 
@@ -161,10 +163,12 @@ class GuardianController extends BaseInertiaController
     private function studentOptions(Request $request): array
     {
         $students = (new StudentQuery)
-            ->searchUser($request->string('student_search')->toString() ?: null)
-            ->currentClassId($request->filled('class_id') ? (int) $request->input('class_id') : null)
-            ->gradeLevelId($request->filled('grade_level_id') ? (int) $request->input('grade_level_id') : null)
-            ->isActive(true)
+            ->search($request->string('student_search')->toString() ?: null)
+            ->where([
+                'current_class_id' => $request->input('class_id'),
+                'grade_level_id' => $request->input('grade_level_id'),
+                'is_active' => true,
+            ])
             ->paginate($request->integer('student_per_page', 15));
 
         return [

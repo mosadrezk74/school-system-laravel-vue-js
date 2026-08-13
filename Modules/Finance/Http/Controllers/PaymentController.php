@@ -8,21 +8,24 @@ use Inertia\Response;
 use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
+use Modules\Core\DTOs\ListQueryDTO;
+use Modules\Core\Support\Filters\FilterOptions;
 use Modules\Finance\Actions\ArchivePaymentAction;
 use Modules\Finance\Actions\CancelPaymentAction;
 use Modules\Finance\Actions\ConfirmPaymentAction;
 use Modules\Finance\Actions\RecordPaymentAction;
 use Modules\Finance\DTOs\CreatePaymentDTO;
-use Modules\Finance\DTOs\PaymentFilterDTO;
 use Modules\Finance\Enums\InvoiceStatus;
 use Modules\Finance\Enums\PaymentMethod;
 use Modules\Finance\Enums\PaymentStatus;
 use Modules\Finance\Http\Requests\StorePaymentRequest;
 use Modules\Finance\Models\Invoice;
 use Modules\Finance\Models\Payment;
+use Modules\Finance\Models\PaymentMethod as PaymentMethodModel;
 use Modules\Finance\Queries\PaymentQuery;
 use Modules\Finance\Transformers\PaymentResource;
 use Modules\Finance\Transformers\RefundResource;
+use Modules\Student\Models\StudentProfile;
 
 class PaymentController extends BaseInertiaController
 {
@@ -30,29 +33,27 @@ class PaymentController extends BaseInertiaController
     {
         $this->authorize('viewAny', Payment::class);
 
-        $filters = PaymentFilterDTO::fromRequest($request);
+        $filters = ListQueryDTO::fromRequest($request);
 
-        $payments = (new PaymentQuery)
-            ->academicYearId(AcademicContextService::yearId())
-            ->searchReference($filters->search)
-            ->studentId($filters->studentId)
-            ->invoiceId($filters->invoiceId)
-            ->paymentMethod($filters->paymentMethod)
-            ->status($request->string('status')->toString() ?: null)
-            ->paidBetween($filters->paidFrom, $filters->paidTo)
+        $query = (new PaymentQuery)->academicYearId(AcademicContextService::yearId());
+
+        $payments = $query
+            ->search($filters->search)
+            ->where($filters->values)
             ->sort($filters->sortBy, $filters->sortOrder)
             ->paginate($filters->perPage);
 
         return $this->render('Finance::Payments/Index', [
             'payments' => PaymentResource::collection($payments),
-            'filters' => $request->only([
-                Pagination::SEARCH_PARAM,
-                'student_id',
-                'invoice_id',
-                'payment_method',
-                'status',
-                'paid_from',
-                'paid_to',
+            'filters' => [
+                Pagination::SEARCH_PARAM => $filters->search,
+                ...$query->activeFilters($filters->values),
+            ],
+            'filterDefinitions' => $query->filterSchema([
+                'student_id' => $this->studentFilterOptions(),
+                'payment_method_id' => FilterOptions::fromModels(
+                    PaymentMethodModel::query()->where('is_active', true)->orderBy('display_order')->get(),
+                ),
             ]),
             'statuses' => PaymentStatus::options(),
             ...$this->lookups(),
@@ -138,5 +139,23 @@ class PaymentController extends BaseInertiaController
                 ])->values(),
             'paymentMethods' => PaymentMethod::options(),
         ];
+    }
+
+    /**
+     * Students for the filter bar's picker, scoped to the active academic year
+     * the same way the list itself is.
+     *
+     * @return array<int, array{title: string, value: mixed}>
+     */
+    private function studentFilterOptions(): array
+    {
+        return FilterOptions::from(
+            StudentProfile::query()
+                ->where('academic_year_id', AcademicContextService::yearId())
+                ->where('is_active', true)
+                ->with('user:id,name')
+                ->get(),
+            fn (StudentProfile $student): string => $student->user?->name ?? (string) $student->admission_number,
+        );
     }
 }

@@ -1,16 +1,21 @@
 <script setup>
 import { Head, router, useForm } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppEmptyState from '@/components/AppEmptyState.vue'
 import AppPagination from '@/components/AppPagination.vue'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   rows: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
   gradeLevels: { type: Array, default: () => [] },
   subjects: { type: Array, default: () => [] },
 })
@@ -19,33 +24,24 @@ const { t } = useI18n()
 
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
-const search = ref(props.filters.search ?? '')
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/examination/grades',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
+})
 
-function applyFilters() {
-  router.get('/examination/grades', { search: search.value }, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
+
 
 /*
  * Paging keeps the active search so moving to page 2 of a filtered list does
  * not silently drop the filter. Previously this was an inline arrow in the
  * template, which put routing logic in the markup.
  */
-function goToPage(page) {
-  router.get('/examination/grades', { search: search.value, page }, {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
-})
 
 const headers = computed(() => [
   { title: t('examGrades.gradeName'), key: 'grade_name' },
@@ -138,15 +134,21 @@ function remove(grade) {
 
     <VDivider />
 
-    <VCardText class="d-flex flex-wrap gap-4">
+    <VCardText class="d-flex flex-column gap-4">
       <VTextField
-        v-model="search"
+        v-model="filters.search.value"
         maxlength="100"
         :label="t('examGrades.search')"
         prepend-inner-icon="bx-search"
         clearable
-        density="compact"
-        style="max-inline-size: 360px; flex: 1 1 260px;"
+      />
+
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
       />
     </VCardText>
 

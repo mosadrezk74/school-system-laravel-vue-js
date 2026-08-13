@@ -1,51 +1,39 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
 
 const props = defineProps({
   classrooms: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
 
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 
-const search = ref(props.filters.search ?? '')
-const roomTypeFilter = ref(props.filters.room_type ?? null)
-const isActiveFilter = ref(props.filters.is_active ?? null)
-
-let searchTimer
-watch(search, value => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(() => {
-    applyFilters()
-  }, 350)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/academic/classrooms',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
 })
 
-watch([roomTypeFilter, isActiveFilter], () => {
-  applyFilters()
-})
 
-function applyFilters() {
-  const params = {
-    search: search.value || undefined,
-    room_type: roomTypeFilter.value || undefined,
-    is_active: isActiveFilter.value !== null ? isActiveFilter.value : undefined,
-  }
 
-  router.get('/academic/classrooms', params, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
 
 const headers = computed(() => [
   { title: t('classroom.fields.name'), key: 'name', sortable: false },
@@ -87,27 +75,7 @@ function restore(item) {
   })
 }
 
-function goToPage(page) {
-  const params = {
-    page,
-    search: search.value || undefined,
-    room_type: roomTypeFilter.value || undefined,
-    is_active: isActiveFilter.value !== null ? isActiveFilter.value : undefined,
-  }
 
-  router.get('/academic/classrooms', params, {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
-
-const filterOptions = {
-  active: [
-    { title: t('common.all'), value: null },
-    { title: t('common.yes'), value: true },
-    { title: t('common.no'), value: false },
-  ],
-}
 </script>
 
 <template>
@@ -137,37 +105,21 @@ const filterOptions = {
     @page="goToPage"
   >
     <template #filters>
-      <VRow>
-        <VCol cols="12" md="3">
-          <VTextField
-            v-model="search"
-            maxlength="100"
-            :label="t('classroom.search')"
-            prepend-inner-icon="bx-search"
-            clearable
-          />
-        </VCol>
+      <VTextField
+        v-model="filters.search.value"
+        maxlength="100"
+        :label="t('classroom.search')"
+        prepend-inner-icon="bx-search"
+        clearable
+      />
 
-        <VCol cols="12" md="2">
-          <VSelect
-            v-model="isActiveFilter"
-            :items="filterOptions.active"
-            :label="t('classroom.fields.is_active')"
-            clearable
-          />
-        </VCol>
-
-        <VCol cols="12" md="2">
-          <VBtn
-            variant="tonal"
-            color="secondary"
-            size="small"
-            @click="applyFilters"
-          >
-            {{ t('common.filter') }}
-          </VBtn>
-        </VCol>
-      </VRow>
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
+      />
     </template>
 
       <template #item.name="{ item }">

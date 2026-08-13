@@ -1,17 +1,22 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMoney } from '@modules/Finance/resources/js/composable/useMoney'
 import AppConfirmDialog from '@/components/AppConfirmDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import AppPageHeader from '@/components/AppPageHeader.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
+import AppFilterBar from '@/components/AppFilterBar.vue'
 import AppTableLink from '@/components/AppTableLink.vue'
+import { useIndexFilters } from '@/composables/useIndexFilters'
 
 const props = defineProps({
   feeDiscounts: { type: Object, required: true },
   filters: { type: Object, default: () => ({}) },
+
+  /** Filter schema published by the module's Query::filterSchema(). */
+  filterDefinitions: { type: Array, default: () => [] },
   gradeLevels: { type: Array, default: () => [] },
   classrooms: { type: Array, default: () => [] },
   discountTypes: { type: Array, default: () => [] },
@@ -22,11 +27,16 @@ const { t } = useI18n()
 const { ask: askConfirm, run: runConfirm, isOpen: isConfirmOpen, dialog: confirmDialog } = useConfirm()
 const { formatMoney, formatDate } = useMoney()
 
-const search = ref(props.filters.search ?? '')
-const discountType = ref(props.filters.discount_type ?? null)
-const gradeLevelId = ref(props.filters.grade_level_id ?? null)
-const classroomId = ref(props.filters.classroom_id ?? null)
-const isActive = ref(props.filters.is_active ?? null)
+/*
+ * Which filters this page offers — and which exist at all — comes from the
+ * server schema; the page only decides where the bar is rendered.
+ */
+const { filters, activeKeys, goToPage, reset, clear } = useIndexFilters({
+  url: '/finance/fee-discounts',
+  initial: { search: null, ...props.filters },
+  definitions: props.filterDefinitions,
+})
+
 
 const discountTypeOptions = computed(() => props.discountTypes.map(d => ({ title: d.label, value: d.value })))
 const gradeLevelOptions = computed(() => props.gradeLevels.map(g => ({ title: g.name, value: g.id })))
@@ -37,39 +47,9 @@ const statusOptions = computed(() => [
   { title: t('finance.inactive'), value: '0' },
 ])
 
-function buildQuery(extra = {}) {
-  const query = { search: search.value, ...extra }
 
-  if (discountType.value)
-    query.discount_type = discountType.value
 
-  if (gradeLevelId.value)
-    query.grade_level_id = gradeLevelId.value
 
-  if (classroomId.value)
-    query.classroom_id = classroomId.value
-
-  if (isActive.value !== null && isActive.value !== undefined)
-    query.is_active = isActive.value
-
-  return query
-}
-
-function applyFilters() {
-  router.get('/finance/fee-discounts', buildQuery(), {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true,
-  })
-}
-
-let searchTimer
-watch(search, () => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(applyFilters, 350)
-})
-
-watch([discountType, gradeLevelId, classroomId, isActive], applyFilters)
 
 const headers = computed(() => [
   { title: t('finance.fields.name'), key: 'name' },
@@ -108,12 +88,6 @@ function archive(item) {
   })
 }
 
-function goToPage(page) {
-  router.get('/finance/fee-discounts', buildQuery({ page }), {
-    preserveState: true,
-    preserveScroll: true,
-  })
-}
 </script>
 
 <template>
@@ -145,39 +119,19 @@ function goToPage(page) {
   >
     <template #filters>
       <VTextField
-        v-model="search"
+        v-model="filters.search.value"
         maxlength="100"
         :label="t('finance.searchByName')"
         prepend-inner-icon="bx-search"
         clearable
       />
 
-      <VSelect
-        v-model="discountType"
-        :label="t('finance.fields.discount_type')"
-        :items="discountTypeOptions"
-        clearable
-      />
-
-      <VSelect
-        v-model="gradeLevelId"
-        :label="t('finance.fields.grade_level_id')"
-        :items="gradeLevelOptions"
-        clearable
-      />
-
-      <VSelect
-        v-model="classroomId"
-        :label="t('finance.fields.classroom_id')"
-        :items="classroomOptions"
-        clearable
-      />
-
-      <VSelect
-        v-model="isActive"
-        :label="t('finance.fields.is_active')"
-        :items="statusOptions"
-        clearable
+      <AppFilterBar
+        :definitions="filterDefinitions"
+        :filters="filters"
+        :active-keys="activeKeys"
+        @clear="clear"
+        @clear-all="reset"
       />
     </template>
 
