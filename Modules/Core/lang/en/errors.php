@@ -9,6 +9,14 @@ return [
     ],
 
     'status' => [
+        '400' => [
+            'title' => 'Action not allowed',
+            'message' => 'This action could not be completed. Please review the details and try again.',
+        ],
+        '422' => [
+            'title' => 'Action not allowed',
+            'message' => 'This action could not be completed. Please review the details and try again.',
+        ],
         '401' => [
             'title' => 'Sign in required',
             'message' => 'You need to sign in before you can view this page.',

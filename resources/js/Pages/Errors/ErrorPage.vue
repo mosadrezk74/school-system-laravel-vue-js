@@ -13,6 +13,13 @@ const props = defineProps({
   statusKey: { type: String, required: true },
   title: { type: String, default: '' },
   description: { type: String, default: '' },
+
+  /**
+   * The reason this particular request was refused, already translated by the
+   * server ("this academic year is not active"). Null for ordinary failures,
+   * which fall back to the generic copy below.
+   */
+  detail: { type: String, default: null },
 })
 
 const { t, te } = useI18n()
@@ -30,7 +37,14 @@ const resolve = (key, fallback) => {
 }
 
 const heading = computed(() => resolve('title', props.title))
-const explanation = computed(() => resolve('description', props.description))
+
+/*
+ * A server-supplied reason wins outright. It describes this one request, so
+ * the bundle's generic copy for the status code would be strictly less
+ * informative — and unlike the generic text it is not in the client bundle
+ * to look up.
+ */
+const explanation = computed(() => props.detail || resolve('description', props.description))
 
 const homeHref = computed(() => page.props.auth?.portal ?? '/dashboard')
 

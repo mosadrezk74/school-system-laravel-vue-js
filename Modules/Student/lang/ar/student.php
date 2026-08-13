@@ -19,7 +19,6 @@ return [
         'email' => 'البريد الإلكتروني',
         'username' => 'اسم المستخدم',
         'password' => 'كلمة المرور',
-        'passwordConfirmation' => 'تأكيد كلمة المرور',
         'gender' => 'الجنس',
         'academic_year_id' => 'العام الدراسي',
         'current_class_id' => 'الفصل',

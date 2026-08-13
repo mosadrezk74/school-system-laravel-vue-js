@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
+use Modules\Core\Exceptions\BaseException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
@@ -64,13 +65,45 @@ final class ErrorResponder
     }
 
     /**
-     * The user-facing message. Always a translation key lookup — the
-     * exception's own message is never shown, since it can name internal
-     * classes, tables or paths.
+     * The generic copy for a status code, used whenever the exception has
+     * nothing safe of its own to say.
      */
     public function message(int $statusCode): string
     {
         return __('core::errors.status.'.$this->translationKey($statusCode).'.message');
+    }
+
+    /**
+     * What the user actually reads.
+     *
+     * Prefers the exception's own message when the application raised it
+     * deliberately — "this year is not active" is far more useful than "an
+     * unexpected error occurred". Everything else keeps the generic copy.
+     */
+    public function userMessage(Throwable $exception, int $statusCode): string
+    {
+        $message = trim($exception->getMessage());
+
+        if ($message !== '' && $this->hasIntentionalMessage($exception)) {
+            return $message;
+        }
+
+        return $this->message($statusCode);
+    }
+
+    /**
+     * Whether an exception's message was written for a user to read.
+     *
+     * Only BaseException qualifies: every one of its factories, and every
+     * module exception extending it, is built from a translation key. The rule
+     * is deliberately narrow — a raw HttpException is not enough, because
+     * Laravel turns a failed route-model binding into one whose message names
+     * the model class ("No query results for model [...]"), and a QueryException
+     * would spill SQL and column names onto the page.
+     */
+    public function hasIntentionalMessage(Throwable $exception): bool
+    {
+        return $exception instanceof BaseException;
     }
 
     public function title(int $statusCode): string
@@ -81,10 +114,14 @@ final class ErrorResponder
     /**
      * Only the codes with dedicated copy get their own text; anything else is
      * presented as a generic server error.
+     *
+     * 400 and 422 are here because the app raises them on purpose — a refused
+     * operation was being titled "an unexpected error occurred", which reads
+     * as a crash rather than as the rule it actually is.
      */
     public function translationKey(int $statusCode): string
     {
-        return in_array($statusCode, [401, 403, 404, 419, 429, 503], true)
+        return in_array($statusCode, [400, 401, 403, 404, 419, 422, 429, 503], true)
             ? (string) $statusCode
             : '500';
     }

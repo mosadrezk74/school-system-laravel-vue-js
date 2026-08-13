@@ -9,6 +9,14 @@ return [
     ],
 
     'status' => [
+        '400' => [
+            'title' => 'Aktion nicht möglich',
+            'message' => 'Diese Aktion konnte nicht abgeschlossen werden. Bitte prüfen Sie die Angaben und versuchen Sie es erneut.',
+        ],
+        '422' => [
+            'title' => 'Aktion nicht möglich',
+            'message' => 'Diese Aktion konnte nicht abgeschlossen werden. Bitte prüfen Sie die Angaben und versuchen Sie es erneut.',
+        ],
         '401' => [
             'title' => 'Anmeldung erforderlich',
             'message' => 'Sie müssen sich anmelden, um diese Seite zu sehen.',

@@ -19,7 +19,6 @@ return [
         'email' => 'Email',
         'username' => 'Username',
         'password' => 'Password',
-        'passwordConfirmation' => 'Confirm Password',
         'gender' => 'Gender',
         'academic_year_id' => 'Academic Year',
         'current_class_id' => 'Class',

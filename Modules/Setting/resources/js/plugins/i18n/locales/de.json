@@ -1141,6 +1141,10 @@
   },
   "errors": {
     "status": {
+      "400": {
+        "title": "Aktion nicht möglich",
+        "description": "Diese Aktion konnte nicht abgeschlossen werden. Bitte prüfen Sie die Angaben und versuchen Sie es erneut."
+      },
       "401": {
         "title": "Anmeldung erforderlich",
         "description": "Sie müssen sich anmelden, um diese Seite zu sehen."
@@ -1156,6 +1160,10 @@
       "419": {
         "title": "Sitzung abgelaufen",
         "description": "Ihre Sitzung ist aus Sicherheitsgründen abgelaufen. Bitte aktualisieren Sie die Seite."
+      },
+      "422": {
+        "title": "Aktion nicht möglich",
+        "description": "Diese Aktion konnte nicht abgeschlossen werden. Bitte prüfen Sie die Angaben und versuchen Sie es erneut."
       },
       "429": {
         "title": "Zu viele Anfragen",

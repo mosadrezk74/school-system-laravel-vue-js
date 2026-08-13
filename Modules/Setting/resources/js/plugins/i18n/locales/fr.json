@@ -1141,6 +1141,10 @@
   },
   "errors": {
     "status": {
+      "400": {
+        "title": "Action impossible",
+        "description": "Cette action n'a pas pu être effectuée. Veuillez vérifier les informations et réessayer."
+      },
       "401": {
         "title": "Connexion requise",
         "description": "Vous devez vous connecter pour consulter cette page."
@@ -1156,6 +1160,10 @@
       "419": {
         "title": "Session expirée",
         "description": "Votre session a expiré pour des raisons de sécurité. Veuillez actualiser et réessayer."
+      },
+      "422": {
+        "title": "Action impossible",
+        "description": "Cette action n'a pas pu être effectuée. Veuillez vérifier les informations et réessayer."
       },
       "429": {
         "title": "Trop de requêtes",

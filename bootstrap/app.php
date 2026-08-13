@@ -73,8 +73,10 @@ return Application::configure(basePath: dirname(__DIR__))
             /*
              * API clients keep the ApiResponseTrait envelope the SPA and
              * mobile clients already parse, plus a stable error_code. The
-             * exception's own message is withheld outside debug mode so
-             * internals never leak; validation keeps Laravel's `errors` bag.
+             * message is the exception's own when the application raised it
+             * deliberately, and the generic copy otherwise — see
+             * ErrorResponder::hasIntentionalMessage() for why that line is
+             * drawn at BaseException. Validation keeps Laravel's `errors` bag.
              */
             if ($responder->expectsJson($request)) {
                 if ($exception instanceof ValidationException) {
@@ -89,7 +91,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
                 $payload = [
                     'status' => 'error',
-                    'message' => $responder->message($statusCode),
+                    'message' => $responder->userMessage($exception, $statusCode),
                     'error_code' => $responder->errorCode($statusCode),
                 ];
 
@@ -125,6 +127,16 @@ return Application::configure(basePath: dirname(__DIR__))
                 // it renders before the SPA locale bundle is available.
                 'title' => $responder->title($statusCode),
                 'description' => $responder->message($statusCode),
+
+                /*
+                 * The reason this specific request was refused, when the app
+                 * raised it on purpose. Null otherwise, which is what tells
+                 * the page to fall back to the generic copy — a value here
+                 * always outranks the client's translation bundle.
+                 */
+                'detail' => $responder->hasIntentionalMessage($exception)
+                    ? trim($exception->getMessage()) ?: null
+                    : null,
             ])
                 ->toResponse($request)
                 ->setStatusCode($statusCode);

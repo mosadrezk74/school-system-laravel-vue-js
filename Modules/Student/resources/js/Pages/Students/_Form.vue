@@ -6,6 +6,9 @@ import AppDateField from '@/components/AppDateField.vue'
 const props = defineProps({
   form: { type: Object, required: true },
   classes: { type: Array, default: () => [] },
+
+  /** Sent by the controller from the same constant the rules validate against. */
+  bloodGroups: { type: Array, default: () => [] },
   isEdit: { type: Boolean, default: false },
 })
 
@@ -21,6 +24,12 @@ const classOptions = computed(() => props.classes.map(c => ({
     .filter(Boolean)
     .join(' · '),
   value: c.id,
+})))
+
+// A+ / O- read the same in every locale, so the value is its own label.
+const bloodGroupOptions = computed(() => props.bloodGroups.map(group => ({
+  title: group,
+  value: group,
 })))
 
 const activeTab = ref('account')
@@ -399,11 +408,13 @@ const tabHasError = tab => tabFields[tab].some(field => !!props.form.errors[fiel
 
       <VRow>
         <VCol cols="12" md="4">
-          <VTextField
+          <VSelect
             v-model="form.blood_group"
+            :items="bloodGroupOptions"
             :label="$t('students.bloodGroup')"
             :hint="$t('students.hints.bloodGroup')"
             persistent-hint
+            clearable
             :error-messages="form.errors.blood_group"
           />
         </VCol>

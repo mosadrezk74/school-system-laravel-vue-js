@@ -23,10 +23,13 @@ class StoreStudentRequest extends BaseRequest
     {
         return [
             /*
-             * Account. `regex` on the username keeps it URL- and login-safe;
-             * `confirmed` pairs with the password_confirmation field, and
-             * Password::default() applies the app's configured strength rules
-             * instead of a bare min:8.
+             * Account. `regex` on the username keeps it URL- and login-safe.
+             *
+             * The password is entered once. Staff create this account on the
+             * student's behalf and hand the credentials over, so a second
+             * confirmation box guards against a typo the student would never
+             * have made — and the form only ever rendered one field, which
+             * left `confirmed` rejecting every submission.
              */
             'name' => ['required', 'string', 'min:2', 'max:255'],
             'email' => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:users,email'],
@@ -35,7 +38,7 @@ class StoreStudentRequest extends BaseRequest
                 'regex:/^[a-zA-Z0-9._-]+$/',
                 'unique:users,username',
             ],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8'],
             'gender' => ['required', 'string', 'in:male,female'],
 
             /*

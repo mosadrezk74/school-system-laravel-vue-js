@@ -1860,6 +1860,10 @@
   },
   "errors": {
     "status": {
+      "400": {
+        "title": "Action not allowed",
+        "description": "This action could not be completed. Please review the details and try again."
+      },
       "401": {
         "title": "Sign in required",
         "description": "You need to sign in before you can view this page."
@@ -1875,6 +1879,10 @@
       "419": {
         "title": "Session expired",
         "description": "Your session expired for security reasons. Please refresh and try again."
+      },
+      "422": {
+        "title": "Action not allowed",
+        "description": "This action could not be completed. Please review the details and try again."
       },
       "429": {
         "title": "Too many requests",

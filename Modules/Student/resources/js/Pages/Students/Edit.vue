@@ -7,6 +7,7 @@ import AppPageHeader from '@/components/AppPageHeader.vue'
 const props = defineProps({
   student: { type: Object, required: true },
   classes: { type: Array, default: () => [] },
+  bloodGroups: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -16,7 +17,6 @@ const form = useForm({
   email: props.student.email,
   username: props.student.username,
   password: '',
-  password_confirmation: '',
   gender: props.student.gender,
   birth_date: props.student.birth_date,
   national_id: props.student.national_id,
@@ -65,6 +65,7 @@ function submit() {
         <StudentForm
           :form="form"
           :classes="classes"
+          :blood-groups="bloodGroups"
           is-edit
         />
       </form>

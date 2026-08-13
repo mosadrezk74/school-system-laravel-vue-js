@@ -9,6 +9,14 @@ return [
     ],
 
     'status' => [
+        '400' => [
+            'title' => 'Action impossible',
+            'message' => 'Cette action n\'a pas pu être effectuée. Veuillez vérifier les informations et réessayer.',
+        ],
+        '422' => [
+            'title' => 'Action impossible',
+            'message' => 'Cette action n\'a pas pu être effectuée. Veuillez vérifier les informations et réessayer.',
+        ],
         '401' => [
             'title' => 'Connexion requise',
             'message' => 'Vous devez vous connecter pour consulter cette page.',

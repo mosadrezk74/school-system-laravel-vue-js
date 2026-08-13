@@ -57,11 +57,7 @@ class StudentController extends BaseInertiaController
     {
         $this->authorize('create', StudentProfile::class);
 
-        return $this->render('Student::Students/Create', [
-            'classes' => SchoolClass::query()->where('is_active', true)
-                ->with(['gradeLevel:id,name'])
-                ->get(['id', 'name', 'grade_level_id']),
-        ]);
+        return $this->render('Student::Students/Create', $this->formOptions());
     }
 
     public function store(StoreStudentRequest $request, CreateStudentAction $action): RedirectResponse
@@ -106,9 +102,7 @@ class StudentController extends BaseInertiaController
 
         return $this->render('Student::Students/Edit', [
             'student' => new StudentResource($student),
-            'classes' => SchoolClass::query()->where('is_active', true)
-                ->with(['gradeLevel:id,name'])
-                ->get(['id', 'name', 'grade_level_id']),
+            ...$this->formOptions(),
         ]);
     }
 
@@ -139,5 +133,26 @@ class StudentController extends BaseInertiaController
         $action->execute($student);
 
         return $this->toRoute('students.index', [], __('student::student.restored'));
+    }
+
+    /**
+     * Options the create and edit forms both need.
+     *
+     * @return array<string, mixed>
+     */
+    protected function formOptions(): array
+    {
+        return [
+            'classes' => SchoolClass::query()->where('is_active', true)
+                ->with(['gradeLevel:id,name'])
+                ->get(['id', 'name', 'grade_level_id']),
+
+            /*
+             * Taken from the rule's own constant rather than retyped in the
+             * Vue, so the dropdown can never offer a value that validation
+             * would then reject.
+             */
+            'bloodGroups' => StoreStudentRequest::BLOOD_GROUPS,
+        ];
     }
 }

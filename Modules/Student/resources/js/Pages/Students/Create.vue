@@ -6,6 +6,7 @@ import AppPageHeader from '@/components/AppPageHeader.vue'
 
 defineProps({
   classes: { type: Array, default: () => [] },
+  bloodGroups: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -15,7 +16,6 @@ const form = useForm({
   email: '',
   username: '',
   password: '',
-  password_confirmation: '',
   gender: 'male',
   birth_date: null,
   national_id: '',
@@ -64,6 +64,7 @@ function submit() {
         <StudentForm
           :form="form"
           :classes="classes"
+          :blood-groups="bloodGroups"
         />
       </form>
     </VCardText>

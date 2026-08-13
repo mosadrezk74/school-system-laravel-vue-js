@@ -31,7 +31,8 @@ class UpdateStudentRequest extends BaseRequest
                 'regex:/^[a-zA-Z0-9._-]+$/',
                 Rule::unique('users', 'username')->ignore($student?->user_id),
             ],
-            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            // Entered once, like the create form. Left blank it is ignored.
+            'password' => ['nullable', 'string', 'min:8'],
             'gender' => ['required', 'string', 'in:male,female'],
 
             'birth_date' => ['required', 'date', 'before:'.now()->subYears(2)->toDateString(), 'after:'.now()->subYears(100)->toDateString()],
