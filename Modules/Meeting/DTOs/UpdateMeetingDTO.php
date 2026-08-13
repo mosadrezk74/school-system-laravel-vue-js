@@ -2,7 +2,7 @@
 
 namespace Modules\Meeting\DTOs;
 
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Meeting\Http\Requests\UpdateMeetingRequest;
 
 final readonly class UpdateMeetingDTO
@@ -29,7 +29,7 @@ final readonly class UpdateMeetingDTO
             scheduledAt: $request->validated('scheduled_at'),
             durationMinutes: (int) $request->validated('duration_minutes'),
             teacherId: (int) $request->validated('teacher_id'),
-            academicYearId: AcademicYearService::id(),
+            academicYearId: AcademicContextService::yearId(),
             semesterId: $request->validated('semester_id') ? (int) $request->validated('semester_id') : null,
             subjectId: $request->validated('subject_id') ? (int) $request->validated('subject_id') : null,
             schoolClassId: $request->validated('school_class_id') ? (int) $request->validated('school_class_id') : null,

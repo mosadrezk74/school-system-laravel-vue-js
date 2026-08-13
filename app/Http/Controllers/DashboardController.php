@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Inertia\Response;
 use Modules\Academic\Models\AcademicYear;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Services\DashboardOverviewService;
 
@@ -12,7 +12,7 @@ class DashboardController extends BaseInertiaController
 {
     public function __construct(
         private readonly DashboardOverviewService $overview,
-        private readonly AcademicYearService $academicYears,
+        private readonly AcademicContextService $context,
     ) {}
 
     /**
@@ -24,7 +24,7 @@ class DashboardController extends BaseInertiaController
      */
     public function index(): Response
     {
-        $academicYear = $this->academicYears->current();
+        $academicYear = $this->context->currentYear();
 
         return $this->render('Dashboard', [
             'academicYear' => $academicYear instanceof AcademicYear ? [

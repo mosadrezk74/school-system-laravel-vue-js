@@ -5,7 +5,7 @@ namespace Modules\Finance\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
 use Modules\Finance\Actions\ArchiveInvoiceAction;
@@ -36,7 +36,7 @@ class InvoiceController extends BaseInertiaController
         $filters = InvoiceFilterDTO::fromRequest($request);
 
         $invoices = (new InvoiceQuery)
-            ->academicYearId(AcademicYearService::id())
+            ->academicYearId(AcademicContextService::yearId())
             ->searchNumber($filters->search)
             ->studentId($filters->studentId)
             ->status($filters->status)
@@ -157,7 +157,7 @@ class InvoiceController extends BaseInertiaController
     {
         return [
             'students' => StudentProfile::query()
-                ->where('academic_year_id', AcademicYearService::id())
+                ->where('academic_year_id', AcademicContextService::yearId())
                 ->where('is_active', true)
                 ->with('user:id,name')
                 ->get(['id', 'user_id', 'admission_number'])

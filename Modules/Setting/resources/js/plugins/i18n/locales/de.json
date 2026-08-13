@@ -32,6 +32,7 @@
     "semesters": "Semester",
     "gradeLevels": "Klassenstufen",
     "systemErrors": "Systemfehler",
+    "systemActivity": "Aktivitätsprotokoll",
     "accessControl": "Zugriffssteuerung",
     "roles": "Rollen",
     "admins": "Administratoren",
@@ -1213,6 +1214,38 @@
       "new": "Neu",
       "reviewed": "Geprüft",
       "resolved": "Gelöst"
+    }
+  },
+  "systemActivity": {
+    "title": "Aktivitätsprotokoll",
+    "subtitle": "Eine Aufzeichnung darüber, was sich in der Schule geändert hat und wer es geändert hat.",
+    "empty": "Noch keine Aktivität aufgezeichnet.",
+    "search": "Aktivität suchen",
+    "details": "Eintragsdetails",
+    "payload": "Aufgezeichnete Daten",
+    "academicContext": "Akademischer Kontext",
+    "academicContextHint": "Das Schuljahr und Semester, unter dem dieses Protokoll gelesen wurde. Einträge tragen kein eigenes Schuljahr.",
+    "context": "Gelesen unter Schuljahr {year}, Semester {semester}.",
+    "noSemester": "nicht gesetzt",
+    "system": "System",
+    "noChanges": "Für diesen Eintrag wurden keine Attributänderungen aufgezeichnet.",
+    "noProperties": "Für diesen Eintrag wurden keine zusätzlichen Eigenschaften aufgezeichnet.",
+    "events": {
+      "created": "Erstellt",
+      "updated": "Aktualisiert",
+      "deleted": "Gelöscht"
+    },
+    "fields": {
+      "description": "Beschreibung",
+      "event": "Ereignis",
+      "subject": "Objekt",
+      "causer": "Durchgeführt von",
+      "log": "Protokoll",
+      "occurredAt": "Aufgetreten am",
+      "changes": "Attributänderungen",
+      "properties": "Eigenschaften",
+      "academicYear": "Schuljahr",
+      "semester": "Semester"
     }
   },
   "meetings": {

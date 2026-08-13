@@ -4,7 +4,7 @@ use App\Models\User;
 use Illuminate\Database\QueryException;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Auth\Database\Seeders\RolePermissionSeeder;
 use Modules\Auth\Enums\UserRole;
 use Modules\Classroom\Models\Classroom;
@@ -19,7 +19,7 @@ use Spatie\Permission\PermissionRegistrar;
 beforeEach(function () {
     $this->seed(RolePermissionSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    AcademicYearService::flush();
+    AcademicContextService::flush();
 });
 
 function classAdmin(): User
@@ -39,7 +39,7 @@ function currentYear(): AcademicYear
         'end_date' => now()->addMonths(8)->toDateString(),
     ]);
 
-    AcademicYearService::flush();
+    AcademicContextService::flush();
 
     return $year;
 }

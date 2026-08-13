@@ -3,7 +3,7 @@
 use App\Models\User;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Auth\Database\Seeders\RolePermissionSeeder;
 use Modules\Auth\Enums\UserRole;
 use Modules\Classroom\Models\Classroom;
@@ -22,7 +22,7 @@ beforeEach(function (): void {
     $this->year = AcademicYear::factory()->current()->create();
 
     // The current year is memoised per process; tests create their own.
-    AcademicYearService::flush();
+    AcademicContextService::flush();
 
     $this->admin = User::factory()->create(['role' => UserRole::Admin, 'is_active' => true]);
     $this->admin->assignRole('admin');

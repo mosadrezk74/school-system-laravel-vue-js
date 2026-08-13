@@ -32,6 +32,7 @@
     "semesters": "Semestres",
     "gradeLevels": "Niveaux scolaires",
     "systemErrors": "Erreurs système",
+    "systemActivity": "Journal d'activité",
     "accessControl": "Contrôle d'accès",
     "roles": "Rôles",
     "admins": "Administrateurs",
@@ -1213,6 +1214,38 @@
       "new": "Nouveau",
       "reviewed": "Examiné",
       "resolved": "Résolu"
+    }
+  },
+  "systemActivity": {
+    "title": "Journal d'activité",
+    "subtitle": "Un relevé de ce qui a changé dans l'école, et par qui.",
+    "empty": "Aucune activité enregistrée pour le moment.",
+    "search": "Rechercher une activité",
+    "details": "Détails de l'entrée",
+    "payload": "Données enregistrées",
+    "academicContext": "Contexte académique",
+    "academicContextHint": "L'année et le semestre sous lesquels ce journal a été consulté. Les entrées ne portent pas d'année académique propre.",
+    "context": "Consulté sous l'année académique {year}, semestre {semester}.",
+    "noSemester": "non défini",
+    "system": "Système",
+    "noChanges": "Aucun changement d'attribut n'a été enregistré pour cette entrée.",
+    "noProperties": "Aucune propriété supplémentaire n'a été enregistrée pour cette entrée.",
+    "events": {
+      "created": "Créé",
+      "updated": "Mis à jour",
+      "deleted": "Supprimé"
+    },
+    "fields": {
+      "description": "Description",
+      "event": "Événement",
+      "subject": "Sujet",
+      "causer": "Effectué par",
+      "log": "Journal",
+      "occurredAt": "Survenu le",
+      "changes": "Changements d'attributs",
+      "properties": "Propriétés",
+      "academicYear": "Année académique",
+      "semester": "Semestre"
     }
   },
   "meetings": {

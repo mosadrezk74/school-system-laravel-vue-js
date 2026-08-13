@@ -3,7 +3,7 @@
 namespace Modules\Report\Reports;
 
 use Illuminate\Database\Eloquent\Builder;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Meeting\Models\Meeting;
 use Modules\Report\DTOs\ReportFilterDTO;
 use Modules\Report\DTOs\ReportResultDTO;
@@ -47,7 +47,7 @@ class MeetingReportProvider extends AbstractReportProvider
 
     public function generate(ReportFilterDTO $filters): ReportResultDTO
     {
-        $academicYearId = AcademicYearService::id();
+        $academicYearId = AcademicContextService::yearId();
 
         $meetings = Meeting::query()
             ->with(['teacher', 'schoolClass'])

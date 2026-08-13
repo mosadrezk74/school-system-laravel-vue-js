@@ -2,7 +2,7 @@
 
 namespace Modules\Student\DTOs;
 
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Student\Http\Requests\StoreStudentRequest;
 
 final readonly class CreateStudentDTO
@@ -58,7 +58,7 @@ final readonly class CreateStudentDTO
             nationalId: $request->validated('national_id'),
             phone: $request->validated('phone'),
             isActive: (bool) $request->validated('is_active', true),
-            academicYearId: AcademicYearService::requiredId(),
+            academicYearId: AcademicContextService::requiredYearId(),
             currentClassId: $request->validated('current_class_id') ? (int) $request->validated('current_class_id') : null,
             admissionNumber: $request->validated('admission_number'),
             rollNumber: $request->validated('roll_number'),

@@ -5,7 +5,7 @@ namespace Modules\Finance\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
 use Modules\Finance\Actions\ArchivePaymentAction;
@@ -33,7 +33,7 @@ class PaymentController extends BaseInertiaController
         $filters = PaymentFilterDTO::fromRequest($request);
 
         $payments = (new PaymentQuery)
-            ->academicYearId(AcademicYearService::id())
+            ->academicYearId(AcademicContextService::yearId())
             ->searchReference($filters->search)
             ->studentId($filters->studentId)
             ->invoiceId($filters->invoiceId)
@@ -126,7 +126,7 @@ class PaymentController extends BaseInertiaController
         return [
             'invoices' => Invoice::query()
                 ->whereNotIn('status', [InvoiceStatus::Paid->value, InvoiceStatus::Cancelled->value])
-                ->whereHas('student', fn ($query) => $query->where('academic_year_id', AcademicYearService::id()))
+                ->whereHas('student', fn ($query) => $query->where('academic_year_id', AcademicContextService::yearId()))
                 ->with('student.user:id,name')
                 ->get(['id', 'student_id', 'invoice_number', 'total_amount', 'balance_due'])
                 ->map(fn (Invoice $invoice) => [

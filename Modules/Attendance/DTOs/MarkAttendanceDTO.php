@@ -2,7 +2,7 @@
 
 namespace Modules\Attendance\DTOs;
 
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Attendance\Http\Requests\StoreAttendanceRequest;
 
 final readonly class MarkAttendanceDTO
@@ -25,7 +25,7 @@ final readonly class MarkAttendanceDTO
         return new self(
             classId: (int) $request->validated('class_id'),
             subjectId: $request->validated('subject_id') ? (int) $request->validated('subject_id') : null,
-            academicYearId: AcademicYearService::requiredId(),
+            academicYearId: AcademicContextService::requiredYearId(),
             semesterId: $request->validated('semester_id') ? (int) $request->validated('semester_id') : null,
             date: $request->validated('date'),
             session: (int) $request->validated('session'),

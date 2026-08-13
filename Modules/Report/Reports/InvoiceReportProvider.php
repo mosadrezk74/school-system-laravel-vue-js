@@ -3,7 +3,7 @@
 namespace Modules\Report\Reports;
 
 use Illuminate\Database\Eloquent\Builder;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Finance\Enums\InvoiceStatus;
 use Modules\Finance\Models\Invoice;
 use Modules\Report\DTOs\ReportFilterDTO;
@@ -50,7 +50,7 @@ class InvoiceReportProvider extends AbstractReportProvider
 
     public function generate(ReportFilterDTO $filters): ReportResultDTO
     {
-        $academicYearId = AcademicYearService::id();
+        $academicYearId = AcademicContextService::yearId();
 
         $invoices = Invoice::query()
             ->with(['student.user'])

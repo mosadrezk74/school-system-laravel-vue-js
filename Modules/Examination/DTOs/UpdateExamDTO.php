@@ -2,7 +2,7 @@
 
 namespace Modules\Examination\DTOs;
 
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Examination\Http\Requests\UpdateExamRequest;
 
 final readonly class UpdateExamDTO
@@ -24,7 +24,7 @@ final readonly class UpdateExamDTO
     public static function fromRequest(UpdateExamRequest $request): self
     {
         return new self(
-            academicYearId: AcademicYearService::requiredId(),
+            academicYearId: AcademicContextService::requiredYearId(),
             semesterId: $request->validated('semester_id') ? (int) $request->validated('semester_id') : null,
             classId: $request->validated('class_id') ? (int) $request->validated('class_id') : null,
             name: $request->validated('name'),

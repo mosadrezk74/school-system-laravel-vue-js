@@ -51,6 +51,7 @@
     "semesters": "الفترات الدراسية",
     "gradeLevels": "المراحل الدراسية",
     "systemErrors": "أخطاء النظام",
+    "systemActivity": "سجل النشاط",
     "accessControl": "التحكم بالوصول",
     "roles": "الأدوار",
     "admins": "المديرون",
@@ -1926,6 +1927,38 @@
       "new": "جديد",
       "reviewed": "تمت المراجعة",
       "resolved": "تم الحل"
+    }
+  },
+  "systemActivity": {
+    "title": "سجل النشاط",
+    "subtitle": "سجل بما تغيّر في المدرسة ومن قام بتغييره.",
+    "empty": "لا يوجد نشاط مسجل بعد.",
+    "search": "بحث في النشاط",
+    "details": "تفاصيل السجل",
+    "payload": "البيانات المسجلة",
+    "academicContext": "السياق الأكاديمي",
+    "academicContextHint": "العام والفصل الدراسي الذي تمت قراءة السجل خلاله. لا تحمل السجلات عامًا دراسيًا خاصًا بها.",
+    "context": "تمت القراءة ضمن العام الدراسي {year}، الفصل {semester}.",
+    "noSemester": "غير محدد",
+    "system": "النظام",
+    "noChanges": "لم يتم تسجيل أي تغييرات في الحقول لهذا السجل.",
+    "noProperties": "لم يتم تسجيل خصائص إضافية لهذا السجل.",
+    "events": {
+      "created": "إنشاء",
+      "updated": "تحديث",
+      "deleted": "حذف"
+    },
+    "fields": {
+      "description": "الوصف",
+      "event": "الحدث",
+      "subject": "العنصر",
+      "causer": "بواسطة",
+      "log": "السجل",
+      "occurredAt": "وقت الحدوث",
+      "changes": "تغييرات الحقول",
+      "properties": "الخصائص",
+      "academicYear": "العام الدراسي",
+      "semester": "الفصل الدراسي"
     }
   },
   "notification": {

@@ -20,7 +20,7 @@ class RolePermissionSeeder extends Seeder
      */
     private const RESOURCES = [
         'Auth' => ['user', 'role'],
-        'Core' => ['error-report'],
+        'Core' => ['error-report', 'activity'],
         'Setting' => ['setting', 'language', 'school-term'],
         'Academic' => ['academic-year', 'semester', 'grade-level'],
         'Classroom' => ['classroom'],
@@ -69,6 +69,12 @@ class RolePermissionSeeder extends Seeder
          * separate grant from seeing that an error happened at all.
          */
         'error-report' => ['view', 'update', 'view-trace'],
+
+        /*
+         * The audit log is written by the application and pruned on a
+         * schedule, so it is readable but never editable through the UI.
+         */
+        'activity' => ['view'],
     ];
 
     /**

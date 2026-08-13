@@ -51,6 +51,7 @@
     "semesters": "Semesters",
     "gradeLevels": "Grade Levels",
     "systemErrors": "System Errors",
+    "systemActivity": "Activity Log",
     "accessControl": "Access control",
     "roles": "Roles",
     "admins": "Administrators",
@@ -1932,6 +1933,38 @@
       "new": "New",
       "reviewed": "Reviewed",
       "resolved": "Resolved"
+    }
+  },
+  "systemActivity": {
+    "title": "Activity Log",
+    "subtitle": "A record of what changed across the school, and who changed it.",
+    "empty": "No activity recorded yet.",
+    "search": "Search activity",
+    "details": "Entry details",
+    "payload": "Recorded data",
+    "academicContext": "Academic context",
+    "academicContextHint": "The year and term this log was read under. Entries are not stamped with an academic year of their own.",
+    "context": "Read under academic year {year}, semester {semester}.",
+    "noSemester": "not set",
+    "system": "System",
+    "noChanges": "No attribute changes were recorded for this entry.",
+    "noProperties": "No extra properties were recorded for this entry.",
+    "events": {
+      "created": "Created",
+      "updated": "Updated",
+      "deleted": "Deleted"
+    },
+    "fields": {
+      "description": "Description",
+      "event": "Event",
+      "subject": "Subject",
+      "causer": "Performed by",
+      "log": "Log",
+      "occurredAt": "Occurred at",
+      "changes": "Attribute changes",
+      "properties": "Properties",
+      "academicYear": "Academic year",
+      "semester": "Semester"
     }
   },
   "notification": {

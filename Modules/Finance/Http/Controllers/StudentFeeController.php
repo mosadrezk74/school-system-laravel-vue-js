@@ -5,7 +5,7 @@ namespace Modules\Finance\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Finance\Actions\ArchiveStudentFeeAction;
 use Modules\Finance\Actions\AssignStudentFeeAction;
@@ -120,7 +120,7 @@ class StudentFeeController extends BaseInertiaController
     {
         return [
             'students' => StudentProfile::query()
-                ->where('academic_year_id', AcademicYearService::id())
+                ->where('academic_year_id', AcademicContextService::yearId())
                 ->where('is_active', true)
                 ->with('user:id,name')
                 ->get(['id', 'user_id', 'admission_number'])

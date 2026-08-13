@@ -3,7 +3,7 @@
 use App\Models\User;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Auth\Database\Seeders\RolePermissionSeeder;
 use Modules\Auth\Enums\UserRole;
 use Modules\Examination\Models\Exam;
@@ -66,7 +66,7 @@ beforeEach(function (): void {
     $this->seed(RolePermissionSeeder::class);
 
     $this->year = AcademicYear::factory()->current()->create();
-    AcademicYearService::flush();
+    AcademicContextService::flush();
 
     $this->teacher = teacherPortalUser();
     $this->otherTeacher = teacherPortalUser();

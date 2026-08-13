@@ -4,7 +4,6 @@ namespace Modules\Academic\Observers;
 
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Services\AcademicContextService;
-use Modules\Academic\Services\AcademicYearService;
 
 /**
  * Keeps "exactly one current academic year" true no matter which entry point
@@ -70,9 +69,12 @@ class AcademicYearObserver
             ->update(['is_current' => false]);
     }
 
+    /**
+     * AcademicContextService::flush() cascades to AcademicYearService, so the
+     * one call clears both memoised halves of the context.
+     */
     private function flushCaches(): void
     {
-        AcademicYearService::flush();
         AcademicContextService::flush();
     }
 }

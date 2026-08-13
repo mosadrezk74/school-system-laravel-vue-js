@@ -142,6 +142,7 @@ const sections = computed(() => [
       { title: t('nav.aiTranslationSettings'), to: '/settings/ai-translation', icon: 'bx-globe' },
       { title: t('nav.schoolTerms'), to: '/settings/school-terms', icon: 'bx-file', permission: 'viewSchoolTerms' },
       { title: t('nav.systemErrors'), to: '/system/errors', icon: 'bx-bug', permission: 'viewErrorReports' },
+      { title: t('nav.systemActivity'), to: '/system/activity', icon: 'bx-history', permission: 'viewActivity' },
     ],
   },
   {

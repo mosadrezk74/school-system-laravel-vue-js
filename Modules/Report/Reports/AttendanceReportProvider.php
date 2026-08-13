@@ -3,7 +3,7 @@
 namespace Modules\Report\Reports;
 
 use Illuminate\Database\Eloquent\Builder;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Attendance\Enums\AttendanceStatus;
 use Modules\Attendance\Models\AttendanceDetail;
 use Modules\Report\DTOs\ReportFilterDTO;
@@ -49,7 +49,7 @@ class AttendanceReportProvider extends AbstractReportProvider
 
     public function generate(ReportFilterDTO $filters): ReportResultDTO
     {
-        $academicYearId = AcademicYearService::id();
+        $academicYearId = AcademicContextService::yearId();
 
         $details = AttendanceDetail::query()
             ->with(['student.user'])

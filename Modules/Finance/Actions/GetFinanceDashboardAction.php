@@ -2,7 +2,7 @@
 
 namespace Modules\Finance\Actions;
 
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseAction;
 use Modules\Finance\Queries\FinanceDashboardQuery;
 
@@ -17,7 +17,7 @@ class GetFinanceDashboardAction extends BaseAction
      */
     public function execute(mixed $input = null): array
     {
-        $academicYearId = AcademicYearService::id();
+        $academicYearId = AcademicContextService::yearId();
 
         return [
             'total_outstanding' => $this->query->totalOutstanding($academicYearId),

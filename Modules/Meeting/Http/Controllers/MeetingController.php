@@ -8,7 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Academic\Models\Semester;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Auth\Enums\UserRole;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
@@ -216,7 +216,7 @@ class MeetingController extends BaseInertiaController
     {
         return [
             'teachers' => User::query()->where('role', UserRole::Teacher->value)->get(['id', 'name']),
-            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get()
+            'semesters' => Semester::query()->where('academic_year_id', AcademicContextService::yearId())->get()
                 ->map(fn (Semester $semester) => [
                     'id' => $semester->id,
                     'name' => $semester->name,

@@ -3,7 +3,7 @@
 namespace Modules\Report\Reports;
 
 use App\Models\User;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Auth\Enums\UserRole;
 use Modules\Report\Contracts\ReportProviderInterface;
 use Modules\Report\Enums\ReportColumnType;
@@ -54,7 +54,7 @@ abstract class AbstractReportProvider implements ReportProviderInterface
     protected function classOptions(): array
     {
         return SchoolClass::query()
-            ->where('academic_year_id', AcademicYearService::id())
+            ->where('academic_year_id', AcademicContextService::yearId())
             ->get(['id', 'name'])
             ->map(fn (SchoolClass $class): array => [
                 'value' => $class->id,

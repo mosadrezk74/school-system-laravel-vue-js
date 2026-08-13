@@ -3,7 +3,7 @@
 namespace Modules\Timetable\Actions;
 
 use Illuminate\Support\Collection;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseAction;
 use Modules\Portal\Services\PortalScopeService;
 use Modules\Timetable\Models\TimetableEntry;
@@ -30,7 +30,7 @@ class GetTeacherScheduleAction extends BaseAction
 
         return $this->repository->forTeacher(
             $teacherId,
-            AcademicYearService::id() ?? 0,
+            AcademicContextService::yearId() ?? 0,
             $input['dayOfWeek'] ?? null,
         );
     }

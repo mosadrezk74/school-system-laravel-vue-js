@@ -3,7 +3,7 @@
 namespace Modules\Examination\DTOs;
 
 use Illuminate\Http\Request;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Constants\Pagination;
 
 final readonly class ExamFilterDTO
@@ -24,7 +24,7 @@ final readonly class ExamFilterDTO
     {
         return new self(
             search: $request->string(Pagination::SEARCH_PARAM)->toString() ?: null,
-            academicYearId: AcademicYearService::id(),
+            academicYearId: AcademicContextService::yearId(),
             semesterId: $request->filled('semester_id') ? (int) $request->input('semester_id') : null,
             classId: $request->filled('class_id') ? (int) $request->input('class_id') : null,
             examType: $request->string('exam_type')->toString() ?: null,

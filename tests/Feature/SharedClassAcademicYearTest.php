@@ -4,7 +4,6 @@ use App\Models\User;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
 use Modules\Academic\Services\AcademicContextService;
-use Modules\Academic\Services\AcademicYearService;
 use Modules\Auth\Database\Seeders\RolePermissionSeeder;
 use Modules\Auth\Enums\UserRole;
 use Modules\Communication\Services\RecipientResolverService;
@@ -45,7 +44,7 @@ beforeEach(function (): void {
     ]);
 
     AcademicContextService::flush();
-    AcademicYearService::flush();
+    AcademicContextService::flush();
 
     $this->grade = GradeLevel::query()->create([
         'name' => ['en' => 'Grade 5'],

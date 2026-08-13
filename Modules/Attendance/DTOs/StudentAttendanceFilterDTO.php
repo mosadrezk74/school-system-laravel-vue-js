@@ -3,7 +3,7 @@
 namespace Modules\Attendance\DTOs;
 
 use Illuminate\Http\Request;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 
 final readonly class StudentAttendanceFilterDTO
 {
@@ -19,7 +19,7 @@ final readonly class StudentAttendanceFilterDTO
     {
         return new self(
             studentId: $studentId,
-            academicYearId: AcademicYearService::id(),
+            academicYearId: AcademicContextService::yearId(),
             semesterId: $request->filled('semester_id') ? (int) $request->input('semester_id') : null,
             dateFrom: $request->string('date_from')->toString() ?: null,
             dateTo: $request->string('date_to')->toString() ?: null,

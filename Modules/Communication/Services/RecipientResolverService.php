@@ -4,7 +4,7 @@ namespace Modules\Communication\Services;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\GuardianProfile\Models\GuardianProfile;
 use Modules\Student\Models\StudentProfile;
 
@@ -75,7 +75,7 @@ class RecipientResolverService
      */
     private function byClass(array $classIds): Builder
     {
-        $academicYearId = AcademicYearService::id();
+        $academicYearId = AcademicContextService::yearId();
 
         $studentUserIds = StudentProfile::query()
             ->whereIn('current_class_id', $classIds)

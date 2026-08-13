@@ -6,7 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\Academic\Models\Semester;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseInertiaController;
 use Modules\Core\Constants\Pagination;
 use Modules\Examination\Actions\ArchiveExamAction;
@@ -180,7 +180,7 @@ class ExamController extends BaseInertiaController
     protected function formOptions(): array
     {
         return [
-            'semesters' => Semester::query()->where('academic_year_id', AcademicYearService::id())->get()
+            'semesters' => Semester::query()->where('academic_year_id', AcademicContextService::yearId())->get()
                 ->map(fn (Semester $semester) => [
                     'id' => $semester->id,
                     'name' => $semester->name,

@@ -5,7 +5,7 @@ namespace Modules\Portal\Services;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Auth\Enums\UserRole;
 use Modules\GuardianProfile\Models\GuardianProfile;
 use Modules\GuardianProfile\Models\GuardianStudent;
@@ -148,7 +148,7 @@ class PortalScopeService
                 ->with('gradeLevel')
                 ->whereIn('id', ClassSubject::query()
                     ->where('teacher_id', $teacherId)
-                    ->where('academic_year_id', AcademicYearService::id())
+                    ->where('academic_year_id', AcademicContextService::yearId())
                     ->select('class_id'))
                 ->get();
         });
@@ -169,7 +169,7 @@ class PortalScopeService
             return ClassSubject::query()
                 ->with(['subject', 'class'])
                 ->where('teacher_id', $teacherId)
-                ->where('academic_year_id', AcademicYearService::id())
+                ->where('academic_year_id', AcademicContextService::yearId())
                 ->get();
         });
     }
@@ -189,7 +189,7 @@ class PortalScopeService
             return StudentProfile::query()
                 ->with(['user', 'currentClass'])
                 ->whereIn('current_class_id', $classIds)
-                ->where('academic_year_id', AcademicYearService::id())
+                ->where('academic_year_id', AcademicContextService::yearId())
                 ->get();
         });
     }

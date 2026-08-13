@@ -3,7 +3,7 @@
 namespace Modules\Attendance\DTOs;
 
 use Illuminate\Http\Request;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Constants\Pagination;
 
 final readonly class AttendanceFilterDTO
@@ -26,7 +26,7 @@ final readonly class AttendanceFilterDTO
         return new self(
             classId: $request->filled('class_id') ? (int) $request->input('class_id') : null,
             subjectId: $request->filled('subject_id') ? (int) $request->input('subject_id') : null,
-            academicYearId: AcademicYearService::id(),
+            academicYearId: AcademicContextService::yearId(),
             semesterId: $request->filled('semester_id') ? (int) $request->input('semester_id') : null,
             session: $request->filled('session') ? (int) $request->input('session') : null,
             dateFrom: $request->string('date_from')->toString() ?: null,

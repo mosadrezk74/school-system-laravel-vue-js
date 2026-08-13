@@ -3,7 +3,7 @@
 namespace Modules\Academic\Actions;
 
 use Modules\Academic\Models\AcademicYear;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseAction;
 use Modules\Core\Exceptions\BaseException;
 
@@ -35,7 +35,7 @@ class SetCurrentAcademicYearAction extends BaseAction
                 'updated_by' => auth()->id(),
             ]);
 
-            AcademicYearService::flush();
+            AcademicContextService::flush();
 
             return $input->refresh();
         });

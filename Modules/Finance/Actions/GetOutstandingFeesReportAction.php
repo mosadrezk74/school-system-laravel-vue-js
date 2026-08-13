@@ -3,7 +3,7 @@
 namespace Modules\Finance\Actions;
 
 use Illuminate\Support\Collection;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Core\Abstracts\BaseAction;
 use Modules\Finance\DTOs\ReportFilterDTO;
 use Modules\Finance\Queries\FinanceReportQuery;
@@ -22,6 +22,6 @@ class GetOutstandingFeesReportAction extends BaseAction
         /** @var ReportFilterDTO $filters */
         $filters = $input;
 
-        return $this->query->outstandingFees($filters, AcademicYearService::id());
+        return $this->query->outstandingFees($filters, AcademicContextService::yearId());
     }
 }

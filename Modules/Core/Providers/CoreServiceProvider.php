@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 use Modules\Core\Contracts\TranslationProviderInterface;
+use Modules\Core\Models\Activity;
 use Modules\Core\Models\ErrorReport;
+use Modules\Core\Policies\ActivityPolicy;
 use Modules\Core\Policies\ErrorReportPolicy;
 use Modules\Core\Services\Translation\LibreTranslateProvider;
 
@@ -29,6 +31,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
 
         Gate::policy(ErrorReport::class, ErrorReportPolicy::class);
+        Gate::policy(Activity::class, ActivityPolicy::class);
 
         /*
          * Lets the sidebar hide an entry the user could not open anyway. The
@@ -38,6 +41,7 @@ class CoreServiceProvider extends ServiceProvider
         Inertia::share([
             'can' => fn () => [
                 'viewErrorReports' => auth()->user()?->can('error-report.view') ?? false,
+                'viewActivity' => auth()->user()?->can('activity.view') ?? false,
                 'viewRoles' => auth()->user()?->can('role.view') ?? false,
                 'viewUsers' => auth()->user()?->can('user.view') ?? false,
                 'viewSchoolTerms' => auth()->user()?->can('school-term.view') ?? false,

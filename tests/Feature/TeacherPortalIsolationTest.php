@@ -4,7 +4,7 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\GradeLevel;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Auth\Database\Seeders\RolePermissionSeeder;
 use Modules\Auth\Enums\UserRole;
 use Modules\Meeting\Models\Meeting;
@@ -49,7 +49,7 @@ beforeEach(function (): void {
     $this->seed(RolePermissionSeeder::class);
 
     $this->year = AcademicYear::factory()->current()->create();
-    AcademicYearService::flush();
+    AcademicContextService::flush();
 
     $this->teacherA = isolationTeacher();
     $this->teacherB = isolationTeacher();

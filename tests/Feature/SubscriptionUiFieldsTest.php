@@ -3,7 +3,7 @@
 use App\Models\User;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\Semester;
-use Modules\Academic\Services\AcademicYearService;
+use Modules\Academic\Services\AcademicContextService;
 use Modules\Auth\Database\Seeders\RolePermissionSeeder;
 use Modules\Auth\Enums\UserRole;
 use Modules\Finance\Models\FeeCategory;
@@ -20,9 +20,9 @@ beforeEach(function () {
     $this->seed(RolePermissionSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-    // AcademicYearService memoises the current year in a static, which would
+    // AcademicContextService memoises the current year in a static, which would
     // otherwise survive RefreshDatabase and point at a rolled-back row.
-    AcademicYearService::flush();
+    AcademicContextService::flush();
 });
 
 /**
@@ -38,7 +38,7 @@ function currentAcademicYear(): AcademicYear
         'end_date' => now()->addMonths(8)->toDateString(),
     ]);
 
-    AcademicYearService::flush();
+    AcademicContextService::flush();
 
     return $year;
 }
