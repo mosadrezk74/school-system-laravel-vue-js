@@ -80,13 +80,16 @@ class PromotionEligibilityQuery
     /**
      * Classes a student may be promoted into, with their remaining room.
      *
-     * Not scoped to an academic year: this school runs standing classes that
-     * recur every year, so every active class is a valid destination and the
-     * year is recorded from the administrator's separate choice.
+     * The *class list* is not scoped to an academic year — this school runs
+     * standing classes that recur every year, so every active class is a valid
+     * destination. The *occupancy* is scoped, because seats are taken per
+     * year: without that, last year's cohort would make a class look full to
+     * this year's intake.
      *
+     * @param  int|null  $targetAcademicYearId  Year the seats are counted for.
      * @return Collection<int, array<string, mixed>>
      */
-    public function targetClasses(): Collection
+    public function targetClasses(?int $targetAcademicYearId = null): Collection
     {
         $classes = SchoolClass::query()
             ->with('gradeLevel')
@@ -95,6 +98,12 @@ class PromotionEligibilityQuery
 
         $counts = StudentProfile::query()
             ->whereIn('current_class_id', $classes->pluck('id'))
+            ->when(
+                $targetAcademicYearId !== null,
+                fn ($query) => $query->where('academic_year_id', $targetAcademicYearId),
+            )
+            ->where('is_active', true)
+            ->where('is_graduated', false)
             ->selectRaw('current_class_id, COUNT(*) as total')
             ->groupBy('current_class_id')
             ->pluck('total', 'current_class_id');

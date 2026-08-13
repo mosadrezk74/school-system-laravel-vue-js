@@ -49,20 +49,32 @@ class PromotionRepository implements PromotionRepositoryInterface
 
     /**
      * @param  array<int, int>  $classIds
+     * @param  int|null  $academicYearId  The year seats are being counted for.
      * @return array<int, int>
      */
-    public function activeCountsByClass(array $classIds): array
+    public function activeCountsByClass(array $classIds, ?int $academicYearId = null): array
     {
         if ($classIds === []) {
             return [];
         }
 
         /*
-         * StudentProfile soft-deletes, and the default scope already hides
-         * trashed rows — a withdrawn student must not hold a seat open.
+         * Occupancy is per academic year, not per class.
+         *
+         * A class is a standing structure shared across years, so counting
+         * every student who has ever sat in it would let last year's cohort
+         * block this year's intake. Scoping to the year being promoted into
+         * counts only the seats genuinely taken for that year.
+         *
+         * StudentProfile soft-deletes and the default scope hides trashed
+         * rows, so a withdrawn student never holds a seat open; inactive and
+         * graduated students are excluded for the same reason.
          */
         return StudentProfile::query()
             ->whereIn('current_class_id', $classIds)
+            ->when($academicYearId !== null, fn ($query) => $query->where('academic_year_id', $academicYearId))
+            ->where('is_active', true)
+            ->where('is_graduated', false)
             ->select('current_class_id', DB::raw('COUNT(*) as total'))
             ->groupBy('current_class_id')
             ->pluck('total', 'current_class_id')

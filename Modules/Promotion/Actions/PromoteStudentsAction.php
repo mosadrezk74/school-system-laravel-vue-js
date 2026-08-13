@@ -141,7 +141,9 @@ class PromoteStudentsAction extends BaseAction
             $dto->decisions,
         )));
 
-        $counts = $this->repository->activeCountsByClass($classIds);
+        // Seats already taken *in the year being promoted into* — students
+        // still sitting in the source year must not block the intake.
+        $counts = $this->repository->activeCountsByClass($classIds, $targetYearId);
         $incoming = [];
         $resolved = [];
 

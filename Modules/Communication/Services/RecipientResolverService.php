@@ -4,6 +4,7 @@ namespace Modules\Communication\Services;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Academic\Services\AcademicYearService;
 use Modules\GuardianProfile\Models\GuardianProfile;
 use Modules\Student\Models\StudentProfile;
 
@@ -64,12 +65,21 @@ class RecipientResolverService
     }
 
     /**
+     * Students sitting in the given classes *this* academic year.
+     *
+     * Classes are shared across years, so an unscoped match would deliver the
+     * message to a previous year's cohort as well. A sender who genuinely
+     * wants another year targets it with TYPE_ACADEMIC_YEAR instead.
+     *
      * @param  array<int, int>  $classIds
      */
     private function byClass(array $classIds): Builder
     {
+        $academicYearId = AcademicYearService::id();
+
         $studentUserIds = StudentProfile::query()
             ->whereIn('current_class_id', $classIds)
+            ->when($academicYearId, fn (Builder $query) => $query->where('academic_year_id', $academicYearId))
             ->pluck('user_id');
 
         return User::query()->whereIn('id', $studentUserIds);

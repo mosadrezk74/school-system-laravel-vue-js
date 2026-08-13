@@ -24,13 +24,17 @@ interface PromotionRepositoryInterface
     public function latestForStudent(int $studentId): ?StudentPromotion;
 
     /**
-     * Live students occupying a class. Soft-deleted rows are excluded, so a
-     * withdrawn student never blocks a seat.
+     * Live students occupying a class *within one academic year*.
+     *
+     * Classes are shared across years, so the year is what makes the count
+     * meaningful. Soft-deleted, inactive and graduated students are excluded,
+     * so none of them blocks a seat.
      *
      * @param  array<int, int>  $classIds
+     * @param  int|null  $academicYearId  Null counts every year (unscoped).
      * @return array<int, int> Count keyed by class id.
      */
-    public function activeCountsByClass(array $classIds): array;
+    public function activeCountsByClass(array $classIds, ?int $academicYearId = null): array;
 
     public function record(
         StudentProfile $student,

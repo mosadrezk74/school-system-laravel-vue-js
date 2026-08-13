@@ -75,7 +75,9 @@ class PromotionController extends BaseInertiaController
              * and classes are standing structures here, so all active ones are
              * valid destinations whichever year is being promoted into.
              */
-            'targetClasses' => $eligibility->targetClasses(),
+            // Occupancy is counted for the year being promoted into, so the
+            // remaining-seat figures match what the Action will accept.
+            'targetClasses' => $eligibility->targetClasses($targetYearId),
             'targetSemesters' => $this->targetSemesterOptions(),
 
             'sourceClasses' => $this->sourceClassOptions(),

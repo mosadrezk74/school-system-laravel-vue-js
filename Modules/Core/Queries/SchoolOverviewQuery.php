@@ -130,8 +130,12 @@ class SchoolOverviewQuery
     }
 
     /**
-     * Active classes for the year that have no enrolled students — an
-     * actionable gap, since a class with no roll is usually unfinished setup.
+     * Active classes with no roll for the year — an actionable gap, since a
+     * class with no students is usually unfinished setup.
+     *
+     * Emptiness is judged within the academic year, not across all of them.
+     * Classes are shared between years now, so a class full of last year's
+     * cohort is genuinely empty for this one and must still be surfaced.
      */
     public function classesWithoutStudents(?int $academicYearId): int
     {
@@ -139,7 +143,9 @@ class SchoolOverviewQuery
             ->where('is_active', true)
             ->whereDoesntHave('students', fn (Builder $query) => $query
                 ->where('student_profiles.is_active', true)
-                ->where('student_profiles.is_graduated', false))
+                ->where('student_profiles.is_graduated', false)
+                ->when($academicYearId, fn (Builder $students) => $students
+                    ->where('student_profiles.academic_year_id', $academicYearId)))
             ->count();
     }
 
