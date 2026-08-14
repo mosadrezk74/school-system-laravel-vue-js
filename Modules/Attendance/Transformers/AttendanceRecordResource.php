@@ -19,7 +19,6 @@ class AttendanceRecordResource extends BaseResource
         return [
             'id' => $this->id,
             'class_id' => $this->class_id,
-            'subject_id' => $this->subject_id,
             'academic_year_id' => $this->academic_year_id,
             'semester_id' => $this->semester_id,
             'date' => $this->date?->toDateString(),
@@ -34,11 +33,6 @@ class AttendanceRecordResource extends BaseResource
             'class' => $this->whenLoaded('class', fn () => $this->class ? [
                 'id' => $this->class->id,
                 'name' => $this->class->name,
-            ] : null),
-
-            'subject' => $this->whenLoaded('subject', fn () => $this->subject ? [
-                'id' => $this->subject->id,
-                'name' => $this->subject->name,
             ] : null),
 
             'academic_year' => $this->whenLoaded('academicYear', fn () => $this->academicYear ? [

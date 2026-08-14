@@ -21,7 +21,6 @@ class StoreAttendanceRequest extends BaseRequest
     {
         return [
             'class_id' => ['required', 'integer', 'exists:classes,id'],
-            'subject_id' => ['nullable', 'integer', 'exists:subjects,id'],
             'semester_id' => ['nullable', 'integer', 'exists:semesters,id'],
             // Attendance is recorded for a day that has happened; `session` is a
             // tinyint and no school runs more than a couple of dozen a day.
@@ -47,7 +46,6 @@ class StoreAttendanceRequest extends BaseRequest
     {
         return [
             'class_id' => __('attendance::attendance.fields.class_id'),
-            'subject_id' => __('attendance::attendance.fields.subject_id'),
             'semester_id' => __('attendance::attendance.fields.semester_id'),
             'date' => __('attendance::attendance.fields.date'),
             'session' => __('attendance::attendance.fields.session'),

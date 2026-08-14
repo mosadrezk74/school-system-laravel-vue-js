@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Academic\Models\AcademicYear;
 use Modules\Academic\Models\Semester;
 use Modules\SchoolClass\Models\SchoolClass;
-use Modules\Subject\Models\Subject;
 
 class AttendanceRecord extends Model
 {
@@ -35,11 +34,6 @@ class AttendanceRecord extends Model
     public function class(): BelongsTo
     {
         return $this->belongsTo(SchoolClass::class, 'class_id');
-    }
-
-    public function subject(): BelongsTo
-    {
-        return $this->belongsTo(Subject::class, 'subject_id');
     }
 
     public function academicYear(): BelongsTo

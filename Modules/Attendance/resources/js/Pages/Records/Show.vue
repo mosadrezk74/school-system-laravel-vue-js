@@ -53,9 +53,6 @@ function destroy() {
             </div>
             <p class="text-body-2 text-medium-emphasis mb-0 mt-1">
               {{ record.class ? record.class.name : '—' }}
-              <template v-if="record.subject">
-                · {{ record.subject.name }}
-              </template>
             </p>
           </div>
 

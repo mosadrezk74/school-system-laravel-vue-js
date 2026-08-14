@@ -28,7 +28,6 @@ return [
 
     'fields' => [
         'class_id' => 'الفصل',
-        'subject_id' => 'المادة',
         'academic_year_id' => 'العام الدراسي',
         'semester_id' => 'الفصل الدراسي',
         'date' => 'التاريخ',

@@ -20,7 +20,7 @@ class AttendanceQuery extends BaseQuery
 
     protected function baseQuery(): Builder
     {
-        return AttendanceRecord::query()->with(['class', 'subject', 'academicYear', 'semester']);
+        return AttendanceRecord::query()->with(['class', 'academicYear', 'semester']);
     }
 
     /**
@@ -32,11 +32,9 @@ class AttendanceQuery extends BaseQuery
      * student, so finding the days a given student appears on means going
      * through the detail rows.
      *
-     * No `subject_id` or `semester_id`. The model declares both relations, but
-     * `attendance_records` has neither column — attendance is taken per class,
-     * per day, per session. The old `subjectId()` / `semesterId()` methods
-     * would have produced "unknown column" had anything ever passed them a
-     * value, and are not carried forward.
+     * No `subject_id`: attendance is taken per class, per day, per session, not
+     * per subject. `semester_id` is nullable — it is the term the register
+     * belongs to, which the marker may or may not supply.
      *
      * @return array<string, Filter>
      */
@@ -45,6 +43,7 @@ class AttendanceQuery extends BaseQuery
         return [
             'class_id' => ExactFilter::make()->label('attendanceRecords.class'),
             'academic_year_id' => ExactFilter::make()->label('attendanceRecords.academicYear'),
+            'semester_id' => ExactFilter::make()->label('attendanceRecords.semester'),
             'session' => NumericFilter::make()->label('attendanceRecords.session'),
             'date' => DateRangeFilter::make()->label('attendanceRecords.date'),
             'student_id' => RelationFilter::make('details', 'student_id')->label('attendanceRecords.student'),

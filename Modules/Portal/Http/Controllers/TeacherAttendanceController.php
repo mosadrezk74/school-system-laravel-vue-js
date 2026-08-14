@@ -39,13 +39,9 @@ class TeacherAttendanceController extends BaseInertiaController
     public function store(StoreAttendanceRequest $request, MarkAttendanceAction $action): RedirectResponse
     {
         $classId = (int) $request->validated('class_id');
-        $subjectId = $request->validated('subject_id');
 
+        // Attendance is taken per class, per day, per session — never per subject.
         abort_unless($this->scope->canAccessClass($classId), 403);
-
-        if ($subjectId !== null) {
-            abort_unless($this->scope->canAccessClassSubject($classId, (int) $subjectId), 403);
-        }
 
         $this->assertStudentsBelongToClass($request->validated('students'), $classId);
 

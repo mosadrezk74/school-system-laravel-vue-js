@@ -12,7 +12,6 @@ final readonly class MarkAttendanceDTO
      */
     public function __construct(
         public int $classId,
-        public ?int $subjectId,
         public int $academicYearId,
         public ?int $semesterId,
         public string $date,
@@ -24,7 +23,6 @@ final readonly class MarkAttendanceDTO
     {
         return new self(
             classId: (int) $request->validated('class_id'),
-            subjectId: $request->validated('subject_id') ? (int) $request->validated('subject_id') : null,
             academicYearId: AcademicContextService::requiredYearId(),
             semesterId: $request->validated('semester_id') ? (int) $request->validated('semester_id') : null,
             date: $request->validated('date'),
@@ -40,7 +38,6 @@ final readonly class MarkAttendanceDTO
     {
         return [
             'class_id' => $this->classId,
-            'subject_id' => $this->subjectId,
             'academic_year_id' => $this->academicYearId,
             'semester_id' => $this->semesterId,
             'date' => $this->date,

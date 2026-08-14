@@ -30,7 +30,6 @@ class MarkAttendanceAction extends BaseAction
 
             if ($record) {
                 $record = $this->repository->updateRecord($record, [
-                    'subject_id' => $dto->subjectId,
                     'academic_year_id' => $dto->academicYearId,
                     'semester_id' => $dto->semesterId,
                 ]);

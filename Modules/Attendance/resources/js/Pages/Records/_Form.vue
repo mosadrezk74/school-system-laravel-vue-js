@@ -9,7 +9,6 @@ const props = defineProps({
   form: { type: Object, required: true },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
-  subjects: { type: Array, default: () => [] },
   isEdit: { type: Boolean, default: false },
 })
 
@@ -57,16 +56,6 @@ function onClassChange(value) {
         :disabled="isEdit"
         required
         @update:model-value="onClassChange"
-      />
-    </VCol>
-
-    <VCol cols="12" md="4">
-      <VSelect
-        v-model="form.subject_id"
-        clearable
-        :items="subjects.map(s => ({ title: s.name, value: s.id }))"
-        :label="t('attendanceRecords.subject')"
-        :error-messages="form.errors.subject_id"
       />
     </VCol>
 

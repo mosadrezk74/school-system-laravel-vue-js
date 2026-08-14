@@ -28,7 +28,6 @@ return [
 
     'fields' => [
         'class_id' => 'Class',
-        'subject_id' => 'Subject',
         'academic_year_id' => 'Academic Year',
         'semester_id' => 'Semester',
         'date' => 'Date',

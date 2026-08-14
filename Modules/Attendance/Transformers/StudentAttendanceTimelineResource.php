@@ -23,7 +23,6 @@ class StudentAttendanceTimelineResource extends BaseResource
             'status' => $this->status?->value,
             'notes' => $this->notes,
             'teacher' => $this->attendanceRecord?->createdBy?->name,
-            'subject' => $this->attendanceRecord?->subject?->name,
         ];
     }
 }

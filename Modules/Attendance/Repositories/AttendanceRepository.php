@@ -172,9 +172,8 @@ class AttendanceRepository implements AttendanceRepositoryInterface
                     ->when($filter->dateTo, fn ($inner, $to) => $inner->whereDate('date', '<=', $to));
             })
             ->with([
-                'attendanceRecord:id,date,session,class_id,subject_id,created_by',
+                'attendanceRecord:id,date,session,class_id,created_by',
                 'attendanceRecord.createdBy:id,name',
-                'attendanceRecord.subject:id,name',
             ])
             ->join('attendance_records', 'attendance_records.id', '=', 'attendance_details.attendance_record_id')
             ->orderByDesc('attendance_records.date')

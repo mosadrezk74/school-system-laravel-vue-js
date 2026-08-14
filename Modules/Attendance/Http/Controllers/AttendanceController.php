@@ -32,7 +32,6 @@ use Modules\Core\DTOs\ListQueryDTO;
 use Modules\Core\Support\Filters\FilterOptions;
 use Modules\SchoolClass\Models\SchoolClass;
 use Modules\Student\Models\StudentProfile;
-use Modules\Subject\Models\Subject;
 
 class AttendanceController extends BaseInertiaController
 {
@@ -170,7 +169,6 @@ class AttendanceController extends BaseInertiaController
                 ),
             ]),
             'classes' => $this->activeClasses(),
-            'subjects' => $this->subjectOptions(),
             'semesters' => Semester::query()->where('academic_year_id', AcademicContextService::yearId())->get()
                 ->map(fn (Semester $semester) => [
                     'id' => $semester->id,
@@ -187,7 +185,6 @@ class AttendanceController extends BaseInertiaController
 
         return $this->render('Attendance::Records/Create', [
             'classes' => $this->activeClasses(),
-            'subjects' => $this->subjectOptions(),
             'semesters' => Semester::query()->where('academic_year_id', AcademicContextService::yearId())->get()
                 ->map(fn (Semester $semester) => [
                     'id' => $semester->id,
@@ -219,7 +216,7 @@ class AttendanceController extends BaseInertiaController
     {
         $this->authorize('view', $record);
 
-        $record->load(['class', 'subject', 'academicYear', 'semester', 'details.student.user']);
+        $record->load(['class', 'academicYear', 'semester', 'details.student.user']);
 
         return $this->render('Attendance::Records/Show', [
             'record' => new AttendanceRecordResource($record),
@@ -230,7 +227,7 @@ class AttendanceController extends BaseInertiaController
     {
         $this->authorize('create', $record);
 
-        $record->load(['class', 'subject', 'academicYear', 'semester', 'details.student.user']);
+        $record->load(['class', 'academicYear', 'semester', 'details.student.user']);
 
         $statusesByStudent = $record->details->keyBy('student_id');
 
@@ -253,7 +250,6 @@ class AttendanceController extends BaseInertiaController
             'record' => new AttendanceRecordResource($record),
             'roster' => $roster,
             'classes' => $this->activeClasses(),
-            'subjects' => $this->subjectOptions(),
             'semesters' => Semester::query()->where('academic_year_id', AcademicContextService::yearId())->get()
                 ->map(fn (Semester $semester) => [
                     'id' => $semester->id,
@@ -297,17 +293,6 @@ class AttendanceController extends BaseInertiaController
                 'grade_level_id' => $class->grade_level_id,
                 'grade_level' => $class->gradeLevel ? ['id' => $class->gradeLevel->id, 'name' => $class->gradeLevel->name] : null,
             ])
-            ->values()
-            ->all();
-    }
-
-    /**
-     * @return array<int, array{id: int, name: string}>
-     */
-    protected function subjectOptions(): array
-    {
-        return Subject::query()->get()
-            ->map(fn (Subject $subject) => ['id' => $subject->id, 'name' => $subject->name])
             ->values()
             ->all();
     }

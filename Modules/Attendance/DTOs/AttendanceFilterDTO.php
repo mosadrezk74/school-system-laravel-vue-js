@@ -10,7 +10,6 @@ final readonly class AttendanceFilterDTO
 {
     public function __construct(
         public ?int $classId,
-        public ?int $subjectId,
         public ?int $academicYearId,
         public ?int $semesterId,
         public ?int $session,
@@ -25,7 +24,6 @@ final readonly class AttendanceFilterDTO
     {
         return new self(
             classId: $request->filled('class_id') ? (int) $request->input('class_id') : null,
-            subjectId: $request->filled('subject_id') ? (int) $request->input('subject_id') : null,
             academicYearId: AcademicContextService::yearId(),
             semesterId: $request->filled('semester_id') ? (int) $request->input('semester_id') : null,
             session: $request->filled('session') ? (int) $request->input('session') : null,

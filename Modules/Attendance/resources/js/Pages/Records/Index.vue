@@ -18,7 +18,6 @@ const props = defineProps({
   /** Filter schema published by the module's Query::filterSchema(). */
   filterDefinitions: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
-  subjects: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -39,7 +38,6 @@ const headers = computed(() => [
   { title: t('attendanceRecords.date'), key: 'date' },
   { title: t('attendanceRecords.session'), key: 'session' },
   { title: t('attendanceRecords.class'), key: 'class' },
-  { title: t('attendanceRecords.subject'), key: 'subject' },
   { title: t('attendanceRecords.present'), key: 'present_count' },
   { title: t('attendanceRecords.absent'), key: 'absent_count' },
   { title: t('attendanceRecords.late'), key: 'late_count' },
@@ -109,10 +107,6 @@ function destroy(item) {
 
       <template #item.class="{ item }">
         {{ item.class ? item.class.name : '—' }}
-      </template>
-
-      <template #item.subject="{ item }">
-        {{ item.subject?.name ?? '—' }}
       </template>
 
       <template #item.present_count="{ item }">

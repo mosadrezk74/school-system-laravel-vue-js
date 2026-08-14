@@ -9,7 +9,6 @@ const props = defineProps({
   attendanceStatuses: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
   classes: { type: Array, default: () => [] },
-  subjects: { type: Array, default: () => [] },
   roster: { type: Array, default: () => [] },
 })
 
@@ -18,7 +17,6 @@ const { t } = useI18n()
 const form = useForm({
   semester_id: null,
   class_id: null,
-  subject_id: null,
   date: null,
   session: 1,
   students: props.roster.map(student => ({ ...student })),
@@ -59,7 +57,6 @@ function submit() {
           :form="form"
           :semesters="semesters"
           :classes="classes"
-          :subjects="subjects"
           :attendance-statuses="attendanceStatuses"
           @class-change="onClassChange"
         />
