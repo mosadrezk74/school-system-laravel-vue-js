@@ -4,6 +4,8 @@ namespace Modules\Communication\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Modules\Communication\Models\BroadcastMessage;
+use Modules\Communication\Models\Conversation;
+use Modules\Communication\Policies\ConversationPolicy;
 use Modules\Communication\Policies\MessagePolicy;
 use Modules\Communication\Repositories\MessageRepository;
 use Modules\Communication\Repositories\MessageRepositoryInterface;
@@ -45,5 +47,12 @@ class CommunicationServiceProvider extends ModuleServiceProvider
         $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
 
         Gate::policy(BroadcastMessage::class, MessagePolicy::class);
+
+        /*
+         * Chat authorisation. Separate from MessagePolicy, which governs the
+         * one-way BroadcastMessage that shares this module's "message"
+         * vocabulary but none of its membership rules.
+         */
+        Gate::policy(Conversation::class, ConversationPolicy::class);
     }
 }

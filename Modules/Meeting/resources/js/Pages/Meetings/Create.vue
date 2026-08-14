@@ -7,6 +7,8 @@ import AppPageHeader from '@/components/AppPageHeader.vue'
 defineProps({
   teachers: { type: Array, default: () => [] },
   semesters: { type: Array, default: () => [] },
+  classes: { type: Array, default: () => [] },
+  subjects: { type: Array, default: () => [] },
 })
 
 const { t } = useI18n()
@@ -14,11 +16,12 @@ const { t } = useI18n()
 const form = useForm({
   title: '',
   description: '',
-  password: '',
   scheduled_at: null,
   duration_minutes: 45,
   teacher_id: null,
   semester_id: null,
+  school_class_id: null,
+  subject_id: null,
 })
 
 function submit() {
@@ -42,6 +45,8 @@ function submit() {
           :form="form"
           :teachers="teachers"
           :semesters="semesters"
+          :classes="classes"
+          :subjects="subjects"
         />
       </form>
     </VCardText>

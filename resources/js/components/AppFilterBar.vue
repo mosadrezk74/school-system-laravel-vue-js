@@ -26,6 +26,17 @@ const props = defineProps({
 
   /** Fields past this many fold away behind a "more filters" panel. */
   collapseAfter: { type: Number, default: 4 },
+
+  /**
+   * One field per row, for a narrow container.
+   *
+   * The grid below sizes columns with `md`, and Vuetify's breakpoints follow
+   * the viewport rather than the parent — so inside a sidebar or a popover on
+   * a desktop screen, `md=3` still resolves to a quarter of that narrow box
+   * and every label truncates. A caller that is not full-width opts out of the
+   * grid entirely with this.
+   */
+  stacked: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['clear', 'clear-all'])
@@ -51,6 +62,12 @@ const isRange = definition => ['date-range', 'number-range'].includes(definition
  */
 const isWide = definition => isRange(definition)
   || (definition.operators?.length > 1 && ['text', 'number'].includes(definition.type))
+
+/**
+ * Grid width for a field. Undefined when stacked, which leaves only `cols=12`
+ * on the column so it spans the full row at every breakpoint.
+ */
+const colWidth = definition => (props.stacked ? undefined : (isWide(definition) ? 6 : 3))
 
 /** Query-string keys a definition owns, so a range clears as one unit. */
 const keysOf = definition => (isRange(definition)
@@ -101,7 +118,7 @@ function chipValue(definition) {
         v-for="definition in primary"
         :key="definition.key"
         cols="12"
-        :md="isWide(definition) ? 6 : 3"
+        :md="colWidth(definition)"
       >
         <slot
           :name="`filter.${definition.key}`"
@@ -132,7 +149,7 @@ function chipValue(definition) {
               v-for="definition in secondary"
               :key="definition.key"
               cols="12"
-              :md="isWide(definition) ? 6 : 3"
+              :md="colWidth(definition)"
             >
               <slot
                 :name="`filter.${definition.key}`"

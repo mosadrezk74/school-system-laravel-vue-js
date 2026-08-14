@@ -80,6 +80,7 @@ const sections = computed(() => [
     key: 'communication',
     heading: t('nav.communication'),
     children: [
+      { title: t('nav.chat'), to: '/communication/chat', icon: 'bx-conversation', module: 'Communication' },
       { title: t('nav.messages'), to: '/communication/messages', icon: 'bx-message-detail', module: 'Communication' },
       { title: t('nav.emailBroadcast'), to: '/communication/email-broadcast', icon: 'bx-envelope', module: 'Communication' },
       { title: t('nav.news'), to: '/communication/news', icon: 'bx-news', module: 'News', permission: 'viewNews' },

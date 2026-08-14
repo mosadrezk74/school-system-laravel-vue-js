@@ -58,7 +58,8 @@
     "schoolTerms": "الشروط والأحكام",
     "reportCards": "بطاقات الدرجات",
     "promotions": "الترقيات",
-    "news": "الأخبار"
+    "news": "الأخبار",
+    "chat": "المحادثات"
   },
   "navbar": {
     "search": "بحث",
@@ -1146,6 +1147,8 @@
     "hints": {
       "title": "مطلوب. اسم مختصر وواضح للاجتماع.",
       "teacher": "مطلوب. المعلم المستضيف لهذا الاجتماع.",
+      "schoolClass": "اختياري، لكن الاجتماع بدون فصل لا يظهر للطلاب أو أولياء الأمور.",
+      "subject": "اختياري. المادة التي يتناولها هذا الاجتماع.",
       "academicYear": "اختياري. العام الدراسي الذي ينتمي إليه هذا الاجتماع.",
       "semester": "اختياري. الفصل الدراسي الذي ينتمي إليه هذا الاجتماع.",
       "durationMinutes": "مطلوب. المدة المتوقعة للاجتماع بالدقائق.",
@@ -1211,7 +1214,66 @@
     "targetType": "المستلمون",
     "title": "العنوان",
     "scheduledAt": "موعد الإرسال",
-    "sentAt": "تاريخ الإرسال"
+    "sentAt": "تاريخ الإرسال",
+    "chat": {
+      "title": "المحادثات",
+      "searchConversations": "ابحث في المحادثات",
+      "newConversation": "محادثة جديدة",
+      "start": "ابدأ",
+      "noConversations": "لا توجد محادثات بعد",
+      "noConversationsHint": "ابدأ محادثة لتظهر هنا.",
+      "selectConversation": "اختر محادثة",
+      "selectConversationHint": "اختر محادثة من القائمة، أو ابدأ محادثة جديدة.",
+      "noMessages": "لا توجد رسائل بعد",
+      "noMessagesHint": "أرسل أول رسالة في هذه المحادثة.",
+      "noMessagesYet": "لا توجد رسائل بعد",
+      "loadingOlder": "جارٍ تحميل الرسائل السابقة…",
+      "messagePlaceholder": "اكتب رسالة…",
+      "send": "إرسال",
+      "attachFiles": "إرفاق ملفات",
+      "removeAttachment": "إزالة المرفق",
+      "download": "تنزيل",
+      "previewImage": "معاينة {name}",
+      "participants": "المشاركون",
+      "recipient": "المستلم",
+      "groupName": "اسم المجموعة",
+      "firstMessage": "الرسالة الأولى (اختياري)",
+      "noEligibleUsers": "لا يوجد أشخاص متاحون للمراسلة",
+      "untitled": "محادثة بدون عنوان",
+      "unknownSender": "غير معروف",
+      "attachmentCount": "مرفق واحد | مرفقان | {count} مرفقات",
+      "memberCount": "عضو واحد | عضوان | {count} أعضاء",
+      "type": "النوع",
+      "lastActivity": "آخر نشاط",
+      "archived": "مؤرشفة",
+      "unread": "غير مقروءة",
+      "sender": "المُرسِل",
+      "messageType": "نوع الرسالة",
+      "date": "التاريخ",
+      "hasAttachments": "تحتوي على مرفقات",
+      "roles": {
+        "owner": "المالك",
+        "admin": "مدير",
+        "teacher": "معلم",
+        "student": "طالب",
+        "guardian": "ولي أمر"
+      },
+      "units": {
+        "B": "بايت",
+        "KB": "ك.ب",
+        "MB": "م.ب",
+        "GB": "ج.ب"
+      },
+      "errors": {
+        "tooManyFiles": "يمكنك إرفاق {max} ملفات كحد أقصى في الرسالة الواحدة.",
+        "fileType": "«{name}» ليس من أنواع الملفات المسموح بها.",
+        "fileTooLarge": "«{name}» أكبر من {max} كيلوبايت."
+      },
+      "hints": {
+        "pickRecipient": "اختر الشخص الذي تريد مراسلته.",
+        "nameGroup": "أدخل اسمًا للمجموعة."
+      }
+    }
   },
   "attendanceTake": {
     "title": "تسجيل الحضور",
@@ -1668,7 +1730,8 @@
       "notifications": "الإشعارات",
       "terms": "الشروط والأحكام",
       "reportCard": "بطاقة الدرجات",
-      "news": "الأخبار"
+      "news": "الأخبار",
+      "chat": "المحادثات"
     },
     "teacher": {
       "title": "بوابة المعلم",

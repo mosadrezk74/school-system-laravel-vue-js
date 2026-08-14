@@ -242,6 +242,10 @@ class MeetingController extends BaseInertiaController
     }
 
     /**
+     * Lookups for the create/edit form. Class and subject are what the student
+     * and guardian meeting lists filter on, so the form has to be able to set
+     * them — a meeting saved without a class reaches nobody outside staff.
+     *
      * @return array<string, mixed>
      */
     protected function formOptions(): array
@@ -254,6 +258,12 @@ class MeetingController extends BaseInertiaController
                     'name' => $semester->name,
                     'academic_year_id' => $semester->academic_year_id,
                 ])
+                ->values(),
+            'classes' => SchoolClass::query()->where('is_active', true)->orderBy('name')->get()
+                ->map(fn (SchoolClass $class) => ['id' => $class->id, 'name' => $class->name])
+                ->values(),
+            'subjects' => Subject::query()->where('is_active', true)->get()
+                ->map(fn (Subject $subject) => ['id' => $subject->id, 'name' => $subject->name])
                 ->values(),
         ];
     }

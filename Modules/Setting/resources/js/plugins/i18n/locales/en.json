@@ -58,7 +58,8 @@
     "schoolTerms": "Terms & Conditions",
     "reportCards": "Report cards",
     "promotions": "Promotions",
-    "news": "News"
+    "news": "News",
+    "chat": "Chat"
   },
   "navbar": {
     "search": "Search",
@@ -1151,6 +1152,8 @@
     "hints": {
       "title": "Required. A short, descriptive name for the meeting.",
       "teacher": "Required. The teacher hosting this meeting.",
+      "schoolClass": "Optional, but a meeting without a class is not listed for students or guardians.",
+      "subject": "Optional. The subject this meeting covers.",
       "academicYear": "Optional. The academic year this meeting belongs to.",
       "semester": "Optional. The semester this meeting belongs to.",
       "durationMinutes": "Required. Expected length of the meeting in minutes.",
@@ -1216,7 +1219,66 @@
     "targetType": "Recipients",
     "title": "Title",
     "scheduledAt": "Scheduled For",
-    "sentAt": "Sent At"
+    "sentAt": "Sent At",
+    "chat": {
+      "title": "Chat",
+      "searchConversations": "Search conversations",
+      "newConversation": "New conversation",
+      "start": "Start",
+      "noConversations": "No conversations yet",
+      "noConversationsHint": "Start a conversation to see it here.",
+      "selectConversation": "Select a conversation",
+      "selectConversationHint": "Pick a conversation from the list, or start a new one.",
+      "noMessages": "No messages yet",
+      "noMessagesHint": "Send the first message in this conversation.",
+      "noMessagesYet": "No messages yet",
+      "loadingOlder": "Loading earlier messages…",
+      "messagePlaceholder": "Write a message…",
+      "send": "Send",
+      "attachFiles": "Attach files",
+      "removeAttachment": "Remove attachment",
+      "download": "Download",
+      "previewImage": "Preview {name}",
+      "participants": "Participants",
+      "recipient": "Recipient",
+      "groupName": "Group name",
+      "firstMessage": "First message (optional)",
+      "noEligibleUsers": "No one available to message",
+      "untitled": "Untitled conversation",
+      "unknownSender": "Unknown",
+      "attachmentCount": "{count} attachment | {count} attachments",
+      "memberCount": "{count} member | {count} members",
+      "type": "Type",
+      "lastActivity": "Last activity",
+      "archived": "Archived",
+      "unread": "Unread",
+      "sender": "Sender",
+      "messageType": "Message type",
+      "date": "Date",
+      "hasAttachments": "Has attachments",
+      "roles": {
+        "owner": "Owner",
+        "admin": "Administrator",
+        "teacher": "Teacher",
+        "student": "Student",
+        "guardian": "Guardian"
+      },
+      "units": {
+        "B": "B",
+        "KB": "KB",
+        "MB": "MB",
+        "GB": "GB"
+      },
+      "errors": {
+        "tooManyFiles": "You can attach at most {max} files to one message.",
+        "fileType": "“{name}” is not an allowed file type.",
+        "fileTooLarge": "“{name}” is larger than {max} KB."
+      },
+      "hints": {
+        "pickRecipient": "Pick who you want to message.",
+        "nameGroup": "Give the group a name."
+      }
+    }
   },
   "attendanceTake": {
     "title": "Take Attendance",
@@ -1673,7 +1735,8 @@
       "notifications": "Notifications",
       "terms": "Terms & Conditions",
       "reportCard": "Report card",
-      "news": "News"
+      "news": "News",
+      "chat": "Chat"
     },
     "teacher": {
       "title": "Teacher Portal",
