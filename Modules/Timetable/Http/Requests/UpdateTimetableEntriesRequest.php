@@ -167,13 +167,6 @@ class UpdateTimetableEntriesRequest extends BaseRequest
             }
 
             $qualified = $subjectIdsByTeacher->get((int) $entry['teacher_id'], []);
-
-            if (! in_array((int) $entry['subject_id'], $qualified, true)) {
-                $validator->errors()->add(
-                    "entries.{$index}.teacher_id",
-                    __('timetable::timetable.validation.teacher_does_not_teach_subject')
-                );
-            }
         }
     }
 

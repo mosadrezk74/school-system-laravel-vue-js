@@ -27,6 +27,7 @@ use Modules\Attendance\Transformers\AttendanceReportRowResource;
 use Modules\Attendance\Transformers\StudentAttendanceProfileResource;
 use Modules\Attendance\Transformers\StudentAttendanceTimelineResource;
 use Modules\Core\Abstracts\BaseInertiaController;
+use Modules\Core\Constants\Pagination;
 use Modules\Core\DTOs\ListQueryDTO;
 use Modules\Core\Support\Filters\FilterOptions;
 use Modules\SchoolClass\Models\SchoolClass;
